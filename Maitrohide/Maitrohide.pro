@@ -33,7 +33,7 @@ FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    Maitrohide_en_US.ts
+    Maitrohide_en_US.ts \
     Maitrohide_fr_FR.ts
 CONFIG += lrelease
 CONFIG += embed_translations
