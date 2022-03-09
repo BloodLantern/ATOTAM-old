@@ -1,0 +1,11 @@
+release/entity.o
+release/monster.o
+release/movingentity.o
+release/movingmonster.o
+release/player.o
+release/samos.o
+release/staticmonster.o
+release/main.o
+release/mainwindow.o
+release/qrc_qmake_qmake_qm_files.o
+release/moc_mainwindow.o
