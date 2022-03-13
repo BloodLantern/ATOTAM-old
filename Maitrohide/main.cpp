@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    MainWindow w(a);
+    MainWindow w(&a);
     w.show();
     return a.exec();
 }
