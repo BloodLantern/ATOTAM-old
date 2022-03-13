@@ -20,7 +20,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QPushButton *m_button;
     QApplication *m_qApp;
 };
 #endif // MAINWINDOW_H
