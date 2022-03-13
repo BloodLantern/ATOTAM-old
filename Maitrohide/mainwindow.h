@@ -14,7 +14,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QApplication *app, QWidget *parent = nullptr);
+    MainWindow(QApplication *app);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     virtual void paintEvent(QPaintEvent*);
 
