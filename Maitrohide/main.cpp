@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
-    Renderable renderable1(new QImage("../Maitrohide/assets/Image.png"), 10, 10);
+    Renderable renderable1(new QImage("../assets/Image.png"), 10, 10);
     w.addRenderable(&renderable1);
     std::cout << std::filesystem::current_path();
     return a.exec();
