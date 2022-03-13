@@ -5,7 +5,7 @@ MainWindow::MainWindow(QApplication *app, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    qApp = app;
+    m_qApp = app;
     ui->setupUi(this);
     // Set size of the window
     setFixedSize(1000, 500);
