@@ -18,8 +18,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawRect(10,10,10,10);
-    for(Renderable *renderable : rendering){
+    for (Renderable *renderable : rendering) {
         painter.drawImage(QPoint(renderable->getX(), renderable->getY()), renderable->getTexture());
     }
     painter.end();
