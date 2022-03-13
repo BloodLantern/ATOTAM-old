@@ -2,8 +2,8 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QApplication *app)
-    : m_qApp(app)
-    , ui(new Ui::MainWindow)
+    : ui(new Ui::MainWindow)
+    , m_qApp(app)
 {
     ui->setupUi(this);
     // Set size of the window
