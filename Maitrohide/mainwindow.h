@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QPainter>
+#include <vector>
+#include "Rendering/renderable.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,9 +19,12 @@ public:
     MainWindow(QApplication *app);
     ~MainWindow();
     virtual void paintEvent(QPaintEvent*);
+    void addRenderable(Renderable *renderable);
+    void clearRendering();
 
 private:
     Ui::MainWindow *ui;
     QApplication *m_qApp;
+    std::vector<Renderable*> rendering;
 };
 #endif // MAINWINDOW_H

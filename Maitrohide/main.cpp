@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "Rendering/renderer.h"
+#include "Rendering/renderable.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
     }
 
     MainWindow w(&a);
+    Renderable renderable(new QImage("assets/Image.png"), 10, 10);
+    w.addRenderable(&renderable);
+    w.update();
     w.show();
-    Renderer renderer(&w);
-    Renderable renderable(new QImage("assets/Image.png"), 300, 300);
-    renderer.render(&renderable);
     return a.exec();
 }

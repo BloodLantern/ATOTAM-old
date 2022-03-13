@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
     , m_qApp(app)
+    , rendering({})
 {
     ui->setupUi(this);
     // Set size of the window
@@ -17,6 +18,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawRect(10, 10, 20, 20);
+    painter.drawRect(10,10,10,10);
+    for(Renderable *renderable : rendering){
+        painter.drawImage(QPoint(renderable->getX(), renderable->getY()), renderable->getTexture());
+    }
+    painter.end();
+}
+
+void MainWindow::addRenderable(Renderable *renderable)
+{
+    rendering.push_back(renderable);
+}
+
+void MainWindow::clearRendering()
+{
+    rendering = {};
 }
 
