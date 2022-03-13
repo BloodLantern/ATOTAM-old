@@ -5,9 +5,6 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QImage>
-#include <iostream>
-#include <QObject>
-#include <filesystem>
 
 int main(int argc, char *argv[])
 {
@@ -27,6 +24,5 @@ int main(int argc, char *argv[])
     w.show();
     Renderable renderable1(new QImage("../assets/Image.png"), 10, 10);
     w.addRenderable(&renderable1);
-    std::cout << std::filesystem::current_path();
     return a.exec();
 }
