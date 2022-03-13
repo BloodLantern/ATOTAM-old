@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
     , m_qApp(app)
-    , rendering({})
+    , rendering()
 {
     ui->setupUi(this);
     // Set size of the window
