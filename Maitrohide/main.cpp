@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     MainWindow w(&a);
     w.show();
     Renderer renderer(&w);
-    Renderable renderable();
+    Renderable renderable(new QImage("assets/Image.png"), 300, 300);
+    renderer.render(&renderable);
     return a.exec();
 }
