@@ -4,6 +4,8 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QImage>
+#include <iostream>
+#include <QObject>
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +20,7 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
     MainWindow w;
     w.show();
     return a.exec();

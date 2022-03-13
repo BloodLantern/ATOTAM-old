@@ -1,16 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QApplication *app, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    qApp = app;
     ui->setupUi(this);
     // Set size of the window
     setFixedSize(1000, 500);
 
     // Create and position the button
-    m_button = new QPushButton("Quit", this);
+    m_button = new QPushButton(QObject::tr("Quit"), this);
     m_button->setGeometry(100, 100, 80, 30);
 
     // NEW : Do the connection
