@@ -1,6 +1,7 @@
 #include "renderer.h"
 
-Renderer::Renderer()
+Renderer::Renderer(QPaintDevice *paintSupport)
 {
-
+    QPainter painter(paintSupport);
+    m_painter = &painter;
 }
