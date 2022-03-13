@@ -11,7 +11,7 @@ public:
     Renderer(QPaintDevice *paintSupport);
     void render(Renderable *renderable);
 private:
-    QPainter m_painter;
+    QPainter *m_painter;
 };
 
 #endif // RENDERER_H
