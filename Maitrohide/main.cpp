@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "Rendering/renderer.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -23,5 +24,7 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
+    Renderer renderer(&w);
+    Renderable renderable();
     return a.exec();
 }
