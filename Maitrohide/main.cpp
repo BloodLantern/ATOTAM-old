@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
-    Renderable renderable1(new QImage("D:/jsp quoi git hub/Maitrohide/Maitrohide/assets/Image.png"), 10, 10);
+    Renderable renderable1(new QImage("../../Maitrohide/assets/Image.png"), 10, 10);
     w.addRenderable(&renderable1);
     return a.exec();
 }
