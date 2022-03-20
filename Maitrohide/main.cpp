@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "Rendering/renderable.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -12,6 +11,8 @@
 #include <chrono>
 #include <thread>
 #include <math.h>
+
+double frameRate = 144.0;
 
 void preciseSleep(double seconds) {
 
@@ -41,21 +42,20 @@ void preciseSleep(double seconds) {
     while ((std::chrono::high_resolution_clock::now() - start).count() / 1e9 < seconds);
 }
 
-bool arrete = true;
-float frameRate = 144.0;
-
-void test1(Renderable* renderable, MainWindow* w) {
+void test1(MainWindow* w) {
     auto start = std::chrono::high_resolution_clock::now();
     double waitTime = 1.0/frameRate;
-    //waitTime /=2;
-    for (int i = 0; i<frameRate; i++) {
+    waitTime /=2;
+    for (int i = 0; i<2*frameRate; i++) {
         preciseSleep(waitTime);
-        //preciseSleep(waitTime);
-        renderable->setX(i*1000/frameRate);
+        preciseSleep(waitTime);
+        for (Entity* ent : w->getRendering())
+            ent->updateV(frameRate);
         w->update();
     }
-    std::cout << (std::chrono::high_resolution_clock::now() - start).count();
-    arrete = false;
+    std::cout << (std::chrono::high_resolution_clock::now() - start).count() << std::endl;
+    for (Entity* ent : w->getRendering())
+        std::cout << ent->getX() << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -74,8 +74,14 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
-    Renderable renderable1(new QImage("../assets/Image.png"), 0, 10);
-    w.addRenderable(&renderable1);
-    std::future<void> fobj1 = std::async(test1,&renderable1, &w);
+    /*Renderable renderable1(new QImage("../assets/Image.png"), 0, 10);
+    w.addRenderable(&renderable1);*/
+    Entity ent1(10,10.1, new CollisionBox(0,0,90,90), new QImage("../assets/Image.png"), Entity::EntityType::Monster);
+    Entity ent2(100.5,50, new CollisionBox(0,0,90,90), new QImage("../assets/Image2.png"), Entity::EntityType::Monster);
+    w.addRenderable(&ent1);
+    w.addRenderable(&ent2);
+    w.update();
+    ent2.setVX(300);
+    std::future<void> fobj1 = std::async(test1, &w);
     return a.exec();
 }

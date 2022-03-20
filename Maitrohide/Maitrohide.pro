@@ -9,28 +9,26 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Entities/collisionbox.cpp \
     Entities/entity.cpp \
-    Entities/monster.cpp \
-    Entities/movingentity.cpp \
-    Entities/movingmonster.cpp \
-    Entities/player.cpp \
-    Entities/samos.cpp \
-    Entities/staticmonster.cpp \
-    Rendering/renderable.cpp \
-    Rendering/renderer.cpp \
+    #Entities/monster.cpp \
+    #Entities/movingentity.cpp \
+    #Entities/movingmonster.cpp \
+    #Entities/player.cpp \
+    #Entities/samos.cpp \
+    #Entities/staticmonster.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    Entities/collisionbox.h \
     Entities/entity.h \
-    Entities/monster.h \
-    Entities/movingentity.h \
-    Entities/movingmonster.h \
-    Entities/player.h \
-    Entities/samos.h \
-    Entities/staticmonster.h \
-    Rendering/renderable.h \
-    Rendering/renderer.h \
+    #Entities/monster.h \
+    #Entities/movingentity.h \
+    #Entities/movingmonster.h \
+    #Entities/player.h \
+    #Entities/samos.h \
+    #Entities/staticmonster.h \
     mainwindow.h
 
 FORMS += \
