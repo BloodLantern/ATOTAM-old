@@ -9,17 +9,52 @@
 #include <future>
 #include <iostream>
 #include <time.h>
+#include <chrono>
+#include <thread>
+#include <math.h>
+
+void preciseSleep(double seconds) {
+
+    double estimate = 5e-3;
+    double mean = 5e-3;
+    double m2 = 0;
+    int64_t count = 1;
+
+    while (seconds > estimate) {
+        auto start = std::chrono::high_resolution_clock::now();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        auto end = std::chrono::high_resolution_clock::now();
+
+        double observed = (end - start).count() / 1e9;
+        seconds -= observed;
+
+        ++count;
+        double delta = observed - mean;
+        mean += delta / count;
+        m2   += delta * (observed - mean);
+        double stddev = sqrt(m2 / (count - 1));
+        estimate = mean + stddev;
+    }
+
+    // spin lock
+    auto start = std::chrono::high_resolution_clock::now();
+    while ((std::chrono::high_resolution_clock::now() - start).count() / 1e9 < seconds);
+}
 
 bool arrete = true;
+float frameRate = 144.0;
 
 void test1(Renderable* renderable, MainWindow* w) {
-    int a = std::time(0);
-    for (int i = 0; i<720; i++) {
-        usleep(6000);
-        renderable->setX(i);
+    auto start = std::chrono::high_resolution_clock::now();
+    double waitTime = 1.0/frameRate;
+    //waitTime /=2;
+    for (int i = 0; i<frameRate; i++) {
+        preciseSleep(waitTime);
+        //preciseSleep(waitTime);
+        renderable->setX(i*1000/frameRate);
         w->update();
     }
-    std::cout << std::time(0) - a;
+    std::cout << (std::chrono::high_resolution_clock::now() - start).count();
     arrete = false;
 }
 
