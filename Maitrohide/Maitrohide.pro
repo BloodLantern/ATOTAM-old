@@ -17,6 +17,10 @@ SOURCES += \
     #Entities/player.cpp \
     #Entities/samos.cpp \
     #Entities/staticmonster.cpp \
+    Entities/living.cpp \
+    Entities/projectile.cpp \
+    Entities/samos.cpp \
+    Entities/terrain.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -29,6 +33,10 @@ HEADERS += \
     #Entities/player.h \
     #Entities/samos.h \
     #Entities/staticmonster.h \
+    Entities/living.h \
+    Entities/projectile.h \
+    Entities/samos.h \
+    Entities/terrain.h \
     mainwindow.h
 
 FORMS += \

@@ -8,10 +8,11 @@ class Entity
 {
 public:
     static bool checkCollision(Entity* obj1, Entity* obj2);
-    enum EntityType {Terrain, Samos, Monster, Area, DynamicObj, NPC};
+    enum EntityType {Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+    enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
     void updateV(double framerate);
 
-    Entity(double x, double y, CollisionBox* box, QImage* texture, int entType);
+    Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction);
     ~Entity();
 
     CollisionBox *getBox() const;
@@ -34,6 +35,15 @@ public:
 
     Entity::EntityType getEntType() const;
 
+    bool getIsAffectedByGravity() const;
+    void setIsAffectedByGravity(bool newIsAffectedByGravity);
+
+    Direction getFacing() const;
+    void setFacing(Direction newFacing);
+
+    bool getIsAffectedByFriction() const;
+    void setIsAffectedByFriction(bool newIsAffectedByFriction);
+
 private:
     CollisionBox* box;
     QImage* texture;
@@ -42,6 +52,9 @@ private:
     double vX; //in px/s
     double vY; //in px/s
     const EntityType entType;
+    bool isAffectedByGravity;
+    Direction facing;
+    bool isAffectedByFriction;
 };
 
 #endif // ENTITY_H

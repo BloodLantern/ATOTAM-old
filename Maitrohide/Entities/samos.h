@@ -1,13 +1,19 @@
 #ifndef SAMOS_H
 #define SAMOS_H
 
-#include "movingentity.h"
-#include "player.h"
+#include "living.h"
 
-class Samos : public MovingEntity, public Player
+class Samos : public Living
 {
 public:
-    Samos();
+    Samos(double x, double y, QImage* texture, int maxHealth);
+    ~Samos();
+    bool getIsInAltForm() const;
+    void setIsInAltForm(bool newIsInAltForm);
+
+private:
+    bool isInAltForm;
+
 };
 
 #endif // SAMOS_H

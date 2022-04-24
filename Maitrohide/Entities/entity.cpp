@@ -14,7 +14,8 @@ void Entity::updateV(double framerate)
     y += vY/framerate;
 }
 
-Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, int entType) : box(box), texture(texture), x(x), y(y), entType(entType)
+Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction)
+    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), isAffectedByFriction(isAffectedByFriction)
 {
 
 }
@@ -22,7 +23,6 @@ Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, int entTy
 Entity::~Entity()
 {
     delete box;
-    delete texture;
 }
 
 CollisionBox *Entity::getBox() const
@@ -88,6 +88,36 @@ void Entity::setVY(double newVY)
 Entity::EntityType Entity::getEntType() const
 {
     return entType;
+}
+
+bool Entity::getIsAffectedByGravity() const
+{
+    return isAffectedByGravity;
+}
+
+void Entity::setIsAffectedByGravity(bool newIsAffectedByGravity)
+{
+    isAffectedByGravity = newIsAffectedByGravity;
+}
+
+Direction Entity::getFacing() const
+{
+    return facing;
+}
+
+void Entity::setFacing(Direction newFacing)
+{
+    facing = newFacing;
+}
+
+bool Entity::getIsAffectedByFriction() const
+{
+    return isAffectedByFriction;
+}
+
+void Entity::setIsAffectedByFriction(bool newIsAffectedByFriction)
+{
+    isAffectedByFriction = newIsAffectedByFriction;
 }
 
 
