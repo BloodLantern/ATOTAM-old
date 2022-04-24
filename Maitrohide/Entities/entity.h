@@ -10,6 +10,7 @@ public:
     static bool checkCollision(Entity* obj1, Entity* obj2);
     enum EntityType {Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
     enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
+    static const int invalidDirection = -2;
     void updateV(double framerate);
 
     Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction);
