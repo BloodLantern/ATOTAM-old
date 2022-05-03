@@ -37,7 +37,8 @@ HEADERS += \
     Entities/projectile.h \
     Entities/samos.h \
     Entities/terrain.h \
-    mainwindow.h
+    mainwindow.h \
+    nlohmann/json.hpp
 
 FORMS += \
     mainwindow.ui

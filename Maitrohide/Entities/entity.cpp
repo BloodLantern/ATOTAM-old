@@ -32,8 +32,9 @@ Entity::~Entity()
 
 Json::Value Entity::loadNames()
 {
-    std::ifstream names_file("people.json", std::ifstream::binary);
-    names_file >> names;
+    std::ifstream names_file("assets/entityNames.json", std::ifstream::binary);
+    Json::Value reader;
+    names_file >> reader;
 }
 
 CollisionBox *Entity::getBox() const

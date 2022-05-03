@@ -11,7 +11,6 @@
 #include <chrono>
 #include <thread>
 #include <math.h>
-#include "../../vcpkg/installed/x86-windows/include/json/value.h"
 #include <fstream>
 
 double frameRate = 60.0;
