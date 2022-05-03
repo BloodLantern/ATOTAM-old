@@ -1,0 +1,8 @@
+"names": {
+	"samos": {
+		"texture": "textures/samos.png",
+		"type": "Samos",
+		"gravity": true,
+		"friction": true
+	}
+}
