@@ -1,19 +1,25 @@
-#ifndef ENTITY_H
+﻿#ifndef ENTITY_H
 #define ENTITY_H
 
 #include "collisionbox.h"
 #include <QImage>
+#include <string>
+#include "../../vcpkg/installed/x86-windows/include/json/value.h"
+#include <fstream>
 
 class Entity
 {
 public:
+    static Json::Value loadNames();
     static bool checkCollision(Entity* obj1, Entity* obj2);
     enum EntityType {Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
     enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
     static const int invalidDirection = -2;
+    static Json::Value names = loadNames();
     void updateV(double framerate);
 
-    Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction);
+    Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction, std::string name);
+    Entity(double x, double y, Direction facing, std::string name);
     ~Entity();
 
     CollisionBox *getBox() const;
@@ -45,6 +51,9 @@ public:
     bool getIsAffectedByFriction() const;
     void setIsAffectedByFriction(bool newIsAffectedByFriction);
 
+    const std::string &getName() const;
+    void setName(const std::string &newName);
+
 private:
     CollisionBox* box;
     QImage* texture;
@@ -56,6 +65,7 @@ private:
     bool isAffectedByGravity;
     Direction facing;
     bool isAffectedByFriction;
+    std::string name;
 };
 
 #endif // ENTITY_H

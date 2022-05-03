@@ -11,8 +11,10 @@
 #include <chrono>
 #include <thread>
 #include <math.h>
+#include "../../vcpkg/installed/x86-windows/include/json/value.h"
+#include <fstream>
 
-double frameRate = 144.0;
+double frameRate = 60.0;
 
 void preciseSleep(double seconds) {
 
@@ -48,7 +50,7 @@ void test1(MainWindow* w) {
     waitTime /=2;
     for (int i = 0; i<2*frameRate; i++) {
         preciseSleep(waitTime);
-        preciseSleep(waitTime);
+        //preciseSleep(waitTime);
         for (Entity* ent : w->getRendering())
             ent->updateV(frameRate);
         w->update();

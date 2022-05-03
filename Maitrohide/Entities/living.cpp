@@ -1,7 +1,7 @@
 #include "living.h"
 
-Living::Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Direction facing)
-    : Entity(x, y, box, texture, entityType, isAffectedByGravity, facing, true),
+Living::Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Direction facing, std::string name)
+    : Entity(x, y, box, texture, entityType, isAffectedByGravity, facing, true, name),
       health(health), maxHealth(maxHealth), groundBox(new CollisionBox(box->getX(), box->getY() + box->getHeight(), box->getWidth(), 2)), onGround(false)
 {
 

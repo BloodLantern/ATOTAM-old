@@ -14,8 +14,13 @@ void Entity::updateV(double framerate)
     y += vY/framerate;
 }
 
-Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction)
-    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), isAffectedByFriction(isAffectedByFriction)
+Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction, std::string name)
+    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), isAffectedByFriction(isAffectedByFriction), name(name)
+{
+
+}
+
+Entity::Entity(double x, double y, Direction facing, std::string name)
 {
 
 }
@@ -23,6 +28,12 @@ Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityTyp
 Entity::~Entity()
 {
     delete box;
+}
+
+Json::Value Entity::loadNames()
+{
+    std::ifstream names_file("people.json", std::ifstream::binary);
+    names_file >> names;
 }
 
 CollisionBox *Entity::getBox() const
@@ -118,6 +129,16 @@ bool Entity::getIsAffectedByFriction() const
 void Entity::setIsAffectedByFriction(bool newIsAffectedByFriction)
 {
     isAffectedByFriction = newIsAffectedByFriction;
+}
+
+const std::string &Entity::getName() const
+{
+    return name;
+}
+
+void Entity::setName(const std::string &newName)
+{
+    name = newName;
 }
 
 
