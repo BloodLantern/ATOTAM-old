@@ -61,3 +61,13 @@ void Living::setInvulnerable(bool newInvulnerable)
 {
     invulnerable = newInvulnerable;
 }
+
+int Living::getDamage() const
+{
+    return damage;
+}
+
+void Living::setDamage(int newDamage)
+{
+    damage = newDamage;
+}
