@@ -31,7 +31,7 @@ Entity::EntityType Entity::getEntTypeFromString(std::string type)
 
 void Entity::loadNames()
 {
-    std::ifstream names_file("assets/entityNames.json");
+    std::ifstream names_file("assets/entities.json");
     names_file >> values;
 }
 
