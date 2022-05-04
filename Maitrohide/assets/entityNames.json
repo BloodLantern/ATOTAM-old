@@ -6,5 +6,8 @@
 			"gravity": true,
 			"friction": true
 		}
+	},
+	"livings": {
+		
 	}
 }

@@ -16,7 +16,7 @@ public:
     static EntityType getEntTypeFromString(std::string type);
     enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
     static const int invalidDirection = -2;
-    static nlohmann::json names;
+    static nlohmann::json values;
     static void loadNames();
     void updateV(double framerate);
 

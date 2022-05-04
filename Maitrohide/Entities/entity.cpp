@@ -32,8 +32,7 @@ Entity::EntityType Entity::getEntTypeFromString(std::string type)
 void Entity::loadNames()
 {
     std::ifstream names_file("assets/entityNames.json");
-    names_file >> names;
-    names = names["names"];
+    names_file >> values;
 }
 
 void Entity::updateV(double framerate)
@@ -51,8 +50,7 @@ Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityTyp
 Entity::Entity(double x, double y, Direction facing, std::string name)
     : x(x), y(y), facing(facing)
 {
-
-    nlohmann::json entJson = names[name];
+    nlohmann::json entJson = values["names"][name];
     texture = new QImage(QString::fromStdString("../assets/textures/") + QString::fromStdString(entJson["texture"]));
     entType = getEntTypeFromString(entJson["type"]);
     isAffectedByGravity = entJson["gravity"];
