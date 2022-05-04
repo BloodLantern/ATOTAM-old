@@ -75,14 +75,8 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
-    /*Renderable renderable1(new QImage("../assets/Image.png"), 0, 10);
-    w.addRenderable(&renderable1);*/
-    Entity ent1(10,10.1, new CollisionBox(0,0,90,90), new QImage("../assets/Image.png"), Entity::EntityType::Monster);
-    Entity ent2(100.5,50, new CollisionBox(0,0,90,90), new QImage("../assets/Image2.png"), Entity::EntityType::Monster);
-    w.addRenderable(&ent1);
-    w.addRenderable(&ent2);
+    Entity::Samos s();
     w.update();
-    ent2.setVX(300);
     std::future<void> fobj1 = std::async(test1, &w);
     return a.exec();
 }

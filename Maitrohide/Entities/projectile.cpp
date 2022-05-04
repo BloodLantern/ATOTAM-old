@@ -1,7 +1,7 @@
 #include "projectile.h"
 
-Projectile::Projectile(double x, double y, Direction facing, ProjectileType type)
-    : Entity(x, y, new CollisionBox(5, 5), nullptr, EntityType::Projectile, false, facing, false)
+Projectile::Projectile(double x, double y, Direction facing, ProjectileType type, std::string name)
+    : Entity(x, y, new CollisionBox(5, 5), nullptr, EntityType::Projectile, false, facing, false, name)
 {
     if (type == Bomb)
         facing = None;

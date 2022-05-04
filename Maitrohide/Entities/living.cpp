@@ -7,6 +7,16 @@ Living::Living(double x, double y, CollisionBox* box, QImage* texture, Entity::E
 
 }
 
+Living::Living(double x, double y, Direction facing, std::string name)
+    : Entity(x, y, facing, name)
+{
+    nlohmann::json livJson = values["livings"][name];
+    health = livJson["maxHealth"];
+    maxHealth = livJson["maxHealth"];
+    damage = livJson["damage"];
+    invulnerable = livJson["invulnerable"];
+}
+
 Living::~Living()
 {
     delete groundBox;

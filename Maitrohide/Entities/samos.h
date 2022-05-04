@@ -7,7 +7,7 @@
 class Samos : public Living
 {
 public:
-    Samos(double x, double y, QImage* texture, int maxHealth, int maxGrenadeCount, int maxMissileCount);
+    Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount);
     ~Samos();
 
     void shoot(Projectile::ProjectileType type);

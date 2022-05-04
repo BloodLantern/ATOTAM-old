@@ -8,7 +8,7 @@ class Projectile : public Entity
 public:
     static const int unknownProjectileType = -1;
     enum ProjectileType {Beam, Missile, Grenade, Bomb};
-    Projectile(double x, double y, Direction facing, ProjectileType type);
+    Projectile(double x, double y, Direction facing, ProjectileType type, std::string name);
     int getDamage() const;
     void setDamage(int newDamage);
 

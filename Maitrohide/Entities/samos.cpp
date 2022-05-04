@@ -1,10 +1,10 @@
 #include "samos.h"
 
-Samos::Samos(double x, double y, QImage* texture, int maxHealth, int maxGrenadeCount, int maxMissileCount)
-    : Living(x, y, new CollisionBox(25, 0, 50, 200), texture, Entity::EntityType::Samos, maxHealth, maxHealth, true, Entity::Direction::Right),
+Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount)
+    : Living(x, y,Entity::Direction::Right, "Samos"),
       isInAltForm(false), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount)
 {
-
+    this->setMaxHealth(maxHealth);
 }
 
 Samos::~Samos()

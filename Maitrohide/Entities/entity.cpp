@@ -140,7 +140,7 @@ void Entity::setIsAffectedByGravity(bool newIsAffectedByGravity)
     isAffectedByGravity = newIsAffectedByGravity;
 }
 
-Direction Entity::getFacing() const
+Entity::Direction Entity::getFacing() const
 {
     return facing;
 }
