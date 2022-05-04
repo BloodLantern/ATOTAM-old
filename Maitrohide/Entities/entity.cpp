@@ -8,6 +8,13 @@ bool Entity::checkCollision(Entity *obj1, Entity *obj2)
             && (obj1->getY() + obj1->getBox()->getY() < obj2->getY() + obj2->getBox()->getY()  + obj2->getBox()->getHeight()));
 }
 
+void Entity::loadNames()
+{
+    std::ifstream names_file("assets/entityNames.json");
+    names_file >> names;
+    names = names["names"];
+}
+
 void Entity::updateV(double framerate)
 {
     x += vX/framerate;
@@ -21,20 +28,15 @@ Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityTyp
 }
 
 Entity::Entity(double x, double y, Direction facing, std::string name)
+    : x(x), y(y), facing(facing)
 {
-
+    nlohmann::json entJson = names[name];
+    entType(entJson["type"]);
 }
 
 Entity::~Entity()
 {
     delete box;
-}
-
-Json::Value Entity::loadNames()
-{
-    std::ifstream names_file("assets/entityNames.json", std::ifstream::binary);
-    Json::Value reader;
-    names_file >> reader;
 }
 
 CollisionBox *Entity::getBox() const
