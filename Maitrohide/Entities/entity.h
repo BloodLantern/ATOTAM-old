@@ -3,6 +3,7 @@
 
 #include "collisionbox.h"
 #include <QImage>
+#include <QString>
 #include <string>
 #include "nlohmann/json.hpp"
 #include <fstream>
@@ -11,7 +12,8 @@ class Entity
 {
 public:
     static bool checkCollision(Entity* obj1, Entity* obj2);
-    enum EntityType {Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+    enum EntityType {Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+    static EntityType getEntTypeFromString(std::string type);
     enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
     static const int invalidDirection = -2;
     static nlohmann::json names;
@@ -54,6 +56,8 @@ public:
     const std::string &getName() const;
     void setName(const std::string &newName);
 
+    void setEntType(EntityType newEntType);
+
 private:
     CollisionBox* box;
     QImage* texture;
@@ -61,7 +65,7 @@ private:
     double y; //in px
     double vX; //in px/s
     double vY; //in px/s
-    const EntityType entType;
+    EntityType entType;
     bool isAffectedByGravity;
     Direction facing;
     bool isAffectedByFriction;

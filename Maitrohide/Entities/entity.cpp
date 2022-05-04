@@ -8,6 +8,27 @@ bool Entity::checkCollision(Entity *obj1, Entity *obj2)
             && (obj1->getY() + obj1->getBox()->getY() < obj2->getY() + obj2->getBox()->getY()  + obj2->getBox()->getHeight()));
 }
 
+Entity::EntityType Entity::getEntTypeFromString(std::string type)
+{
+    // Can't use a switch statement because it requires an integer variable
+    if (type == "Terrain")
+        return Terrain;
+    else if (type == "Samos")
+        return Samos;
+    else if (type == "Monster")
+        return Monster;
+    else if (type == "Area")
+        return Area;
+    else if (type == "DynamicObj")
+        return DynamicObj;
+    else if (type == "NPC")
+        return NPC;
+    else if (type == "Projectile")
+        return Projectile;
+    else
+        return Null;
+}
+
 void Entity::loadNames()
 {
     std::ifstream names_file("assets/entityNames.json");
@@ -30,8 +51,12 @@ Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityTyp
 Entity::Entity(double x, double y, Direction facing, std::string name)
     : x(x), y(y), facing(facing)
 {
+
     nlohmann::json entJson = names[name];
-    entType(entJson["type"]);
+    texture = new QImage(QString::fromStdString("../assets/textures/") + QString::fromStdString(entJson["texture"]));
+    entType = getEntTypeFromString(entJson["type"]);
+    isAffectedByGravity = entJson["gravity"];
+    isAffectedByFriction = entJson["friction"];
 }
 
 Entity::~Entity()
@@ -142,6 +167,11 @@ const std::string &Entity::getName() const
 void Entity::setName(const std::string &newName)
 {
     name = newName;
+}
+
+void Entity::setEntType(EntityType newEntType)
+{
+    entType = newEntType;
 }
 
 
