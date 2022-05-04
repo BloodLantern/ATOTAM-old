@@ -17,7 +17,7 @@ public:
     enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
     static const int invalidDirection = -2;
     static nlohmann::json values;
-    static void loadNames();
+    static nlohmann::json loadNames();
     void updateV(double framerate);
 
     Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction, std::string name);

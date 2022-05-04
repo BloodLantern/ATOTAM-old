@@ -29,11 +29,15 @@ Entity::EntityType Entity::getEntTypeFromString(std::string type)
         return Null;
 }
 
-void Entity::loadNames()
+nlohmann::json Entity::loadNames()
 {
-    std::ifstream names_file("assets/entities.json");
-    names_file >> values;
+    std::ifstream names_file("../assets/entities.json");
+    nlohmann::json temp;
+    names_file >> temp;
+    return temp;
 }
+
+nlohmann::json Entity::values = Entity::loadNames();
 
 void Entity::updateV(double framerate)
 {
