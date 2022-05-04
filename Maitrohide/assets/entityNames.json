@@ -1,13 +1,50 @@
 {
 	"names": {
-		"samos": {
-			"texture": "samos.png",
+		"Samos": {
+			"texture": "Samos",
 			"type": "Samos",
 			"gravity": true,
 			"friction": true
 		}
 	},
 	"livings": {
-		
+		"Samos": {
+			"maxHealth": 99,
+			"invulnerable": false,
+			"damage": 0
+		}
+	},
+	"textures": {
+		"Samos": {
+			"file": "samos.png",
+			"variants": {
+				"test": {
+					"x": 348,
+					"y": 2,
+					"dx": 26,
+					"dy": 43,
+					"count": 1
+				},
+				"standing": {
+					"x": 348,
+					"y": 2,
+					"dx": 26,
+					"dy": 43,
+					"count": 1
+				},
+				"crouching": {
+
+				},
+				"morph_ball": {
+
+				},
+				"walking": {
+
+				},
+				"jumping": {
+
+				}
+			}
+		}
 	}
 }
