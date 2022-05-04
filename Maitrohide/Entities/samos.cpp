@@ -33,28 +33,28 @@ void Samos::shoot(Projectile::ProjectileType type)
         throw invalidDirection;
         break;
     case Up:
-        projectile = new class Projectile(getX() + 50, getY() - 10, Direction::Up, type);
+        projectile = new class Projectile(getX() + 50, getY() - 10, Direction::Up, type, Projectile::getStringProjType(type));
         break;
     case UpRight:
-        projectile = new class Projectile(getX() + 100, getY(), Direction::UpRight, type);
+        projectile = new class Projectile(getX() + 100, getY(), Direction::UpRight, type, Projectile::getStringProjType(type));
         break;
     case Right:
-        projectile = new class Projectile(getX() + 100, getY() + 75, Direction::Right, type);
+        projectile = new class Projectile(getX() + 100, getY() + 75, Direction::Right, type, Projectile::getStringProjType(type));
         break;
     case DownRight:
-        projectile = new class Projectile(getX() + 100, getY() + 150, Direction::DownRight, type);
+        projectile = new class Projectile(getX() + 100, getY() + 150, Direction::DownRight, type, Projectile::getStringProjType(type));
         break;
     case Down:
-        projectile = new class Projectile(getX() + 50, getY() + 210, Direction::Down, type);
+        projectile = new class Projectile(getX() + 50, getY() + 210, Direction::Down, type, Projectile::getStringProjType(type));
         break;
     case DownLeft:
-        projectile = new class Projectile(getX(), getY() + 150, Direction::DownLeft, type);
+        projectile = new class Projectile(getX(), getY() + 150, Direction::DownLeft, type, Projectile::getStringProjType(type));
         break;
     case Left:
-        projectile = new class Projectile(getX(), getY() + 75, Direction::Left, type);
+        projectile = new class Projectile(getX(), getY() + 75, Direction::Left, type, Projectile::getStringProjType(type));
         break;
     case UpLeft:
-        projectile = new class Projectile(getX(), getY(), Direction::UpLeft, type);
+        projectile = new class Projectile(getX(), getY(), Direction::UpLeft, type, Projectile::getStringProjType(type));
         break;
     }
 

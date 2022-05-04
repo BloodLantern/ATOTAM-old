@@ -1,5 +1,21 @@
 #include "projectile.h"
 
+std::string Projectile::getStringProjType(ProjectileType type)
+{
+    switch (type) {
+    case Projectile::Beam:
+        return "Beam";
+    case Projectile::Missile:
+        return "Missile";
+    case Projectile::Grenade:
+        return "Grenade";
+    case Projectile::Bomb:
+        return "Bomb";
+    default:
+        return "Null";
+    }
+}
+
 Projectile::Projectile(double x, double y, Direction facing, ProjectileType type, std::string name)
     : Entity(x, y, new CollisionBox(5, 5), nullptr, EntityType::Projectile, false, facing, false, name)
 {

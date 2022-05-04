@@ -9,6 +9,7 @@ public:
     static const int unknownProjectileType = -1;
     enum ProjectileType {Beam, Missile, Grenade, Bomb};
     Projectile(double x, double y, Direction facing, ProjectileType type, std::string name);
+    static std::string getStringProjType(ProjectileType type);
     int getDamage() const;
     void setDamage(int newDamage);
 

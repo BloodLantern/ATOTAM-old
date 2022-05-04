@@ -2,6 +2,8 @@
 	"names": {
 		"Samos": {
 			"texture": "Samos",
+			"width": 26,
+			"height": 43,
 			"type": "Samos",
 			"gravity": true,
 			"friction": true
@@ -21,15 +23,15 @@
 				"test": {
 					"x": 348,
 					"y": 2,
-					"dx": 26,
-					"dy": 43,
+					"width": 26,
+					"height": 43,
 					"count": 1
 				},
 				"standing": {
 					"x": 348,
 					"y": 2,
-					"dx": 26,
-					"dy": 43,
+					"width": 26,
+					"height": 43,
 					"count": 1
 				},
 				"crouching": {
