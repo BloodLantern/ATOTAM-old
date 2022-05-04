@@ -23,9 +23,13 @@ public:
     bool getInvulnerable() const;
     void setInvulnerable(bool newInvulnerable);
 
+    int getDamage() const;
+    void setDamage(int newDamage);
+
 private:
     int health;
     int maxHealth;
+    int damage;
     bool invulnerable;
 
     CollisionBox *groundBox;
