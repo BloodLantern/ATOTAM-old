@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <iostream>
+
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
     , m_qApp(app)

@@ -45,7 +45,6 @@ void preciseSleep(double seconds) {
 }
 
 void test1(MainWindow* w) {
-    auto start = std::chrono::high_resolution_clock::now();
     double waitTime = 1.0/frameRate;
     waitTime /=2;
     for (int i = 0; i<2*frameRate; i++) {
@@ -55,7 +54,6 @@ void test1(MainWindow* w) {
             ent->updateV(frameRate);
         w->update();
     }
-    std::cout << (std::chrono::high_resolution_clock::now() - start).count() << std::endl;
     for (Entity* ent : w->getRendering())
         std::cout << ent->getX() << std::endl;
 }
@@ -74,10 +72,17 @@ int main(int argc, char *argv[])
         }
     }
 
-    //MainWindow w(&a);
-    //w.show();
-    Samos s(10,10, 99,5,5);
-    //w.update();
+    MainWindow w(&a);
+    w.show();
+    nlohmann::json entJson = Entity::values["names"]["Samos"];
+    nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
+    nlohmann::json variantJson = textureJson["variants"]["standing"];
+    QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["file"])));
+    QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
+    Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, Entity::EntityType::Samos, 99, true, Entity::Direction::Right, "Samos");
+    w.addRenderable(&s);
+    //std::cout << w.getRendering()[0] << std::endl;
+    w.update();
     //std::future<void> fobj1 = std::async(test1, &w);
     return a.exec();
 }
