@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
     , m_qApp(app)
-    , rendering()
+    //, rendering()
 {
     ui->setupUi(this);
     // Set size of the window
@@ -16,7 +16,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::paintEvent(QPaintEvent *) {
+/*void MainWindow::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     for (Entity *entity : rendering) {
         painter.drawImage(QPoint(entity->getX(), entity->getY()), *entity->getTexture());
@@ -33,8 +33,7 @@ void MainWindow::clearRendering()
 {
     rendering = {};
 }
-
-void MainWindow::updateGame()
+*void MainWindow::updateGame()
 {
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
@@ -82,4 +81,4 @@ void MainWindow::setRendering(const std::vector<Entity *> &newRendering)
 {
     rendering = newRendering;
 }
-
+*/

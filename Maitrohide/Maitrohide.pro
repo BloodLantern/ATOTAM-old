@@ -15,7 +15,6 @@ SOURCES += \
     #Entities/movingentity.cpp \
     #Entities/movingmonster.cpp \
     #Entities/player.cpp \
-    #Entities/samos.cpp \
     #Entities/staticmonster.cpp \
     Entities/living.cpp \
     Entities/projectile.cpp \
@@ -31,7 +30,6 @@ HEADERS += \
     #Entities/movingentity.h \
     #Entities/movingmonster.h \
     #Entities/player.h \
-    #Entities/samos.h \
     #Entities/staticmonster.h \
     Entities/living.h \
     Entities/projectile.h \

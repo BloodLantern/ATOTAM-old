@@ -1,8 +1,8 @@
-#include "mainwindow.h"
-#include "Entities/samos.h"
+//#include "mainwindow.h"
+//#include "Entities/samos.h"
 
-#include <QApplication>
-#include <QLocale>
+//#include <QApplication>
+/*#include <QLocale>
 #include <QTranslator>
 #include <QImage>
 #include <unistd.h>
@@ -51,20 +51,20 @@ void test1(MainWindow* w) {
     for (int i = 0; i<2*frameRate; i++) {
         preciseSleep(waitTime);
         //preciseSleep(waitTime);
-        for (Entity* ent : w->getRendering())
-            ent->updateV(frameRate);
+        //for (Entity* ent : w->getRendering())
+        //    ent->updateV(frameRate);
         w->update();
     }
     std::cout << (std::chrono::high_resolution_clock::now() - start).count() << std::endl;
-    for (Entity* ent : w->getRendering())
-        std::cout << ent->getX() << std::endl;
-}
+    //for (Entity* ent : w->getRendering())
+    //    std::cout << ent->getX() << std::endl;
+}*/
 
-int main(int argc, char *argv[])
+/*int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication a(argc, argv);*/
 
-    QTranslator translator;
+    /*QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
         const QString baseName = "Maitrohide_" + QLocale(locale).name();
@@ -72,13 +72,21 @@ int main(int argc, char *argv[])
             a.installTranslator(&translator);
             break;
         }
-    }
+    }*/
 
-    MainWindow w(&a);
-    w.show();
-    Entity::loadNames();
-    Samos s(10,10, 99,5,5);
-    w.update();
-    std::future<void> fobj1 = std::async(test1, &w);
+    //MainWindow w(&a);
+    //w.show();
+    //Entity::loadNames();
+    //Samos s(10,10, 99,5,5);
+    //w.update();
+    //std::future<void> fobj1 = std::async(test1, &w);
+    /*return a.exec();
+}*/
+
+#include <QApplication>
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
     return a.exec();
 }
