@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "Entities/samos.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -75,7 +76,8 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
-    Entity::Samos s();
+    Entity::loadNames();
+    Samos s(10,10, 99,5,5);
     w.update();
     std::future<void> fobj1 = std::async(test1, &w);
     return a.exec();

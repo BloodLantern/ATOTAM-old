@@ -54,9 +54,11 @@ Entity::Entity(double x, double y, Direction facing, std::string name)
     nlohmann::json textureJson = values["textures"][entJson["texture"]];
     nlohmann::json variantJson = textureJson["variants"]["standing"];
 
-    QImage fullImage(QString::fromStdString("../assets/textures/") + QString::fromStdString(textureJson["file"]));
+    //QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["file"])));
+    QImage fullImage("../assets/textures/samos.png");
     QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
 
+    texture = &image;
     entType = getEntTypeFromString(entJson["type"]);
     isAffectedByGravity = entJson["gravity"];
     isAffectedByFriction = entJson["friction"];
