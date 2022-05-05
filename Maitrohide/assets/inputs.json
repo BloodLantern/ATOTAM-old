@@ -1,0 +1,13 @@
+{
+	"left": 37,
+	"up": 38,
+	"right": 39,
+	"down": 40,
+	"jump": 32,
+	"aim": 160,
+	"morph": 90,
+	"grapple": 81,
+	"weapon": 83,
+	"shoot": 68,
+	"menu": 65
+}

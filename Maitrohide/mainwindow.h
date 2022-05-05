@@ -21,7 +21,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QApplication *app);
     ~MainWindow();
-    static const int renderingMultiplier = 1; // Textures are rendered with their size being multiplied by this value
+    static const int renderingMultiplier = 3; // Textures are rendered with their size being multiplied by this value
     static bool running;
     static double frameRate; //fps
     static double gravity; //p.s^-2

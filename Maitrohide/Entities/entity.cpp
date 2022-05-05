@@ -255,10 +255,16 @@ void Entity::updateAnimation()
         }
 
     int imagesPerLine = (static_cast<int>(variantJson["count"]) + static_cast<int>(variantJson["emptyFrames"])) / static_cast<int>(variantJson["lines"]);
-    int width = (static_cast<int>(variantJson["width"]) / 2) / imagesPerLine;
+    int width = static_cast<int>(variantJson["width"]) / imagesPerLine;
+    // Make sure not to get two images at a time
+    if (!variantJson["multi-directional"].is_null())
+        if (variantJson["multi-directional"])
+            width /= 2;
     int height = static_cast<int>(variantJson["height"]) / static_cast<int>(variantJson["lines"]);
     // For each line
-    for (int i = 0; i < variantJson["lines"]; i++) {
+    for (int i = (variantJson["reversed"] ? static_cast<int>(variantJson["lines"]) : 0);
+         (variantJson["reversed"] ? i > -1 : i < variantJson["lines"]);
+         i++) {
         // For each image
         if (facing == "Right")
             for (int ii = 0;

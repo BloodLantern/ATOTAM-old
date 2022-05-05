@@ -59,7 +59,7 @@
 				"count": 13,
 				"emptyFrames": 0,
 				"lines": 13,
-				"multi-directional": false
+				"reversed": true
 			}
 		}
 	}
