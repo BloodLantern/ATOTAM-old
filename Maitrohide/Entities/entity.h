@@ -12,19 +12,18 @@ class Entity
 {
 public:
     static bool checkCollision(Entity* obj1, Entity* obj2);
-    enum EntityType {Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
-    static EntityType getEntTypeFromString(std::string type);
-    enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
+    //enum EntityType {Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+    //static EntityType getEntTypeFromString(std::string type);
+    //enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
     static const int invalidDirection = -2;
     static nlohmann::json values;
     static nlohmann::json loadNames();
 
-    Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name);
-    Entity(double x, double y, Direction facing, std::string name);
+    Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name);
+    Entity(double x, double y, std::string facing, std::string name);
     ~Entity();
 
     void updateTexture();
-    void updateAnimation();
     void updateV(double framerate);
 
     CollisionBox *getBox() const;
@@ -45,13 +44,11 @@ public:
     double getVY() const;
     void setVY(double newVY);
 
-    Entity::EntityType getEntType() const;
-
     bool getIsAffectedByGravity() const;
     void setIsAffectedByGravity(bool newIsAffectedByGravity);
 
-    Direction getFacing() const;
-    void setFacing(Direction newFacing);
+    std::string getFacing() const;
+    void setFacing(std::string newFacing);
 
     double getFrictionFactor() const;
     void setFrictionFactor(double newFrictionFactor);
@@ -59,7 +56,8 @@ public:
     const std::string &getName() const;
     void setName(const std::string &newName);
 
-    void setEntType(EntityType newEntType);
+    std::string getEntType() const;
+    void setEntType(std::string newEntType);
 
     int getAnimation() const;
     void setAnimation(int newAnimation);
@@ -74,9 +72,9 @@ private:
     double y; //in px
     double vX; //in px/s
     double vY; //in px/s
-    EntityType entType;
+    std::string entType;
     bool isAffectedByGravity;
-    Direction facing;
+    std::string facing;
     double frictionFactor;
     std::string name;
     int animation = 0;

@@ -62,8 +62,10 @@ void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
         Living living(*entity);
-        if (living != NULL) {
-
+        if (living.getMaxHealth() != -1 /*Nullity check*/) {
+            if (living.getState() != living.getLastFrameState()) {
+                living.updateAnimation();
+            }
         }
         entity->setAnimation(entity->getAnimation() + 1);
         if (entity->getMaxAnimation() <= entity->getAnimation())

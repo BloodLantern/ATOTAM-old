@@ -42,7 +42,7 @@ Living::Living(Entity entity)
 {
     nlohmann::json livJson = values["livings"][entity.getName()];
     if (livJson.is_null())
-        delete this;
+        maxHealth = -1; // Check for this value to know if this Living is null
     else {
         health = livJson["maxHealth"];
         maxHealth = livJson["maxHealth"];
@@ -54,6 +54,11 @@ Living::Living(Entity entity)
 Living::~Living()
 {
     delete groundBox;
+}
+
+void Living::updateAnimation()
+{
+
 }
 
 int Living::getHealth() const
@@ -124,4 +129,14 @@ Living::State Living::getState() const
 void Living::setState(State newState)
 {
     state = newState;
+}
+
+State Living::getLastFrameState() const
+{
+    return lastFrameState;
+}
+
+void Living::setLastFrameState(State newLastFrameState)
+{
+    lastFrameState = newLastFrameState;
 }

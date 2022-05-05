@@ -80,11 +80,6 @@ void Entity::updateTexture()
     texture = currentAnimation[animation];
 }
 
-void Entity::updateAnimation()
-{
-
-}
-
 CollisionBox *Entity::getBox() const
 {
     return box;

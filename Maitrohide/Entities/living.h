@@ -6,12 +6,16 @@
 class Living : public Entity
 {
 public:
-    enum State {Idle, Walking, Attacking, Crouching, Jumping, MorphBall};
-    static std::string getStringState(State state);
-    Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Entity::Direction facing, double frictionFactor, std::string name);
-    Living(double x, double y, Direction facing, std::string name);
+    //enum State {Idle, Walking, Attacking, Crouching, Jumping, MorphBall};
+    //static std::string getStringState(State state);
+
+    Living(double x, double y, CollisionBox* box, QImage* texture, std::string entityType, int health, int maxHealth, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name);
+    Living(double x, double y, std::string facing, std::string name);
     Living(Entity entity);
     ~Living();
+
+    void updateAnimation();
+
     int getHealth() const;
     void setHealth(int newHealth);
 
@@ -30,8 +34,11 @@ public:
     int getDamage() const;
     void setDamage(int newDamage);
 
-    State getState() const;
-    void setState(State newState);
+    std::string getState() const;
+    void setState(std::string newState);
+
+    std::string getLastFrameState() const;
+    void setLastFrameState(std::string newLastFrameState);
 
 private:
     int health;
@@ -41,8 +48,8 @@ private:
 
     CollisionBox *groundBox;
     bool onGround;
-    State state = Idle;
-    State lastFrameState = Idle;
+    std::string state = "Idle";
+    std::string lastFrameState = "Idle";
 };
 
 #endif // LIVING_H
