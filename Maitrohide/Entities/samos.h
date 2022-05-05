@@ -8,7 +8,7 @@ class Samos : public Living
 {
 public:
     Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount);
-    Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox* box, QImage* texture, std::string entityType, int health, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name);
+    Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox* box, QImage* texture, std::string entityType, int health, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable);
     ~Samos();
 
     void shoot(std::string type);

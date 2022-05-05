@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
     nlohmann::json variantJson = textureJson["variants"][variant];
     QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["variants"][variant]["file"])));
     QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
-    Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, "Samos", 99, true, "Right", 1, "Samos");
+    Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, "Samos", 99, true, "Right", 1, "Samos", true);
     w.addRenderable(&s);
     w.update();
     //std::future<void> fobj1 = std::async(gameClock, &w);

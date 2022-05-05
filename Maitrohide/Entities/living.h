@@ -6,7 +6,9 @@
 class Living : public Entity
 {
 public:
-    Living(double x, double y, CollisionBox* box, QImage* texture, std::string entityType, int health, int maxHealth, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name);
+    //enum State {Idle, Walking, Attacking, Crouching, Jumping, MorphBall};
+
+    Living(double x, double y, CollisionBox* box, QImage* texture, std::string entityType, int health, int maxHealth, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable);
     Living(double x, double y, std::string facing, std::string name);
     ~Living();
 

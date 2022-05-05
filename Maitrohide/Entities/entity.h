@@ -7,18 +7,21 @@
 #include <string>
 #include "nlohmann/json.hpp"
 #include <fstream>
+#include <cmath>
 
 class Entity
 {
 public:
     static bool checkCollision(Entity* obj1, Entity* obj2);
+    static void handleCollision(Entity* obj1, Entity* obj2);
+    static void calcCollisionReplacement(Entity* obj1, Entity* obj2);
     //enum EntityType {Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
     static const int unknownEntityType = -1;
     static const int invalidDirection = -2;
     static nlohmann::json values;
     static nlohmann::json loadNames();
 
-    Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name);
+    Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable);
     Entity(double x, double y, std::string facing, std::string name);
     ~Entity();
 
@@ -71,6 +74,9 @@ public:
     const std::vector<QImage *> &getCurrentAnimation() const;
     void setCurrentAnimation(const std::vector<QImage *> &newCurrentAnimation);
 
+    bool getIsMovable() const;
+    void setIsMovable(bool newIsMovable);
+
 private:
     CollisionBox* box;
     QImage* texture; // Image to be rendered now
@@ -82,6 +88,7 @@ private:
     bool isAffectedByGravity;
     std::string facing;
     double frictionFactor;
+    bool isMovable;
     std::string name;
 
     // Rendering

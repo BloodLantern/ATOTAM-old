@@ -3,10 +3,169 @@
 
 bool Entity::checkCollision(Entity *obj1, Entity *obj2)
 {
-    return ((obj1->getX() + obj1->getBox()->getX() + obj1->getBox()->getWidth() > obj2->getX() + obj2->getBox()->getX())
-            && (obj1->getX() + obj1->getBox()->getX() < obj2->getX() + obj2->getBox()->getX()  + obj2->getBox()->getWidth())
-            && (obj1->getY() + obj1->getBox()->getY() + obj1->getBox()->getHeight() > obj2->getY() + obj2->getBox()->getY())
-            && (obj1->getY() + obj1->getBox()->getY() < obj2->getY() + obj2->getBox()->getY()  + obj2->getBox()->getHeight()));
+    return ((obj1->x + obj1->box->getX() + obj1->box->getWidth() > obj2->x + obj2->box->getX())
+            && (obj1->x + obj1->box->getX() < obj2->x + obj2->box->getX()  + obj2->box->getWidth())
+            && (obj1->y) + obj1->box->getY() + obj1->box->getHeight() > obj2->y + obj2->box->getY())
+            && (obj1->y + obj1->box->getY() < obj2->y + obj2->box->getY()  + obj2->box->getHeight());
+}
+
+void Entity::handleCollision(Entity *obj1, Entity *obj2)
+{//{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+    if (obj1->entType == "Terrain") {
+        if (obj2->entType == "Samos") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Monster") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Area") {
+            // TODO
+        } else if (obj2->entType == "DynamicObj") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "NPC") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Projectile") {
+            // TODO
+        }
+    } else if (obj1->entType == "Samos") {
+        if (obj2->entType == "Terrain") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Monster") {
+            calcCollisionReplacement(obj1, obj2);
+            // TODO hit
+        } else if (obj2->entType == "Area") {
+            // TODO
+        } else if (obj2->entType == "DynamicObj") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "NPC") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Projectile") {
+            // TODO
+        }
+    } else if (obj1->entType == "Monster") {
+        if (obj2->entType == "Terrain") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Samos") {
+            calcCollisionReplacement(obj1, obj2);
+            // TODO hit
+        } else if (obj2->entType == "Monster") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Area") {
+            // TODO
+        } else if (obj2->entType == "DynamicObj") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "NPC") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Projectile") {
+            // TODO
+        }
+    } else if (obj1->entType == "Area") {
+        if (obj2->entType == "Terrain") {
+            // TODO
+        } else if (obj2->entType == "Samos") {
+            // TODO
+        } else if (obj2->entType == "Monster") {
+            // TODO
+        } else if (obj2->entType == "Area") {
+            // TODO
+        } else if (obj2->entType == "DynamicObj") {
+            // TODO
+        } else if (obj2->entType == "NPC") {
+            // TODO
+        } else if (obj2->entType == "Projectile") {
+            // TODO
+        }
+    } else if (obj1->entType == "DynamicObj") {
+        if (obj2->entType == "Terrain") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Samos") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Monster") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Area") {
+            // TODO
+        } else if (obj2->entType == "DynamicObj") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "NPC") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Projectile") {
+            // TODO
+        }
+    } else if (obj1->entType == "NPC") {
+        if (obj2->entType == "Terrain") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Samos") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Monster") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Area") {
+            // TODO
+        } else if (obj2->entType == "DynamicObj") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "NPC") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Projectile") {
+            // TODO
+        }
+    } else if (obj1->entType == "Projectile") {
+        if (obj2->entType == "Terrain") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Samos") {
+            calcCollisionReplacement(obj1, obj2);
+            // TODO hit
+        } else if (obj2->entType == "Monster") {
+            calcCollisionReplacement(obj1, obj2);
+            // TODO hit
+        } else if (obj2->entType == "Area") {
+            // TODO
+        } else if (obj2->entType == "DynamicObj") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "NPC") {
+            calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->entType == "Projectile") {
+            // TODO
+        }
+    } else
+        throw unknownEntityType;
+}
+
+void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
+{
+    double minX1 = obj1->x + obj1->box->getWidth() - obj2->x;
+    double minX2 = obj2->x + obj2->box->getWidth() - obj1->x;
+    double minY1 = obj1->y + obj1->box->getHeight() - obj2->y;
+    double minY2 = obj2->y + obj2->box->getHeight() - obj1->y;
+    double minX;
+    double minY;
+    if (std::abs(minX1) < std::abs(minX2)) {
+        minX = minX1;
+    } else {
+        minX = minX2;
+    }
+    if (std::abs(minY1) < std::abs(minY2)) {
+        minY = minY1;
+    } else {
+        minY = minY2;
+    }
+    if (obj1->isMovable && obj2->isMovable) {
+        if (std::abs(minX) < std::abs(minY)) {
+            obj1->x += minX / 2;
+            obj2->x -= minX / 2;
+        } else {
+            obj1->y += minY / 2;
+            obj2->y -= minY / 2;
+        }
+    } else if (!obj1->isMovable && obj2->isMovable) {
+        if (std::abs(minX) < std::abs(minY)) {
+            obj2->x -= minX;
+        } else {
+            obj2->y -= minY;
+        }
+    } else if (obj1->isMovable && !obj2->isMovable) {
+        if (std::abs(minX) < std::abs(minY)) {
+            obj1->x += minX;
+        } else {
+            obj1->y += minY;
+        }
+    }
 }
 
 nlohmann::json Entity::loadNames()
@@ -25,8 +184,8 @@ void Entity::updateV(double framerate)
     y += vY/framerate;
 }
 
-Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name)
-    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), frictionFactor(frictionFactor), name(name)
+Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
+    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), frictionFactor(frictionFactor), isMovable(isMovable), name(name)
 {
 
 }
@@ -45,6 +204,7 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     entType = entJson["type"];
     isAffectedByGravity = entJson["gravity"];
     frictionFactor = entJson["friction"];
+    isMovable = entJson["movable"];
 }
 
 Entity::~Entity()
@@ -233,6 +393,16 @@ const std::vector<QImage *> &Entity::getCurrentAnimation() const
 void Entity::setCurrentAnimation(const std::vector<QImage *> &newCurrentAnimation)
 {
     currentAnimation = newCurrentAnimation;
+}
+
+bool Entity::getIsMovable() const
+{
+    return isMovable;
+}
+
+void Entity::setIsMovable(bool newIsMovable)
+{
+    isMovable = newIsMovable;
 }
 
 
