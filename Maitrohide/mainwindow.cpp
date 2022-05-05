@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include <Entities/living.h>
+
 bool MainWindow::running = true;
 double MainWindow::frameRate = 60.0;
 double MainWindow::gravity = 60.0;
@@ -59,9 +61,14 @@ void MainWindow::updatePhysics()
 void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
+        Living living(*entity);
+        if (living != NULL) {
+
+        }
         entity->setAnimation(entity->getAnimation() + 1);
         if (entity->getMaxAnimation() <= entity->getAnimation())
             entity->setAnimation(0);
+        entity->updateTexture();
     }
 }
 

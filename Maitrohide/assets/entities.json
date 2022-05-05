@@ -6,7 +6,7 @@
 			"height": 43,
 			"type": "Samos",
 			"gravity": true,
-			"friction": true
+			"friction": 1
 		}
 	},
 	"livings": {

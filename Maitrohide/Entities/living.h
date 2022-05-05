@@ -10,6 +10,7 @@ public:
     static std::string getStringState(State state);
     Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Entity::Direction facing, double frictionFactor, std::string name);
     Living(double x, double y, Direction facing, std::string name);
+    Living(Entity entity);
     ~Living();
     int getHealth() const;
     void setHealth(int newHealth);
@@ -41,6 +42,7 @@ private:
     CollisionBox *groundBox;
     bool onGround;
     State state = Idle;
+    State lastFrameState = Idle;
 };
 
 #endif // LIVING_H

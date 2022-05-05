@@ -24,6 +24,7 @@ public:
     ~Entity();
 
     void updateTexture();
+    void updateAnimation();
     void updateV(double framerate);
 
     CollisionBox *getBox() const;
@@ -80,6 +81,7 @@ private:
     std::string name;
     int animation = 0;
     int maxAnimation;
+    std::vector<QImage*> currentAnimation;
 };
 
 #endif // ENTITY_H

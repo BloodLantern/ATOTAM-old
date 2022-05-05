@@ -74,6 +74,14 @@ Entity::~Entity()
 
 void Entity::updateTexture()
 {
+    if (animation >= currentAnimation.size())
+        animation = 0;
+
+    texture = currentAnimation[animation];
+}
+
+void Entity::updateAnimation()
+{
 
 }
 

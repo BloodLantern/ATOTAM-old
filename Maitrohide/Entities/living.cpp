@@ -37,6 +37,20 @@ Living::Living(double x, double y, Direction facing, std::string name)
     invulnerable = livJson["invulnerable"];
 }
 
+Living::Living(Entity entity)
+    : Entity(entity.getX(), entity.getY(), entity.getBox(), entity.getTexture(), entity.getEntType(), entity.getIsAffectedByGravity(), entity.getFacing(), entity.getFrictionFactor(), entity.getName())
+{
+    nlohmann::json livJson = values["livings"][entity.getName()];
+    if (livJson.is_null())
+        delete this;
+    else {
+        health = livJson["maxHealth"];
+        maxHealth = livJson["maxHealth"];
+        damage = livJson["damage"];
+        invulnerable = livJson["invulnerable"];
+    }
+}
+
 Living::~Living()
 {
     delete groundBox;
