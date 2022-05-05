@@ -21,7 +21,7 @@ public:
     virtual void paintEvent(QPaintEvent*);
     void addRenderable(Entity *entity);
     void clearRendering();
-    void updateGame();
+    void updateGame(double framerate);
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);

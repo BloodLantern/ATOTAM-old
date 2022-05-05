@@ -36,8 +36,10 @@ void MainWindow::clearRendering()
     rendering = {};
 }
 
-void MainWindow::updateGame()
+void MainWindow::updateGame(double framerate)
 {
+    for (Entity* ent : getRendering())
+        ent->updateV(framerate);
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
             bool toCheck = true;

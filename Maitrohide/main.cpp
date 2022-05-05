@@ -50,12 +50,9 @@ void test1(MainWindow* w) {
     for (int i = 0; i<2*frameRate; i++) {
         preciseSleep(waitTime);
         //preciseSleep(waitTime);
-        for (Entity* ent : w->getRendering())
-            ent->updateV(frameRate);
+        w->updateGame(frameRate);
         w->update();
     }
-    for (Entity* ent : w->getRendering())
-        std::cout << ent->getX() << std::endl;
 }
 
 int main(int argc, char *argv[])
