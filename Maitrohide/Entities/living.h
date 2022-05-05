@@ -30,9 +30,6 @@ public:
     int getDamage() const;
     void setDamage(int newDamage);
 
-    std::string getState() const;
-    void setState(std::string newState);
-
     std::string getLastFrameState() const;
     void setLastFrameState(std::string newLastFrameState);
 

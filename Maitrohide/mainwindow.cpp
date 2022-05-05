@@ -24,10 +24,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent *event) {
+    running = false;
+}
+
 void MainWindow::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     for (Entity *entity : rendering) {
-        painter.drawImage(QRect(entity->getX(), entity->getY(), entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier), *entity->getTexture());
+        painter.drawImage(QRect(entity->getX(), entity->getY(), entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
+                          *entity->getTexture());
     }
     painter.end();
 }
@@ -54,7 +59,7 @@ void MainWindow::updatePhysics()
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
             if (Entity::checkCollision(*i,*j)) {
-
+                Entity::handleCollision(*i, *j);
             }
         }
     }

@@ -43,7 +43,6 @@
 				"height": 148,
 				"count": 10,
 				"emptyFrames": 2,
-				"vertical": false,
 				"lines": 3,
 				"multi-directional": true
 			},
@@ -58,7 +57,9 @@
 				"width": 24,
 				"height": 650,
 				"count": 13,
-				"vertical": true
+				"emptyFrames": 0,
+				"lines": 13,
+				"multi-directional": false
 			}
 		}
 	}

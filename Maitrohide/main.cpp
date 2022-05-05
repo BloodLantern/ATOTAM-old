@@ -14,6 +14,8 @@
 #include <math.h>
 #include <fstream>
 
+#include <Entities/terrain.h>
+
 void preciseSleep(double seconds) {
 
     double estimate = 5e-3;
@@ -51,11 +53,12 @@ void gameClock(MainWindow* w) {
         preciseSleep(waitTime);
         //preciseSleep(waitTime);
         w->updatePhysics();
-        if (frameCount % 5 == 0)
+        if (frameCount % 5 == 0) {
             w->updateAnimations();
+        }
         w->update();
+        frameCount++;
     }
-    frameCount++;
 }
 
 int main(int argc, char *argv[])
@@ -74,15 +77,16 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
-    std::string variant = "Idle";
+    std::string variant = "Walking";
     nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
-    nlohmann::json variantJson = textureJson["variants"][variant];
-    QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["variants"][variant]["file"])));
+    nlohmann::json variantJson = textureJson[variant];
+    QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson[variant]["file"])));
     QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
-    Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, "Samos", 99, true, "Right", 1, "Samos", true);
+    Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, "Samos", 99, false, "Right", 1, "Samos", true);
+    s.setState(variant);
     w.addRenderable(&s);
     w.update();
-    //std::future<void> fobj1 = std::async(gameClock, &w);
+    std::future<void> fobj1 = std::async(gameClock, &w);
     return a.exec();
 }

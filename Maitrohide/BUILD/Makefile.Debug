@@ -878,7 +878,8 @@ debug/main.o: ../main.cpp ../mainwindow.h \
 		C:/Qt/6.2.3/mingw_64/include/QtGui/qguiapplication_platform.h \
 		C:/Qt/6.2.3/mingw_64/include/QtCore/QLocale \
 		C:/Qt/6.2.3/mingw_64/include/QtCore/QTranslator \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qtranslator.h
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qtranslator.h \
+		../Entities/terrain.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o ..\main.cpp
 
 debug/mainwindow.o: ../mainwindow.cpp ../mainwindow.h \

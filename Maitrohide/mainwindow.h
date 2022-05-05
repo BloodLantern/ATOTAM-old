@@ -22,6 +22,7 @@ public:
     static bool running;
     static double frameRate; //fps
     static double gravity; //p.s^-2
+    void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
     void addRenderable(Entity *entity);
     void clearRendering();
@@ -30,7 +31,6 @@ public:
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);
-
 private:
     Ui::MainWindow *ui;
     QApplication *m_qApp;

@@ -217,7 +217,7 @@ void Entity::updateTexture()
     if (animation >= currentAnimation.size())
         animation = 0;
 
-    texture = currentAnimation[animation];
+    texture = &currentAnimation[animation];
 }
 
 void Entity::updateAnimation()
@@ -230,19 +230,34 @@ void Entity::updateAnimation()
     // Getting the full animation image which will be modified afterwards
     QImage fullAnim = QImage(QString::fromStdString(std::string("../assets/textures/") + std::string(variantJson["file"])))
             .copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
-    // If the animation is multi-directional the program should keep the relevant part
+    // If the animation is multi-directional the program should crop the irrelevant part
     if (!variantJson["multi-directional"].is_null())
         if (variantJson["multi-directional"]) {
             if (facing == "Left") {
-                fullAnim = fullAnim.copy(0, 0, static_cast<int>(variantJson["width"]) / 2, static_cast<int>(variantJson["height"]) / 2);
+                fullAnim = fullAnim.copy(0, 0, static_cast<int>(variantJson["width"]) / 2, static_cast<int>(variantJson["height"]));
             } else if (facing == "Right") {
-                fullAnim = fullAnim.copy(static_cast<int>(variantJson["width"]) / 2, static_cast<int>(variantJson["height"]) / 2, static_cast<int>(variantJson["width"]), static_cast<int>(variantJson["height"]));
+                fullAnim = fullAnim.copy(static_cast<int>(variantJson["width"]) / 2, 0,
+                        static_cast<int>(variantJson["width"]), static_cast<int>(variantJson["height"]));
             }
         }
 
-    // Finish by starting the new animation at the beginning
-    animation = 0;
-    updateTexture();
+    int imagesPerLine = (static_cast<int>(variantJson["count"]) + static_cast<int>(variantJson["emptyFrames"])) / static_cast<int>(variantJson["lines"]);
+    int width = (static_cast<int>(variantJson["width"]) / 2) / imagesPerLine;
+    int height = static_cast<int>(variantJson["height"]) / static_cast<int>(variantJson["lines"]);
+    // For each line
+    for (int i = 0; i < variantJson["lines"]; i++) {
+        // For each image
+        if (facing == "Right")
+            for (int ii = 0;
+                 ii < (i + 1 == variantJson["lines"] ? /*Remove empty frames from the last line*/ imagesPerLine - static_cast<int>(variantJson["emptyFrames"]) : imagesPerLine); ii++) {
+                currentAnimation.push_back(fullAnim.copy(ii * width, i * height, width, height));
+            }
+        else if (facing == "Left")
+            for (int ii = imagesPerLine - 1;
+                 ii > (i + 1 == variantJson["lines"] ? /*Remove empty frames from the last line*/ static_cast<int>(variantJson["emptyFrames"]) - 1 : -1);ii--) {
+                currentAnimation.push_back(fullAnim.copy(ii * width, i * height, width, height));
+            }
+    }
 }
 
 CollisionBox *Entity::getBox() const
@@ -385,12 +400,12 @@ void Entity::setLastFrameState(const std::string &newLastFrameState)
     lastFrameState = newLastFrameState;
 }
 
-const std::vector<QImage *> &Entity::getCurrentAnimation() const
+const std::vector<QImage> &Entity::getCurrentAnimation() const
 {
     return currentAnimation;
 }
 
-void Entity::setCurrentAnimation(const std::vector<QImage *> &newCurrentAnimation)
+void Entity::setCurrentAnimation(const std::vector<QImage> &newCurrentAnimation)
 {
     currentAnimation = newCurrentAnimation;
 }

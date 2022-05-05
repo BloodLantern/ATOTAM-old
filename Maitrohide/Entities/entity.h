@@ -71,8 +71,8 @@ public:
     const std::string &getLastFrameState() const;
     void setLastFrameState(const std::string &newLastFrameState);
 
-    const std::vector<QImage *> &getCurrentAnimation() const;
-    void setCurrentAnimation(const std::vector<QImage *> &newCurrentAnimation);
+    const std::vector<QImage> &getCurrentAnimation() const;
+    void setCurrentAnimation(const std::vector<QImage> &newCurrentAnimation);
 
     bool getIsMovable() const;
     void setIsMovable(bool newIsMovable);
@@ -93,7 +93,7 @@ private:
 
     // Rendering
     unsigned int animation = 0;
-    std::vector<QImage*> currentAnimation; // Full current animation
+    std::vector<QImage> currentAnimation; // Full current animation
     std::string state = "Idle"; // Which animation should be rendered
     std::string lastFrameState = "Idle"; // Which animation was rendered in the last frame
 };
