@@ -1,33 +1,13 @@
 #include "living.h"
 
-std::string Living::getStringState(State state)
-{
-    switch (state) {
-    case Idle:
-        return "Idle";
-    case Walking:
-        return "Walking";
-    case Attacking:
-        return "Attacking";
-    case Crouching:
-        return "Crouching";
-    case Jumping:
-        return "Jumping";
-    case MorphBall:
-        return "MorphBall";
-    default:
-        return getStringState(State::Idle);
-    }
-}
-
-Living::Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name)
+Living::Living(double x, double y, CollisionBox* box, QImage* texture, std::string entityType, int health, int maxHealth, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name)
     : Entity(x, y, box, texture, entityType, isAffectedByGravity, facing, frictionFactor, name),
       health(health), maxHealth(maxHealth), groundBox(new CollisionBox(box->getX(), box->getY() + box->getHeight(), box->getWidth(), 2)), onGround(false)
 {
 
 }
 
-Living::Living(double x, double y, Direction facing, std::string name)
+Living::Living(double x, double y, std::string facing, std::string name)
     : Entity(x, y, facing, name)
 {
     nlohmann::json livJson = values["livings"][name];
@@ -121,22 +101,22 @@ void Living::setDamage(int newDamage)
     damage = newDamage;
 }
 
-Living::State Living::getState() const
+std::string Living::getState() const
 {
     return state;
 }
 
-void Living::setState(State newState)
+void Living::setState(std::string newState)
 {
     state = newState;
 }
 
-State Living::getLastFrameState() const
+std::string Living::getLastFrameState() const
 {
     return lastFrameState;
 }
 
-void Living::setLastFrameState(State newLastFrameState)
+void Living::setLastFrameState(std::string newLastFrameState)
 {
     lastFrameState = newLastFrameState;
 }

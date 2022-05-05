@@ -1,92 +1,62 @@
 #include "projectile.h"
 
-std::string Projectile::getStringProjType(ProjectileType type)
+Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name)
+    : Entity(x, y, new CollisionBox(5, 5), nullptr, "Projectile", false, facing, 0, name)
 {
-    switch (type) {
-    case Projectile::Beam:
-        return "Beam";
-    case Projectile::Missile:
-        return "Missile";
-    case Projectile::Grenade:
-        return "Grenade";
-    case Projectile::Bomb:
-        return "Bomb";
-    default:
-        return "Null";
-    }
-}
+    if (type == "Bomb")
+        facing = "None";
 
-Projectile::Projectile(double x, double y, Direction facing, ProjectileType type, std::string name)
-    : Entity(x, y, new CollisionBox(5, 5), nullptr, EntityType::Projectile, false, facing, 0, name)
-{
-    if (type == Bomb)
-        facing = None;
-
-    switch (facing) {
-    case None:
+    if (facing == "None") {
         setVX(0);
         setVY(0);
-        break;
-    case Up:
+    } else if (facing == "Up") {
         setVX(0);
         setVY(-1000);
-        break;
-    case UpRight:
+    } else if (facing == "UpRight") {
         setVX(707);
         setVY(-707);
-        break;
-    case Right:
+    } else if (facing == "Right") {
         setVX(1000);
         setVY(0);
-        break;
-    case DownRight:
+    } else if (facing == "DownRight") {
         setVX(707);
         setVY(707);
-        break;
-    case Down:
+    } else if (facing == "Down") {
         setVX(0);
         setVY(1000);
-        break;
-    case DownLeft:
+    } else if (facing == "DownLeft") {
         setVX(-707);
         setVY(707);
-        break;
-    case Left:
+    } else if (facing == "Left") {
         setVX(-1000);
         setVY(0);
-        break;
-    case UpLeft:
+    } else if (facing == "UpLeft") {
         setVX(-707);
         setVY(-707);
-        break;
+    } else {
+        throw Entity::invalidDirection;
     }
 
-    switch (type) {
-    case Beam:
+    if (type == "Beam") {
         damage = 20;
         lifeTime = 1500;
-        break;
-    case Missile:
+    } else if (type == "Missile") {
         damage = 50;
         lifeTime = 3000;
         setVX(getVX() / 2);
         setVY(getVY() / 2);
-        break;
-    case Grenade:
+    } else if (type == "Grenade") {
         damage = 60;
         lifeTime = 3000;
         setVX(getVX() / 2);
         setVY(getVY() / 2);
         setIsAffectedByGravity(true);
         setFrictionFactor(0.2);
-        break;
-    case Bomb:
+    } else if (type == "Bomb") {
         damage = 50;
         lifeTime = 2000;
-        break;
-    default:
+    } else {
         throw unknownProjectileType;
-        break;
     }
 }
 
@@ -108,4 +78,14 @@ int Projectile::getLifeTime() const
 void Projectile::setLifeTime(int newLifeTime)
 {
     lifeTime = newLifeTime;
+}
+
+const std::string &Projectile::getProjectileType() const
+{
+    return projectileType;
+}
+
+void Projectile::setProjectileType(const std::string &newProjectileType)
+{
+    projectileType = newProjectileType;
 }

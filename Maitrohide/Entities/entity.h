@@ -13,8 +13,8 @@ class Entity
 public:
     static bool checkCollision(Entity* obj1, Entity* obj2);
     //enum EntityType {Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
-    //static EntityType getEntTypeFromString(std::string type);
     //enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
+    static const int unknownEntityType = -1;
     static const int invalidDirection = -2;
     static nlohmann::json values;
     static nlohmann::json loadNames();

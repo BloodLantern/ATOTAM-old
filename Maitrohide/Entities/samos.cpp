@@ -1,13 +1,13 @@
 #include "samos.h"
 
 Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount)
-    : Living(x, y,Entity::Direction::Right, "Samos"),
+    : Living(x, y, "Right", "Samos"),
       isInAltForm(false), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount)
 {
     this->setMaxHealth(maxHealth);
 }
 
-Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox *box, QImage *texture, EntityType entityType, int health, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name)
+Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox *box, QImage *texture, std::string entityType, int health, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name)
     : Living(x, y, box, texture, entityType, health, maxHealth, isAffectedByGravity, facing, frictionFactor, name), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount)
 {
 
@@ -18,50 +18,42 @@ Samos::~Samos()
 
 }
 
-void Samos::shoot(Projectile::ProjectileType type)
+void Samos::shoot(std::string type)
 {
-    class Projectile* projectile = nullptr;
+    Projectile* projectile = nullptr;
 
-    if (type == Projectile::ProjectileType::Grenade) {
+    if (type == "Grenade") {
         if (grenadeCount > 0)
             grenadeCount--;
         else
             return;
-    } else if (type == Projectile::ProjectileType::Missile) {
+    } else if (type == "Missile") {
         if (missileCount > 0)
             missileCount--;
         else
             return;
     }
 
-    switch (canonDirection) {
-    case None:
-        throw invalidDirection;
-        break;
-    case Up:
-        projectile = new class Projectile(getX() + 50, getY() - 10, Direction::Up, type, Projectile::getStringProjType(type));
-        break;
-    case UpRight:
-        projectile = new class Projectile(getX() + 100, getY(), Direction::UpRight, type, Projectile::getStringProjType(type));
-        break;
-    case Right:
-        projectile = new class Projectile(getX() + 100, getY() + 75, Direction::Right, type, Projectile::getStringProjType(type));
-        break;
-    case DownRight:
-        projectile = new class Projectile(getX() + 100, getY() + 150, Direction::DownRight, type, Projectile::getStringProjType(type));
-        break;
-    case Down:
-        projectile = new class Projectile(getX() + 50, getY() + 210, Direction::Down, type, Projectile::getStringProjType(type));
-        break;
-    case DownLeft:
-        projectile = new class Projectile(getX(), getY() + 150, Direction::DownLeft, type, Projectile::getStringProjType(type));
-        break;
-    case Left:
-        projectile = new class Projectile(getX(), getY() + 75, Direction::Left, type, Projectile::getStringProjType(type));
-        break;
-    case UpLeft:
-        projectile = new class Projectile(getX(), getY(), Direction::UpLeft, type, Projectile::getStringProjType(type));
-        break;
+    if (canonDirection == "None") {
+        throw Entity::invalidDirection;
+    } else if (canonDirection == "Up") {
+        projectile = new Projectile(getX() + 50, getY() - 10, "Up", type, type);
+    } else if (canonDirection == "UpRight") {
+        projectile = new Projectile(getX() + 100, getY(), "UpRight", type, type);
+    } else if (canonDirection == "Right") {
+        projectile = new Projectile(getX() + 100, getY() + 75, "Right", type, type);
+    } else if (canonDirection == "DownRight") {
+       projectile = new Projectile(getX() + 100, getY() + 150, "DownRight", type, type);
+    } else if (canonDirection == "Down") {
+        projectile = new Projectile(getX() + 50, getY() + 210, "Down", type, type);
+    } else if (canonDirection == "DownLeft") {
+        projectile = new Projectile(getX(), getY() + 150, "DownLeft", type, type);
+    } else if (canonDirection == "Left") {
+        projectile = new Projectile(getX(), getY() + 75, "Left", type, type);
+    } else if (canonDirection == "UpLeft") {
+        projectile = new Projectile(getX(), getY(), "UpLeft", type, type);
+    } else {
+        throw Entity::invalidDirection;
     }
 
     delete projectile; // TEMP

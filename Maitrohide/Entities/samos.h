@@ -8,10 +8,10 @@ class Samos : public Living
 {
 public:
     Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount);
-    Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name);
+    Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox* box, QImage* texture, std::string entityType, int health, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name);
     ~Samos();
 
-    void shoot(Projectile::ProjectileType type);
+    void shoot(std::string type);
 
     bool getIsInAltForm() const;
     void setIsInAltForm(bool newIsInAltForm);
@@ -34,7 +34,7 @@ private:
     int maxGrenadeCount;
     int missileCount;
     int maxMissileCount;
-    Direction canonDirection = Right;
+    std::string canonDirection = "Right";
 };
 
 #endif // SAMOS_H

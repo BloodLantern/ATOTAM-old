@@ -7,7 +7,7 @@
 
 bool MainWindow::running = true;
 double MainWindow::frameRate = 60.0;
-double MainWindow::gravity = 60.0;
+double MainWindow::gravity = 500.0;
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -46,9 +46,11 @@ void MainWindow::updatePhysics()
 {
     for (Entity* ent : rendering) {
         if (ent->getIsAffectedByGravity())
-            ent->setVY(ent->getVY() + MainWindow::gravity/MainWindow::frameRate);
+            ent->setVY(ent->getVY() + MainWindow::gravity / MainWindow::frameRate);
+        ent->setVX(ent->getVX() * (1.0 - 0.0000245 * ent->getVX() / MainWindow::frameRate));
         ent->updateV(MainWindow::frameRate);
-    }
+    } //{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
             if (Entity::checkCollision(*i,*j)) {

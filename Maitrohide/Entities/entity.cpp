@@ -8,27 +8,6 @@ bool Entity::checkCollision(Entity *obj1, Entity *obj2)
             && (obj1->getY() + obj1->getBox()->getY() < obj2->getY() + obj2->getBox()->getY()  + obj2->getBox()->getHeight()));
 }
 
-Entity::EntityType Entity::getEntTypeFromString(std::string type)
-{
-    // Can't use a switch statement because it requires an integer variable
-    if (type == "Terrain")
-        return Terrain;
-    else if (type == "Samos")
-        return Samos;
-    else if (type == "Monster")
-        return Monster;
-    else if (type == "Area")
-        return Area;
-    else if (type == "DynamicObj")
-        return DynamicObj;
-    else if (type == "NPC")
-        return NPC;
-    else if (type == "Projectile")
-        return Projectile;
-    else
-        return Null;
-}
-
 nlohmann::json Entity::loadNames()
 {
     std::ifstream names_file("../assets/entities.json");
@@ -45,13 +24,13 @@ void Entity::updateV(double framerate)
     y += vY/framerate;
 }
 
-Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name)
+Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name)
     : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), frictionFactor(frictionFactor), name(name)
 {
 
 }
 
-Entity::Entity(double x, double y, Direction facing, std::string name)
+Entity::Entity(double x, double y, std::string facing, std::string name)
     : x(x), y(y), facing(facing)
 {
     nlohmann::json entJson = values["names"][name];
@@ -62,7 +41,7 @@ Entity::Entity(double x, double y, Direction facing, std::string name)
     QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
 
     texture = &image;
-    entType = getEntTypeFromString(entJson["type"]);
+    entType = entJson["type"];
     isAffectedByGravity = entJson["gravity"];
     frictionFactor = entJson["friction"];
 }
@@ -140,7 +119,7 @@ void Entity::setVY(double newVY)
     vY = newVY;
 }
 
-Entity::EntityType Entity::getEntType() const
+std::string Entity::getEntType() const
 {
     return entType;
 }
@@ -155,12 +134,12 @@ void Entity::setIsAffectedByGravity(bool newIsAffectedByGravity)
     isAffectedByGravity = newIsAffectedByGravity;
 }
 
-Entity::Direction Entity::getFacing() const
+std::string Entity::getFacing() const
 {
     return facing;
 }
 
-void Entity::setFacing(Direction newFacing)
+void Entity::setFacing(std::string newFacing)
 {
     facing = newFacing;
 }
@@ -185,7 +164,7 @@ void Entity::setName(const std::string &newName)
     name = newName;
 }
 
-void Entity::setEntType(EntityType newEntType)
+void Entity::setEntType(std::string newEntType)
 {
     entType = newEntType;
 }
