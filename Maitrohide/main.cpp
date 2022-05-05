@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     w.show();
     nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
-    nlohmann::json variantJson = textureJson["variants"]["standing"];
+    nlohmann::json variantJson = textureJson["variants"][Living::getStringState(Living::State::Idle)];
     QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["file"])));
     QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
     Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, Entity::EntityType::Samos, 99, true, Entity::Direction::Right, "Samos");

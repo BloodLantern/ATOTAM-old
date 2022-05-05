@@ -182,4 +182,14 @@ void Entity::setEntType(EntityType newEntType)
     entType = newEntType;
 }
 
+int Entity::getAnimation() const
+{
+    return animation;
+}
+
+void Entity::setAnimation(int newAnimation)
+{
+    animation = newAnimation;
+}
+
 

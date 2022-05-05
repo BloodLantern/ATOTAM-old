@@ -6,6 +6,8 @@
 class Living : public Entity
 {
 public:
+    enum State {Idle, Walking, Attacking, Crouching, Jumping, MorphBall};
+    static std::string getStringState(State state);
     Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Entity::Direction facing, std::string name);
     Living(double x, double y, Direction facing, std::string name);
     ~Living();
@@ -27,6 +29,9 @@ public:
     int getDamage() const;
     void setDamage(int newDamage);
 
+    State getState() const;
+    void setState(State newState);
+
 private:
     int health;
     int maxHealth;
@@ -35,6 +40,7 @@ private:
 
     CollisionBox *groundBox;
     bool onGround;
+    State state = Idle;
 };
 
 #endif // LIVING_H

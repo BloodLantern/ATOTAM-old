@@ -20,30 +20,30 @@
 		"Samos": {
 			"file": "samos.png",
 			"variants": {
-				"test": {
+				"Test": {
 					"x": 348,
 					"y": 2,
 					"width": 26,
 					"height": 43,
 					"count": 1
 				},
-				"standing": {
+				"Idle": {
 					"x": 348,
 					"y": 2,
 					"width": 26,
 					"height": 43,
 					"count": 1
 				},
-				"crouching": {
+				"Crouching": {
 
 				},
-				"morph_ball": {
+				"MorphBall": {
 
 				},
-				"walking": {
+				"Walking": {
 
 				},
-				"jumping": {
+				"Jumping": {
 
 				}
 			}

@@ -1,5 +1,25 @@
 #include "living.h"
 
+std::string Living::getStringState(State state)
+{
+    switch (state) {
+    case Idle:
+        return "Idle";
+    case Walking:
+        return "Walking";
+    case Attacking:
+        return "Attacking";
+    case Crouching:
+        return "Crouching";
+    case Jumping:
+        return "Jumping";
+    case MorphBall:
+        return "MorphBall";
+    default:
+        return getStringState(State::Idle);
+    }
+}
+
 Living::Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Direction facing, std::string name)
     : Entity(x, y, box, texture, entityType, isAffectedByGravity, facing, true, name),
       health(health), maxHealth(maxHealth), groundBox(new CollisionBox(box->getX(), box->getY() + box->getHeight(), box->getWidth(), 2)), onGround(false)
@@ -80,4 +100,14 @@ int Living::getDamage() const
 void Living::setDamage(int newDamage)
 {
     damage = newDamage;
+}
+
+State Living::getState() const
+{
+    return state;
+}
+
+void Living::setState(State newState)
+{
+    state = newState;
 }

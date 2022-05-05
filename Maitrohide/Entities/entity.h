@@ -58,6 +58,9 @@ public:
 
     void setEntType(EntityType newEntType);
 
+    int getAnimation() const;
+    void setAnimation(int newAnimation);
+
 private:
     CollisionBox* box;
     QImage* texture;
@@ -70,6 +73,7 @@ private:
     Direction facing;
     bool isAffectedByFriction;
     std::string name;
+    int animation;
 };
 
 #endif // ENTITY_H
