@@ -74,14 +74,14 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
+    std::string variant = "Idle";
     nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
-    nlohmann::json variantJson = textureJson["variants"][Living::getStringState(Living::State::Idle)];
-    QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["file"])));
+    nlohmann::json variantJson = textureJson["variants"][variant];
+    QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["variants"][variant]["file"])));
     QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
-    Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, Entity::EntityType::Samos, 99, true, Entity::Direction::Right, "Samos");
+    Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, "Samos", 99, true, "Right", 1, "Samos");
     w.addRenderable(&s);
-    //std::cout << w.getRendering()[0] << std::endl;
     w.update();
     //std::future<void> fobj1 = std::async(gameClock, &w);
     return a.exec();

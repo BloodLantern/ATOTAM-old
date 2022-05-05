@@ -17,28 +17,9 @@ Living::Living(double x, double y, std::string facing, std::string name)
     invulnerable = livJson["invulnerable"];
 }
 
-Living::Living(Entity entity)
-    : Entity(entity.getX(), entity.getY(), entity.getBox(), entity.getTexture(), entity.getEntType(), entity.getIsAffectedByGravity(), entity.getFacing(), entity.getFrictionFactor(), entity.getName())
-{
-    nlohmann::json livJson = values["livings"][entity.getName()];
-    if (livJson.is_null())
-        maxHealth = -1; // Check for this value to know if this Living is null
-    else {
-        health = livJson["maxHealth"];
-        maxHealth = livJson["maxHealth"];
-        damage = livJson["damage"];
-        invulnerable = livJson["invulnerable"];
-    }
-}
-
 Living::~Living()
 {
     delete groundBox;
-}
-
-void Living::updateAnimation()
-{
-
 }
 
 int Living::getHealth() const
@@ -99,24 +80,4 @@ int Living::getDamage() const
 void Living::setDamage(int newDamage)
 {
     damage = newDamage;
-}
-
-std::string Living::getState() const
-{
-    return state;
-}
-
-void Living::setState(std::string newState)
-{
-    state = newState;
-}
-
-std::string Living::getLastFrameState() const
-{
-    return lastFrameState;
-}
-
-void Living::setLastFrameState(std::string newLastFrameState)
-{
-    lastFrameState = newLastFrameState;
 }

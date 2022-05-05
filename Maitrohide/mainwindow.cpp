@@ -27,7 +27,7 @@ MainWindow::~MainWindow()
 void MainWindow::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     for (Entity *entity : rendering) {
-        painter.drawImage(QPoint(entity->getX(), entity->getY()), *entity->getTexture());
+        painter.drawImage(QRect(entity->getX(), entity->getY(), entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier), *entity->getTexture());
     }
     painter.end();
 }
@@ -63,14 +63,11 @@ void MainWindow::updatePhysics()
 void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
-        Living living(*entity);
-        if (living.getMaxHealth() != -1 /*Nullity check*/) {
-            if (living.getState() != living.getLastFrameState()) {
-                living.updateAnimation();
-            }
+        if (entity->getState() != entity->getLastFrameState()) {
+            entity->updateAnimation();
         }
         entity->setAnimation(entity->getAnimation() + 1);
-        if (entity->getMaxAnimation() <= entity->getAnimation())
+        if (entity->getCurrentAnimation().size() <= entity->getAnimation())
             entity->setAnimation(0);
         entity->updateTexture();
     }

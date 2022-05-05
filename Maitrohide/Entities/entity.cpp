@@ -1,4 +1,5 @@
 #include "entity.h"
+#include <iostream>
 
 bool Entity::checkCollision(Entity *obj1, Entity *obj2)
 {
@@ -57,6 +58,31 @@ void Entity::updateTexture()
         animation = 0;
 
     texture = currentAnimation[animation];
+}
+
+void Entity::updateAnimation()
+{
+    // First clear the current image list
+    currentAnimation.clear();
+
+    // Getting a json object representing the animation
+    nlohmann::json variantJson = values["textures"][values["names"][name]["texture"]][state];
+    // Getting the full animation image which will be modified afterwards
+    QImage fullAnim = QImage(QString::fromStdString(std::string("../assets/textures/") + std::string(variantJson["file"])))
+            .copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
+    // If the animation is multi-directional the program should keep the relevant part
+    if (!variantJson["multi-directional"].is_null())
+        if (variantJson["multi-directional"]) {
+            if (facing == "Left") {
+                fullAnim = fullAnim.copy(0, 0, static_cast<int>(variantJson["width"]) / 2, static_cast<int>(variantJson["height"]) / 2);
+            } else if (facing == "Right") {
+                fullAnim = fullAnim.copy(static_cast<int>(variantJson["width"]) / 2, static_cast<int>(variantJson["height"]) / 2, static_cast<int>(variantJson["width"]), static_cast<int>(variantJson["height"]));
+            }
+        }
+
+    // Finish by starting the new animation at the beginning
+    animation = 0;
+    updateTexture();
 }
 
 CollisionBox *Entity::getBox() const
@@ -169,24 +195,44 @@ void Entity::setEntType(std::string newEntType)
     entType = newEntType;
 }
 
-int Entity::getAnimation() const
+unsigned int Entity::getAnimation() const
 {
     return animation;
 }
 
-void Entity::setAnimation(int newAnimation)
+void Entity::setAnimation(unsigned int newAnimation)
 {
     animation = newAnimation;
 }
 
-int Entity::getMaxAnimation() const
+const std::string &Entity::getState() const
 {
-    return maxAnimation;
+    return state;
 }
 
-void Entity::setMaxAnimation(int newMaxAnimation)
+void Entity::setState(const std::string &newState)
 {
-    maxAnimation = newMaxAnimation;
+    state = newState;
+}
+
+const std::string &Entity::getLastFrameState() const
+{
+    return lastFrameState;
+}
+
+void Entity::setLastFrameState(const std::string &newLastFrameState)
+{
+    lastFrameState = newLastFrameState;
+}
+
+const std::vector<QImage *> &Entity::getCurrentAnimation() const
+{
+    return currentAnimation;
+}
+
+void Entity::setCurrentAnimation(const std::vector<QImage *> &newCurrentAnimation)
+{
+    currentAnimation = newCurrentAnimation;
 }
 
 

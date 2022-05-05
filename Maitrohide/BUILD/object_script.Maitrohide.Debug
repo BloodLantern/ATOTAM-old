@@ -1,0 +1,10 @@
+debug/collisionbox.o
+debug/entity.o
+debug/living.o
+debug/projectile.o
+debug/samos.o
+debug/terrain.o
+debug/main.o
+debug/mainwindow.o
+debug/qrc_qmake_qmake_qm_files.o
+debug/moc_mainwindow.o

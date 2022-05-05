@@ -6,7 +6,8 @@
 			"height": 43,
 			"type": "Samos",
 			"gravity": true,
-			"friction": 1
+			"friction": 1,
+			"movable": true
 		}
 	},
 	"livings": {
@@ -18,34 +19,46 @@
 	},
 	"textures": {
 		"Samos": {
-			"file": "samos.png",
-			"variants": {
-				"Test": {
-					"x": 348,
-					"y": 2,
-					"width": 26,
-					"height": 43,
-					"count": 1
-				},
-				"Idle": {
-					"x": 348,
-					"y": 2,
-					"width": 26,
-					"height": 43,
-					"count": 1
-				},
-				"Crouching": {
+			"Idle": {
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1
+			},
+			"Crouching": {
+				"file": "samos.png"
 
-				},
-				"MorphBall": {
+			},
+			"MorphBall": {
+				"file": "samos.png"
 
-				},
-				"Walking": {
+			},
+			"Walking": {
+				"file": "samos.png",
+				"x": 43,
+				"y": 1008,
+				"width": 388,
+				"height": 148,
+				"count": 10,
+				"emptyFrames": 2,
+				"vertical": false,
+				"lines": 3,
+				"multi-directional": true
+			},
+			"Jumping": {
+				"file": "samos.png"
 
-				},
-				"Jumping": {
-
-				}
+			},
+			"Respawning": {
+				"file": "samos.png",
+				"x": 0,
+				"y": 0,
+				"width": 24,
+				"height": 650,
+				"count": 13,
+				"vertical": true
 			}
 		}
 	}

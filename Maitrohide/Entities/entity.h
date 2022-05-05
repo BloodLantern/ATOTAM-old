@@ -13,7 +13,6 @@ class Entity
 public:
     static bool checkCollision(Entity* obj1, Entity* obj2);
     //enum EntityType {Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
-    //enum Direction {None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
     static const int unknownEntityType = -1;
     static const int invalidDirection = -2;
     static nlohmann::json values;
@@ -24,6 +23,7 @@ public:
     ~Entity();
 
     void updateTexture();
+    void updateAnimation();
     void updateV(double framerate);
 
     CollisionBox *getBox() const;
@@ -59,15 +59,21 @@ public:
     std::string getEntType() const;
     void setEntType(std::string newEntType);
 
-    int getAnimation() const;
-    void setAnimation(int newAnimation);
+    unsigned int getAnimation() const;
+    void setAnimation(unsigned int newAnimation);
 
-    int getMaxAnimation() const;
-    void setMaxAnimation(int newMaxAnimation);
+    const std::string &getState() const;
+    void setState(const std::string &newState);
+
+    const std::string &getLastFrameState() const;
+    void setLastFrameState(const std::string &newLastFrameState);
+
+    const std::vector<QImage *> &getCurrentAnimation() const;
+    void setCurrentAnimation(const std::vector<QImage *> &newCurrentAnimation);
 
 private:
     CollisionBox* box;
-    QImage* texture;
+    QImage* texture; // Image to be rendered now
     double x; //in px
     double y; //in px
     double vX; //in px/s
@@ -77,9 +83,12 @@ private:
     std::string facing;
     double frictionFactor;
     std::string name;
-    int animation = 0;
-    int maxAnimation;
-    std::vector<QImage*> currentAnimation;
+
+    // Rendering
+    unsigned int animation = 0;
+    std::vector<QImage*> currentAnimation; // Full current animation
+    std::string state = "Idle"; // Which animation should be rendered
+    std::string lastFrameState = "Idle"; // Which animation was rendered in the last frame
 };
 
 #endif // ENTITY_H
