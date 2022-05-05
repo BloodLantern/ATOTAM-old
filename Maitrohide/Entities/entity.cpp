@@ -72,6 +72,11 @@ Entity::~Entity()
     delete box;
 }
 
+void Entity::updateTexture()
+{
+
+}
+
 CollisionBox *Entity::getBox() const
 {
     return box;
@@ -190,6 +195,16 @@ int Entity::getAnimation() const
 void Entity::setAnimation(int newAnimation)
 {
     animation = newAnimation;
+}
+
+int Entity::getMaxAnimation() const
+{
+    return maxAnimation;
+}
+
+void Entity::setMaxAnimation(int newMaxAnimation)
+{
+    maxAnimation = newMaxAnimation;
 }
 
 

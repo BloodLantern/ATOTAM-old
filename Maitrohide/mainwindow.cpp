@@ -36,7 +36,7 @@ void MainWindow::clearRendering()
     rendering = {};
 }
 
-void MainWindow::updateGame(double framerate)
+void MainWindow::updatePhysics(double framerate)
 {
     for (Entity* ent : getRendering())
         ent->updateV(framerate);
@@ -74,6 +74,15 @@ void MainWindow::updateGame(double framerate)
 
                 }
         }
+    }
+}
+
+void MainWindow::updateAnimations()
+{
+    for (Entity* entity : rendering) {
+        entity->setAnimation(entity->getAnimation() + 1);
+        if (entity->getMaxAnimation() <= entity->getAnimation())
+            entity->setAnimation(0);
     }
 }
 

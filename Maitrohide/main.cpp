@@ -44,15 +44,20 @@ void preciseSleep(double seconds) {
     while ((std::chrono::high_resolution_clock::now() - start).count() / 1e9 < seconds);
 }
 
-void test1(MainWindow* w) {
+unsigned long frameCount = 0;
+
+void gameClock(MainWindow* w) {
     double waitTime = 1.0/frameRate;
     waitTime /=2;
     for (int i = 0; i<2*frameRate; i++) {
         preciseSleep(waitTime);
         //preciseSleep(waitTime);
-        w->updateGame(frameRate);
+        w->updatePhysics(frameRate);
+        if (frameCount % 5 == 0)
+            w->updateAnimations();
         w->update();
     }
+    frameCount++;
 }
 
 int main(int argc, char *argv[])
@@ -80,6 +85,6 @@ int main(int argc, char *argv[])
     w.addRenderable(&s);
     //std::cout << w.getRendering()[0] << std::endl;
     w.update();
-    //std::future<void> fobj1 = std::async(test1, &w);
+    //std::future<void> fobj1 = std::async(gameClock, &w);
     return a.exec();
 }

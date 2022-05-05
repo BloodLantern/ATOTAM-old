@@ -18,11 +18,13 @@ public:
     static const int invalidDirection = -2;
     static nlohmann::json values;
     static nlohmann::json loadNames();
-    void updateV(double framerate);
 
     Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction, std::string name);
     Entity(double x, double y, Direction facing, std::string name);
     ~Entity();
+
+    void updateTexture();
+    void updateV(double framerate);
 
     CollisionBox *getBox() const;
     void setBox(CollisionBox *newBox);
@@ -61,6 +63,9 @@ public:
     int getAnimation() const;
     void setAnimation(int newAnimation);
 
+    int getMaxAnimation() const;
+    void setMaxAnimation(int newMaxAnimation);
+
 private:
     CollisionBox* box;
     QImage* texture;
@@ -73,7 +78,8 @@ private:
     Direction facing;
     bool isAffectedByFriction;
     std::string name;
-    int animation;
+    int animation = 0;
+    int maxAnimation;
 };
 
 #endif // ENTITY_H
