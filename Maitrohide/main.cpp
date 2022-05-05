@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "Entities/samos.h"
+#include "Entities/terrain.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
-    std::string variant = "Walking";
+    /*std::string variant = "Walking";
     nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
     nlohmann::json variantJson = textureJson[variant];
@@ -86,6 +87,18 @@ int main(int argc, char *argv[])
     Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, "Samos", 99, false, "Right", 1, "Samos", true);
     s.setState(variant);
     w.addRenderable(&s);
+    Samos s(10, 10, 99, 5, 5, new CollisionBox(0, 0, 26, 43), &image, "Samos", 99, true, "Right", 1, "Samos", true);
+    w.addRenderable(&s);*/
+    QImage img1("../assets/Image.png");
+    QImage img2("../assets/Image2.png");
+    Living m1(600, 100, new CollisionBox(0, 0, 90, 90), &img1, "DynamicObj", 99, 99, true, "Right", 0, "DynamicObj", true);
+    Living m2(500, 300, new CollisionBox(0, 0, 90, 90), &img2, "DynamicObj", 99, 99, true, "Right", 0, "DynamicObj", true);
+    m1.setVX(-500);
+    m1.setVY(500);
+    m2.setVX(0);
+    m2.setVY(0);
+    w.addRenderable(&m1);
+    w.addRenderable(&m2);
     w.update();
     std::future<void> fobj1 = std::async(gameClock, &w);
     return a.exec();

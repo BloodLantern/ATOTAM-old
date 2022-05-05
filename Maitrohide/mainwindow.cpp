@@ -1,13 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <iostream>
-
-#include <Entities/living.h>
-
 bool MainWindow::running = true;
 double MainWindow::frameRate = 60.0;
-double MainWindow::gravity = 500.0;
+double MainWindow::gravity = 300.0;
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -49,17 +45,42 @@ void MainWindow::clearRendering()
 
 void MainWindow::updatePhysics()
 {
+    std::vector<Entity*> solidList;
+    std::vector<Living*> livingList;
     for (Entity* ent : rendering) {
-        if (ent->getIsAffectedByGravity())
-            ent->setVY(ent->getVY() + MainWindow::gravity / MainWindow::frameRate);
-        ent->setVX(ent->getVX() * (1.0 - 0.0000245 * ent->getVX() / MainWindow::frameRate));
+        if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
+            Living* liv = static_cast<Living*>(ent);
+            livingList.push_back(liv);
+            if (liv->getIsAffectedByGravity() && !liv->getOnGround())
+                liv->setVY(ent->getVY() + MainWindow::gravity / MainWindow::frameRate);
+            if (liv->getOnGround())
+                ent->setVX(ent->getVX() * (1.0 - 0.1 * ent->getVX() * ent->getFrictionFactor() / MainWindow::frameRate));
+            else ent->setVX(ent->getVX() * (1.0 - 0.01 * ent->getVX() * ent->getFrictionFactor() / MainWindow::frameRate));
+        } else {
+            if (ent->getIsAffectedByGravity())
+                ent->setVY(ent->getVY() + MainWindow::gravity / MainWindow::frameRate);
+            ent->setVX(ent->getVX() * (1.0 - 0.01 * ent->getVX() * ent->getFrictionFactor() / MainWindow::frameRate));
+        }
+        if (ent->getEntType() == "Terrain" || ent->getEntType() == "DynamicObj") {
+            solidList.push_back(ent);
+        }
         ent->updateV(MainWindow::frameRate);
     } //{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
 
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
             if (Entity::checkCollision(*i,*j)) {
-                Entity::handleCollision(*i, *j);
+                Entity::handleCollision(*i,*j);
+            }
+        }
+    }
+
+    for (std::vector<Living*>::iterator i = livingList.begin(); i != livingList.end(); i++) {
+        (*i)->setOnGround(false);
+        for (std::vector<Entity*>::iterator j = solidList.begin(); j!= solidList.end(); j++) {
+            if (Living::checkOn(*i,*j)) {
+                (*i)->setOnGround(true);
+                break;
             }
         }
     }

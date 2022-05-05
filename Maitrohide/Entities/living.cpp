@@ -1,5 +1,13 @@
 #include "living.h"
 
+bool Living::checkOn(Living *obj, Entity *ground)
+{
+    return ((obj->getX() + obj->getGroundBox()->getX() + obj->getGroundBox()->getWidth() > ground->getX() + ground->getBox()->getX())
+            && (obj->getX() + obj->getGroundBox()->getX() < ground->getX() + ground->getBox()->getX()  + ground->getBox()->getWidth())
+            && (obj->getY()) + obj->getGroundBox()->getY() + obj->getGroundBox()->getHeight() > ground->getY() + ground->getBox()->getY())
+            && (obj->getY() + obj->getGroundBox()->getY() < ground->getY() + ground->getBox()->getY()  + ground->getBox()->getHeight());
+}
+
 Living::Living(double x, double y, CollisionBox* box, QImage* texture, std::string entityType, int health, int maxHealth, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
     : Entity(x, y, box, texture, entityType, isAffectedByGravity, facing, frictionFactor, name, isMovable),
       health(health), maxHealth(maxHealth), groundBox(new CollisionBox(box->getX(), box->getY() + box->getHeight(), box->getWidth(), 2)), onGround(false)

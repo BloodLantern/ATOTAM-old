@@ -7,6 +7,7 @@ class Living : public Entity
 {
 public:
     //enum State {Idle, Walking, Attacking, Crouching, Jumping, MorphBall};
+    static bool checkOn(Living* obj, Entity* ground);
 
     Living(double x, double y, CollisionBox* box, QImage* texture, std::string entityType, int health, int maxHealth, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable);
     Living(double x, double y, std::string facing, std::string name);
