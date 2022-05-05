@@ -45,8 +45,8 @@ void Entity::updateV(double framerate)
     y += vY/framerate;
 }
 
-Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction, std::string name)
-    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), isAffectedByFriction(isAffectedByFriction), name(name)
+Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name)
+    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), frictionFactor(frictionFactor), name(name)
 {
 
 }
@@ -64,7 +64,7 @@ Entity::Entity(double x, double y, Direction facing, std::string name)
     texture = &image;
     entType = getEntTypeFromString(entJson["type"]);
     isAffectedByGravity = entJson["gravity"];
-    isAffectedByFriction = entJson["friction"];
+    frictionFactor = entJson["friction"];
 }
 
 Entity::~Entity()
@@ -162,14 +162,14 @@ void Entity::setFacing(Direction newFacing)
     facing = newFacing;
 }
 
-bool Entity::getIsAffectedByFriction() const
+double Entity::getFrictionFactor() const
 {
-    return isAffectedByFriction;
+    return frictionFactor;
 }
 
-void Entity::setIsAffectedByFriction(bool newIsAffectedByFriction)
+void Entity::setFrictionFactor(double newFrictionFactor)
 {
-    isAffectedByFriction = newIsAffectedByFriction;
+    frictionFactor = newFrictionFactor;
 }
 
 const std::string &Entity::getName() const

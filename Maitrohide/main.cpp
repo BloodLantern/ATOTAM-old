@@ -14,8 +14,6 @@
 #include <math.h>
 #include <fstream>
 
-double frameRate = 60.0;
-
 void preciseSleep(double seconds) {
 
     double estimate = 5e-3;
@@ -47,12 +45,12 @@ void preciseSleep(double seconds) {
 unsigned long frameCount = 0;
 
 void gameClock(MainWindow* w) {
-    double waitTime = 1.0/frameRate;
+    double waitTime = 1.0/MainWindow::frameRate;
     waitTime /=2;
-    for (int i = 0; i<2*frameRate; i++) {
+    while (MainWindow::running) {
         preciseSleep(waitTime);
         //preciseSleep(waitTime);
-        w->updatePhysics(frameRate);
+        w->updatePhysics();
         if (frameCount % 5 == 0)
             w->updateAnimations();
         w->update();

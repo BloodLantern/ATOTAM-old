@@ -19,7 +19,7 @@ public:
     static nlohmann::json values;
     static nlohmann::json loadNames();
 
-    Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, bool isAffectedByFriction, std::string name);
+    Entity(double x, double y, CollisionBox* box, QImage* texture, EntityType entType, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name);
     Entity(double x, double y, Direction facing, std::string name);
     ~Entity();
 
@@ -52,8 +52,8 @@ public:
     Direction getFacing() const;
     void setFacing(Direction newFacing);
 
-    bool getIsAffectedByFriction() const;
-    void setIsAffectedByFriction(bool newIsAffectedByFriction);
+    double getFrictionFactor() const;
+    void setFrictionFactor(double newFrictionFactor);
 
     const std::string &getName() const;
     void setName(const std::string &newName);
@@ -76,7 +76,7 @@ private:
     EntityType entType;
     bool isAffectedByGravity;
     Direction facing;
-    bool isAffectedByFriction;
+    double frictionFactor;
     std::string name;
     int animation = 0;
     int maxAnimation;

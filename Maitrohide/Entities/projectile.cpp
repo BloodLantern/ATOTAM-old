@@ -17,7 +17,7 @@ std::string Projectile::getStringProjType(ProjectileType type)
 }
 
 Projectile::Projectile(double x, double y, Direction facing, ProjectileType type, std::string name)
-    : Entity(x, y, new CollisionBox(5, 5), nullptr, EntityType::Projectile, false, facing, false, name)
+    : Entity(x, y, new CollisionBox(5, 5), nullptr, EntityType::Projectile, false, facing, 0, name)
 {
     if (type == Bomb)
         facing = None;
@@ -71,13 +71,14 @@ Projectile::Projectile(double x, double y, Direction facing, ProjectileType type
         lifeTime = 3000;
         setVX(getVX() / 2);
         setVY(getVY() / 2);
-        setIsAffectedByGravity(true);
         break;
     case Grenade:
         damage = 60;
         lifeTime = 3000;
         setVX(getVX() / 2);
         setVY(getVY() / 2);
+        setIsAffectedByGravity(true);
+        setFrictionFactor(0.2);
         break;
     case Bomb:
         damage = 50;

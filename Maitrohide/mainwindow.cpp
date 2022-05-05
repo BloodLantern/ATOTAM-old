@@ -3,6 +3,10 @@
 
 #include <iostream>
 
+bool MainWindow::running = true;
+double MainWindow::frameRate = 60.0;
+double MainWindow::gravity = 60.0;
+
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
     , m_qApp(app)
@@ -36,43 +40,18 @@ void MainWindow::clearRendering()
     rendering = {};
 }
 
-void MainWindow::updatePhysics(double framerate)
+void MainWindow::updatePhysics()
 {
-    for (Entity* ent : getRendering())
-        ent->updateV(framerate);
+    for (Entity* ent : rendering) {
+        if (ent->getIsAffectedByGravity())
+            ent->setVY(ent->getVY() + MainWindow::gravity/MainWindow::frameRate);
+        ent->updateV(MainWindow::frameRate);
+    }
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
-            bool toCheck = true;
-            Entity::EntityType jType = (*j)->getEntType();
-            // Checking if collision check is necessary
-            switch ((*i)->getEntType()) {
-            case Entity::EntityType::Terrain:
-                toCheck = false;
-                break;
-            case Entity::EntityType::Monster:
-                if (jType == Entity::EntityType::Samos)
-                    toCheck = false;
-                break;
-            case Entity::EntityType::DynamicObj:
-                if (jType == Entity::EntityType::Samos || jType == Entity::EntityType::Monster)
-                    toCheck = false;
-                break;
-            case Entity::EntityType::NPC:
-                if (jType == Entity::EntityType::Samos || jType == Entity::EntityType::Monster || jType == Entity::EntityType::DynamicObj)
-                    toCheck = false;
-                break;
-            case Entity::EntityType::Area:
-                if (jType != Entity::EntityType::Area)
-                    toCheck = false;
-                break;
-            default:
-                // Samos is always true
-                break;
-            }
-            if (toCheck)
-                if (Entity::checkCollision(*i,*j)) {
+            if (Entity::checkCollision(*i,*j)) {
 
-                }
+            }
         }
     }
 }

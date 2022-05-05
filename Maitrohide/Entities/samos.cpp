@@ -7,8 +7,8 @@ Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMiss
     this->setMaxHealth(maxHealth);
 }
 
-Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox *box, QImage *texture, EntityType entityType, int health, bool isAffectedByGravity, Direction facing, std::string name)
-    : Living(x, y, box, texture, entityType, health, maxHealth, isAffectedByGravity, facing, name), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount)
+Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox *box, QImage *texture, EntityType entityType, int health, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name)
+    : Living(x, y, box, texture, entityType, health, maxHealth, isAffectedByGravity, facing, frictionFactor, name), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount)
 {
 
 }

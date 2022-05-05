@@ -8,7 +8,7 @@ class Living : public Entity
 public:
     enum State {Idle, Walking, Attacking, Crouching, Jumping, MorphBall};
     static std::string getStringState(State state);
-    Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Entity::Direction facing, std::string name);
+    Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Entity::Direction facing, double frictionFactor, std::string name);
     Living(double x, double y, Direction facing, std::string name);
     ~Living();
     int getHealth() const;

@@ -20,8 +20,8 @@ std::string Living::getStringState(State state)
     }
 }
 
-Living::Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Direction facing, std::string name)
-    : Entity(x, y, box, texture, entityType, isAffectedByGravity, facing, true, name),
+Living::Living(double x, double y, CollisionBox* box, QImage* texture, Entity::EntityType entityType, int health, int maxHealth, bool isAffectedByGravity, Direction facing, double frictionFactor, std::string name)
+    : Entity(x, y, box, texture, entityType, isAffectedByGravity, facing, frictionFactor, name),
       health(health), maxHealth(maxHealth), groundBox(new CollisionBox(box->getX(), box->getY() + box->getHeight(), box->getWidth(), 2)), onGround(false)
 {
 
@@ -102,7 +102,7 @@ void Living::setDamage(int newDamage)
     damage = newDamage;
 }
 
-State Living::getState() const
+Living::State Living::getState() const
 {
     return state;
 }

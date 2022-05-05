@@ -18,10 +18,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QApplication *app);
     ~MainWindow();
+    static bool running;
+    static double frameRate; //fps
+    static double gravity; //p.s^-2
     virtual void paintEvent(QPaintEvent*);
     void addRenderable(Entity *entity);
     void clearRendering();
-    void updatePhysics(double framerate);
+    void updatePhysics();
     void updateAnimations();
 
     const std::vector<Entity *> &getRendering() const;
