@@ -17,21 +17,27 @@
 			"damage": 0
 		}
 	},
+	"test": "Standing",
 	"textures": {
 		"Samos": {
-			"Idle": {
+			"Standing": {
 				"file": "samos.png",
-				"x": 348,
-				"y": 2,
-				"width": 26,
+				"x": 91,
+				"y": 310,
+				"width": 291,
 				"height": 43,
-				"count": 1
-			},
-			"IdleCrouch": {
-
+				"count": 3,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": true,
+				"reversed": false,
+				"overlay": []
 			},
 			"Crouching": {
 				"file": "samos.png"
+
+			},
+			"IdleCrouch": {
 
 			},
 			"MorphBall": {
@@ -47,7 +53,9 @@
 				"count": 10,
 				"emptyFrames": 2,
 				"lines": 3,
-				"multi-directional": true
+				"multi-directional": true,
+				"reversed": false,
+				"overlay": []
 			},
 			"WalkShooting": {
 
@@ -68,16 +76,18 @@
 			"SpinJump": {
 
 			},
-			"Pre-Spawning" : {
+			"Pre-Spawning": {
 				"file": "samos.png",
 				"x": 0,
-				"y": 500,
+				"y": 150,
 				"width": 24,
 				"height": 150,
 				"count": 3,
 				"emptyFrames": 0,
 				"lines": 3,
-				"reversed": true
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"Spawning": {
 				"file": "samos.png",
@@ -88,7 +98,9 @@
 				"count": 7,
 				"emptyFrames": 0,
 				"lines": 7,
-				"reversed": false
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			}
 		}
 	}

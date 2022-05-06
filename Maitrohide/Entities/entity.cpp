@@ -1,4 +1,5 @@
 #include "entity.h"
+#include <QPainter>
 #include <iostream>
 
 bool Entity::checkCollision(Entity *obj1, Entity *obj2)
@@ -233,10 +234,10 @@ void Entity::updateTexture()
     texture = &currentAnimation[animation];
 }
 
-void Entity::updateAnimation()
+std::vector<QImage> Entity::updateAnimation(std::string state)
 {
-    // First clear the current image list
-    currentAnimation.clear();
+    // First create the image list which will be returned
+    std::vector<QImage> anim;
 
     // Getting a json object representing the animation
     nlohmann::json variantJson = values["textures"][values["names"][name]["texture"]][state];
@@ -257,9 +258,8 @@ void Entity::updateAnimation()
     int imagesPerLine = (static_cast<int>(variantJson["count"]) + static_cast<int>(variantJson["emptyFrames"])) / static_cast<int>(variantJson["lines"]);
     int width = static_cast<int>(variantJson["width"]) / imagesPerLine;
     // Make sure not to get two images at a time
-    if (!variantJson["multi-directional"].is_null())
-        if (variantJson["multi-directional"])
-            width /= 2;
+    if (variantJson["multi-directional"])
+        width /= 2;
     int height = static_cast<int>(variantJson["height"]) / static_cast<int>(variantJson["lines"]);
     // For each line
     for (int i = (variantJson["reversed"] ? static_cast<int>(variantJson["lines"]) - 1 : 0);
@@ -269,14 +269,27 @@ void Entity::updateAnimation()
         if (facing == "Right")
             for (int ii = 0;
                  ii < (i + 1 == variantJson["lines"] ? /*Remove empty frames from the last line*/ imagesPerLine - static_cast<int>(variantJson["emptyFrames"]) : imagesPerLine); ii++) {
-                currentAnimation.push_back(fullAnim.copy(ii * width, i * height, width, height));
+                anim.push_back(fullAnim.copy(ii * width, i * height, width, height));
             }
         else if (facing == "Left")
             for (int ii = imagesPerLine - 1;
                  ii > (i + 1 == variantJson["lines"] ? /*Remove empty frames from the last line*/ static_cast<int>(variantJson["emptyFrames"]) - 1 : -1);ii--) {
-                currentAnimation.push_back(fullAnim.copy(ii * width, i * height, width, height));
+                anim.push_back(fullAnim.copy(ii * width, i * height, width, height));
             }
     }
+
+    // If the animation has an overlay, place it on top of the current one
+    for (nlohmann::json ovrly : variantJson["overlay"]) {
+        std::vector<QImage> overlay = updateAnimation(ovrly);
+        for (unsigned int i = 0; i < anim.size(); i++) {
+            QImage result(std::max(overlay[i].width(), anim[i].width()), std::max(overlay[i].height(), anim[i].height()), anim[i].format());
+            QPainter merger(&result);
+            merger.drawImage(0, 0, anim[i]);
+            merger.drawImage(0, 0, overlay[i]);
+            anim[i] = result;
+        }
+    }
+    return anim;
 }
 
 CollisionBox *Entity::getBox() const

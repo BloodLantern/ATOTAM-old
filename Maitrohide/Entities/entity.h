@@ -26,7 +26,7 @@ public:
     ~Entity();
 
     void updateTexture();
-    void updateAnimation();
+    std::vector<QImage> updateAnimation(std::string state);
     void updateV(double framerate);
 
     CollisionBox *getBox() const;

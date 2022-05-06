@@ -110,7 +110,7 @@ void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
         if (entity->getState() != entity->getLastFrameState()) {
-            entity->updateAnimation();
+            entity->setCurrentAnimation(entity->updateAnimation(entity->getState()));
         }
         entity->setAnimation(entity->getAnimation() + 1);
         if (entity->getCurrentAnimation().size() <= entity->getAnimation())
