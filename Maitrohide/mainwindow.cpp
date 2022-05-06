@@ -69,7 +69,7 @@ void MainWindow::updateSamos(Samos *s)
     } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
         s->setFrictionFactor(1);
         if (s->getOnGround()) {
-            s->setState("Idle");
+            s->setState("Standing");
         }  else {
             s->setState("Falling");
         }
