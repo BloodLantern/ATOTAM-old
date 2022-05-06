@@ -24,6 +24,7 @@ public:
     MainWindow(QApplication *app);
     ~MainWindow();
 
+    static const bool renderHitboxes = true; // Render hitboxes as rectangles
     static const int renderingMultiplier = 2; // Textures are rendered with their size being multiplied by this value
     static bool running;
     static double frameRate; //fps

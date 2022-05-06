@@ -118,6 +118,9 @@ void MainWindow::paintEvent(QPaintEvent *)
     for (Entity *entity : rendering) {
         painter.drawImage(QRect(entity->getX(), entity->getY(), entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
                           *entity->getTexture());
+        painter.setPen(QColor("blue"));
+        if (renderHitboxes)
+            painter.drawRect(entity->getX() + entity->getBox()->getX(), entity->getY() + entity->getBox()->getY(), entity->getBox()->getWidth(), entity->getBox()->getHeight());
     }
     painter.end();
 }
@@ -178,14 +181,21 @@ void MainWindow::updatePhysics()
 void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
+        //std::cout << "1\n";
         if (entity->getState() != entity->getLastFrameState()) {
+            //std::cout << "2\n";
             entity->setCurrentAnimation(entity->updateAnimation(entity->getState()));
+            //std::cout << "3\n";
             entity->setLastFrameState(entity->getState());
         }
+        //std::cout << "4\n";
         entity->setAnimation(entity->getAnimation() + 1);
+        //std::cout << "5\n";
         if (entity->getCurrentAnimation().size() <= entity->getAnimation())
             entity->setAnimation(0);
+        //std::cout << "6\n";
         entity->updateTexture();
+        //std::cout << "7\n";
     }
 }
 

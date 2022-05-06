@@ -230,21 +230,22 @@ void Entity::updateTexture()
 {
     if (animation >= currentAnimation.size())
         animation = 0;
-
-    texture = &currentAnimation[animation];
+    QImage* newTexture = &currentAnimation[animation];
+    texture = (newTexture == nullptr ? texture : newTexture);
 }
 
 std::vector<QImage> Entity::updateAnimation(std::string state)
 {
     // First create the image list which will be returned
     std::vector<QImage> anim;
+    //std::cout << "c\n";
 
     // Getting a json object representing the animation
     nlohmann::json variantJson = values["textures"][values["names"][name]["texture"]][state];
-    // Getting the full animation image which will be modified afterwards
+    // Getting the full animation image which will be cropped afterwards
     QImage fullAnim = QImage(QString::fromStdString(std::string("../assets/textures/") + std::string(variantJson["file"])))
             .copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
-    // If the animation is multi-directional the program should crop the irrelevant part
+    // If the animation is multi-directional the program shouldn't keep the irrelevant part
     if (!variantJson["multi-directional"].is_null())
         if (variantJson["multi-directional"]) {
             if (facing == "Left") {
@@ -254,6 +255,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
                         static_cast<int>(variantJson["width"]), static_cast<int>(variantJson["height"]));
             }
         }
+    //std::cout << "d\n";
 
     int imagesPerLine = (static_cast<int>(variantJson["count"]) + static_cast<int>(variantJson["emptyFrames"])) / static_cast<int>(variantJson["lines"]);
     int width = static_cast<int>(variantJson["width"]) / imagesPerLine;
@@ -261,6 +263,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     if (variantJson["multi-directional"])
         width /= 2;
     int height = static_cast<int>(variantJson["height"]) / static_cast<int>(variantJson["lines"]);
+    //std::cout << "e\n";
     // For each line
     for (int i = (variantJson["reversed"] ? static_cast<int>(variantJson["lines"]) - 1 : 0);
          (variantJson["reversed"] ? i > -1 : i < variantJson["lines"]);
@@ -277,6 +280,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
                 anim.push_back(fullAnim.copy(ii * width, i * height, width, height));
             }
     }
+    //std::cout << "f\n";
 
     // If the animation has an overlay, place it on top of the current one
     for (nlohmann::json ovrly : variantJson["overlay"]) {
@@ -289,6 +293,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
             anim[i] = result;
         }
     }
+    //std::cout << "g\n";
     return anim;
 }
 

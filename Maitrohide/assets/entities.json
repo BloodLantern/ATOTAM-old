@@ -17,15 +17,14 @@
 			"damage": 0
 		}
 	},
-	"test": "Standing",
 	"textures": {
 		"Samos": {
 			"Standing": {
 				"file": "samos.png",
 				"x": 91,
-				"y": 310,
+				"y": 305,
 				"width": 291,
-				"height": 43,
+				"height": 48,
 				"count": 3,
 				"emptyFrames": 0,
 				"lines": 1,
@@ -79,9 +78,9 @@
 				"count": 1,
 				"emptyFrames": 0,
 				"lines": 1,
-				"reversed": false
-
-
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"Landing": {
 
