@@ -27,6 +27,9 @@
 				"height": 43,
 				"count": 1
 			},
+			"IdleCrouch": {
+
+			},
 			"Crouching": {
 				"file": "samos.png"
 
@@ -46,8 +49,23 @@
 				"lines": 3,
 				"multi-directional": true
 			},
+			"WalkShooting": {
+
+			},
 			"Jumping": {
 				"file": "samos.png"
+
+			},
+			"JumpEnd": {
+
+			},
+			"Falling": {
+
+			},
+			"Landing": {
+
+			},
+			"SpinJump": {
 
 			},
 			"Pre-Spawning" : {
