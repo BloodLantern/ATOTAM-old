@@ -69,3 +69,6 @@ Maitrohide/BUILD/Makefile
 Maitrohide/BUILD/release/moc_predefs.h
 Maitrohide/BUILD/release/qrc_qmake_qmake_qm_files.cpp
 Maitrohide/BUILD/release/moc_mainwindow.cpp
+Maitrohide/BUILD/debug/moc_mainwindow.cpp
+Maitrohide/BUILD/debug/moc_predefs.h
+Maitrohide/BUILD/debug/qrc_qmake_qmake_qm_files.cpp
