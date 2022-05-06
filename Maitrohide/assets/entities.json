@@ -25,7 +25,11 @@
 				"y": 2,
 				"width": 26,
 				"height": 43,
-				"count": 1
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"reversed": false
+
 			},
 			"IdleCrouch": {
 
@@ -47,7 +51,8 @@
 				"count": 10,
 				"emptyFrames": 2,
 				"lines": 3,
-				"multi-directional": true
+				"multi-directional": true,
+				"reversed": false
 			},
 			"WalkShooting": {
 
@@ -60,6 +65,16 @@
 
 			},
 			"Falling": {
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"reversed": false
+
 
 			},
 			"Landing": {

@@ -3,6 +3,7 @@
 
 bool MainWindow::running = true;
 double MainWindow::frameRate = 60.0;
+unsigned long long MainWindow::frameCount = 0;
 double MainWindow::gravity = 300.0;
 std::map<std::string, bool> MainWindow::inputList;
 
@@ -12,8 +13,6 @@ MainWindow::MainWindow(QApplication *app)
     //, rendering()
 {
     ui->setupUi(this);
-    // Set size of the window
-    setFixedSize(1000, 500);
 }
 
 MainWindow::~MainWindow()
@@ -35,6 +34,44 @@ void MainWindow::getInputs()
 {
     for (nlohmann::json::iterator i = MainWindow::keyCodes.begin(); i != MainWindow::keyCodes.end(); i++) {
         MainWindow::inputList[i.key()] = GetKeyState(i.value()) & 0x8000;
+    }
+}
+
+void MainWindow::updateSamos(Samos *s)
+{
+    if (inputList["left"] && !inputList["right"]) {
+        if (s->getVX() > -400) {
+            s->setVX(s->getVX() - 30);
+        } else if (s->getVX() < -400 && s->getVX() > -420) {
+            s->setVX(-420);
+        }
+        s->setFrictionFactor(0.1);
+        s->setFacing("Left");
+        if (s->getOnGround()) {
+            s->setState("Walking");
+        } else {
+            s->setState("Falling");
+        }
+    } else if (!inputList["left"] && inputList["right"]) {
+        if (s->getVX() < 400) {
+            s->setVX(s->getVX() + 30);
+        } else if (s->getVX() > 400 && s->getVX() < 420) {
+            s->setVX(420);
+        }
+        s->setFrictionFactor(0.1);
+        s->setFacing("Right");
+        if (s->getOnGround()) {
+            s->setState("Walking");
+        } else {
+            s->setState("Falling");
+        }
+    } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
+        s->setFrictionFactor(1);
+        if (s->getOnGround()) {
+            s->setState("Idle");
+        }  else {
+            s->setState("Falling");
+        }
     }
 }
 
@@ -74,12 +111,12 @@ void MainWindow::updatePhysics()
             if (liv->getIsAffectedByGravity() && !liv->getOnGround())
                 liv->setVY(ent->getVY() + MainWindow::gravity / MainWindow::frameRate);
             if (liv->getOnGround())
-                ent->setVX(ent->getVX() * (1.0 - 0.1 * ent->getVX() * ent->getFrictionFactor() / MainWindow::frameRate));
-            else ent->setVX(ent->getVX() * (1.0 - 0.01 * ent->getVX() * ent->getFrictionFactor() / MainWindow::frameRate));
+                ent->setVX(ent->getVX() * (1.0 - 0.1 * std::abs(ent->getVX()) * ent->getFrictionFactor() / MainWindow::frameRate));
+            else ent->setVX(ent->getVX() * (1.0 - 0.01 * std::abs(ent->getVX()) * ent->getFrictionFactor() / MainWindow::frameRate));
         } else {
             if (ent->getIsAffectedByGravity())
                 ent->setVY(ent->getVY() + MainWindow::gravity / MainWindow::frameRate);
-            ent->setVX(ent->getVX() * (1.0 - 0.01 * ent->getVX() * ent->getFrictionFactor() / MainWindow::frameRate));
+            ent->setVX(ent->getVX() * (1.0 - 0.01 * std::abs(ent->getVX()) * ent->getFrictionFactor() / MainWindow::frameRate));
         }
         if (ent->getEntType() == "Terrain" || ent->getEntType() == "DynamicObj") {
             solidList.push_back(ent);
@@ -111,6 +148,8 @@ void MainWindow::updateAnimations()
     for (Entity* entity : rendering) {
         if (entity->getState() != entity->getLastFrameState()) {
             entity->updateAnimation();
+            std::cout << "3" << std::endl;
+            entity->setLastFrameState(entity->getState());
         }
         entity->setAnimation(entity->getAnimation() + 1);
         if (entity->getCurrentAnimation().size() <= entity->getAnimation())
