@@ -10,6 +10,7 @@
 
 #include "Entities/entity.h"
 #include "Entities/living.h"
+#include "Entities/samos.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,14 +24,16 @@ public:
     MainWindow(QApplication *app);
     ~MainWindow();
 
-    static const int renderingMultiplier = 3; // Textures are rendered with their size being multiplied by this value
+    static const int renderingMultiplier = 2; // Textures are rendered with their size being multiplied by this value
     static bool running;
     static double frameRate; //fps
+    static unsigned long long frameCount;
     static double gravity; //p.s^-2
     static nlohmann::json keyCodes;
     static nlohmann::json loadKeyCodes();
     static std::map<std::string, bool> inputList;
     static void getInputs();
+    static void updateSamos(Samos* s);
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);

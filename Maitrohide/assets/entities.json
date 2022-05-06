@@ -33,6 +33,9 @@
 				"reversed": false,
 				"overlay": []
 			},
+			"IdleCrouch": {
+
+			},
 			"Crouching": {
 				"file": "samos.png"
 
@@ -68,6 +71,16 @@
 
 			},
 			"Falling": {
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"reversed": false
+
 
 			},
 			"Landing": {
