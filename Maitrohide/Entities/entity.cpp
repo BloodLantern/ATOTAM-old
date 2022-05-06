@@ -293,6 +293,14 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
             anim[i] = result;
         }
     }
+
+    // Remove the empty pixels on the left
+    for (unsigned int i = 0; i < anim.size(); i++) {
+        QImage img = anim[i];
+        img = img.copy(variantJson["emptyPixels"][facing == "Left" ? 0 : 1], 0,
+                img.width() - static_cast<int>(variantJson["emptyPixels"][facing == "Left" ? 0 : 1]), img.height());
+        anim[i] = img;
+    }
     //std::cout << "g\n";
     return anim;
 }

@@ -29,6 +29,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": true,
+				"emptyPixels": [5, 10],
 				"reversed": false,
 				"overlay": []
 			},
@@ -42,6 +43,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -55,6 +57,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -68,6 +71,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -81,6 +85,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -94,6 +99,7 @@
 				"emptyFrames": 2,
 				"lines": 3,
 				"multi-directional": true,
+				"emptyPixels": [3, 10],
 				"reversed": false,
 				"overlay": []
 			},
@@ -107,6 +113,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -120,6 +127,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -133,6 +141,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -146,6 +155,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -159,6 +169,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -172,6 +183,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -185,6 +197,7 @@
 				"emptyFrames": 0,
 				"lines": 3,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			},
@@ -198,6 +211,7 @@
 				"emptyFrames": 0,
 				"lines": 7,
 				"multi-directional": false,
+				"emptyPixels": [0, 0],
 				"reversed": false,
 				"overlay": []
 			}
