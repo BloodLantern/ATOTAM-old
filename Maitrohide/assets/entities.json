@@ -33,18 +33,56 @@
 				"overlay": []
 			},
 			"IdleCrouch": {
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"Crouching": {
-				"file": "samos.png"
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"IdleCrouch": {
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"MorphBall": {
-				"file": "samos.png"
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"Walking": {
 				"file": "samos.png",
@@ -60,14 +98,43 @@
 				"overlay": []
 			},
 			"WalkShooting": {
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"Jumping": {
-				"file": "samos.png"
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"JumpEnd": {
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"Falling": {
 				"file": "samos.png",
@@ -83,10 +150,30 @@
 				"overlay": []
 			},
 			"Landing": {
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"SpinJump": {
-
+				"file": "samos.png",
+				"x": 348,
+				"y": 2,
+				"width": 26,
+				"height": 43,
+				"count": 1,
+				"emptyFrames": 0,
+				"lines": 1,
+				"multi-directional": false,
+				"reversed": false,
+				"overlay": []
 			},
 			"Pre-Spawning": {
 				"file": "samos.png",
