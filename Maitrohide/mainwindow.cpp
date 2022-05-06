@@ -40,39 +40,70 @@ void MainWindow::getInputs()
 
 void MainWindow::updateSamos(Samos *s)
 {
-    if (inputList["left"] && !inputList["right"]) {
-        if (s->getVX() > -400) {
-            s->setVX(s->getVX() - 30);
-        } else if (s->getVX() < -400 && s->getVX() > -420) {
-            s->setVX(-420);
-        }
-        s->setFrictionFactor(0.1);
-        s->setFacing("Left");
-        if (s->getOnGround()) {
-            s->setState("Walking");
+    if (!inputList["shoot"]) {
+        if (s->getOnGround() || !s->getIsAffectedByGravity()) {
+            if (inputList["left"] && !inputList["right"]) {
+                if (s->getVX() > -400) {
+                    s->setVX(s->getVX() - 30);
+                } else if (s->getVX() < -400 && s->getVX() > -420) {
+                    s->setVX(-420);
+                }
+                s->setFrictionFactor(0.1);
+                s->setFacing("Left");
+                if (inputList["jump"]) {
+                    s->setVY(s->getVY()-  500);
+                    s->setState("SpinJump");
+                } else {
+                    s->setState("Walking");
+                }
+            } else if (!inputList["left"] && inputList["right"]) {
+                if (s->getVX() < 400) {
+                    s->setVX(s->getVX() + 30);
+                } else if (s->getVX() > 400 && s->getVX() < 420) {
+                    s->setVX(420);
+                }
+                s->setFrictionFactor(0.1);
+                s->setFacing("Right");
+                if (inputList["jump"]) {
+                    s->setVY(s->getVY()-  500);
+                    s->setState("SpinJump");
+                } else {
+                    s->setState("Walking");
+                }
+            } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
+                s->setFrictionFactor(1);
+                if (inputList["jump"]) {
+                    s->setVY(s->getVY()-  500);
+                    s->setState("Jumping");
+                } else {
+                    s->setState("Standing");
+                }
+            }
         } else {
-            s->setState("Falling");
+            if (inputList["left"] && !inputList["right"]) {
+                if (s->getVX() > -300) {
+                    s->setVX(s->getVX() - 30);
+                } else if (s->getVX() < -300 && s->getVX() > -320) {
+                    s->setVX(-320);
+                }
+                s->setFrictionFactor(0.1);
+                s->setFacing("Left");
+                s->setState("Falling");
+            } else if (!inputList["left"] && inputList["right"]) {
+                if (s->getVX() < 300) {
+                    s->setVX(s->getVX() + 30);
+                } else if (s->getVX() > 300 && s->getVX() < 320) {
+                    s->setVX(320);
+                }
+                s->setFrictionFactor(0.1);
+                s->setFacing("Right");
+                s->setState("Falling");
+            } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
+                s->setFrictionFactor(1);
+                s->setState("Falling");
+            }
         }
-    } else if (!inputList["left"] && inputList["right"]) {
-        if (s->getVX() < 400) {
-            s->setVX(s->getVX() + 30);
-        } else if (s->getVX() > 400 && s->getVX() < 420) {
-            s->setVX(420);
-        }
-        s->setFrictionFactor(0.1);
-        s->setFacing("Right");
-        if (s->getOnGround()) {
-            s->setState("Walking");
-        } else {
-            s->setState("Falling");
-        }
-    } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
-        s->setFrictionFactor(1);
-        if (s->getOnGround()) {
-            s->setState("Standing");
-        }  else {
-            s->setState("Falling");
-        }
+
     }
 }
 
