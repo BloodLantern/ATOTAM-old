@@ -64,13 +64,13 @@
 			"Spawning": {
 				"file": "samos.png",
 				"x": 0,
-				"y": 0,
+				"y": 150,
 				"width": 24,
-				"height": 500,
-				"count": 10,
+				"height": 350,
+				"count": 7,
 				"emptyFrames": 0,
-				"lines": 10,
-				"reversed": true
+				"lines": 7,
+				"reversed": false
 			}
 		}
 	}
