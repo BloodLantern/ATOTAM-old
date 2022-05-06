@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <vector>
 #include <iostream>
+#include <windows.h>
 
 #include "Entities/entity.h"
 #include "Entities/living.h"
@@ -21,10 +22,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QApplication *app);
     ~MainWindow();
+
     static const int renderingMultiplier = 3; // Textures are rendered with their size being multiplied by this value
     static bool running;
     static double frameRate; //fps
     static double gravity; //p.s^-2
+    static nlohmann::json keyCodes;
+    static nlohmann::json loadKeyCodes();
+    static std::map<std::string, bool> inputList;
+    static void getInputs();
+
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
     void addRenderable(Entity *entity);
