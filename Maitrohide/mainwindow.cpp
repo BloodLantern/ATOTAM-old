@@ -4,6 +4,7 @@
 bool MainWindow::running = true;
 double MainWindow::frameRate = 60.0;
 double MainWindow::gravity = 300.0;
+std::map<std::string, bool> MainWindow::inputList;
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -20,11 +21,30 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::closeEvent(QCloseEvent *event) {
+nlohmann::json MainWindow::loadKeyCodes()
+{
+    std::ifstream keys_file("../assets/inputs.json");
+    nlohmann::json temp;
+    keys_file >> temp;
+    return temp;
+}
+
+nlohmann::json MainWindow::keyCodes = MainWindow::loadKeyCodes();
+
+void MainWindow::getInputs()
+{
+    for (nlohmann::json::iterator i = MainWindow::keyCodes.begin(); i != MainWindow::keyCodes.end(); i++) {
+        MainWindow::inputList[i.key()] = GetKeyState(i.value()) & 0x8000;
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
     running = false;
 }
 
-void MainWindow::paintEvent(QPaintEvent *) {
+void MainWindow::paintEvent(QPaintEvent *)
+{
     QPainter painter(this);
     for (Entity *entity : rendering) {
         painter.drawImage(QRect(entity->getX(), entity->getY(), entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
