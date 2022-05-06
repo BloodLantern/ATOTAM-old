@@ -62,3 +62,10 @@ Maitrohide/build-Maitrohide-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/.qtc_clangd/comp
 Maitrohide/build-Maitrohide-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/.qtc_clangd/compile_commands.json
 Maitrohide/build-Maitrohide-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/.qtc_clangd/compile_commands.json
 Maitrohide/BUILD/*.*
+*.qrc
+Maitrohide/BUILD/Makefile
+*.debug
+*.qm
+Maitrohide/BUILD/release/moc_predefs.h
+Maitrohide/BUILD/release/qrc_qmake_qmake_qm_files.cpp
+Maitrohide/BUILD/release/moc_mainwindow.cpp
