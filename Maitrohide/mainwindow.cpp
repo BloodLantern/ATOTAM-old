@@ -4,7 +4,7 @@
 bool MainWindow::running = true;
 double MainWindow::frameRate = 60.0;
 unsigned long long MainWindow::frameCount = 0;
-double MainWindow::gravity = 300.0;
+double MainWindow::gravity = 600.0;
 std::map<std::string, bool> MainWindow::inputList;
 
 MainWindow::MainWindow(QApplication *app)
@@ -51,7 +51,8 @@ void MainWindow::updateSamos(Samos *s)
                 s->setFrictionFactor(0.1);
                 s->setFacing("Left");
                 if (inputList["jump"]) {
-                    s->setVY(s->getVY()-  500);
+                    s->setVY(s->getVY() - 250);
+                    s->setJumpTime(0);
                     s->setState("SpinJump");
                 } else {
                     s->setState("Walking");
@@ -65,7 +66,8 @@ void MainWindow::updateSamos(Samos *s)
                 s->setFrictionFactor(0.1);
                 s->setFacing("Right");
                 if (inputList["jump"]) {
-                    s->setVY(s->getVY()-  500);
+                    s->setVY(s->getVY() -250);
+                    s->setJumpTime(0);
                     s->setState("SpinJump");
                 } else {
                     s->setState("Walking");
@@ -73,7 +75,8 @@ void MainWindow::updateSamos(Samos *s)
             } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
                 s->setFrictionFactor(1);
                 if (inputList["jump"]) {
-                    s->setVY(s->getVY()-  500);
+                    s->setVY(s->getVY() - 250);
+                    s->setJumpTime(0);
                     s->setState("Jumping");
                 } else {
                     s->setState("Standing");
@@ -81,26 +84,46 @@ void MainWindow::updateSamos(Samos *s)
             }
         } else {
             if (inputList["left"] && !inputList["right"]) {
-                if (s->getVX() > -300) {
+                if (s->getVX() > -200) {
                     s->setVX(s->getVX() - 30);
-                } else if (s->getVX() < -300 && s->getVX() > -320) {
-                    s->setVX(-320);
+                } else if (s->getVX() < -200 && s->getVX() > -220) {
+                    s->setVX(-220);
                 }
                 s->setFrictionFactor(0.1);
                 s->setFacing("Left");
-                s->setState("Falling");
+                if ((s->getState() == "SpinJump" || s->getState() == "Jumping") && inputList["jump"] && s->getJumpTime() < 20) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                }
+                if (!(s->getState() == "SpinJump")) {
+                    s->setState("Falling");
+                }
             } else if (!inputList["left"] && inputList["right"]) {
-                if (s->getVX() < 300) {
+                if (s->getVX() < 200) {
                     s->setVX(s->getVX() + 30);
-                } else if (s->getVX() > 300 && s->getVX() < 320) {
-                    s->setVX(320);
+                } else if (s->getVX() > 200 && s->getVX() < 220) {
+                    s->setVX(220);
                 }
                 s->setFrictionFactor(0.1);
                 s->setFacing("Right");
-                s->setState("Falling");
+                if ((s->getState() == "SpinJump" || s->getState() == "Jumping") && inputList["jump"] && s->getJumpTime() < 20) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                }
+                if (!(s->getState() == "SpinJump")) {
+                    s->setState("Falling");
+                }
             } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
                 s->setFrictionFactor(1);
-                s->setState("Falling");
+                if ((s->getState() == "SpinJump" || s->getState() == "Jumping") && inputList["jump"] && s->getJumpTime() < 20) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                } else if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= 20)) {
+                    s->setState("JumpEnd");
+                }
+                if (!(s->getState() == "SpinJump") && !(s->getState() == "Jumping")) {
+                    s->setState("Falling");
+                }
             }
         }
 

@@ -28,12 +28,16 @@ public:
     int getMaxMissileCount() const;
     void setMaxMissileCount(int newMaxMissileCount);
 
+    int getJumpTime() const;
+    void setJumpTime(int newJumpTime);
+
 private:
     bool isInAltForm;
     int grenadeCount;
     int maxGrenadeCount;
     int missileCount;
     int maxMissileCount;
+    int jumpTime = 0;
     std::string canonDirection = "Right";
 };
 
