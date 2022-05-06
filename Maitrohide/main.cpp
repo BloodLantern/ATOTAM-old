@@ -55,9 +55,7 @@ void gameClock(MainWindow* w, Samos* s) {
         MainWindow::updateSamos(s);
         w->updatePhysics();
         if (MainWindow::frameCount % 4 == 0) {
-            //std::cout << "a\n";
             w->updateAnimations();
-            //std::cout << "b\n";
         }
         w->update();
         MainWindow::frameCount++;
@@ -87,7 +85,7 @@ int main(int argc, char *argv[])
     QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["Standing"]["file"])));
     QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
     //QImage img1("../assets/Image.png");
-    Samos s(100, 10, 99, 5, 5, new CollisionBox(15, 0, 15*MainWindow::renderingMultiplier, 48*MainWindow::renderingMultiplier), &image, "Samos", 99, true, "Right", 1, "Samos", true);
+    Samos s(100, 10, 99, 5, 5, new CollisionBox(20, 0, 15*MainWindow::renderingMultiplier, 43*MainWindow::renderingMultiplier), &image, "Samos", 99, true, "Right", 1, "Samos", true);
     w.addRenderable(&s);
     /*QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
     Samos s(100, 10, 99, 5, 5, new CollisionBox(0, 0, 26*MainWindow::renderingMultiplier, 43*MainWindow::renderingMultiplier), &image, "Samos", 99, false, "Right", 1, "Samos", true);

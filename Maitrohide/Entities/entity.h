@@ -77,6 +77,9 @@ public:
     bool getIsMovable() const;
     void setIsMovable(bool newIsMovable);
 
+    const std::string &getLastFrameFacing() const;
+    void setLastFrameFacing(const std::string &newLastFrameFacing);
+
 private:
     CollisionBox* box;
     QImage* texture; // Image to be rendered now
@@ -87,6 +90,7 @@ private:
     std::string entType;
     bool isAffectedByGravity;
     std::string facing;
+    std::string lastFrameFacing;
     double frictionFactor;
     bool isMovable;
     std::string name;

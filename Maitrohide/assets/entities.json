@@ -29,9 +29,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": true,
-				"emptyPixels": [5, 10],
+				"emptyXPixels": [5, 10],
+				"emptyYPixels": [5, 5],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": true
 			},
 			"IdleCrouch": {
 				"file": "samos.png",
@@ -43,9 +45,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": true
 			},
 			"Crouching": {
 				"file": "samos.png",
@@ -57,23 +61,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
-			},
-			"IdleCrouch": {
-				"file": "samos.png",
-				"x": 348,
-				"y": 2,
-				"width": 26,
-				"height": 43,
-				"count": 1,
-				"emptyFrames": 0,
-				"lines": 1,
-				"multi-directional": false,
-				"emptyPixels": [0, 0],
-				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": false
 			},
 			"MorphBall": {
 				"file": "samos.png",
@@ -85,9 +77,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": true
 			},
 			"Walking": {
 				"file": "samos.png",
@@ -99,9 +93,11 @@
 				"emptyFrames": 2,
 				"lines": 3,
 				"multi-directional": true,
-				"emptyPixels": [3, 10],
+				"emptyXPixels": [3, 10],
+				"emptyYPixels": [5, 5],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": true
 			},
 			"WalkShooting": {
 				"file": "samos.png",
@@ -113,9 +109,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": true
 			},
 			"Jumping": {
 				"file": "samos.png",
@@ -127,9 +125,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": false
 			},
 			"JumpEnd": {
 				"file": "samos.png",
@@ -141,9 +141,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": false
 			},
 			"Falling": {
 				"file": "samos.png",
@@ -155,9 +157,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": false
 			},
 			"Landing": {
 				"file": "samos.png",
@@ -169,9 +173,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": false
 			},
 			"SpinJump": {
 				"file": "samos.png",
@@ -183,9 +189,11 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": true
 			},
 			"Pre-Spawning": {
 				"file": "samos.png",
@@ -197,9 +205,11 @@
 				"emptyFrames": 0,
 				"lines": 3,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": true
 			},
 			"Spawning": {
 				"file": "samos.png",
@@ -211,9 +221,11 @@
 				"emptyFrames": 0,
 				"lines": 7,
 				"multi-directional": false,
-				"emptyPixels": [0, 0],
+				"emptyXPixels": [0, 0],
+				"emptyYPixels": [0, 0],
 				"reversed": false,
-				"overlay": []
+				"overlay": [],
+				"loop": false
 			}
 		}
 	}

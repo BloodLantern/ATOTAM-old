@@ -238,7 +238,6 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
 {
     // First create the image list which will be returned
     std::vector<QImage> anim;
-    //std::cout << "c\n";
 
     // Getting a json object representing the animation
     nlohmann::json variantJson = values["textures"][values["names"][name]["texture"]][state];
@@ -255,7 +254,6 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
                         static_cast<int>(variantJson["width"]), static_cast<int>(variantJson["height"]));
             }
         }
-    //std::cout << "d\n";
 
     int imagesPerLine = (static_cast<int>(variantJson["count"]) + static_cast<int>(variantJson["emptyFrames"])) / static_cast<int>(variantJson["lines"]);
     int width = static_cast<int>(variantJson["width"]) / imagesPerLine;
@@ -263,7 +261,6 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     if (variantJson["multi-directional"])
         width /= 2;
     int height = static_cast<int>(variantJson["height"]) / static_cast<int>(variantJson["lines"]);
-    //std::cout << "e\n";
     // For each line
     for (int i = (variantJson["reversed"] ? static_cast<int>(variantJson["lines"]) - 1 : 0);
          (variantJson["reversed"] ? i > -1 : i < variantJson["lines"]);
@@ -280,7 +277,6 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
                 anim.push_back(fullAnim.copy(ii * width, i * height, width, height));
             }
     }
-    //std::cout << "f\n";
 
     // If the animation has an overlay, place it on top of the current one
     for (nlohmann::json ovrly : variantJson["overlay"]) {
@@ -297,11 +293,11 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     // Remove the empty pixels on the left
     for (unsigned int i = 0; i < anim.size(); i++) {
         QImage img = anim[i];
-        img = img.copy(variantJson["emptyPixels"][facing == "Left" ? 0 : 1], 0,
-                img.width() - static_cast<int>(variantJson["emptyPixels"][facing == "Left" ? 0 : 1]), img.height());
+        img = img.copy(variantJson["emptyXPixels"][facing == "Left" ? 0 : 1], variantJson["emptyYPixels"][facing == "Left" ? 0 : 1], // X and Y
+                img.width() - static_cast<int>(variantJson["emptyXPixels"][facing == "Left" ? 0 : 1]), // Width
+                img.height() - static_cast<int>(variantJson["emptyYPixels"][facing == "Left" ? 0 : 1])); // Height
         anim[i] = img;
     }
-    //std::cout << "g\n";
     return anim;
 }
 
@@ -432,6 +428,8 @@ const std::string &Entity::getState() const
 
 void Entity::setState(const std::string &newState)
 {
+    if (state != newState)
+        animation = 0;
     state = newState;
 }
 
@@ -463,6 +461,16 @@ bool Entity::getIsMovable() const
 void Entity::setIsMovable(bool newIsMovable)
 {
     isMovable = newIsMovable;
+}
+
+const std::string &Entity::getLastFrameFacing() const
+{
+    return lastFrameFacing;
+}
+
+void Entity::setLastFrameFacing(const std::string &newLastFrameFacing)
+{
+    lastFrameFacing = newLastFrameFacing;
 }
 
 

@@ -204,21 +204,26 @@ void MainWindow::updatePhysics()
 void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
-        //std::cout << "1\n";
-        if (entity->getState() != entity->getLastFrameState()) {
-            //std::cout << "2\n";
+        // If the entity state is different from the last frame
+        if (entity->getState() != entity->getLastFrameState()
+                || entity->getFacing() != entity->getLastFrameFacing()) {
+            // Update the QImage array representing the animation
             entity->setCurrentAnimation(entity->updateAnimation(entity->getState()));
-            //std::cout << "3\n";
-            entity->setLastFrameState(entity->getState());
         }
-        //std::cout << "4\n";
+        // Increment the animation index
         entity->setAnimation(entity->getAnimation() + 1);
-        //std::cout << "5\n";
-        if (entity->getCurrentAnimation().size() <= entity->getAnimation())
-            entity->setAnimation(0);
-        //std::cout << "6\n";
-        entity->updateTexture();
-        //std::cout << "7\n";
+        // If the animation has to loop
+        if (!Entity::values["textures"][entity->getName()][entity->getState()]["loop"].is_null()) // TEMP
+            if (Entity::values["textures"][entity->getName()][entity->getState()]["loop"]) {
+                // If the animation index still exists
+                if (entity->getCurrentAnimation().size() <= entity->getAnimation())
+                    // Reset animation
+                    entity->setAnimation(0);
+                // Update the texture with the animation index
+                entity->updateTexture();
+            }
+        entity->setLastFrameState(entity->getState());
+        entity->setLastFrameFacing(entity->getFacing());
     }
 }
 
