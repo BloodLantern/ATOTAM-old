@@ -55,6 +55,7 @@ void gameClock(MainWindow* w) {
         //preciseSleep(waitTime);
         w->updatePhysics();
         if (frameCount % 5 == 0) {
+
             w->updateAnimations();
         }
         w->update();
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
 
     MainWindow w(&a);
     w.show();
-    std::string variant = "Respawning";
+    std::string variant = "Pre-Spawning";
     nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
     nlohmann::json variantJson = textureJson[variant];

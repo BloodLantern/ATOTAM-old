@@ -50,15 +50,26 @@
 				"file": "samos.png"
 
 			},
-			"Respawning": {
+			"Pre-Spawning" : {
+				"file": "samos.png",
+				"x": 0,
+				"y": 500,
+				"width": 24,
+				"height": 150,
+				"count": 3,
+				"emptyFrames": 0,
+				"lines": 3,
+				"reversed": true
+			},
+			"Spawning": {
 				"file": "samos.png",
 				"x": 0,
 				"y": 0,
 				"width": 24,
-				"height": 650,
-				"count": 13,
+				"height": 500,
+				"count": 10,
 				"emptyFrames": 0,
-				"lines": 13,
+				"lines": 10,
 				"reversed": true
 			}
 		}

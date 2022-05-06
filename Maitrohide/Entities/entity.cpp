@@ -262,9 +262,9 @@ void Entity::updateAnimation()
             width /= 2;
     int height = static_cast<int>(variantJson["height"]) / static_cast<int>(variantJson["lines"]);
     // For each line
-    for (int i = (variantJson["reversed"] ? static_cast<int>(variantJson["lines"]) : 0);
+    for (int i = (variantJson["reversed"] ? static_cast<int>(variantJson["lines"]) - 1 : 0);
          (variantJson["reversed"] ? i > -1 : i < variantJson["lines"]);
-         i++) {
+         (variantJson["reversed"] ? i-- : i++)) {
         // For each image
         if (facing == "Right")
             for (int ii = 0;
