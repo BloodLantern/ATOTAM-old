@@ -242,10 +242,12 @@ void MainWindow::updatePhysics()
 void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
-        // If the animation index still exists
-        if (entity->getCurrentAnimation().size() > entity->getAnimation() + 1)
-            // Increment the animation index
-            entity->setAnimation(entity->getAnimation() + 1);
+        // Every 3 frames
+        if (frameCount % 3 == 0)
+            // If the animation index still exists
+            if (entity->getCurrentAnimation().size() > entity->getAnimation() + 1)
+                // Increment the animation index
+                entity->setAnimation(entity->getAnimation() + 1);
 
         // If the entity state is different from the last frame
         if (entity->getState() != entity->getLastFrameState()
