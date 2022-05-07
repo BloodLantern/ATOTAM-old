@@ -229,14 +229,13 @@ void MainWindow::updateAnimations()
         entity->setAnimation(entity->getAnimation() + 1);
         // If the animation has to loop
         if (!Entity::values["textures"][entity->getName()][entity->getState()]["loop"].is_null()) // TEMP
-            if (Entity::values["textures"][entity->getName()][entity->getState()]["loop"]) {
+            if (Entity::values["textures"][entity->getName()][entity->getState()]["loop"])
                 // If the animation index still exists
                 if (entity->getCurrentAnimation().size() <= entity->getAnimation())
                     // Reset animation
                     entity->setAnimation(0);
-                // Update the texture with the animation index
-                entity->updateTexture();
-            }
+        // Update the texture with the animation index
+        entity->updateTexture();
         entity->setLastFrameState(entity->getState());
         entity->setLastFrameFacing(entity->getFacing());
     }
