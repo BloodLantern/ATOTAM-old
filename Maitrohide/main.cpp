@@ -107,6 +107,8 @@ int main(int argc, char *argv[])
     w.addRenderable(&s8);
     Terrain s9(200, 850, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
     w.addRenderable(&s9);
+    Terrain s10(1000, 300, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s10);
     Terrain m1(0, 0, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
     w.addRenderable(&m1);
     Terrain m2(0, 600, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
