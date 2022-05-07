@@ -272,7 +272,7 @@ void MainWindow::updateAnimations()
         // Every 3 frames
         if (frameCount % 3 == 0)
             // If the animation index still exists
-            if (entity->getCurrentAnimation().size() > entity->getAnimation() + 1)
+            if (entity->getCurrentAnimation().size() > entity->getAnimation())
                 // Increment the animation index
                 entity->setAnimation(entity->getAnimation() + 1);
 
@@ -288,12 +288,18 @@ void MainWindow::updateAnimations()
         // Every 3 frames
         if (frameCount % 3 == 0)
             // If the animation has to loop
-            if (!Entity::values["textures"][entity->getName()][entity->getState()]["loop"].is_null())
-                if (Entity::values["textures"][entity->getName()][entity->getState()]["loop"])
+            if (!Entity::values["textures"][entity->getName()][entity->getState()]["loop"].is_null()) {
+                if (Entity::values["textures"][entity->getName()][entity->getState()]["loop"]) {
                     // If the animation index still exists
-                    if (entity->getCurrentAnimation().size() - 1 <= entity->getAnimation())
+                    if (entity->getCurrentAnimation().size() - 1 < entity->getAnimation())
                         // Reset animation
                         entity->setAnimation(0);
+                } else
+                    // If the animation index still exists
+                    if (entity->getCurrentAnimation().size() - 1 < entity->getAnimation())
+                        // If the animation doesn't loop, make sure it stays on its last frame
+                        entity->setAnimation(entity->getAnimation() - 1);
+            }
 
         // Update the texture with the animation index
         entity->updateTexture();
