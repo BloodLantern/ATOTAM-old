@@ -156,6 +156,38 @@
 				"overlay": [],
 				"loop": true
 			},
+			"WalkingAimForward": {
+				"file": "samos.png",
+				"x": 43,
+				"y": 1309,
+				"width": 388,
+				"height": 148,
+				"count": 10,
+				"emptyFrames": 2,
+				"lines": 3,
+				"multi-directional": true,
+				"xOffset": [-6, -20],
+				"yOffset": [12, 12],
+				"reversed": false,
+				"overlay": [],
+				"loop": true
+			},
+			"WalkingAimDown": {
+				"file": "samos.png",
+				"x": 43,
+				"y": 1458,
+				"width": 388,
+				"height": 148,
+				"count": 10,
+				"emptyFrames": 2,
+				"lines": 3,
+				"multi-directional": true,
+				"xOffset": [-6, -20],
+				"yOffset": [12, 12],
+				"reversed": false,
+				"overlay": [],
+				"loop": true
+			},
 			"Jumping": {
 				"file": "samos.png",
 				"x": 91,
