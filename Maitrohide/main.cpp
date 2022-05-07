@@ -76,9 +76,9 @@ int main(int argc, char *argv[])
 
     MainWindow::loadGeneral();
     MainWindow w(&a);
-    w.show();
+    //w.show();
     Samos s(100, 10, 99, 5, 5);
-    //w.showFullScreen();
+    w.showFullScreen();
     /*nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
     nlohmann::json variantJson = textureJson["Standing"];
@@ -88,9 +88,35 @@ int main(int argc, char *argv[])
     Samos s(100, 10, 99, 5, 5, new CollisionBox(20, 0, 15*MainWindow::renderingMultiplier, 43*MainWindow::renderingMultiplier), &image, "Samos", 99, true, "Right", 1, "Samos", true);*/
     w.addRenderable(&s);
     QImage sol("../assets/sol.png");
-    Terrain m1(50, 400, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    QImage mur("../assets/mur.png");
+    Terrain s1(60, 400, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s1);
+    Terrain s2(60, 1020, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s2);
+    Terrain s3(660, 1020, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s3);
+    Terrain s4(1260, 1020, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s4);
+    Terrain s5(60, 0, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s5);
+    Terrain s6(660, 0, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s6);
+    Terrain s7(1260, 0, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s7);
+    Terrain s8(400, 625, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s8);
+    Terrain s9(200, 850, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s9);
+    Terrain s10(1260, 500, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
+    w.addRenderable(&s10);
+    Terrain m1(0, 0, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
     w.addRenderable(&m1);
-    w.update();
+    Terrain m2(0, 600, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
+    w.addRenderable(&m2);
+    Terrain m3(1860, 0, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
+    w.addRenderable(&m3);
+    Terrain m4(1860, 600, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
+    w.addRenderable(&m4);
     std::future<void> fobj1 = std::async(gameClock, &w, &s);
     return a.exec();
 }

@@ -1,6 +1,6 @@
 {
 	"general": {
-		"gameSpeed": 1.0,
+		"gameSpeed": 0.1,
 		"frameRate": 60.0,
 		"gravity": 600.0,
 		"renderingMultiplier": 2,
