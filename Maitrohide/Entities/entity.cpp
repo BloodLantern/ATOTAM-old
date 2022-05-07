@@ -291,9 +291,9 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     for (unsigned int i = 0; i < anim.size(); i++) {
         QImage img = anim[i];
         if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
-            img.setOffset(QPoint(animJson["emptyXPixels"][0], animJson["emptyYPixels"][0]));
+            img.setOffset(QPoint(animJson["xOffset"][0], animJson["yOffset"][0]));
         else if (facing == "Right" || facing == "UpRight" || facing == "DownRight")
-            img.setOffset(QPoint(animJson["emptyXPixels"][1], animJson["emptyYPixels"][1]));
+            img.setOffset(QPoint(animJson["xOffset"][1], animJson["yOffset"][1]));
         anim[i] = img;
     }
     return anim;
