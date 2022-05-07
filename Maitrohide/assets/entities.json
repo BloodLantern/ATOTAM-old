@@ -124,7 +124,7 @@
 				"overlay": [],
 				"loop": true
 			},
-			"Walkinga": {
+			"Walking": {
 				"file": "samos.png",
 				"x": 43,
 				"y": 1008,
@@ -140,7 +140,7 @@
 				"overlay": [],
 				"loop": true
 			},
-			"Walking": {
+			"WalkingAimForward": {
 				"file": "samos.png",
 				"x": 43,
 				"y": 1161,
