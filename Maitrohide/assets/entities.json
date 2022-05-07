@@ -150,7 +150,7 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": true,
-				"emptyXPixels": [2, 12],
+				"emptyXPixels": [2, 11],
 				"emptyYPixels": [5, 5],
 				"reversed": false,
 				"overlay": [],
