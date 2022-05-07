@@ -22,6 +22,7 @@ Samos::~Samos()
 void Samos::shoot(std::string type)
 {
     Projectile* projectile = nullptr;
+    double renderingM = values["general"]["renderingMultiplier"];
 
     if (type == "Grenade") {
         if (grenadeCount > 0)
@@ -38,21 +39,21 @@ void Samos::shoot(std::string type)
     if (canonDirection == "None") {
         throw Entity::invalidDirection;
     } else if (canonDirection == "Up") {
-        projectile = new Projectile(getX() + 50, getY() - 10, "Up", type, type);
+        projectile = new Projectile(getX() + 11 * renderingM, getY() - 0 * renderingM, "Up", type, type);
     } else if (canonDirection == "UpRight") {
-        projectile = new Projectile(getX() + 100, getY(), "UpRight", type, type);
+        projectile = new Projectile(getX() + 27 * renderingM, getY() - 0 * renderingM, "UpRight", type, type);
     } else if (canonDirection == "Right") {
-        projectile = new Projectile(getX() + 100, getY() + 75, "Right", type, type);
+        projectile = new Projectile(getX() + 30 * renderingM, getY() + 15 * renderingM, "Right", type, type);
     } else if (canonDirection == "DownRight") {
-       projectile = new Projectile(getX() + 100, getY() + 150, "DownRight", type, type);
+       projectile = new Projectile(getX() + 27 * renderingM, getY() + 30 * renderingM, "DownRight", type, type);
     } else if (canonDirection == "Down") {
-        projectile = new Projectile(getX() + 50, getY() + 210, "Down", type, type);
+        projectile = new Projectile(getX() + 11 * renderingM, getY() + 45 * renderingM, "Down", type, type);
     } else if (canonDirection == "DownLeft") {
-        projectile = new Projectile(getX(), getY() + 150, "DownLeft", type, type);
+        projectile = new Projectile(getX() + 0 * renderingM, getY() + 30 * renderingM, "DownLeft", type, type);
     } else if (canonDirection == "Left") {
-        projectile = new Projectile(getX(), getY() + 75, "Left", type, type);
+        projectile = new Projectile(getX() + 0 * renderingM, getY() + 15 * renderingM, "Left", type, type);
     } else if (canonDirection == "UpLeft") {
-        projectile = new Projectile(getX(), getY(), "UpLeft", type, type);
+        projectile = new Projectile(getX() + 0 * renderingM, getY() + 0 * renderingM, "UpLeft", type, type);
     } else {
         throw Entity::invalidDirection;
     }
