@@ -55,6 +55,12 @@ void MainWindow::updateSamos(Samos *s)
 {
     if (s->getOnGround() || !s->getIsAffectedByGravity()) {
         if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd")) {
+            double renderingM = Entity::values["general"]["renderingMultiplier"];
+            if (s->getState() == "Falling") {
+                s->setY(s->getY() - (s->getBox()->getHeight() * 0.2 - 3 * renderingM));
+            } else if (s->getState() == "SpinJump") {
+                s->setY(s->getY() - (s->getBox()->getHeight() * 2 - 14 * renderingM));
+            }
             s->setState("Landing");
         } else if (inputList["left"] && !inputList["right"]) {
             if (s->getVX() > -400) {
@@ -160,6 +166,12 @@ void MainWindow::updateSamos(Samos *s)
                   (static_cast<int>(entJson["offset_y"]) + 14) * renderingM,
                   static_cast<int>(entJson["width"]) * renderingM,
                   static_cast<int>(entJson["height"]) * renderingM / 3));
+        s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
+    } else if (s->getState() == "Falling") {
+        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
+                  (static_cast<int>(entJson["offset_y"]) + 3) * renderingM,
+                  static_cast<int>(entJson["width"]) * renderingM,
+                  static_cast<int>(entJson["height"]) * renderingM / 1.2));
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
     } else {
         s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
