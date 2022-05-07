@@ -55,11 +55,10 @@ void MainWindow::updateSamos(Samos *s)
 {
     if (s->getOnGround() || !s->getIsAffectedByGravity()) {
         if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd")) {
-            double renderingM = Entity::values["general"]["renderingMultiplier"];
             if (s->getState() == "Falling") {
-                s->setY(s->getY() - (s->getBox()->getHeight() * 0.2 - 3 * renderingM));
+                s->setY(s->getY() - (s->getBox()->getHeight() * 0.2 - 3 * renderingMultiplier));
             } else if (s->getState() == "SpinJump") {
-                s->setY(s->getY() - (s->getBox()->getHeight() * 2 - 14 * renderingM));
+                s->setY(s->getY() - (s->getBox()->getHeight() * 2 - 14 * renderingMultiplier));
             }
             s->setState("Landing");
         } else if (inputList["left"] && !inputList["right"]) {
@@ -159,25 +158,24 @@ void MainWindow::updateSamos(Samos *s)
     }
 
     nlohmann::json entJson = Entity::values["names"]["Samos"];
-    double renderingM = Entity::values["general"]["renderingMultiplier"];
 
     if (s->getState() == "SpinJump") {
-        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
-                  (static_cast<int>(entJson["offset_y"]) + 14) * renderingM,
-                  static_cast<int>(entJson["width"]) * renderingM,
-                  static_cast<int>(entJson["height"]) * renderingM / 3));
+        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingMultiplier,
+                  (static_cast<int>(entJson["offset_y"]) + 14) * renderingMultiplier,
+                  static_cast<int>(entJson["width"]) * renderingMultiplier,
+                  static_cast<int>(entJson["height"]) * renderingMultiplier / 3));
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
     } else if (s->getState() == "Falling") {
-        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
-                  (static_cast<int>(entJson["offset_y"]) + 3) * renderingM,
-                  static_cast<int>(entJson["width"]) * renderingM,
-                  static_cast<int>(entJson["height"]) * renderingM / 1.2));
+        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingMultiplier,
+                  (static_cast<int>(entJson["offset_y"]) + 3) * renderingMultiplier,
+                  static_cast<int>(entJson["width"]) * renderingMultiplier,
+                  static_cast<int>(entJson["height"]) * renderingMultiplier / 1.2));
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
     } else {
-        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
-                  static_cast<int>(entJson["offset_y"]) * renderingM,
-                  static_cast<int>(entJson["width"]) * renderingM,
-                  static_cast<int>(entJson["height"]) * renderingM));
+        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingMultiplier,
+                  static_cast<int>(entJson["offset_y"]) * renderingMultiplier,
+                  static_cast<int>(entJson["width"]) * renderingMultiplier,
+                  static_cast<int>(entJson["height"]) * renderingMultiplier));
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
     }
 }
