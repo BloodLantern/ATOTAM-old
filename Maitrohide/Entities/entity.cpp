@@ -130,10 +130,10 @@ void Entity::handleCollision(Entity *obj1, Entity *obj2)
 
 void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
 {
-    double minX1 = obj1->x + obj1->box->getWidth() - obj2->x;
-    double minX2 = obj2->x + obj2->box->getWidth() - obj1->x;
-    double minY1 = obj1->y + obj1->box->getHeight() - obj2->y;
-    double minY2 = obj2->y + obj2->box->getHeight() - obj1->y;
+    double minX1 = obj1->x + obj1->box->getWidth() + obj1->getBox()->getX() - obj2->x - obj2->getBox()->getX();
+    double minX2 = obj2->x + obj2->box->getWidth() + obj2->getBox()->getX() - obj1->x - obj1->getBox()->getX();
+    double minY1 = obj1->y + obj1->box->getHeight() + obj1->getBox()->getY() - obj2->y - obj2->getBox()->getY();
+    double minY2 = obj2->y + obj2->box->getHeight() + obj2->getBox()->getY() - obj1->y - obj1->getBox()->getY();
     double minX;
     double minY;
     if (std::abs(minX1) < std::abs(minX2)) {
@@ -166,26 +166,17 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
         if (std::abs(minX) < std::abs(minY)) {
             obj2->x += minX;
             obj2->vX = 0;
-            std::cout << "2x" << std::endl;
         } else {
             obj2->y += minY;
             obj2->vY = 0;
-            std::cout << "2y" << std::endl;
         }
     } else if (obj1->isMovable && !obj2->isMovable) {
-
-        std::cout << minX1 << std::endl;
-        std::cout << minX2 << std::endl;
-        std::cout << minY1 << std::endl;
-        std::cout << minY2 << std::endl;
         if (std::abs(minX) < std::abs(minY)) {
             obj1->x -= minX;
             obj1->vX = 0;
-            std::cout << "1x" << std::endl;
         } else {
             obj1->y -= minY;
             obj1->vY = 0;
-            std::cout << "1y" << std::endl;
         }
     }
 }
@@ -214,7 +205,7 @@ Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::stri
 }
 
 Entity::Entity(double x, double y, std::string facing, std::string name)
-    : x(x), y(y), facing(facing)
+    : x(x), y(y), facing(facing), name(name)
 {
     nlohmann::json entJson = values["names"][name];
     double renderingM = values["general"]["renderingMultiplier"];

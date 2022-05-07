@@ -54,9 +54,9 @@ void gameClock(MainWindow* w, Samos* s) {
         MainWindow::getInputs();
         MainWindow::updateSamos(s);
         w->updatePhysics();
-        if (MainWindow::frameCount % 4 == 0) {
-            w->updateAnimations();
-        }
+        //if (MainWindow::frameCount % 4 == 0) {
+          //  w->updateAnimations();
+        //}
         w->update();
         MainWindow::frameCount++;
     }
