@@ -53,6 +53,16 @@ void MainWindow::getInputs()
 
 void MainWindow::updateSamos(Samos *s)
 {
+    std::string wall;
+    for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
+        if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
+            if (s->checkWall(s->getWallBoxL(),*j)) {
+                wall = "Left";
+            } else if (s->checkWall(s->getWallBoxR(),*j)) {
+                wall = "Right";
+            }
+        }
+    }
     if (s->getOnGround() || !s->getIsAffectedByGravity()) {
         if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")) {
             if (s->getState() == "Falling") {
@@ -62,34 +72,42 @@ void MainWindow::updateSamos(Samos *s)
             }
             s->setState("Landing");
         } else if (inputList["left"] && !inputList["right"]) {
-            if (s->getVX() > -400) {
-                s->setVX(s->getVX() - 30);
-            } else if (s->getVX() < -400 && s->getVX() > -420) {
-                s->setVX(-420);
+            if (wall != "Left") {
+                if (s->getVX() > -400) {
+                    s->setVX(s->getVX() - 30);
+                } else if (s->getVX() < -400 && s->getVX() > -420) {
+                    s->setVX(-420);
+                }
+                s->setFrictionFactor(0.1);
             }
-            s->setFrictionFactor(0.1);
             s->setFacing("Left");
             if (inputList["jump"] && s->getJumpTime() == -1) {
                 s->setVY(-350);
                 s->setJumpTime(0);
                 s->setState("SpinJump");
-            } else {
+            } else if (wall != "Left") {
                 s->setState("Walking");
+            } else {
+                s->setState("Standing");
             }
         } else if (!inputList["left"] && inputList["right"]) {
-            if (s->getVX() < 400) {
-                s->setVX(s->getVX() + 30);
-            } else if (s->getVX() > 400 && s->getVX() < 420) {
-                s->setVX(420);
+            if (wall != "Right") {
+                if (s->getVX() < 400) {
+                    s->setVX(s->getVX() + 30);
+                } else if (s->getVX() > 400 && s->getVX() < 420) {
+                    s->setVX(420);
+                }
+                s->setFrictionFactor(0.1);
             }
-            s->setFrictionFactor(0.1);
             s->setFacing("Right");
             if (inputList["jump"] && s->getJumpTime() == -1) {
                 s->setVY(-350);
                 s->setJumpTime(0);
                 s->setState("SpinJump");
-            } else {
+            } else if (wall != "Right") {
                 s->setState("Walking");
+            } else {
+                s->setState("Standing");
             }
         } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
             s->setFrictionFactor(1);
@@ -239,7 +257,9 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawImage(QRect(entity->getX() + entity->getTexture()->offset().x(), entity->getY() + entity->getTexture()->offset().y(),
                                 entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
                           *entity->getTexture());
-        if (renderHitboxes) {
+    }
+    if (renderHitboxes) {
+        for (Entity *entity : rendering) {
             painter.setPen(QColor("blue"));
             painter.drawRect(entity->getX() + entity->getBox()->getX(), entity->getY() + entity->getBox()->getY(),
                              entity->getBox()->getWidth(), entity->getBox()->getHeight());
