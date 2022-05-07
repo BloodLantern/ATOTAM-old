@@ -140,7 +140,7 @@
 				"overlay": [],
 				"loop": true
 			},
-			"WalkingAimForward": {
+			"WalkingAimUp": {
 				"file": "samos.png",
 				"x": 43,
 				"y": 1161,
