@@ -141,6 +141,21 @@ void MainWindow::updateSamos(Samos *s)
         }
 
     }
+
+    nlohmann::json entJson = Entity::values["names"]["Samos"];
+    double renderingM = Entity::values["general"]["renderingMultiplier"];
+
+    if (s->getState() == "SpinJump") {
+        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
+                  (static_cast<int>(entJson["offset_y"]) + 14) * renderingM,
+                  static_cast<int>(entJson["width"]) * renderingM,
+                  static_cast<int>(entJson["height"]) * renderingM / 3));
+    } else {
+        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
+                  static_cast<int>(entJson["offset_y"]) * renderingM,
+                  static_cast<int>(entJson["width"]) * renderingM,
+                  static_cast<int>(entJson["height"]) * renderingM));
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

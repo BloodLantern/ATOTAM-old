@@ -307,6 +307,7 @@ CollisionBox *Entity::getBox() const
 
 void Entity::setBox(CollisionBox *newBox)
 {
+    delete box;
     box = newBox;
 }
 
