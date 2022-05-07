@@ -1,10 +1,17 @@
 #include "samos.h"
+#include <iostream>
 
 Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount)
     : Living(x, y, "Right", "Samos"),
       isInAltForm(false), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount)
 {
-    this->setMaxHealth(maxHealth);
+    nlohmann::json entJson = Entity::values["names"]["Samos"];
+    nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
+    nlohmann::json variantJson = textureJson["Standing"];
+    QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["Standing"]["file"])));
+    QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
+    setMaxHealth(maxHealth);
+    setTexture(&image);
 }
 
 Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox *box, QImage *texture, std::string entityType, int health, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)

@@ -2,9 +2,12 @@
 #include "ui_mainwindow.h"
 
 bool MainWindow::running = true;
-double MainWindow::frameRate = 60.0;
-unsigned long long MainWindow::frameCount = 0;
-double MainWindow::gravity = 600.0;
+double MainWindow::frameRate;
+double MainWindow::gameSpeed;
+bool MainWindow::renderHitboxes;
+int MainWindow::renderingMultiplier;
+unsigned long long MainWindow::frameCount;
+double MainWindow::gravity;
 std::map<std::string, bool> MainWindow::inputList;
 
 MainWindow::MainWindow(QApplication *app)
@@ -27,6 +30,15 @@ nlohmann::json MainWindow::loadKeyCodes()
     nlohmann::json temp;
     keys_file >> temp;
     return temp;
+}
+
+void MainWindow::loadGeneral()
+{
+    frameRate = Entity::values["general"]["frameRate"];
+    gameSpeed = Entity::values["general"]["gameSpeed"];
+    gravity = Entity::values["general"]["gravity"];
+    renderHitboxes = Entity::values["general"]["renderHitboxes"];
+    renderingMultiplier = Entity::values["general"]["renderingMultiplier"];
 }
 
 nlohmann::json MainWindow::keyCodes = MainWindow::loadKeyCodes();

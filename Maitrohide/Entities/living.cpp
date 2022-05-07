@@ -23,6 +23,7 @@ Living::Living(double x, double y, std::string facing, std::string name)
     maxHealth = livJson["maxHealth"];
     damage = livJson["damage"];
     invulnerable = livJson["invulnerable"];
+    groundBox = new CollisionBox(this->getBox()->getX(), this->getBox()->getY() + this->getBox()->getHeight(), this->getBox()->getWidth(), 2);
 }
 
 Living::~Living()

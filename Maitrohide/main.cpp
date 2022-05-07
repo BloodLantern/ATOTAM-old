@@ -46,7 +46,7 @@ void preciseSleep(double seconds) {
 }
 
 void gameClock(MainWindow* w, Samos* s) {
-    double waitTime = 1.0/MainWindow::frameRate;
+    double waitTime = 1.0/(MainWindow::frameRate * MainWindow::gameSpeed);
     //waitTime /=2;
     while (MainWindow::running) {
         preciseSleep(waitTime);
@@ -54,9 +54,9 @@ void gameClock(MainWindow* w, Samos* s) {
         MainWindow::getInputs();
         MainWindow::updateSamos(s);
         w->updatePhysics();
-        if (MainWindow::frameCount % 4 == 0) {
-            w->updateAnimations();
-        }
+        //if (MainWindow::frameCount % 4 == 0) {
+          //  w->updateAnimations();
+        //}
         w->update();
         MainWindow::frameCount++;
     }
@@ -76,21 +76,19 @@ int main(int argc, char *argv[])
         }
     }
 
+    MainWindow::loadGeneral();
     MainWindow w(&a);
     w.show();
+    Samos s(100, 10, 99, 5, 5);
     //w.showFullScreen();
-    nlohmann::json entJson = Entity::values["names"]["Samos"];
+    /*nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
     nlohmann::json variantJson = textureJson["Standing"];
     QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["Standing"]["file"])));
     QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
     //QImage img1("../assets/Image.png");
-    Samos s(100, 10, 99, 5, 5, new CollisionBox(20, 0, 15*MainWindow::renderingMultiplier, 43*MainWindow::renderingMultiplier), &image, "Samos", 99, true, "Right", 1, "Samos", true);
+    Samos s(100, 10, 99, 5, 5, new CollisionBox(20, 0, 15*MainWindow::renderingMultiplier, 43*MainWindow::renderingMultiplier), &image, "Samos", 99, true, "Right", 1, "Samos", true);*/
     w.addRenderable(&s);
-    /*QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
-    Samos s(100, 10, 99, 5, 5, new CollisionBox(0, 0, 26*MainWindow::renderingMultiplier, 43*MainWindow::renderingMultiplier), &image, "Samos", 99, false, "Right", 1, "Samos", true);
-    s.setState(variant);
-    w.addRenderable(&s);*/
     QImage sol("../assets/sol.png");
     Terrain m1(50, 400, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
     w.addRenderable(&m1);

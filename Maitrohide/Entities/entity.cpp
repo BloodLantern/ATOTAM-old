@@ -166,17 +166,26 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
         if (std::abs(minX) < std::abs(minY)) {
             obj2->x += minX;
             obj2->vX = 0;
+            std::cout << "2x" << std::endl;
         } else {
             obj2->y += minY;
             obj2->vY = 0;
+            std::cout << "2y" << std::endl;
         }
     } else if (obj1->isMovable && !obj2->isMovable) {
+
+        std::cout << minX1 << std::endl;
+        std::cout << minX2 << std::endl;
+        std::cout << minY1 << std::endl;
+        std::cout << minY2 << std::endl;
         if (std::abs(minX) < std::abs(minY)) {
             obj1->x -= minX;
             obj1->vX = 0;
+            std::cout << "1x" << std::endl;
         } else {
             obj1->y -= minY;
             obj1->vY = 0;
+            std::cout << "1y" << std::endl;
         }
     }
 }
@@ -208,17 +217,16 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     : x(x), y(y), facing(facing)
 {
     nlohmann::json entJson = values["names"][name];
-    nlohmann::json textureJson = values["textures"][entJson["texture"]];
-    nlohmann::json variantJson = textureJson["variants"]["standing"];
+    double renderingM = values["general"]["renderingMultiplier"];
 
-    QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["file"])));
-    QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
-
-    texture = &image;
     entType = entJson["type"];
     isAffectedByGravity = entJson["gravity"];
     frictionFactor = entJson["friction"];
     isMovable = entJson["movable"];
+    box = new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
+                            static_cast<int>(entJson["offset_y"]) * renderingM,
+                            static_cast<int>(entJson["width"]) * renderingM,
+                            static_cast<int>(entJson["height"]) * renderingM);
 }
 
 Entity::~Entity()

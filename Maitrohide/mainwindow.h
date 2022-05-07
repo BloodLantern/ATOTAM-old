@@ -24,14 +24,16 @@ public:
     MainWindow(QApplication *app);
     ~MainWindow();
 
-    static const bool renderHitboxes = true; // Render hitboxes as rectangles
-    static const int renderingMultiplier = 2; // Textures are rendered with their size being multiplied by this value
+    static bool renderHitboxes; // Render hitboxes as rectangles
+    static int renderingMultiplier; // Textures are rendered with their size being multiplied by this value
     static bool running;
     static double frameRate; //fps
+    static double gameSpeed;
     static unsigned long long frameCount;
     static double gravity; //p.s^-2
     static nlohmann::json keyCodes;
     static nlohmann::json loadKeyCodes();
+    static void loadGeneral();
     static std::map<std::string, bool> inputList;
     static void getInputs();
     static void updateSamos(Samos* s);

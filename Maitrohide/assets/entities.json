@@ -1,7 +1,16 @@
 {
+	"general": {
+		"gameSpeed": 1.0,
+		"frameRate": 60.0,
+		"gravity": 600.0,
+		"renderingMultiplier": 2,
+		"renderHitboxes": true
+	},
 	"names": {
 		"Samos": {
 			"texture": "Samos",
+			"offset_x": 200,
+			"offset_y": 0,
 			"width": 26,
 			"height": 43,
 			"type": "Samos",
