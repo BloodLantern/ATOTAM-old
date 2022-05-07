@@ -58,6 +58,7 @@ CollisionBox *Living::getGroundBox() const
 
 void Living::setGroundBox(CollisionBox *newGroundBox)
 {
+    delete groundBox;
     groundBox = newGroundBox;
 }
 

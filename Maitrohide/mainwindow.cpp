@@ -64,7 +64,7 @@ void MainWindow::updateSamos(Samos *s)
                 s->setFrictionFactor(0.1);
                 s->setFacing("Left");
                 if (inputList["jump"]) {
-                    s->setVY(s->getVY() - 250);
+                    s->setVY(-250);
                     s->setJumpTime(0);
                     s->setState("SpinJump");
                 } else {
@@ -79,7 +79,7 @@ void MainWindow::updateSamos(Samos *s)
                 s->setFrictionFactor(0.1);
                 s->setFacing("Right");
                 if (inputList["jump"]) {
-                    s->setVY(s->getVY() -250);
+                    s->setVY(-250);
                     s->setJumpTime(0);
                     s->setState("SpinJump");
                 } else {
@@ -88,7 +88,7 @@ void MainWindow::updateSamos(Samos *s)
             } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
                 s->setFrictionFactor(1);
                 if (inputList["jump"]) {
-                    s->setVY(s->getVY() - 250);
+                    s->setVY(-250);
                     s->setJumpTime(0);
                     s->setState("Jumping");
                 } else {
@@ -104,9 +104,11 @@ void MainWindow::updateSamos(Samos *s)
                 }
                 s->setFrictionFactor(0.1);
                 s->setFacing("Left");
-                if ((s->getState() == "SpinJump" || s->getState() == "Jumping") && inputList["jump"] && s->getJumpTime() < 20) {
+                if (inputList["jump"] && s->getJumpTime() < 20) {
                     s->setVY(s->getVY() - 10);
                     s->setJumpTime(s->getJumpTime() + 1);
+                } else {
+                    s->setJumpTime(20);
                 }
                 if (!(s->getState() == "SpinJump")) {
                     s->setState("Falling");
@@ -119,27 +121,33 @@ void MainWindow::updateSamos(Samos *s)
                 }
                 s->setFrictionFactor(0.1);
                 s->setFacing("Right");
-                if ((s->getState() == "SpinJump" || s->getState() == "Jumping") && inputList["jump"] && s->getJumpTime() < 20) {
+                if (inputList["jump"] && s->getJumpTime() < 20) {
                     s->setVY(s->getVY() - 10);
                     s->setJumpTime(s->getJumpTime() + 1);
+                } else {
+                    s->setJumpTime(20);
                 }
                 if (!(s->getState() == "SpinJump")) {
                     s->setState("Falling");
                 }
             } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
                 s->setFrictionFactor(1);
-                if ((s->getState() == "SpinJump" || s->getState() == "Jumping") && inputList["jump"] && s->getJumpTime() < 20) {
+                if (inputList["jump"] && s->getJumpTime() < 20) {
                     s->setVY(s->getVY() - 10);
                     s->setJumpTime(s->getJumpTime() + 1);
                 } else if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= 20)) {
                     s->setState("JumpEnd");
+                    s->setJumpTime(20);
+                } else {
+                    s->setJumpTime(20);
                 }
-                if (!(s->getState() == "SpinJump") && !(s->getState() == "Jumping")) {
+                if (!(s->getState() == "SpinJump") && !(s->getState() == "Jumping") && !(s->getState() == "JumpEnd")) {
                     s->setState("Falling");
                 }
             }
         }
-
+    std::cout << s->getState() << std::endl;
+    std::cout << s->getJumpTime() << std::endl;
     }
 
     nlohmann::json entJson = Entity::values["names"]["Samos"];
@@ -150,11 +158,13 @@ void MainWindow::updateSamos(Samos *s)
                   (static_cast<int>(entJson["offset_y"]) + 14) * renderingM,
                   static_cast<int>(entJson["width"]) * renderingM,
                   static_cast<int>(entJson["height"]) * renderingM / 3));
+        s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
     } else {
         s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
                   static_cast<int>(entJson["offset_y"]) * renderingM,
                   static_cast<int>(entJson["width"]) * renderingM,
                   static_cast<int>(entJson["height"]) * renderingM));
+        s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
     }
 }
 

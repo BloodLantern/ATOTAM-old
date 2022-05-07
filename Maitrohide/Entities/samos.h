@@ -37,7 +37,7 @@ private:
     int maxGrenadeCount;
     int missileCount;
     int maxMissileCount;
-    int jumpTime = 0;
+    int jumpTime = 20;
     std::string canonDirection = "Right";
 };
 
