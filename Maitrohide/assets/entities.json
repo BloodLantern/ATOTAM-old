@@ -199,7 +199,7 @@
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [-10, -15],
-				"yOffset": [15, 15],
+				"yOffset": [7, 7],
 				"reversed": false,
 				"overlay": [],
 				"loop": false
