@@ -237,46 +237,46 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     std::vector<QImage> anim;
 
     // Getting a json object representing the animation
-    nlohmann::json variantJson = values["textures"][values["names"][name]["texture"]][state];
+    nlohmann::json animJson = values["textures"][values["names"][name]["texture"]][state];
     // Getting the full animation image which will be cropped afterwards
-    QImage fullAnim = QImage(QString::fromStdString(std::string("../assets/textures/") + std::string(variantJson["file"])))
-            .copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
+    QImage fullAnim = QImage(QString::fromStdString(std::string("../assets/textures/") + std::string(animJson["file"])))
+            .copy(animJson["x"], animJson["y"], animJson["width"], animJson["height"]);
     // If the animation is multi-directional the program shouldn't keep the irrelevant part
-    if (!variantJson["multi-directional"].is_null())
-        if (variantJson["multi-directional"]) {
-            if (facing == "Left") {
-                fullAnim = fullAnim.copy(0, 0, static_cast<int>(variantJson["width"]) / 2, static_cast<int>(variantJson["height"]));
-            } else if (facing == "Right") {
-                fullAnim = fullAnim.copy(static_cast<int>(variantJson["width"]) / 2, 0,
-                        static_cast<int>(variantJson["width"]), static_cast<int>(variantJson["height"]));
+    if (!animJson["multi-directional"].is_null())
+        if (animJson["multi-directional"]) {
+            if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft") {
+                fullAnim = fullAnim.copy(0, 0, static_cast<int>(animJson["width"]) / 2, static_cast<int>(animJson["height"]));
+            } else if (facing == "Right" || facing == "UpRight" || facing == "DownRight") {
+                fullAnim = fullAnim.copy(static_cast<int>(animJson["width"]) / 2, 0,
+                        static_cast<int>(animJson["width"]), static_cast<int>(animJson["height"]));
             }
         }
 
-    int imagesPerLine = (static_cast<int>(variantJson["count"]) + static_cast<int>(variantJson["emptyFrames"])) / static_cast<int>(variantJson["lines"]);
-    int width = static_cast<int>(variantJson["width"]) / imagesPerLine;
+    int imagesPerLine = (static_cast<int>(animJson["count"]) + static_cast<int>(animJson["emptyFrames"])) / static_cast<int>(animJson["lines"]);
+    int width = static_cast<int>(animJson["width"]) / imagesPerLine;
     // Make sure not to get two images at a time
-    if (variantJson["multi-directional"])
+    if (animJson["multi-directional"])
         width /= 2;
-    int height = static_cast<int>(variantJson["height"]) / static_cast<int>(variantJson["lines"]);
+    int height = static_cast<int>(animJson["height"]) / static_cast<int>(animJson["lines"]);
     // For each line
-    for (int i = (variantJson["reversed"] ? static_cast<int>(variantJson["lines"]) - 1 : 0);
-         (variantJson["reversed"] ? i > -1 : i < variantJson["lines"]);
-         (variantJson["reversed"] ? i-- : i++)) {
+    for (int i = (animJson["reversed"] ? static_cast<int>(animJson["lines"]) - 1 : 0);
+         (animJson["reversed"] ? i > -1 : i < animJson["lines"]);
+         (animJson["reversed"] ? i-- : i++)) {
         // For each image
-        if (facing == "Right")
+        if (facing == "Right" || facing == "UpRight" || facing == "DownRight")
             for (int ii = 0;
-                 ii < (i + 1 == variantJson["lines"] ? /*Remove empty frames from the last line*/ imagesPerLine - static_cast<int>(variantJson["emptyFrames"]) : imagesPerLine); ii++) {
+                 ii < (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ imagesPerLine - static_cast<int>(animJson["emptyFrames"]) : imagesPerLine); ii++) {
                 anim.push_back(fullAnim.copy(ii * width, i * height, width, height));
             }
-        else if (facing == "Left")
+        else if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
             for (int ii = imagesPerLine - 1;
-                 ii > (i + 1 == variantJson["lines"] ? /*Remove empty frames from the last line*/ static_cast<int>(variantJson["emptyFrames"]) - 1 : -1);ii--) {
+                 ii > (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ static_cast<int>(animJson["emptyFrames"]) - 1 : -1);ii--) {
                 anim.push_back(fullAnim.copy(ii * width, i * height, width, height));
             }
     }
 
     // If the animation has an overlay, place it on top of the current one
-    for (nlohmann::json ovrly : variantJson["overlay"]) {
+    for (nlohmann::json ovrly : animJson["overlay"]) {
         std::vector<QImage> overlay = updateAnimation(ovrly);
         for (unsigned int i = 0; i < anim.size(); i++) {
             QImage result(std::max(overlay[i].width(), anim[i].width()), std::max(overlay[i].height(), anim[i].height()), anim[i].format());
@@ -287,12 +287,13 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
         }
     }
 
-    // Remove the empty pixels on the left
+    // Remove the empty pixels on the top-left
     for (unsigned int i = 0; i < anim.size(); i++) {
         QImage img = anim[i];
-        img = img.copy(variantJson["emptyXPixels"][facing == "Left" ? 0 : 1], variantJson["emptyYPixels"][facing == "Left" ? 0 : 1], // X and Y
-                img.width() - static_cast<int>(variantJson["emptyXPixels"][facing == "Left" ? 0 : 1]), // Width
-                img.height() - static_cast<int>(variantJson["emptyYPixels"][facing == "Left" ? 0 : 1])); // Height
+        if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
+            img.setOffset(QPoint(animJson["emptyXPixels"][0], animJson["emptyYPixels"][0]));
+        else if (facing == "Right" || facing == "UpRight" || facing == "DownRight")
+            img.setOffset(QPoint(animJson["emptyXPixels"][1], animJson["emptyYPixels"][1]));
         anim[i] = img;
     }
     return anim;

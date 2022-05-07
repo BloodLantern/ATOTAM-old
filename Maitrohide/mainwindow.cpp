@@ -181,11 +181,20 @@ void MainWindow::paintEvent(QPaintEvent *)
     for (Entity *entity : rendering) {
         if (entity->getTexture() == nullptr)
             entity->setTexture(&errorTexture);
-        painter.drawImage(QRect(entity->getX(), entity->getY(), entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
+        painter.drawImage(QRect(entity->getX() + entity->getTexture()->offset().x(), entity->getY() + entity->getTexture()->offset().y(),
+                                entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
                           *entity->getTexture());
-        painter.setPen(QColor("blue"));
-        if (renderHitboxes)
-            painter.drawRect(entity->getX() + entity->getBox()->getX(), entity->getY() + entity->getBox()->getY(), entity->getBox()->getWidth(), entity->getBox()->getHeight());
+        if (renderHitboxes) {
+            painter.setPen(QColor("blue"));
+            painter.drawRect(entity->getX() + entity->getBox()->getX(), entity->getY() + entity->getBox()->getY(),
+                             entity->getBox()->getWidth(), entity->getBox()->getHeight());
+            if (entity->getEntType() == "Samos" || entity->getEntType() == "Monster" || entity->getEntType() == "NPC" || entity->getEntType() == "DynamicObj") {
+                Living* liv = static_cast<Living*>(entity);
+                painter.setPen(QColor("green"));
+                painter.drawRect(liv->getX() + liv->getGroundBox()->getX(), liv->getY() + liv->getGroundBox()->getY(),
+                                 liv->getGroundBox()->getWidth(), liv->getGroundBox()->getHeight());
+            }
+        }
     }
     painter.end();
 }
