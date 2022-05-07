@@ -52,7 +52,7 @@ void gameClock(MainWindow* w, Samos* s) {
         preciseSleep(waitTime);
         //preciseSleep(waitTime);
         MainWindow::getInputs();
-        MainWindow::updateSamos(s);
+        w->updateSamos(s);
         w->updatePhysics();
         w->updateAnimations();
         w->update();
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     MainWindow::loadGeneral();
     MainWindow w(&a);
     //w.show();
-    Samos s(100, 10, 99, 5, 5);
+    Samos s(100, 300, 99, 5, 5);
     w.showFullScreen();
     /*nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
@@ -107,8 +107,6 @@ int main(int argc, char *argv[])
     w.addRenderable(&s8);
     Terrain s9(200, 850, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
     w.addRenderable(&s9);
-    Terrain s10(1260, 500, new CollisionBox(0, 0, 300*MainWindow::renderingMultiplier, 30*MainWindow::renderingMultiplier), &sol, "Terrain");
-    w.addRenderable(&s10);
     Terrain m1(0, 0, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
     w.addRenderable(&m1);
     Terrain m2(0, 600, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
@@ -117,6 +115,8 @@ int main(int argc, char *argv[])
     w.addRenderable(&m3);
     Terrain m4(1860, 600, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
     w.addRenderable(&m4);
+    Terrain m5(1600, 300, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
+    w.addRenderable(&m5);
     std::future<void> fobj1 = std::async(gameClock, &w, &s);
     return a.exec();
 }

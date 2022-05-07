@@ -37,7 +37,6 @@ public:
     static void loadGeneral();
     static std::map<std::string, bool> inputList;
     static void getInputs();
-    static void updateSamos(Samos* s);
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
@@ -45,6 +44,7 @@ public:
     void clearRendering();
     void updatePhysics();
     void updateAnimations();
+    void updateSamos(Samos* s);
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);

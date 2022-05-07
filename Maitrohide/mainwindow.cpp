@@ -54,10 +54,10 @@ void MainWindow::getInputs()
 void MainWindow::updateSamos(Samos *s)
 {
     if (s->getOnGround() || !s->getIsAffectedByGravity()) {
-        if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd")) {
+        if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")) {
             if (s->getState() == "Falling") {
                 s->setY(s->getY() - (s->getBox()->getHeight() * 0.2 - 3 * renderingMultiplier));
-            } else if (s->getState() == "SpinJump") {
+            } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
                 s->setY(s->getY() - (s->getBox()->getHeight() * 2 - 14 * renderingMultiplier));
             }
             s->setState("Landing");
@@ -105,11 +105,20 @@ void MainWindow::updateSamos(Samos *s)
             s->setJumpTime(-1);
         }
     } else {
-        if (inputList["left"] && !inputList["right"]) {
-            if (s->getVX() > -200) {
-                s->setVX(s->getVX() - 30);
-            } else if (s->getVX() < -200 && s->getVX() > -220) {
-                s->setVX(-220);
+        if (inputList["jump"] && s->getJumpTime() == -1 && s->getState() == "WallJump") {
+            if (s->getFacing() == "Left") {
+                s->setVX(-600);
+            } else {
+                s->setVX(600);
+            }
+            s->setVY(-300);
+            s->setState("SpinJump");
+            s->setJumpTime(0);
+        } else if (inputList["left"] && !inputList["right"]) {
+            if (s->getVX() > -150) {
+                s->setVX(s->getVX() - 25);
+            } else if (s->getVX() < -150 && s->getVX() > -170) {
+                s->setVX(-170);
             }
             s->setFrictionFactor(0.1);
             s->setFacing("Left");
@@ -119,14 +128,14 @@ void MainWindow::updateSamos(Samos *s)
             } else {
                 s->setJumpTime(20);
             }
-            if (!(s->getState() == "SpinJump")) {
+            if (!(s->getState() == "SpinJump") && !(s->getState() == "WallJump")) {
                 s->setState("Falling");
             }
         } else if (!inputList["left"] && inputList["right"]) {
-            if (s->getVX() < 200) {
-                s->setVX(s->getVX() + 30);
-            } else if (s->getVX() > 200 && s->getVX() < 220) {
-                s->setVX(220);
+            if (s->getVX() < 150) {
+                s->setVX(s->getVX() + 25);
+            } else if (s->getVX() < -150 && s->getVX() > -170) {
+                s->setVX(-170);
             }
             s->setFrictionFactor(0.1);
             s->setFacing("Right");
@@ -136,7 +145,7 @@ void MainWindow::updateSamos(Samos *s)
             } else {
                 s->setJumpTime(20);
             }
-            if (!(s->getState() == "SpinJump")) {
+            if (!(s->getState() == "SpinJump") && !(s->getState() == "WallJump")) {
                 s->setState("Falling");
             }
         } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
@@ -150,7 +159,7 @@ void MainWindow::updateSamos(Samos *s)
             } else {
                 s->setJumpTime(20);
             }
-            if (!(s->getState() == "SpinJump") && !(s->getState() == "Jumping") && !(s->getState() == "JumpEnd")) {
+            if (!(s->getState() == "SpinJump") && !(s->getState() == "Jumping") && !(s->getState() == "JumpEnd") && !(s->getState() == "WallJump")) {
                 s->setState("Falling");
             }
         }
@@ -159,24 +168,60 @@ void MainWindow::updateSamos(Samos *s)
 
     nlohmann::json entJson = Entity::values["names"]["Samos"];
 
-    if (s->getState() == "SpinJump") {
+    if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
         s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingMultiplier,
                   (static_cast<int>(entJson["offset_y"]) + 14) * renderingMultiplier,
                   static_cast<int>(entJson["width"]) * renderingMultiplier,
                   static_cast<int>(entJson["height"]) * renderingMultiplier / 3));
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
+        s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 2, s->getBox()->getHeight()));
+        s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
     } else if (s->getState() == "Falling") {
         s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingMultiplier,
                   (static_cast<int>(entJson["offset_y"]) + 3) * renderingMultiplier,
                   static_cast<int>(entJson["width"]) * renderingMultiplier,
                   static_cast<int>(entJson["height"]) * renderingMultiplier / 1.2));
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
+        s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 2, s->getBox()->getHeight()));
+        s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
     } else {
         s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingMultiplier,
                   static_cast<int>(entJson["offset_y"]) * renderingMultiplier,
                   static_cast<int>(entJson["width"]) * renderingMultiplier,
                   static_cast<int>(entJson["height"]) * renderingMultiplier));
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
+        s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 2, s->getBox()->getHeight()));
+        s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
+    }
+
+    if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
+        std::string wallJump;
+        for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
+            if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
+                if (s->checkWall(s->getWallBoxL(),*j)) {
+                    wallJump = "Left";
+                } else if (s->checkWall(s->getWallBoxR(),*j)) {
+                    wallJump = "Right";
+                }
+            }
+        }
+
+        if (wallJump == "Right") {
+            s->setFacing("Left");
+            s->setState("WallJump");
+            if (!inputList["jump"])
+                s->setJumpTime(-1);
+            s->setVY(s->getVY() * (1.0 - 0.01 * std::abs(s->getVY()) / MainWindow::frameRate));
+        } else if (wallJump == "Left") {
+            s->setFacing("Right");
+            s->setState("WallJump");
+            if (!inputList["jump"])
+                s->setJumpTime(-1);
+            s->setVY(s->getVY() * (1.0 - 0.01 * std::abs(s->getVY()) / MainWindow::frameRate));
+        } else if (s->getState() == "WallJump") {
+            s->setState("SpinJump");
+            s->setJumpTime(20);
+        }
     }
 }
 
@@ -203,6 +248,11 @@ void MainWindow::paintEvent(QPaintEvent *)
                 painter.setPen(QColor("green"));
                 painter.drawRect(liv->getX() + liv->getGroundBox()->getX(), liv->getY() + liv->getGroundBox()->getY(),
                                  liv->getGroundBox()->getWidth(), liv->getGroundBox()->getHeight());
+                if (entity->getEntType() == "Samos") {
+                    Samos* s = static_cast<Samos*>(liv);
+                    painter.drawRect(s->getX() + s->getWallBoxL()->getX(), s->getY() + s->getWallBoxL()->getY(), s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
+                    painter.drawRect(s->getX() + s->getWallBoxR()->getX(), s->getY() + s->getWallBoxR()->getY(), s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
+                }
             }
         }
     }

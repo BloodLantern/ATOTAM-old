@@ -4,7 +4,7 @@
 		"frameRate": 60.0,
 		"gravity": 600.0,
 		"renderingMultiplier": 2,
-		"renderHitboxes": true
+		"renderHitboxes": false
 	},
 	"names": {
 		"Samos": {
@@ -471,7 +471,7 @@
 				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [0, 0],
+				"xOffset": [-21, -3],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],

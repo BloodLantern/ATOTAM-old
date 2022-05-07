@@ -12,6 +12,7 @@ public:
     ~Samos();
 
     void shoot(std::string type);
+    bool checkWall(CollisionBox* wallBox, Entity* wall);
 
     bool getIsInAltForm() const;
     void setIsInAltForm(bool newIsInAltForm);
@@ -31,6 +32,12 @@ public:
     int getJumpTime() const;
     void setJumpTime(int newJumpTime);
 
+    CollisionBox *getWallBoxR() const;
+    void setWallBoxR(CollisionBox *newWallBoxR);
+
+    CollisionBox *getWallBoxL() const;
+    void setWallBoxL(CollisionBox *newWallBoxL);
+
 private:
     bool isInAltForm;
     int grenadeCount;
@@ -39,6 +46,8 @@ private:
     int maxMissileCount;
     int jumpTime = 20;
     std::string canonDirection = "Right";
+    CollisionBox* wallBoxR;
+    CollisionBox* wallBoxL;
 };
 
 #endif // SAMOS_H

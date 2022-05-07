@@ -3,20 +3,27 @@
 
 Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount)
     : Living(x, y, "Right", "Samos"),
-      isInAltForm(false), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount)
+      isInAltForm(false), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount),
+      wallBoxR(new CollisionBox(getBox()->getX() + getBox()->getWidth(), getBox()->getY(), 2, getBox()->getHeight())),
+      wallBoxL(new CollisionBox(getBox()->getX() - 2, getBox()->getY(), 2, getBox()->getHeight()))
 {
     setMaxHealth(maxHealth);
 }
 
 Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox *box, QImage *texture, std::string entityType, int health, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
-    : Living(x, y, box, texture, entityType, health, maxHealth, isAffectedByGravity, facing, frictionFactor, name, isMovable), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount)
+    : Living(x, y, box, texture, entityType, health, maxHealth, isAffectedByGravity, facing, frictionFactor, name, isMovable),
+      maxGrenadeCount(maxGrenadeCount),
+      maxMissileCount(maxMissileCount),
+      wallBoxR(new CollisionBox(box->getX() + box->getWidth(), box->getY(), 2, box->getHeight())),
+      wallBoxL(new CollisionBox(box->getX() - 2, box->getY(), 2, box->getHeight()))
 {
 
 }
 
 Samos::~Samos()
 {
-
+    delete wallBoxL;
+    delete wallBoxR;
 }
 
 void Samos::shoot(std::string type)
@@ -59,6 +66,14 @@ void Samos::shoot(std::string type)
     }
 
     delete projectile; // TEMP
+}
+
+bool Samos::checkWall(CollisionBox *wallBox, Entity *wall)
+{
+    return (getX() + wallBox->getX() + wallBox->getWidth() > wall->getX() + wall->getBox()->getX())
+            && (getX() + wallBox->getX() < wall->getX() + wall->getBox()->getX()  + wall->getBox()->getWidth())
+            && (getY()) + wallBox->getY() + wallBox->getHeight() > wall->getY() + wall->getBox()->getY()
+            && (getY() + wallBox->getY() < wall->getY() + wall->getBox()->getY()  + wall->getBox()->getHeight());
 }
 
 bool Samos::getIsInAltForm() const
@@ -119,4 +134,26 @@ int Samos::getJumpTime() const
 void Samos::setJumpTime(int newJumpTime)
 {
     jumpTime = newJumpTime;
+}
+
+CollisionBox *Samos::getWallBoxR() const
+{
+    return wallBoxR;
+}
+
+void Samos::setWallBoxR(CollisionBox *newWallBoxR)
+{
+    delete wallBoxR;
+    wallBoxR = newWallBoxR;
+}
+
+CollisionBox *Samos::getWallBoxL() const
+{
+    return wallBoxL;
+}
+
+void Samos::setWallBoxL(CollisionBox *newWallBoxL)
+{
+    delete wallBoxL;
+    wallBoxL = newWallBoxL;
 }

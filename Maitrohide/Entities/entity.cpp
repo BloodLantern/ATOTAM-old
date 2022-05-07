@@ -195,7 +195,7 @@ void Entity::updateV(double framerate)
 {
     x += vX/framerate;
     y += vY/framerate;
-    if (std::abs(vX) < 25) vX = 0;
+    if (std::abs(vX) < 20) vX = 0;
 }
 
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
