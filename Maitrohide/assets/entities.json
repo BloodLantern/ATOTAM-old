@@ -36,13 +36,15 @@
 				"height": 48,
 				"count": 3,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [-11, -20],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 30
 			},
 			"IdleCrouch": {
 				"file": "samos.png",
@@ -52,13 +54,15 @@
 				"height": 32,
 				"count": 3,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [0, 0],
 				"yOffset": [0, 0],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 30
 			},
 			"Crouching": {
 				"file": "samos.png",
@@ -68,13 +72,15 @@
 				"height": 144,
 				"count": 3,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 3,
 				"multi-directional": true,
 				"xOffset": [0, 0],
 				"yOffset": [0, 0],
 				"reversed": false,
 				"overlay": [],
-				"loop": false
+				"loop": false,
+				"refreshRate": 3
 			},
 			"Uncrouching": {
 				"file": "samos.png",
@@ -84,13 +90,15 @@
 				"height": 144,
 				"count": 3,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 3,
 				"multi-directional": true,
 				"xOffset": [0, 0],
 				"yOffset": [0, 0],
 				"reversed": true,
 				"overlay": [],
-				"loop": false
+				"loop": false,
+				"refreshRate": 3
 			},
 			"MorphBalling": {
 				"file": "samos.png",
@@ -100,13 +108,15 @@
 				"height": 50,
 				"count": 2,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [0, 0],
 				"yOffset": [0, 0],
 				"reversed": false,
 				"overlay": [],
-				"loop": false
+				"loop": false,
+				"refreshRate": 3
 			},
 			"MorphBall": {
 				"file": "samos.png",
@@ -116,13 +126,15 @@
 				"height": 98,
 				"count": 8,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 2,
 				"multi-directional": true,
 				"xOffset": [0, 0],
 				"yOffset": [0, 0],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 3
 			},
 			"Walking": {
 				"file": "samos.png",
@@ -132,13 +144,15 @@
 				"height": 148,
 				"count": 10,
 				"emptyFrames": 2,
+				"emptyFramesReversed": false,
 				"lines": 3,
 				"multi-directional": true,
 				"xOffset": [-6, -20],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 3
 			},
 			"WalkingAimUp": {
 				"file": "samos.png",
@@ -148,13 +162,15 @@
 				"height": 148,
 				"count": 10,
 				"emptyFrames": 2,
+				"emptyFramesReversed": false,
 				"lines": 3,
 				"multi-directional": true,
 				"xOffset": [-6, -20],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 3
 			},
 			"WalkingAimForward": {
 				"file": "samos.png",
@@ -164,13 +180,15 @@
 				"height": 148,
 				"count": 10,
 				"emptyFrames": 2,
+				"emptyFramesReversed": false,
 				"lines": 3,
 				"multi-directional": true,
 				"xOffset": [-6, -20],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 3
 			},
 			"WalkingAimDown": {
 				"file": "samos.png",
@@ -180,13 +198,15 @@
 				"height": 148,
 				"count": 10,
 				"emptyFrames": 2,
+				"emptyFramesReversed": false,
 				"lines": 3,
 				"multi-directional": true,
 				"xOffset": [-6, -20],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 3
 			},
 			"Jumping": {
 				"file": "samos.png",
@@ -196,13 +216,15 @@
 				"height": 50,
 				"count": 3,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-2, -25],
+				"xOffset": [-3, -25],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": false
+				"loop": false,
+				"refreshRate": 3
 			},
 			"JumpEnd": {
 				"file": "samos.png",
@@ -212,13 +234,15 @@
 				"height": 50,
 				"count": 4,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-2, -24],
+				"xOffset": [-4, -24],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": false
+				"loop": false,
+				"refreshRate": 3
 			},
 			"Falling": {
 				"file": "samos.png",
@@ -228,13 +252,15 @@
 				"height": 48,
 				"count": 1,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [-10, -15],
 				"yOffset": [7, 7],
 				"reversed": false,
 				"overlay": [],
-				"loop": false
+				"loop": false,
+				"refreshRate": 3
 			},
 			"Landing": {
 				"file": "samos.png",
@@ -244,13 +270,15 @@
 				"height": 50,
 				"count": 1,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [-10, -15],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": false
+				"loop": false,
+				"refreshRate": 3
 			},
 			"SpinJump": {
 				"file": "samos.png",
@@ -260,13 +288,33 @@
 				"height": 99,
 				"count": 8,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 2,
 				"multi-directional": true,
 				"xOffset": [-10, -20],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 3
+			},
+			"WallJump": {
+				"file": "samos.png",
+				"x": 187,
+				"y": 458,
+				"width": 96,
+				"height": 48,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": true,
+				"xOffset": [0, 0],
+				"yOffset": [12, 12],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": 3
 			},
 			"Pre-Spawning": {
 				"file": "samos.png",
@@ -276,13 +324,15 @@
 				"height": 150,
 				"count": 3,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 3,
 				"multi-directional": false,
 				"xOffset": [0, 0],
 				"yOffset": [0, 0],
 				"reversed": false,
 				"overlay": [],
-				"loop": true
+				"loop": true,
+				"refreshRate": 3
 			},
 			"Spawning": {
 				"file": "samos.png",
@@ -292,13 +342,15 @@
 				"height": 350,
 				"count": 7,
 				"emptyFrames": 0,
+				"emptyFramesReversed": false,
 				"lines": 7,
 				"multi-directional": false,
 				"xOffset": [0, 0],
 				"yOffset": [0, 0],
 				"reversed": false,
 				"overlay": [],
-				"loop": false
+				"loop": false,
+				"refreshRate": 3
 			}
 		}
 	}

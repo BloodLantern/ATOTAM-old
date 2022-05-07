@@ -265,12 +265,18 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
         // For each image
         if (facing == "Right" || facing == "UpRight" || facing == "DownRight")
             for (int ii = 0;
-                 ii < (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ imagesPerLine - static_cast<int>(animJson["emptyFrames"]) : imagesPerLine); ii++) {
+                 ii < (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ animJson["emptyFramesReversed"] ?
+                       imagesPerLine : imagesPerLine - static_cast<int>(animJson["emptyFrames"]) : imagesPerLine); ii++) {
+                if (animJson["emptyFramesReversed"] && i + 1 == animJson["lines"])
+                    ii += static_cast<int>(animJson["emptyFrames"]);
                 anim.push_back(fullAnim.copy(ii * width, i * height, width, height));
             }
         else if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
             for (int ii = imagesPerLine - 1;
-                 ii > (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ static_cast<int>(animJson["emptyFrames"]) - 1 : -1);ii--) {
+                 ii > (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ animJson["emptyFramesReversed"] ?
+                       -1 : static_cast<int>(animJson["emptyFrames"]) - 1 : -1); ii--) {
+                if (animJson["emptyFramesReversed"] && i + 1 == animJson["lines"])
+                    ii -= static_cast<int>(animJson["emptyFrames"]);
                 anim.push_back(fullAnim.copy(ii * width, i * height, width, height));
             }
     }
