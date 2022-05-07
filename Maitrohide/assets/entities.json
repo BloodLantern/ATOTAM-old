@@ -38,8 +38,8 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": true,
-				"emptyXPixels": [5, 10],
-				"emptyYPixels": [5, 5],
+				"emptyXPixels": [-11, -20],
+				"emptyYPixels": [12, 12],
 				"reversed": false,
 				"overlay": [],
 				"loop": true
@@ -124,7 +124,7 @@
 				"overlay": [],
 				"loop": true
 			},
-			"Walkinga": {
+			"Walking": {
 				"file": "samos.png",
 				"x": 43,
 				"y": 1008,
@@ -134,13 +134,13 @@
 				"emptyFrames": 2,
 				"lines": 3,
 				"multi-directional": true,
-				"emptyXPixels": [3, 9],
-				"emptyYPixels": [5, 5],
+				"emptyXPixels": [-6, -20],
+				"emptyYPixels": [12, 12],
 				"reversed": false,
 				"overlay": [],
 				"loop": true
 			},
-			"Walking": {
+			"Walkinga": {
 				"file": "samos.png",
 				"x": 43,
 				"y": 1156,
@@ -151,7 +151,7 @@
 				"lines": 3,
 				"multi-directional": true,
 				"emptyXPixels": [3, 9],
-				"emptyYPixels": [25, 25],
+				"emptyYPixels": [10, 10],
 				"reversed": false,
 				"overlay": [],
 				"loop": true
@@ -166,8 +166,8 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": true,
-				"emptyXPixels": [2, 11],
-				"emptyYPixels": [5, 5],
+				"emptyXPixels": [-2, -25],
+				"emptyYPixels": [12, 12],
 				"reversed": false,
 				"overlay": [],
 				"loop": false
@@ -182,8 +182,8 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": true,
-				"emptyXPixels": [2, 12],
-				"emptyYPixels": [5, 5],
+				"emptyXPixels": [-2, -24],
+				"emptyYPixels": [12, 12],
 				"reversed": false,
 				"overlay": [],
 				"loop": false
@@ -198,8 +198,8 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": true,
-				"emptyXPixels": [6, 6],
-				"emptyYPixels": [8, 8],
+				"emptyXPixels": [-10, -15],
+				"emptyYPixels": [15, 15],
 				"reversed": false,
 				"overlay": [],
 				"loop": false
@@ -214,8 +214,8 @@
 				"emptyFrames": 0,
 				"lines": 1,
 				"multi-directional": true,
-				"emptyXPixels": [0, 0],
-				"emptyYPixels": [0, 0],
+				"emptyXPixels": [-10, -15],
+				"emptyYPixels": [12, 12],
 				"reversed": false,
 				"overlay": [],
 				"loop": false
@@ -230,8 +230,8 @@
 				"emptyFrames": 0,
 				"lines": 2,
 				"multi-directional": true,
-				"emptyXPixels": [3, 10],
-				"emptyYPixels": [5, 5],
+				"emptyXPixels": [-10, -20],
+				"emptyYPixels": [12, 12],
 				"reversed": false,
 				"overlay": [],
 				"loop": true
