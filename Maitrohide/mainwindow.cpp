@@ -146,8 +146,6 @@ void MainWindow::updateSamos(Samos *s)
                 }
             }
         }
-    std::cout << s->getState() << std::endl;
-    std::cout << s->getJumpTime() << std::endl;
     }
 
     nlohmann::json entJson = Entity::values["names"]["Samos"];
@@ -244,23 +242,32 @@ void MainWindow::updatePhysics()
 void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
+        // If the animation index still exists
+        if (entity->getCurrentAnimation().size() > entity->getAnimation() + 1)
+            // Increment the animation index
+            entity->setAnimation(entity->getAnimation() + 1);
+
         // If the entity state is different from the last frame
         if (entity->getState() != entity->getLastFrameState()
                 || entity->getFacing() != entity->getLastFrameFacing()) {
             // Update the QImage array representing the animation
             entity->setCurrentAnimation(entity->updateAnimation(entity->getState()));
+            // Because the animation changed, reset its index
+            entity->setAnimation(0);
         }
-        // Increment the animation index
-        entity->setAnimation(entity->getAnimation() + 1);
+
         // If the animation has to loop
-        if (!Entity::values["textures"][entity->getName()][entity->getState()]["loop"].is_null()) // TEMP
+        if (!Entity::values["textures"][entity->getName()][entity->getState()]["loop"].is_null())
             if (Entity::values["textures"][entity->getName()][entity->getState()]["loop"])
                 // If the animation index still exists
-                if (entity->getCurrentAnimation().size() <= entity->getAnimation())
+                if (entity->getCurrentAnimation().size() <= entity->getAnimation() + 1)
                     // Reset animation
                     entity->setAnimation(0);
+
         // Update the texture with the animation index
         entity->updateTexture();
+
+        // Make sure to update these values for the next frame
         entity->setLastFrameState(entity->getState());
         entity->setLastFrameFacing(entity->getFacing());
     }

@@ -227,10 +227,8 @@ Entity::~Entity()
 
 void Entity::updateTexture()
 {
-    if (animation >= currentAnimation.size())
-        animation = 0;
-    QImage* newTexture = &currentAnimation[animation];
-    texture = (newTexture == nullptr ? texture : newTexture);
+    if (currentAnimation.size() > 0)
+        texture = &currentAnimation[animation];
 }
 
 std::vector<QImage> Entity::updateAnimation(std::string state)
