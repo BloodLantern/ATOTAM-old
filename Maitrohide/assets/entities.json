@@ -9,9 +9,9 @@
 	"names": {
 		"Samos": {
 			"texture": "Samos",
-			"offset_x": 200,
+			"offset_x": 20,
 			"offset_y": 0,
-			"width": 26,
+			"width": 15,
 			"height": 43,
 			"type": "Samos",
 			"gravity": true,

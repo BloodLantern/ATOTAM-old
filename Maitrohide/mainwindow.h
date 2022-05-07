@@ -26,6 +26,7 @@ public:
 
     static bool renderHitboxes; // Render hitboxes as rectangles
     static int renderingMultiplier; // Textures are rendered with their size being multiplied by this value
+    static QImage errorTexture;
     static bool running;
     static double frameRate; //fps
     static double gameSpeed;

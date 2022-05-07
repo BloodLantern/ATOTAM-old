@@ -9,6 +9,7 @@ int MainWindow::renderingMultiplier;
 unsigned long long MainWindow::frameCount;
 double MainWindow::gravity;
 std::map<std::string, bool> MainWindow::inputList;
+QImage MainWindow::errorTexture("../assets/textures/error.png");
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -151,6 +152,8 @@ void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     for (Entity *entity : rendering) {
+        if (entity->getTexture() == nullptr)
+            entity->setTexture(&errorTexture);
         painter.drawImage(QRect(entity->getX(), entity->getY(), entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
                           *entity->getTexture());
         painter.setPen(QColor("blue"));
