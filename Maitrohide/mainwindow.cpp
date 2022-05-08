@@ -53,162 +53,295 @@ void MainWindow::getInputs()
 
 void MainWindow::updateSamos(Samos *s)
 {
-    std::string wall;
-    for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
-        if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
-            if (s->checkWall(s->getWallBoxL(),*j)) {
-                wall = "Left";
-            } else if (s->checkWall(s->getWallBoxR(),*j)) {
-                wall = "Right";
-            }
-        }
-    }
-    if (s->getOnGround() || !s->getIsAffectedByGravity()) {
-        if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")) {
-            if (s->getState() == "Falling") {
-                s->setY(s->getY() - (s->getBox()->getHeight() * 0.2 - 3 * renderingMultiplier));
-            } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-                s->setY(s->getY() - (s->getBox()->getHeight() * 2 - 14 * renderingMultiplier));
-            }
-            s->setState("Landing");
-        } else if (inputList["left"] && !inputList["right"]) {
-            if (wall != "Left") {
-                if (s->getVX() > -400) {
-                    s->setVX(s->getVX() - 30);
-                } else if (s->getVX() < -400 && s->getVX() > -420) {
-                    s->setVX(-420);
+    if (inputList["aim"]) {
+        if (s->getOnGround() || !s->getIsAffectedByGravity()) {
+            if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
+                    || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                    s->setY(s->getY() - (s->getBox()->getHeight() * 0.2 - 3 * renderingMultiplier));
+                } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
+                    s->setY(s->getY() - (s->getBox()->getHeight() * 2 - 14 * renderingMultiplier));
                 }
-                s->setFrictionFactor(0.1);
-            }
-            s->setFacing("Left");
-            if (inputList["jump"] && s->getJumpTime() == -1) {
-                s->setVY(-350);
-                s->setJumpTime(0);
-                s->setState("SpinJump");
-            } else if (wall != "Left") {
-                if (inputList["down"] && !inputList["up"])
-                    s->setState("WalkingAimDown");
-                else if (!inputList["down"] && inputList["up"])
-                    s->setState("WalkingAimUp");
-                else
-                    s->setState("Walking");
-            } else {
-                s->setState("Standing");
-            }
-        } else if (!inputList["left"] && inputList["right"]) {
-            if (wall != "Right") {
-                if (s->getVX() < 400) {
-                    s->setVX(s->getVX() + 30);
-                } else if (s->getVX() > 400 && s->getVX() < 420) {
-                    s->setVX(420);
-                }
-                s->setFrictionFactor(0.1);
-            }
-            s->setFacing("Right");
-            if (inputList["jump"] && s->getJumpTime() == -1) {
-                s->setVY(-350);
-                s->setJumpTime(0);
-                s->setState("SpinJump");
-            } else if (wall != "Right") {
-                if (inputList["down"] && !inputList["up"])
-                    s->setState("WalkingAimDown");
-                else if (!inputList["down"] && inputList["up"])
-                    s->setState("WalkingAimUp");
-                else
-                    s->setState("Walking");
-            } else {
-                s->setState("Standing");
-            }
-        } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
-            s->setFrictionFactor(1);
-            if (inputList["jump"] && s->getJumpTime() == -1) {
+                s->setState("Landing");
+            } else if (inputList["jump"] && s->getJumpTime() == -1) {
                 s->setVY(-350);
                 s->setJumpTime(0);
                 s->setState("Jumping");
+            } else if (s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") {
+                if (inputList["left"] && !inputList["right"]) {
+                    s->setFacing("Left");
+                    if (inputList["up"] && !inputList["down"]) {
+                        s->setState("CrouchAimUpDiag");
+                    } else
+                        s->setState("IdleCrouch");
+                } else if (inputList["right"] && !inputList["left"]) {
+                    s->setFacing("Right");
+                    if (inputList["up"] && !inputList["down"]) {
+                        s->setState("CrouchAimUpDiag");
+                    } else
+                        s->setState("IdleCrouch");
+                } else {
+                    if (inputList["up"] && !inputList["down"]) {
+                        s->setState("CrouchAimUp");
+                    } else
+                        s->setState("IdleCrouch");
+                }
             } else {
-                if (((!inputList["down"] && !inputList["up"]) || (inputList["down"] && inputList["up"])) && s->getState() != "Crouching" && s->getState() != "Uncrouching" && s->getState() != "IdleCrouch")
-                    s->setState("Standing");
-                else if (((s->getState() == "Crouching" && s->getAnimation() == 2) || s->getState() == "IdleCrouch") && !inputList["up"])
-                    s->setState("IdleCrouch");
-                else if (!inputList["up"] && !(s->getState() == "Uncrouching" && !inputList["down"]))
-                    s->setState("Crouching");
-                else if (((s->getState() == "Uncrouching" && s->getAnimation() == 2)))
-                    s->setState("Standing");
-                else if (s->getState() == "Uncrouching" || s->getState() == "Crouching" || s->getState() == "IdleCrouch")
-                    s->setState("Uncrouching");
-                else
-                    s->setState("Standing");
+                    if (inputList["left"] && !inputList["right"]) {
+                    s->setFacing("Left");
+                    if (inputList["up"] && !inputList["down"]) {
+                        s->setState("StandingAimUpDiag");
+                    } else if (inputList["down"] && !inputList["up"]) {
+                        s->setState("StandingAimDownDiag");
+                    } else
+                        s->setState("Standing");
+                } else if (inputList["right"] && !inputList["left"]) {
+                    s->setFacing("Right");
+                    if (inputList["up"] && !inputList["down"]) {
+                        s->setState("StandingAimUpDiag");
+                    } else if (inputList["down"] && !inputList["up"]) {
+                        s->setState("StandingAimDownDiag");
+                    } else
+                        s->setState("Standing");
+                } else {
+                    if (inputList["up"] && !inputList["down"]) {
+                        s->setState("StandingAimUp");
+                    } else
+                        s->setState("Standing");
+                }
             }
-        }
-        if (!inputList["jump"]) {
-            s->setJumpTime(-1);
-        }
-    } else {
-        if (inputList["jump"] && ((s->getJumpTime() == -1 && s->getState() == "WallJump") || ((s->getJumpTime() == -2 || s->getJumpTime() == -3) && s->getState() == "SpinJump"))) {
-            if (s->getFacing() == "Left") {
-                s->setVX(-600);
-            } else {
-                s->setVX(600);
-            }
-            s->setVY(-300);
-            s->setState("SpinJump");
-            s->setJumpTime(20);
-        } else if (s->getJumpTime() == -3) {
-            s->setJumpTime(-2);
-        } else if (s->getJumpTime() == -2) {
-            s->setJumpTime(20);
-        }  else if (inputList["left"] && !inputList["right"]) {
-            if (s->getVX() > -150) {
-                s->setVX(s->getVX() - 25);
-            } else if (s->getVX() < -150 && s->getVX() > -170) {
-                s->setVX(-170);
-            }
-            s->setFrictionFactor(0.1);
-            s->setFacing("Left");
-            if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
-                s->setVY(s->getVY() - 10);
-                s->setJumpTime(s->getJumpTime() + 1);
-            } else {
-                s->setJumpTime(20);
-            }
-            if (!(s->getState() == "SpinJump") && !(s->getState() == "WallJump")) {
-                s->setState("Falling");
-            }
-        } else if (!inputList["left"] && inputList["right"]) {
-            if (s->getVX() < 150) {
-                s->setVX(s->getVX() + 25);
-            } else if (s->getVX() < -150 && s->getVX() > -170) {
-                s->setVX(-170);
-            }
-            s->setFrictionFactor(0.1);
-            s->setFacing("Right");
-            if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
-                s->setVY(s->getVY() - 10);
-                s->setJumpTime(s->getJumpTime() + 1);
-            } else {
-                s->setJumpTime(20);
-            }
-            if (!(s->getState() == "SpinJump") && !(s->getState() == "WallJump")) {
-                s->setState("Falling");
-            }
-        } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
             s->setFrictionFactor(1);
-            if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
-                s->setVY(s->getVY() - 10);
-                s->setJumpTime(s->getJumpTime() + 1);
-            } else if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= 20)) {
-                s->setState("JumpEnd");
-                s->setJumpTime(20);
-            } else {
-                s->setJumpTime(20);
+            if (!inputList["jump"]) {
+                s->setJumpTime(-1);
             }
-            if (!(s->getState() == "SpinJump") && !(s->getState() == "Jumping") && !(s->getState() == "JumpEnd") && !(s->getState() == "WallJump")) {
-                s->setState("Falling");
+        }
+        if ((!s->getOnGround() && s->getIsAffectedByGravity()) || s->getState() == "Jumping") {
+            if (inputList["jump"] && ((s->getJumpTime() == -1 && s->getState() == "WallJump") || ((s->getJumpTime() == -2 || s->getJumpTime() == -3) && s->getState() == "SpinJump"))) {
+                if (s->getFacing() == "Left") {
+                    s->setVX(-600);
+                } else {
+                    s->setVX(600);
+                }
+                s->setVY(-300);
+                s->setJumpTime(20);
+            } else if (s->getJumpTime() == -3) {
+                s->setJumpTime(-2);
+            } else if (s->getJumpTime() == -2) {
+                s->setJumpTime(20);
+            } else if (inputList["left"] && !inputList["right"]) {
+                if (s->getVX() > -150) {
+                    s->setVX(s->getVX() - 25);
+                } else if (s->getVX() < -150 && s->getVX() > -170) {
+                    s->setVX(-170);
+                }
+                s->setFrictionFactor(0.1);
+                s->setFacing("Left");
+                if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                } else {
+                    s->setJumpTime(20);
+                }
+                if (inputList["up"] && !inputList["down"]) {
+                    s->setState("FallingAimUpDiag");
+                } else if (inputList["down"] && !inputList["up"]) {
+                    s->setState("FallingAimDownDiag");
+                } else
+                    s->setState("Falling");
+            } else if (!inputList["left"] && inputList["right"]) {
+                if (s->getVX() < 150) {
+                    s->setVX(s->getVX() + 25);
+                } else if (s->getVX() < -150 && s->getVX() > -170) {
+                    s->setVX(-170);
+                }
+                s->setFrictionFactor(0.1);
+                s->setFacing("Right");
+                if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                } else {
+                    s->setJumpTime(20);
+                }
+                if (inputList["up"] && !inputList["down"]) {
+                    s->setState("FallingAimUpDiag");
+                } else if (inputList["down"] && !inputList["up"]) {
+                    s->setState("FallingAimDownDiag");
+                } else
+                    s->setState("Falling");
+            } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
+                s->setFrictionFactor(1);
+                if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                } else {
+                    s->setJumpTime(20);
+                }
+                if (inputList["up"] && !inputList["down"]) {
+                    s->setState("FallingAimUp");
+                } else if (inputList["down"] && !inputList["up"]) {
+                    s->setState("FallingAimDown");
+                } else
+                    s->setState("Falling");
             }
         }
 
+    } else {
+        std::string wall;
+        for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
+            if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
+                if (s->checkWall(s->getWallBoxL(),*j)) {
+                    wall = "Left";
+                } else if (s->checkWall(s->getWallBoxR(),*j)) {
+                    wall = "Right";
+                }
+            }
+        }
+        if (s->getOnGround() || !s->getIsAffectedByGravity()) {
+            if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
+                    || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                    s->setY(s->getY() - (s->getBox()->getHeight() * 0.2 - 3 * renderingMultiplier));
+                } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
+                    s->setY(s->getY() - (s->getBox()->getHeight() * 2 - 14 * renderingMultiplier));
+                }
+                s->setState("Landing");
+            } else if (inputList["left"] && !inputList["right"]) {
+                if (wall != "Left") {
+                    if (s->getVX() > -400) {
+                        s->setVX(s->getVX() - 30);
+                    } else if (s->getVX() < -400 && s->getVX() > -420) {
+                        s->setVX(-420);
+                    }
+                    s->setFrictionFactor(0.1);
+                }
+                s->setFacing("Left");
+                if (inputList["jump"] && s->getJumpTime() == -1) {
+                    s->setVY(-350);
+                    s->setJumpTime(0);
+                    s->setState("SpinJump");
+                } else if (wall != "Left") {
+                    if (inputList["down"] && !inputList["up"])
+                        s->setState("WalkingAimDown");
+                    else if (!inputList["down"] && inputList["up"])
+                        s->setState("WalkingAimUp");
+                    else
+                        s->setState("Walking");
+                } else {
+                    s->setState("Standing");
+                }
+            } else if (!inputList["left"] && inputList["right"]) {
+                if (wall != "Right") {
+                    if (s->getVX() < 400) {
+                        s->setVX(s->getVX() + 30);
+                    } else if (s->getVX() > 400 && s->getVX() < 420) {
+                        s->setVX(420);
+                    }
+                    s->setFrictionFactor(0.1);
+                }
+                s->setFacing("Right");
+                if (inputList["jump"] && s->getJumpTime() == -1) {
+                    s->setVY(-350);
+                    s->setJumpTime(0);
+                    s->setState("SpinJump");
+                } else if (wall != "Right") {
+                    if (inputList["down"] && !inputList["up"])
+                        s->setState("WalkingAimDown");
+                    else if (!inputList["down"] && inputList["up"])
+                        s->setState("WalkingAimUp");
+                    else
+                        s->setState("Walking");
+                } else {
+                    s->setState("Standing");
+                }
+            } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
+                s->setFrictionFactor(1);
+                if (inputList["jump"] && s->getJumpTime() == -1) {
+                    s->setVY(-350);
+                    s->setJumpTime(0);
+                    s->setState("Jumping");
+                } else {
+                    if (((!inputList["down"] && !inputList["up"]) || (inputList["down"] && inputList["up"])) && s->getState() != "IdleCrouch" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "Uncrouching" && s->getState() != "Crouching")
+                        s->setState("Standing");
+                    else if (((s->getState() == "Crouching" && s->getAnimation() == 2) || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") && !inputList["up"])
+                        s->setState("IdleCrouch");
+                    else if (!inputList["up"] && !(s->getState() == "Uncrouching" && !inputList["down"]))
+                        s->setState("Crouching");
+                    else if (((s->getState() == "Uncrouching" && s->getAnimation() == 2)))
+                        s->setState("Standing");
+                    else if (s->getState() == "Uncrouching" || s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag")
+                        s->setState("Uncrouching");
+                    else
+                        s->setState("Standing");
+                }
+            }
+            if (!inputList["jump"]) {
+                s->setJumpTime(-1);
+            }
+        } else {
+            if (inputList["jump"] && ((s->getJumpTime() == -1 && s->getState() == "WallJump") || ((s->getJumpTime() == -2 || s->getJumpTime() == -3) && s->getState() == "SpinJump"))) {
+                if (s->getFacing() == "Left") {
+                    s->setVX(-600);
+                } else {
+                    s->setVX(600);
+                }
+                s->setVY(-300);
+                s->setState("SpinJump");
+                s->setJumpTime(20);
+            } else if (s->getJumpTime() == -3) {
+                s->setJumpTime(-2);
+            } else if (s->getJumpTime() == -2) {
+                s->setJumpTime(20);
+            }  else if (inputList["left"] && !inputList["right"]) {
+                if (s->getVX() > -150) {
+                    s->setVX(s->getVX() - 25);
+                } else if (s->getVX() < -150 && s->getVX() > -170) {
+                    s->setVX(-170);
+                }
+                s->setFrictionFactor(0.1);
+                s->setFacing("Left");
+                if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                } else {
+                    s->setJumpTime(20);
+                }
+                if (!(s->getState() == "SpinJump") && !(s->getState() == "WallJump")) {
+                    s->setState("Falling");
+                }
+            } else if (!inputList["left"] && inputList["right"]) {
+                if (s->getVX() < 150) {
+                    s->setVX(s->getVX() + 25);
+                } else if (s->getVX() < -150 && s->getVX() > -170) {
+                    s->setVX(-170);
+                }
+                s->setFrictionFactor(0.1);
+                s->setFacing("Right");
+                if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                } else {
+                    s->setJumpTime(20);
+                }
+                if (!(s->getState() == "SpinJump") && !(s->getState() == "WallJump")) {
+                    s->setState("Falling");
+                }
+            } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
+                s->setFrictionFactor(1);
+                if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
+                    s->setVY(s->getVY() - 10);
+                    s->setJumpTime(s->getJumpTime() + 1);
+                } else if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= 20)) {
+                    s->setState("JumpEnd");
+                    s->setJumpTime(20);
+                } else {
+                    s->setJumpTime(20);
+                }
+                if (!(s->getState() == "SpinJump") && !(s->getState() == "Jumping") && !(s->getState() == "JumpEnd") && !(s->getState() == "WallJump")) {
+                    s->setState("Falling");
+                }
+            }
+        }
     }
-
     nlohmann::json entJson = Entity::values["names"]["Samos"];
 
     if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
@@ -219,11 +352,19 @@ void MainWindow::updateSamos(Samos *s)
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
         s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 2, s->getBox()->getHeight()));
         s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
-    } else if (s->getState() == "Falling") {
+    } else if (s->getState() == "Falling" || s->getState() == "FallingAimUp" || s->getState() == "FallingAimUpDiag" || s->getState() == "FallingAimDownDiag" || s->getState() == "FallingAimDown") {
         s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingMultiplier,
                   (static_cast<int>(entJson["offset_y"]) + 3) * renderingMultiplier,
                   static_cast<int>(entJson["width"]) * renderingMultiplier,
                   static_cast<int>(entJson["height"]) * renderingMultiplier / 1.2));
+        s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
+        s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 2, s->getBox()->getHeight()));
+        s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
+    } else if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "UnCrouching" || s->getState() == "Crouching") {
+        s->setBox(new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingMultiplier,
+                  (static_cast<int>(entJson["offset_y"]) + 11) * renderingMultiplier,
+                  static_cast<int>(entJson["width"]) * renderingMultiplier,
+                  static_cast<int>(entJson["height"]) * renderingMultiplier / 1.35));
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
         s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 2, s->getBox()->getHeight()));
         s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));

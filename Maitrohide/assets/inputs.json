@@ -3,11 +3,12 @@
 	"up": 38,
 	"right": 39,
 	"down": 40,
-	"jump": 32,
+	"jump": 69,
 	"aim": 160,
 	"morph": 90,
 	"grapple": 81,
 	"weapon": 83,
 	"shoot": 68,
-	"menu": 65
+	"dash": 65,
+	"menu": 27
 }
