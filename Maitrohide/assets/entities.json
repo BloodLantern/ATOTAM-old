@@ -1,6 +1,6 @@
 {
 	"general": {
-		"gameSpeed": 1.0,
+		"gameSpeed": 0.1,
 		"frameRate": 60.0,
 		"gravity": 600.0,
 		"renderingMultiplier": 2,
@@ -30,16 +30,16 @@
 		"Samos": {
 			"Standing": {
 				"file": "samos.png",
-				"x": 91,
-				"y": 305,
-				"width": 291,
+				"x": 94,
+				"y": 306,
+				"width": 285,
 				"height": 48,
 				"count": 3,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-11, -20],
+				"xOffset": [-14, -12],
 				"yOffset": [12, 12],
 				"reversed": false,
 				"overlay": [],
@@ -62,7 +62,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"StandingAimUpDiag": {
 				"file": "samos.png",
@@ -80,7 +80,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"StandingAimDownDiag": {
 				"file": "samos.png",
@@ -98,12 +98,102 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
+				"refreshRate": -1
+			},
+			"StandingMissile": {
+				"file": "samos.png",
+				"x": 91,
+				"y": 653,
+				"width": 292,
+				"height": 55,
+				"count": 3,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": true,
+				"xOffset": [-14, -12],
+				"yOffset": [12, 12],
+				"reversed": false,
+				"overlay": [],
+				"loop": true,
+				"refreshRate": 30
+			},
+			"Crouching": {
+				"file": "samos.png",
+				"x": 187,
+				"y": 304,
+				"width": 100,
+				"height": 151,
+				"count": 3,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 3,
+				"multi-directional": true,
+				"xOffset": [-16, -10],
+				"yOffset": [9, 9],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": 3
+			},
+			"Uncrouching": {
+				"file": "samos.png",
+				"x": 187,
+				"y": 304,
+				"width": 100,
+				"height": 151,
+				"count": 3,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 3,
+				"multi-directional": true,
+				"xOffset": [-16, -10],
+				"yOffset": [9, 9],
+				"reversed": true,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": 3
+			},
+			"CrouchingMissile": {
+				"file": "samos.png",
+				"x": 188,
+				"y": 653,
+				"width": 98,
+				"height": 150,
+				"count": 3,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 3,
+				"multi-directional": true,
+				"xOffset": [-16, -10],
+				"yOffset": [9, 9],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": 3
+			},
+			"UncrouchingMissile": {
+				"file": "samos.png",
+				"x": 188,
+				"y": 653,
+				"width": 98,
+				"height": 150,
+				"count": 3,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 3,
+				"multi-directional": true,
+				"xOffset": [-16, -10],
+				"yOffset": [9, 9],
+				"reversed": true,
+				"overlay": [],
+				"loop": false,
 				"refreshRate": 3
 			},
 			"IdleCrouch": {
 				"file": "samos.png",
 				"x": 91,
-				"y": 416,
+				"y": 422,
 				"width": 292,
 				"height": 32,
 				"count": 3,
@@ -111,8 +201,8 @@
 				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [0, 0],
-				"yOffset": [0, 0],
+				"xOffset": [-16, -10],
+				"yOffset": [44, 44],
 				"reversed": false,
 				"overlay": [],
 				"loop": true,
@@ -134,7 +224,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"CrouchAimUpDiag": {
 				"file": "samos.png",
@@ -152,43 +242,25 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
-			"Crouching": {
+			"IdleCrouchMissile": {
 				"file": "samos.png",
-				"x": 187,
-				"y": 304,
-				"width": 100,
-				"height": 144,
+				"x": 91,
+				"y": 771,
+				"width": 292,
+				"height": 32,
 				"count": 3,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
-				"lines": 3,
+				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [0, 0],
-				"yOffset": [0, 0],
+				"xOffset": [-16, -10],
+				"yOffset": [44, 44],
 				"reversed": false,
 				"overlay": [],
-				"loop": false,
-				"refreshRate": 3
-			},
-			"Uncrouching": {
-				"file": "samos.png",
-				"x": 187,
-				"y": 304,
-				"width": 100,
-				"height": 144,
-				"count": 3,
-				"emptyFrames": 0,
-				"emptyFramesReversed": false,
-				"lines": 3,
-				"multi-directional": true,
-				"xOffset": [0, 0],
-				"yOffset": [0, 0],
-				"reversed": true,
-				"overlay": [],
-				"loop": false,
-				"refreshRate": 3
+				"loop": true,
+				"refreshRate": 30
 			},
 			"MorphBalling": {
 				"file": "samos.png",
@@ -304,9 +376,9 @@
 				"y": 146,
 				"width": 292,
 				"height": 50,
-				"count": 3,
-				"emptyFrames": 0,
-				"emptyFramesReversed": false,
+				"count": 2,
+				"emptyFrames": 1,
+				"emptyFramesReversed": true,
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [-3, -25],
@@ -350,7 +422,25 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
+			},
+			"FallingMissile": {
+				"file": "samos.png",
+				"x": 188,
+				"y": 803,
+				"width": 98,
+				"height": 52,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": true,
+				"xOffset": [-10, -15],
+				"yOffset": [7, 7],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
 			},
 			"FallingAimUp": {
 				"file": "samos.png",
@@ -368,7 +458,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"FallingAimUpDiag": {
 				"file": "samos.png",
@@ -386,7 +476,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"FallingAimDownDiag": {
 				"file": "samos.png",
@@ -404,7 +494,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"FallingAimDown": {
 				"file": "samos.png",
@@ -422,7 +512,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"Landing": {
 				"file": "samos.png",
@@ -440,7 +530,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"SpinJump": {
 				"file": "samos.png",
@@ -476,7 +566,7 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
 			},
 			"Pre-Spawning": {
 				"file": "samos.png",
@@ -512,7 +602,171 @@
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
-				"refreshRate": 3
+				"refreshRate": -1
+			}
+		},
+		"Beam": {
+			"UpLeft": {
+				"file": "projectiles.png",
+				"x": 216,
+				"y": 4,
+				"width": 7,
+				"height": 7,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
+			},
+			"Up": {
+				"file": "projectiles.png",
+				"x": 246,
+				"y": 4,
+				"width": 8,
+				"height": 8,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
+			},
+			"UpRight": {
+				"file": "projectiles.png",
+				"x": 276,
+				"y": 4,
+				"width": 7,
+				"height": 7,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
+			},
+			"Left": {
+				"file": "projectiles.png",
+				"x": 216,
+				"y": 34,
+				"width": 8,
+				"height": 8,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
+			},
+			"Right": {
+				"file": "projectiles.png",
+				"x": 276,
+				"y": 34,
+				"width": 8,
+				"height": 8,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
+			},
+			"DownLeft": {
+				"file": "projectiles.png",
+				"x": 216,
+				"y": 64,
+				"width": 7,
+				"height": 7,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
+			},
+			"Down": {
+				"file": "projectiles.png",
+				"x": 246,
+				"y": 64,
+				"width": 8,
+				"height": 8,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
+			},
+			"DownRight": {
+				"file": "projectiles.png",
+				"x": 276,
+				"y": 64,
+				"width": 7,
+				"height": 7,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
+			},
+			"Hit": {
+				"file": "projectiles.png",
+				"x": 0,
+				"y": 285,
+				"width": 250,
+				"height": 16,
+				"count": 5,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1
 			}
 		}
 	}
