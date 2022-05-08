@@ -144,7 +144,7 @@ void MainWindow::updateSamos(Samos *s)
             s->setJumpTime(-1);
         }
     } else {
-        if (inputList["jump"] && ((s->getJumpTime() == -1 && s->getState() == "WallJump") || ((s->getJumpTime() == -3 || s->getJumpTime() == -3) && s->getState() == "SpinJump"))) {
+        if (inputList["jump"] && ((s->getJumpTime() == -1 && s->getState() == "WallJump") || ((s->getJumpTime() == -2 || s->getJumpTime() == -3) && s->getState() == "SpinJump"))) {
             if (s->getFacing() == "Left") {
                 s->setVX(-600);
             } else {
@@ -152,7 +152,7 @@ void MainWindow::updateSamos(Samos *s)
             }
             s->setVY(-300);
             s->setState("SpinJump");
-            s->setJumpTime(0);
+            s->setJumpTime(20);
         } else if (s->getJumpTime() == -3) {
             s->setJumpTime(-2);
         } else if (s->getJumpTime() == -2) {
@@ -263,7 +263,8 @@ void MainWindow::updateSamos(Samos *s)
             s->setVY(s->getVY() * (1.0 - 0.01 * std::abs(s->getVY()) / MainWindow::frameRate));
         } else if (s->getState() == "WallJump") {
             s->setState("SpinJump");
-            s->setJumpTime(-3);
+            if (s->getJumpTime() == -1)
+                s->setJumpTime(-3);
         }
     }
 }
