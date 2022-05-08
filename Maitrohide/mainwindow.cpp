@@ -86,7 +86,12 @@ void MainWindow::updateSamos(Samos *s)
                 s->setJumpTime(0);
                 s->setState("SpinJump");
             } else if (wall != "Left") {
-                s->setState("Walking");
+                if (inputList["down"] && !inputList["up"])
+                    s->setState("WalkingAimDown");
+                else if (!inputList["down"] && inputList["up"])
+                    s->setState("WalkingAimUp");
+                else
+                    s->setState("Walking");
             } else {
                 s->setState("Standing");
             }
@@ -105,7 +110,12 @@ void MainWindow::updateSamos(Samos *s)
                 s->setJumpTime(0);
                 s->setState("SpinJump");
             } else if (wall != "Right") {
-                s->setState("Walking");
+                if (inputList["down"] && !inputList["up"])
+                    s->setState("WalkingAimDown");
+                else if (!inputList["down"] && inputList["up"])
+                    s->setState("WalkingAimUp");
+                else
+                    s->setState("Walking");
             } else {
                 s->setState("Standing");
             }
@@ -116,14 +126,23 @@ void MainWindow::updateSamos(Samos *s)
                 s->setJumpTime(0);
                 s->setState("Jumping");
             } else {
-                s->setState("Standing");
+                if (((!inputList["down"] && !inputList["up"]) || (inputList["down"] && inputList["up"])) && s->getState() != "Crouching" && s->getState() != "Uncrouching" && s->getState() != "IdleCrouch")
+                    s->setState("Standing");
+                else if (((s->getState() == "Crouching" && s->getAnimation() == 2) || s->getState() == "IdleCrouch") && !inputList["up"])
+                    s->setState("IdleCrouch");
+                else if (!inputList["up"] && !(s->getState() == "Uncrouching" && !inputList["down"]))
+                    s->setState("Crouching");
+                else if (((s->getState() == "Uncrouching" && s->getAnimation() == 2)))
+                    s->setState("Standing");
+                else if (s->getState() != "Standing")
+                    s->setState("Uncrouching");
             }
         }
         if (!inputList["jump"]) {
             s->setJumpTime(-1);
         }
     } else {
-        if (inputList["jump"] && s->getJumpTime() == -1 && s->getState() == "WallJump") {
+        if (inputList["jump"] && ((s->getJumpTime() == -1 && s->getState() == "WallJump") || ((s->getJumpTime() == -3 || s->getJumpTime() == -3) && s->getState() == "SpinJump"))) {
             if (s->getFacing() == "Left") {
                 s->setVX(-600);
             } else {
@@ -132,7 +151,11 @@ void MainWindow::updateSamos(Samos *s)
             s->setVY(-300);
             s->setState("SpinJump");
             s->setJumpTime(0);
-        } else if (inputList["left"] && !inputList["right"]) {
+        } else if (s->getJumpTime() == -3) {
+            s->setJumpTime(-2);
+        } else if (s->getJumpTime() == -2) {
+            s->setJumpTime(20);
+        }  else if (inputList["left"] && !inputList["right"]) {
             if (s->getVX() > -150) {
                 s->setVX(s->getVX() - 25);
             } else if (s->getVX() < -150 && s->getVX() > -170) {
@@ -238,7 +261,7 @@ void MainWindow::updateSamos(Samos *s)
             s->setVY(s->getVY() * (1.0 - 0.01 * std::abs(s->getVY()) / MainWindow::frameRate));
         } else if (s->getState() == "WallJump") {
             s->setState("SpinJump");
-            s->setJumpTime(20);
+            s->setJumpTime(-3);
         }
     }
 }
