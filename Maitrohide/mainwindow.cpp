@@ -134,8 +134,10 @@ void MainWindow::updateSamos(Samos *s)
                     s->setState("Crouching");
                 else if (((s->getState() == "Uncrouching" && s->getAnimation() == 2)))
                     s->setState("Standing");
-                else if (s->getState() != "Standing")
+                else if (s->getState() == "Uncrouching" || s->getState() == "Crouching" || s->getState() == "IdleCrouch")
                     s->setState("Uncrouching");
+                else
+                    s->setState("Standing");
             }
         }
         if (!inputList["jump"]) {
