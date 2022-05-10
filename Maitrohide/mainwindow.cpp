@@ -120,11 +120,8 @@ void MainWindow::updateSamos(Samos *s)
                         s->setState("Standing");
                 }
             }
-            s->setFrictionFactor(1);
             if (!inputList["jump"])
                 s->setJumpTime(-1);
-            if (std::abs(s->getVX()) < 25 && s->getState() != "Jumping")
-                s->setVX(0);
         }
         if ((!s->getOnGround() && s->getIsAffectedByGravity()) || s->getState() == "Jumping") {
             if (inputList["jump"] && ((s->getJumpTime() == -1 && s->getState() == "WallJump") || ((s->getJumpTime() == -2 || s->getJumpTime() == -3) && s->getState() == "SpinJump"))) {
@@ -140,12 +137,6 @@ void MainWindow::updateSamos(Samos *s)
             } else if (s->getJumpTime() == -2) {
                 s->setJumpTime(20);
             } else if (inputList["left"] && !inputList["right"]) {
-                if (s->getVX() > -180) {
-                    s->setVX(s->getVX() - 20);
-                } else if (s->getVX() < -180 && s->getVX() > -200) {
-                    s->setVX(-200);
-                }
-                s->setFrictionFactor(0.1);
                 s->setFacing("Left");
                 if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
                     s->setVY(s->getVY() - 10);
@@ -160,12 +151,6 @@ void MainWindow::updateSamos(Samos *s)
                 } else
                     s->setState("Falling");
             } else if (!inputList["left"] && inputList["right"]) {
-                if (s->getVX() < 180) {
-                    s->setVX(s->getVX() + 20);
-                } else if (s->getVX() < -180 && s->getVX() > -200) {
-                    s->setVX(-200);
-                }
-                s->setFrictionFactor(0.1);
                 s->setFacing("Right");
                 if (inputList["jump"] && s->getJumpTime() < 20 && s->getJumpTime() >= 0) {
                     s->setVY(s->getVY() - 10);
@@ -194,11 +179,12 @@ void MainWindow::updateSamos(Samos *s)
                 } else
                     s->setState("Falling");
 
-                if (std::abs(s->getVX()) < 25)
-                    s->setVX(0);
             }
         }
 
+    if (std::abs(s->getVX()) < 25)
+        s->setVX(0);
+    s->setFrictionFactor(1);
     } else {
         std::string wall;
         for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
