@@ -519,8 +519,13 @@ void MainWindow::updateAnimations()
                 || entity->getFacing() != entity->getLastFrameFacing()) {
             // Update the QImage array representing the animation
             entity->setCurrentAnimation(entity->updateAnimation(entity->getState()));
-            // Because the animation changed, reset its index
-            entity->setAnimation(0);
+            // If the animation should reset the next one
+            if (!Entity::values["textures"][entity->getName()][entity->getLastFrameState()]["dontReset"])
+                // Because the animation changed, reset its
+                entity->setAnimation(0);
+            else
+                // Else, make sure not to end up with a too high index
+                entity->setAnimation(entity->getAnimation() % entity->getCurrentAnimation().size());
         }
 
         // Every 'refreshRate' frames
