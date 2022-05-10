@@ -12,7 +12,6 @@ public:
     ~Samos();
 
     void shoot(std::string type);
-    bool checkWall(CollisionBox* wallBox, Entity* wall);
 
     bool getIsInAltForm() const;
     void setIsInAltForm(bool newIsInAltForm);

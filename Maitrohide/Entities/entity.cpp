@@ -2,16 +2,19 @@
 #include <QPainter>
 #include <iostream>
 
-bool Entity::checkCollision(Entity *obj1, Entity *obj2)
+bool Entity::checkCollision(Entity *obj1, CollisionBox *box1, Entity *obj2, CollisionBox *box2)
 {
-    return ((obj1->x + obj1->box->getX() + obj1->box->getWidth() > obj2->x + obj2->box->getX())
-            && (obj1->x + obj1->box->getX() < obj2->x + obj2->box->getX()  + obj2->box->getWidth())
-            && (obj1->y) + obj1->box->getY() + obj1->box->getHeight() > obj2->y + obj2->box->getY())
-            && (obj1->y + obj1->box->getY() < obj2->y + obj2->box->getY()  + obj2->box->getHeight());
+    //Big check to see if two boxes overlap
+    return ((obj1->x + box1->getX() + box1->getWidth() > obj2->x + box2->getX())
+            && (obj1->x + box1->getX() < obj2->x + box2->getX()  + box2->getWidth())
+            && (obj1->y) + box1->getY() + box1->getHeight() > obj2->y + box2->getY())
+            && (obj1->y + box1->getY() < obj2->y + box2->getY()  + box2->getHeight());
 }
 
 void Entity::handleCollision(Entity *obj1, Entity *obj2)
 {//{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+
+    //Long if else to decide what to do between two entities after a collision
     if (obj1->entType == "Terrain") {
         if (obj2->entType == "Samos") {
             calcCollisionReplacement(obj1, obj2);
@@ -26,6 +29,7 @@ void Entity::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->entType == "Projectile") {
             // TODO
         }
+
     } else if (obj1->entType == "Samos") {
         if (obj2->entType == "Terrain") {
             calcCollisionReplacement(obj1, obj2);
@@ -41,6 +45,7 @@ void Entity::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->entType == "Projectile") {
             // TODO
         }
+
     } else if (obj1->entType == "Monster") {
         if (obj2->entType == "Terrain") {
             calcCollisionReplacement(obj1, obj2);
@@ -58,6 +63,7 @@ void Entity::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->entType == "Projectile") {
             // TODO
         }
+
     } else if (obj1->entType == "Area") {
         if (obj2->entType == "Terrain") {
             // TODO
@@ -74,6 +80,7 @@ void Entity::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->entType == "Projectile") {
             // TODO
         }
+
     } else if (obj1->entType == "DynamicObj") {
         if (obj2->entType == "Terrain") {
             calcCollisionReplacement(obj1, obj2);
@@ -90,6 +97,7 @@ void Entity::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->entType == "Projectile") {
             // TODO
         }
+
     } else if (obj1->entType == "NPC") {
         if (obj2->entType == "Terrain") {
             calcCollisionReplacement(obj1, obj2);
@@ -106,6 +114,7 @@ void Entity::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->entType == "Projectile") {
             // TODO
         }
+
     } else if (obj1->entType == "Projectile") {
         if (obj2->entType == "Terrain") {
             calcCollisionReplacement(obj1, obj2);
@@ -124,18 +133,23 @@ void Entity::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->entType == "Projectile") {
             // TODO
         }
+
     } else
+        //If entType has been given a wrong value
         throw unknownEntityType;
 }
 
 void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
 {
+    //Calc the minimal distance needed to move two entities so that they don't overlap anymore, along both axis and both directions
     double minX1 = obj1->x + obj1->box->getWidth() + obj1->getBox()->getX() - obj2->x - obj2->getBox()->getX();
     double minX2 = obj2->x + obj2->box->getWidth() + obj2->getBox()->getX() - obj1->x - obj1->getBox()->getX();
     double minY1 = obj1->y + obj1->box->getHeight() + obj1->getBox()->getY() - obj2->y - obj2->getBox()->getY();
     double minY2 = obj2->y + obj2->box->getHeight() + obj2->getBox()->getY() - obj1->y - obj1->getBox()->getY();
     double minX;
     double minY;
+
+    //Choose which direction is the optimal one (smaller distance)
     if (std::abs(minX1) < std::abs(minX2)) {
         minX = minX1;
     } else {
@@ -147,10 +161,13 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
         minY = minY2;
     }
 
-    if (obj1->x > obj2->x) minX *= -1;
-    if (obj1->y > obj2->y) minY *= -1;
+    //Adjust values depending on the side of the collision
+    if (obj1->x + obj1->getBox()->getX() > obj2->x + obj2->getBox()->getX()) minX *= -1;
+    if (obj1->y + obj1->getBox()->getY() > obj2->y + obj2->getBox()->getY()) minY *= -1;
 
+    //Decide which entity to move (depending on if one is not movable)
     if (obj1->isMovable && obj2->isMovable) {
+        //Decide along which axis two move the entities (still smaller distance)
         if (std::abs(minX) < std::abs(minY)) {
             obj1->x -= minX / 2;
             obj2->x += minX / 2;
@@ -163,6 +180,7 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
             obj2->vY = 0;
         }
     } else if (!obj1->isMovable && obj2->isMovable) {
+        //Same thing
         if (std::abs(minX) < std::abs(minY)) {
             obj2->x += minX;
             obj2->vX = 0;
@@ -171,6 +189,7 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
             obj2->vY = 0;
         }
     } else if (obj1->isMovable && !obj2->isMovable) {
+        //Read previous comments bro
         if (std::abs(minX) < std::abs(minY)) {
             obj1->x -= minX;
             obj1->vX = 0;
@@ -183,6 +202,7 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
 
 nlohmann::json Entity::loadNames()
 {
+    //loading the json with the info about mobs
     std::ifstream names_file("../assets/entities.json");
     nlohmann::json temp;
     names_file >> temp;
@@ -193,9 +213,12 @@ nlohmann::json Entity::values = Entity::loadNames();
 
 void Entity::updateV(double framerate)
 {
+    //moving the entity
     x += vX/framerate;
     y += vY/framerate;
-    if (std::abs(vX) < 20) vX = 0;
+    //if the entity is moving very slowly, it just stops
+    if (entType != "Samos")
+        if (std::abs(vX) < 30) vX = 0;
 }
 
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
@@ -207,6 +230,7 @@ Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::stri
 Entity::Entity(double x, double y, std::string facing, std::string name)
     : x(x), y(y), facing(facing), name(name)
 {
+    //fast constructor using the json file
     nlohmann::json entJson = values["names"][name];
     double renderingM = values["general"]["renderingMultiplier"];
 

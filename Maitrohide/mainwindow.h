@@ -36,7 +36,6 @@ public:
     static nlohmann::json loadKeyCodes();
     static void loadGeneral();
     static std::map<std::string, bool> inputList;
-    static void getInputs();
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
@@ -45,6 +44,7 @@ public:
     void updatePhysics();
     void updateAnimations();
     void updateSamos(Samos* s);
+    void getInputs();
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);

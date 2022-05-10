@@ -51,7 +51,7 @@ void gameClock(MainWindow* w, Samos* s) {
     while (MainWindow::running) {
         preciseSleep(waitTime);
         //preciseSleep(waitTime);
-        MainWindow::getInputs();
+        w->getInputs();
         w->updateSamos(s);
         w->updatePhysics();
         w->updateAnimations();

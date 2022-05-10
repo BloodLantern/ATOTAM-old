@@ -31,6 +31,7 @@ void Samos::shoot(std::string type)
     Projectile* projectile = nullptr;
     double renderingM = values["general"]["renderingMultiplier"];
 
+    //Can't shoot a missile/grenade if you don't have any
     if (type == "Grenade") {
         if (grenadeCount > 0)
             grenadeCount--;
@@ -43,6 +44,7 @@ void Samos::shoot(std::string type)
             return;
     }
 
+    //Spawn the projectile at certain coordinates to match the sprite
     if (canonDirection == "None") {
         throw Entity::invalidDirection;
     } else if (canonDirection == "Up") {
@@ -66,14 +68,6 @@ void Samos::shoot(std::string type)
     }
 
     delete projectile; // TEMP
-}
-
-bool Samos::checkWall(CollisionBox *wallBox, Entity *wall)
-{
-    return (getX() + wallBox->getX() + wallBox->getWidth() > wall->getX() + wall->getBox()->getX())
-            && (getX() + wallBox->getX() < wall->getX() + wall->getBox()->getX()  + wall->getBox()->getWidth())
-            && (getY()) + wallBox->getY() + wallBox->getHeight() > wall->getY() + wall->getBox()->getY()
-            && (getY() + wallBox->getY() < wall->getY() + wall->getBox()->getY()  + wall->getBox()->getHeight());
 }
 
 bool Samos::getIsInAltForm() const

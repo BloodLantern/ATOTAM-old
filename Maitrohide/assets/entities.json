@@ -2,7 +2,7 @@
 	"general": {
 		"gameSpeed": 1.0,
 		"frameRate": 60.0,
-		"gravity": 600.0,
+		"gravity": 700.0,
 		"renderingMultiplier": 2,
 		"renderHitboxes": false
 	},

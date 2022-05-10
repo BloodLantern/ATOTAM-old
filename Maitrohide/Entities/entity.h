@@ -12,7 +12,7 @@
 class Entity
 {
 public:
-    static bool checkCollision(Entity* obj1, Entity* obj2);
+    static bool checkCollision(Entity* obj1, CollisionBox* box1, Entity* obj2, CollisionBox* box2);
     static void handleCollision(Entity* obj1, Entity* obj2);
     static void calcCollisionReplacement(Entity* obj1, Entity* obj2);
     //enum EntityType {Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};

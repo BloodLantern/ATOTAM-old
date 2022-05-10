@@ -3,9 +3,11 @@
 Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name)
     : Entity(x, y, new CollisionBox(5, 5), nullptr, "Projectile", false, facing, 0, name, true)
 {
+    //Bombs don't move
     if (type == "Bomb")
         facing = "None";
 
+    //Setting the speed depending on the direction
     if (facing == "None") {
         setVX(0);
         setVY(0);
@@ -37,6 +39,7 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
         throw Entity::invalidDirection;
     }
 
+    //Setting the damage and adjusting the speed depending on the projectile type
     if (type == "Beam") {
         damage = 20;
         lifeTime = 1500;
