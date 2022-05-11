@@ -28,8 +28,8 @@ public:
     int getMaxMissileCount() const;
     void setMaxMissileCount(int newMaxMissileCount);
 
-    int getJumpTime() const;
-    void setJumpTime(int newJumpTime);
+    double getJumpTime() const;
+    void setJumpTime(double newJumpTime);
 
     CollisionBox *getWallBoxR() const;
     void setWallBoxR(CollisionBox *newWallBoxR);
@@ -43,7 +43,7 @@ private:
     int maxGrenadeCount;
     int missileCount;
     int maxMissileCount;
-    int jumpTime = 20;
+    double jumpTime = 0.3;
     std::string canonDirection = "Right";
     CollisionBox* wallBoxR;
     CollisionBox* wallBoxL;

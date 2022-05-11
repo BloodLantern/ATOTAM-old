@@ -120,12 +120,12 @@ void Samos::setMaxMissileCount(int newMaxMissileCount)
     maxMissileCount = newMaxMissileCount;
 }
 
-int Samos::getJumpTime() const
+double Samos::getJumpTime() const
 {
     return jumpTime;
 }
 
-void Samos::setJumpTime(int newJumpTime)
+void Samos::setJumpTime(double newJumpTime)
 {
     jumpTime = newJumpTime;
 }

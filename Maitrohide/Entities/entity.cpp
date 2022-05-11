@@ -218,7 +218,7 @@ void Entity::updateV(double framerate)
     y += vY/framerate;
     //if the entity is moving very slowly, it just stops
     if (entType != "Samos")
-        if (std::abs(vX) < 30) vX = 0;
+        if (std::abs(vX) < static_cast<double>(values["general"]["slowcap"])) vX = 0;
 }
 
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
