@@ -1,7 +1,7 @@
 #include "projectile.h"
 
 Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name)
-    : Entity(x, y, new CollisionBox(5, 5), nullptr, "Projectile", false, facing, 0, name, true)
+    : Entity(x, y, new CollisionBox(7, 7), nullptr, "Projectile", false, facing, 0, name, true)
 {
     //Bombs don't move
     if (type == "Bomb")
@@ -43,11 +43,13 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
     if (type == "Beam") {
         damage = 20;
         lifeTime = 1500;
+        setState(facing);
     } else if (type == "Missile") {
         damage = 50;
         lifeTime = 3000;
         setVX(getVX() / 2);
         setVY(getVY() / 2);
+        setState(facing);
     } else if (type == "Grenade") {
         damage = 60;
         lifeTime = 3000;
@@ -55,6 +57,7 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
         setVY(getVY() / 2);
         setIsAffectedByGravity(true);
         setFrictionFactor(0.2);
+        setState(facing);
     } else if (type == "Bomb") {
         damage = 50;
         lifeTime = 2000;

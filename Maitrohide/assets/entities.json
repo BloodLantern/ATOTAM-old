@@ -23,7 +23,7 @@
 			"movingFriction": 0.1,
 			"movable": true,
 			"groundAcceleration": 1800,
-			"groundMaxSpeed": 400,
+			"groundMaxSpeed": 450,
 			"airAcceleration": 900,
 			"airMaxSpeed": 200,
 			"crouchHitbox_offset_x": 0,
@@ -43,7 +43,7 @@
 			"postJumpBoost": 600,
 			"wallJumpPower_y": 300,
 			"wallJumpPower_x": 500,
-			"wallFriction": 0.1,
+			"wallFriction": 0.02,
 			"slowcap": 25
 		}
 	},

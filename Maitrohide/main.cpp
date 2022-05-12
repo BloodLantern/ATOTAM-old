@@ -57,6 +57,7 @@ void gameClock(MainWindow* w, Samos* s) {
         w->updateAnimations();
         w->update();
         MainWindow::frameCount++;
+        std::cout << s->getCanonDirection() << std::endl;
     }
 }
 

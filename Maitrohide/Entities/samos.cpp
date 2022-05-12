@@ -151,3 +151,13 @@ void Samos::setWallBoxL(CollisionBox *newWallBoxL)
     delete wallBoxL;
     wallBoxL = newWallBoxL;
 }
+
+const std::string &Samos::getCanonDirection() const
+{
+    return canonDirection;
+}
+
+void Samos::setCanonDirection(const std::string &newCanonDirection)
+{
+    canonDirection = newCanonDirection;
+}

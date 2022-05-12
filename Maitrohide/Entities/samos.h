@@ -37,6 +37,9 @@ public:
     CollisionBox *getWallBoxL() const;
     void setWallBoxL(CollisionBox *newWallBoxL);
 
+    const std::string &getCanonDirection() const;
+    void setCanonDirection(const std::string &newCanonDirection);
+
 private:
     bool isInAltForm;
     int grenadeCount;

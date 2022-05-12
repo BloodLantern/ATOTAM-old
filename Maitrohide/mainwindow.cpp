@@ -61,6 +61,134 @@ void MainWindow::getInputs()
         }
 }
 
+void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
+{//{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+
+    //Long if else to decide what to do between two entities after a collision
+    if (obj1->getEntType() == "Terrain") {
+        if (obj2->getEntType() == "Samos") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Monster") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Area") {
+            // TODO
+        } else if (obj2->getEntType() == "DynamicObj") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "NPC") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Projectile") {
+            // TODO
+        }
+
+    } else if (obj1->getEntType() == "Samos") {
+        if (obj2->getEntType() == "Terrain") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Monster") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+            // TODO hit
+        } else if (obj2->getEntType() == "Area") {
+            // TODO
+        } else if (obj2->getEntType() == "DynamicObj") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "NPC") {
+            // TODO
+        } else if (obj2->getEntType() == "Projectile") {
+            // TODO
+        }
+
+    } else if (obj1->getEntType() == "Monster") {
+        if (obj2->getEntType() == "Terrain") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Samos") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+            // TODO hit
+        } else if (obj2->getEntType() == "Monster") {
+            // TODO
+        } else if (obj2->getEntType() == "Area") {
+            // TODO
+        } else if (obj2->getEntType() == "DynamicObj") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "NPC") {
+            // TODO
+        } else if (obj2->getEntType() == "Projectile") {
+            // TODO
+        }
+
+    } else if (obj1->getEntType() == "Area") {
+        if (obj2->getEntType() == "Terrain") {
+            // TODO
+        } else if (obj2->getEntType() == "Samos") {
+            // TODO
+        } else if (obj2->getEntType() == "Monster") {
+            // TODO
+        } else if (obj2->getEntType() == "Area") {
+            // TODO
+        } else if (obj2->getEntType() == "DynamicObj") {
+            // TODO
+        } else if (obj2->getEntType() == "NPC") {
+            // TODO
+        } else if (obj2->getEntType() == "Projectile") {
+            // TODO
+        }
+
+    } else if (obj1->getEntType() == "DynamicObj") {
+        if (obj2->getEntType() == "Terrain") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Samos") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Monster") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Area") {
+            // TODO
+        } else if (obj2->getEntType() == "DynamicObj") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "NPC") {
+            // TODO
+        } else if (obj2->getEntType() == "Projectile") {
+            // TODO
+        }
+
+    } else if (obj1->getEntType() == "NPC") {
+        if (obj2->getEntType() == "Terrain") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Samos") {
+            // TODO
+        } else if (obj2->getEntType() == "Monster") {
+            // TODO
+        } else if (obj2->getEntType() == "Area") {
+            // TODO
+        } else if (obj2->getEntType() == "DynamicObj") {
+            // TODO
+        } else if (obj2->getEntType() == "NPC") {
+            // TODO
+        } else if (obj2->getEntType() == "Projectile") {
+            // TODO
+        }
+
+    } else if (obj1->getEntType() == "Projectile") {
+        if (obj2->getEntType() == "Terrain") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "Samos") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+            // TODO hit
+        } else if (obj2->getEntType() == "Monster") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+            // TODO hit
+        } else if (obj2->getEntType() == "Area") {
+            // TODO
+        } else if (obj2->getEntType() == "DynamicObj") {
+            Entity::calcCollisionReplacement(obj1, obj2);
+        } else if (obj2->getEntType() == "NPC") {
+            // TODO
+        } else if (obj2->getEntType() == "Projectile") {
+            // TODO
+        }
+
+    } else
+        //If getEntType() has been given a wrong value
+        throw Entity::unknownEntityType;
+}
+
 void MainWindow::updateSamos(Samos *s)
 {
     nlohmann::json samosJson = Entity::values["names"]["Samos"];
@@ -80,48 +208,9 @@ void MainWindow::updateSamos(Samos *s)
                 s->setJumpTime(0);
                 s->setState("Jumping");
             } else if (s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") {
-                if (inputList["left"] && !inputList["right"]) {
-                    s->setFacing("Left");
-                    if (inputList["up"] && !inputList["down"]) {
-                        s->setState("CrouchAimUpDiag");
-                    } else
-                        s->setState("IdleCrouch");
-                } else if (inputList["right"] && !inputList["left"]) {
-                    s->setFacing("Right");
-                    if (inputList["up"] && !inputList["down"]) {
-                        s->setState("CrouchAimUpDiag");
-                    } else
-                        s->setState("IdleCrouch");
-                } else {
-                    if (inputList["up"] && !inputList["down"]) {
-                        s->setState("CrouchAimUp");
-                    } else
-                        s->setState("IdleCrouch");
-                }
-            } else {
-                    if (inputList["left"] && !inputList["right"]) {
-                    s->setFacing("Left");
-                    if (inputList["up"] && !inputList["down"]) {
-                        s->setState("StandingAimUpDiag");
-                    } else if (inputList["down"] && !inputList["up"]) {
-                        s->setState("StandingAimDownDiag");
-                    } else
-                        s->setState("Standing");
-                } else if (inputList["right"] && !inputList["left"]) {
-                    s->setFacing("Right");
-                    if (inputList["up"] && !inputList["down"]) {
-                        s->setState("StandingAimUpDiag");
-                    } else if (inputList["down"] && !inputList["up"]) {
-                        s->setState("StandingAimDownDiag");
-                    } else
-                        s->setState("Standing");
-                } else {
-                    if (inputList["up"] && !inputList["down"]) {
-                        s->setState("StandingAimUp");
-                    } else
-                        s->setState("Standing");
-                }
-            }
+                s->setState("IdleCrouch");
+            } else
+                s->setState("Standing");
             if (!inputList["jump"])
                 s->setJumpTime(-1);
         }
@@ -138,48 +227,15 @@ void MainWindow::updateSamos(Samos *s)
                 s->setJumpTime(-2);
             } else if (s->getJumpTime() == -2) {
                 s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-            } else if (inputList["left"] && !inputList["right"]) {
-                s->setFacing("Left");
-                if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
-                    s->setVY(s->getVY() - static_cast<double>(samosJson["postJumpBoost"]) / frameRate);
-                    s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                } else {
-                    s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                }
-                if (inputList["up"] && !inputList["down"]) {
-                    s->setState("FallingAimUpDiag");
-                } else if (inputList["down"] && !inputList["up"]) {
-                    s->setState("FallingAimDownDiag");
-                } else
-                    s->setState("Falling");
-            } else if (!inputList["left"] && inputList["right"]) {
-                s->setFacing("Right");
-                if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
-                    s->setVY(s->getVY() - static_cast<double>(samosJson["postJumpBoost"]) / frameRate);
-                    s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                } else {
-                    s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                }
-                if (inputList["up"] && !inputList["down"]) {
-                    s->setState("FallingAimUpDiag");
-                } else if (inputList["down"] && !inputList["up"]) {
-                    s->setState("FallingAimDownDiag");
-                } else
-                    s->setState("Falling");
-            } else if ((!inputList["left"] && !inputList["right"]) || (inputList["left"] && inputList["right"])) {
-                if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
-                    s->setVY(s->getVY() - static_cast<double>(samosJson["postJumpBoost"]) / frameRate);
-                    s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                } else {
-                    s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                }
-                if (inputList["up"] && !inputList["down"]) {
-                    s->setState("FallingAimUp");
-                } else if (inputList["down"] && !inputList["up"]) {
-                    s->setState("FallingAimDown");
-                } else
-                    s->setState("Falling");
+            }
 
+            s->setState("Falling");
+
+            if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
+                s->setVY(s->getVY() - static_cast<double>(samosJson["postJumpBoost"]) / frameRate);
+                s->setJumpTime(s->getJumpTime() + 1 / frameRate);
+            } else {
+                s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
             }
         }
 
@@ -405,7 +461,7 @@ void MainWindow::updateSamos(Samos *s)
         s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
     }
 
-    if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
+    if (!s->getOnGround()) {
         std::string wallJump;
         for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
             if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
@@ -423,22 +479,176 @@ void MainWindow::updateSamos(Samos *s)
             if (!inputList["jump"])
                 s->setJumpTime(-1);
             if (s->getVY() > 0)
-                s->setVY(1 / ((1 / s->getVY()) + (static_cast<double>(samosJson["wallFriction"]) * s->getFrictionFactor() / frameRate)));
+                s->setVY(1 / ((1 / s->getVY()) + (static_cast<double>(samosJson["wallFriction"]) / frameRate)));
             else if (s->getVY() < 0)
-                s->setVY(1 / ((1 / s->getVY()) - (static_cast<double>(samosJson["wallFriction"]) * s->getFrictionFactor() / frameRate)));
+                s->setVY(1 / ((1 / s->getVY()) - (static_cast<double>(samosJson["wallFriction"]) / frameRate)));
         } else if (wallJump == "Left") {
             s->setFacing("Right");
             s->setState("WallJump");
             if (!inputList["jump"])
                 s->setJumpTime(-1);
             if (s->getVY() > 0)
-                s->setVY(1 / ((1 / s->getVY()) + (static_cast<double>(samosJson["wallFriction"]) * s->getFrictionFactor() / frameRate)));
+                s->setVY(1 / ((1 / s->getVY()) + (static_cast<double>(samosJson["wallFriction"]) / frameRate)));
             else if (s->getVY() < 0)
-                s->setVY(1 / ((1 / s->getVY()) - (static_cast<double>(samosJson["wallFriction"]) * s->getFrictionFactor() / frameRate)));
+                s->setVY(1 / ((1 / s->getVY()) - (static_cast<double>(samosJson["wallFriction"]) / frameRate)));
         } else if (s->getState() == "WallJump") {
             s->setState("SpinJump");
             if (s->getJumpTime() == -1)
                 s->setJumpTime(-3);
+        }
+    }
+
+    if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") {
+        if (inputList["left"] && !inputList["right"]) {
+            s->setFacing("Left");
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("CrouchAimUpDiag");
+                s->setCanonDirection("UpLeft");
+            } else {
+                s->setState("IdleCrouch");
+                s->setCanonDirection("Left");
+            }
+        } else if (inputList["right"] && !inputList["left"]) {
+            s->setFacing("Right");
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("CrouchAimUpDiag");
+                s->setCanonDirection("UpRight");
+            } else {
+                s->setState("IdleCrouch");
+                s->setCanonDirection("Right");
+            }
+        } else {
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("CrouchAimUp");
+                s->setCanonDirection("Up");
+            } else {
+                s->setState("IdleCrouch");
+                if (s->getFacing() == "Left")
+                    s->setCanonDirection("Left");
+                else
+                    s->setCanonDirection("Right");
+            }
+        }
+    } else if (s->getState() == "Standing" || s->getState() == "StandingAimUpDiag" || s->getState() == "StandingAimDownDiag" || s->getState() == "StandingAimUp") {
+        if (inputList["left"] && !inputList["right"]) {
+            s->setFacing("Left");
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("StandingAimUpDiag");
+                s->setCanonDirection("UpLeft");
+            } else if (inputList["down"] && !inputList["up"]) {
+                s->setState("StandingAimDownDiag");
+                s->setCanonDirection("DownLeft");
+            } else {
+                s->setState("Standing");
+                s->setCanonDirection("Left");
+            }
+        } else if (inputList["right"] && !inputList["left"]) {
+            s->setFacing("Right");
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("StandingAimUpDiag");
+                s->setCanonDirection("UpRight");
+            } else if (inputList["down"] && !inputList["up"]) {
+                s->setState("StandingAimDownDiag");
+                s->setCanonDirection("DownRight");
+            } else {
+                s->setState("Standing");
+                s->setCanonDirection("Right");
+            }
+        } else {
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("StandingAimUp");
+                s->setCanonDirection("Up");
+            } else {
+                s->setState("Standing");
+                if (s->getFacing() == "Left")
+                    s->setCanonDirection("Left");
+                else
+                    s->setCanonDirection("Right");
+            }
+        }
+    } else if (s->getState() == "Falling" || s->getState() == "FallingAimUpDiag" || s->getState() == "FallingAimDownDiag" || s->getState() == "FallingAimUp" || s->getState() == "FallingAimDown") {
+        if (inputList["left"] && !inputList["right"]) {
+            s->setFacing("Left");
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("FallingAimUpDiag");
+                s->setCanonDirection("UpLeft");
+            } else if (inputList["down"] && !inputList["up"]) {
+                s->setState("FallingAimDownDiag");
+                s->setCanonDirection("DownLeft");
+            } else {
+                s->setState("Falling");
+                s->setCanonDirection("Left");
+            }
+        } else if (inputList["right"] && !inputList["left"]) {
+            s->setFacing("Right");
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("FallingAimUpDiag");
+                s->setCanonDirection("UpRight");
+            } else if (inputList["down"] && !inputList["up"]) {
+                s->setState("FallingAimDownDiag");
+                s->setCanonDirection("DownRight");
+            } else {
+                s->setState("Falling");
+                s->setCanonDirection("Right");
+            }
+        } else {
+            if (inputList["up"] && !inputList["down"]) {
+                s->setState("FallingAimUp");
+                s->setCanonDirection("Up");
+            } else if (inputList["down"] && !inputList["up"]) {
+                s->setState("FallingAimDown");
+                s->setCanonDirection("Down");
+            } else {
+                s->setState("Falling");
+                if (s->getFacing() == "Left")
+                    s->setCanonDirection("Left");
+                else
+                    s->setCanonDirection("Right");
+            }
+        }
+    } else if (s->getState() == "Walking" || s->getState() == "WalkingAimForward") {
+        if (s->getFacing() == "Left")
+            s->setCanonDirection("Left");
+        else
+            s->setCanonDirection("Right");
+    } else if (s->getState() == "WalkingAimUp") {
+        if (s->getFacing() == "Left")
+            s->setCanonDirection("UpLeft");
+        else
+            s->setCanonDirection("UpRight");
+    } else if (s->getState() == "WalkingAimDown") {
+        if (s->getFacing() == "Left")
+            s->setCanonDirection("DownLeft");
+        else
+            s->setCanonDirection("DownRight");
+    } else if (s->getState() == "SpinJump" || s->getState() == "WallJump" || s->getState() == "Jumping" || s->getState() == "JumpEnd") {
+        if (inputList["left"] && !inputList["right"]) {
+            if (inputList["up"] && !inputList["down"]) {
+                s->setCanonDirection("UpLeft");
+            } else if (inputList["down"] && !inputList["up"]) {
+                s->setCanonDirection("DownLeft");
+            } else {
+                s->setCanonDirection("Left");
+            }
+        } else if (inputList["right"] && !inputList["left"]) {
+            if (inputList["up"] && !inputList["down"]) {
+                s->setCanonDirection("UpRight");
+            } else if (inputList["down"] && !inputList["up"]) {
+                s->setCanonDirection("DownRight");
+            } else {
+                s->setCanonDirection("Right");
+            }
+        } else {
+            if (inputList["up"] && !inputList["down"]) {
+                s->setCanonDirection("Up");
+            } else if (inputList["down"] && !inputList["up"]) {
+                s->setCanonDirection("Down");
+            } else {
+                if (s->getFacing() == "Left")
+                    s->setCanonDirection("Left");
+                else
+                    s->setCanonDirection("Right");
+            }
         }
     }
 }
@@ -595,7 +805,7 @@ void MainWindow::updatePhysics()
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
-                Entity::handleCollision(*i,*j);
+                handleCollision(*i,*j);
             }
         }
     }

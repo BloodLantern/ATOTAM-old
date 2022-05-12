@@ -35,6 +35,7 @@ public:
     static nlohmann::json keyCodes;
     static nlohmann::json loadKeyCodes();
     static void loadGeneral();
+    static void handleCollision(Entity* obj1, Entity* obj2);
     static std::map<std::string, bool> inputList;
 
     void closeEvent(QCloseEvent *event);
