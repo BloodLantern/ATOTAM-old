@@ -214,7 +214,10 @@ void MainWindow::updateSamos(Samos *s)
                                && s->getVX() > -static_cast<double>(samosJson["groundMaxSpeed"])) {
                         s->setVX(-static_cast<double>(samosJson["groundMaxSpeed"]));
                     }
-                    s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                    if (s->getVX() < 0)
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                    else
+                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                 }
                 s->setFacing("Left");
                 if (inputList["jump"] && s->getJumpTime() == -1) {
@@ -239,7 +242,10 @@ void MainWindow::updateSamos(Samos *s)
                                && s->getVX() < static_cast<double>(samosJson["groundMaxSpeed"])) {
                         s->setVX(static_cast<double>(samosJson["groundMaxSpeed"]));
                     }
-                    s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                    if (s->getVX() > 0)
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                    else
+                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                 }
                 s->setFacing("Right");
                 if (inputList["jump"] && s->getJumpTime() == -1) {
@@ -303,7 +309,10 @@ void MainWindow::updateSamos(Samos *s)
                            && s->getVX() > -static_cast<double>(samosJson["airMaxSpeed"])) {
                     s->setVX(-static_cast<double>(samosJson["airMaxSpeed"]));
                 }
-                s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                if (s->getVX() < 0)
+                    s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                else
+                    s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                 s->setFacing("Left");
                 if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
                     s->setVY(s->getVY() - static_cast<double>(samosJson["postJumpBoost"]) / frameRate);
@@ -324,7 +333,10 @@ void MainWindow::updateSamos(Samos *s)
                            && s->getVX() < static_cast<double>(samosJson["airMaxSpeed"])) {
                     s->setVX(static_cast<double>(samosJson["airMaxSpeed"]));
                 }
-                s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                if (s->getVX() > 0)
+                    s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                else
+                    s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                 s->setFacing("Right");
                 if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
                     s->setVY(s->getVY() - static_cast<double>(samosJson["postJumpBoost"]) / frameRate);
@@ -410,13 +422,19 @@ void MainWindow::updateSamos(Samos *s)
             s->setState("WallJump");
             if (!inputList["jump"])
                 s->setJumpTime(-1);
-            s->setVY(s->getVY() * (1.0 - static_cast<double>(samosJson["wallFriction"]) * std::abs(s->getVY()) / MainWindow::frameRate));
+            if (s->getVY() > 0)
+                s->setVY(1 / ((1 / s->getVY()) + (static_cast<double>(samosJson["wallFriction"]) * s->getFrictionFactor() / frameRate)));
+            else if (s->getVY() < 0)
+                s->setVY(1 / ((1 / s->getVY()) - (static_cast<double>(samosJson["wallFriction"]) * s->getFrictionFactor() / frameRate)));
         } else if (wallJump == "Left") {
             s->setFacing("Right");
             s->setState("WallJump");
             if (!inputList["jump"])
                 s->setJumpTime(-1);
-            s->setVY(s->getVY() * (1.0 - static_cast<double>(samosJson["wallFriction"]) * std::abs(s->getVY()) / MainWindow::frameRate));
+            if (s->getVY() > 0)
+                s->setVY(1 / ((1 / s->getVY()) + (static_cast<double>(samosJson["wallFriction"]) * s->getFrictionFactor() / frameRate)));
+            else if (s->getVY() < 0)
+                s->setVY(1 / ((1 / s->getVY()) - (static_cast<double>(samosJson["wallFriction"]) * s->getFrictionFactor() / frameRate)));
         } else if (s->getState() == "WallJump") {
             s->setState("SpinJump");
             if (s->getJumpTime() == -1)
@@ -506,18 +524,18 @@ void MainWindow::updatePhysics()
             livingList.push_back(liv);
             //Calc earth's attraction's acceleration if the entity is affected
             if (liv->getIsAffectedByGravity() && !liv->getOnGround() && liv->getIsMovable()) {
-                liv->setVY(liv->getVY() + MainWindow::gravity / MainWindow::frameRate);
+                liv->setVY(liv->getVY() + gravity / frameRate);
             }
             //Calc frictions
             if (liv->getOnGround() && liv->getIsMovable()) {
                 //Grounded frictions
-                if (std::abs(liv->getVX()) < (speedcap / 2))
-                    liv->setVX(liv->getVX() * (1.0 - static_cast<double>(paramJson["groundFriction"]) * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::frameRate));
-                //To much speed might cause a problem
-                else if (std::abs(liv->getVX()) < speedcap)
-                    liv->setVX(liv->getVX() * (1.0 - (static_cast<double>(paramJson["groundFriction"]) / 2) * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::frameRate));
+                if (std::abs(liv->getVX()) < speedcap) {
+                    if (liv->getVX() > 0)
+                        liv->setVX(1 / ((1 / liv->getVX()) + (static_cast<double>(paramJson["groundFriction"]) * liv->getFrictionFactor() / frameRate)));
+                    else if (liv->getVX() < 0)
+                        liv->setVX(1 / ((1 / liv->getVX()) - (static_cast<double>(paramJson["groundFriction"]) * liv->getFrictionFactor() / frameRate)));
                 //Speedcap
-                else {
+                } else {
                     if (liv->getVX() > 0)
                         liv->setVX(speedcap);
                     else
@@ -525,10 +543,13 @@ void MainWindow::updatePhysics()
                 }
             } else if (liv->getIsMovable()) {
                 //Air friction
-                if (std::abs(liv->getVX()) < speedcap)
-                    liv->setVX(liv->getVX() * (1.0 - static_cast<double>(paramJson["airFriction"]) * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::frameRate));
+                if (std::abs(liv->getVX()) < speedcap) {
+                    if (liv->getVX() > 0)
+                        liv->setVX(1 / ((1 / liv->getVX()) + (static_cast<double>(paramJson["airFriction"]) * liv->getFrictionFactor() / frameRate)));
+                    else if (liv->getVX() < 0)
+                        liv->setVX(1 / ((1 / liv->getVX()) - (static_cast<double>(paramJson["airFriction"]) * liv->getFrictionFactor() / frameRate)));
                 //Speedcap
-                else {
+                } else {
                     if (liv->getVX() > 0)
                         liv->setVX(speedcap);
                     else
@@ -538,12 +559,15 @@ void MainWindow::updatePhysics()
         } else {
             //Non-living objects can't be grounded
             if (ent->getIsAffectedByGravity() && ent->getIsMovable())
-                ent->setVY(ent->getVY() + MainWindow::gravity / MainWindow::frameRate);
+                ent->setVY(ent->getVY() + gravity / frameRate);
             if (ent->getIsMovable()) {
-                if (std::abs(ent->getVX()) < speedcap)
-                    ent->setVX(ent->getVX() * (1.0 - static_cast<double>(paramJson["airFriction"]) * std::abs(ent->getVX()) * ent->getFrictionFactor() / MainWindow::frameRate));
+                if (std::abs(ent->getVX()) < speedcap) {
+                    if (ent->getVX() > 0)
+                        ent->setVX(1 / ((1 / ent->getVX()) + (static_cast<double>(paramJson["airFriction"]) * ent->getFrictionFactor() / frameRate)));
+                    else if (ent->getVX() < 0)
+                        ent->setVX(1 / ((1 / ent->getVX()) - (static_cast<double>(paramJson["airFriction"]) * ent->getFrictionFactor() / frameRate)));
                 //Speedcap
-                else {
+                } else {
                     if (ent->getVX() > 0)
                         ent->setVX(speedcap);
                     else
@@ -555,9 +579,16 @@ void MainWindow::updatePhysics()
         if (ent->getEntType() == "Terrain" || ent->getEntType() == "DynamicObj") {
             solidList.push_back(ent);
         }
+        //Speedcap
+        if (std::abs(ent->getVY()) > speedcap) {
+            if (ent->getVY() > 0)
+                ent->setVY(speedcap);
+            else
+                ent->setVY(-speedcap);
+        }
         //Move entities
         if (ent->getIsMovable())
-            ent->updateV(MainWindow::frameRate);
+            ent->updateV(frameRate);
     } //{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
 
     //Check for collisions and handle them
