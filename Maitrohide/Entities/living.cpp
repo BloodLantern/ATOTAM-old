@@ -24,6 +24,11 @@ Living::~Living()
     delete groundBox;
 }
 
+void Living::hit()
+{
+
+}
+
 int Living::getHealth() const
 {
     return health;

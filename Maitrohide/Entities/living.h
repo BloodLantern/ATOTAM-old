@@ -12,6 +12,8 @@ public:
     Living(double x, double y, std::string facing, std::string name);
     ~Living();
 
+    void hit();
+
     int getHealth() const;
     void setHealth(int newHealth);
 

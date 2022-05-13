@@ -46,6 +46,7 @@ public:
     void updateAnimations();
     void updateSamos(Samos* s);
     void getInputs();
+    bool updateProjectile(Projectile* p);
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);

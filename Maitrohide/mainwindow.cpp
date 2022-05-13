@@ -61,6 +61,18 @@ void MainWindow::getInputs()
         }
 }
 
+bool MainWindow::updateProjectile(Projectile *p)
+{
+    p->setLifeTime(p->getLifeTime() - (1 / frameRate));
+    if (p->getLifeTime() <= 0.0) {
+        p->timeOut();
+    }
+    if (p->getState() == "Hit" && p->getAnimation() == (static_cast<unsigned int>(Entity::values["textures"][p->getName()]["Hit"]["count"]) - 1))
+        return true;
+    else
+        return false;
+}
+
 void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
 {//{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
 
@@ -77,7 +89,8 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->getEntType() == "NPC") {
             Entity::calcCollisionReplacement(obj1, obj2);
         } else if (obj2->getEntType() == "Projectile") {
-            // TODO
+            Projectile* p = static_cast<Projectile*>(obj2);
+            p->hitting(obj1);
         }
 
     } else if (obj1->getEntType() == "Samos") {
@@ -93,7 +106,8 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->getEntType() == "NPC") {
             // TODO
         } else if (obj2->getEntType() == "Projectile") {
-            // TODO
+            Projectile* p = static_cast<Projectile*>(obj2);
+            p->hitting(obj1);
         }
 
     } else if (obj1->getEntType() == "Monster") {
@@ -111,7 +125,8 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->getEntType() == "NPC") {
             // TODO
         } else if (obj2->getEntType() == "Projectile") {
-            // TODO
+            Projectile* p = static_cast<Projectile*>(obj2);
+            p->hitting(obj1);
         }
 
     } else if (obj1->getEntType() == "Area") {
@@ -128,7 +143,8 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->getEntType() == "NPC") {
             // TODO
         } else if (obj2->getEntType() == "Projectile") {
-            // TODO
+            Projectile* p = static_cast<Projectile*>(obj2);
+            p->hitting(obj1);
         }
 
     } else if (obj1->getEntType() == "DynamicObj") {
@@ -145,7 +161,8 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->getEntType() == "NPC") {
             // TODO
         } else if (obj2->getEntType() == "Projectile") {
-            // TODO
+            Projectile* p = static_cast<Projectile*>(obj2);
+            p->hitting(obj1);
         }
 
     } else if (obj1->getEntType() == "NPC") {
@@ -162,18 +179,22 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
         } else if (obj2->getEntType() == "NPC") {
             // TODO
         } else if (obj2->getEntType() == "Projectile") {
-            // TODO
+            Projectile* p = static_cast<Projectile*>(obj2);
+            p->hitting(obj1);
         }
 
     } else if (obj1->getEntType() == "Projectile") {
         if (obj2->getEntType() == "Terrain") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            Projectile* p = static_cast<Projectile*>(obj1);
+            p->hitting(obj2);
         } else if (obj2->getEntType() == "Samos") {
             Entity::calcCollisionReplacement(obj1, obj2);
-            // TODO hit
+            Projectile* p = static_cast<Projectile*>(obj1);
+            p->hitting(obj2);
         } else if (obj2->getEntType() == "Monster") {
             Entity::calcCollisionReplacement(obj1, obj2);
-            // TODO hit
+            Projectile* p = static_cast<Projectile*>(obj1);
+            p->hitting(obj2);
         } else if (obj2->getEntType() == "Area") {
             // TODO
         } else if (obj2->getEntType() == "DynamicObj") {
@@ -461,7 +482,7 @@ void MainWindow::updateSamos(Samos *s)
         s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
     }
 
-    if (!s->getOnGround()) {
+    if (!s->getOnGround() && !inputList["aim"]) {
         std::string wallJump;
         for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
             if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
@@ -651,6 +672,16 @@ void MainWindow::updateSamos(Samos *s)
             }
         }
     }
+
+    if (s->getShootTime() > 0.0) {
+        s->setShootTime(s->getShootTime() - 1 / frameRate);
+    }
+
+    if (s->getShootTime() <= 0.0 && inputList["shoot"]) {
+        addRenderable(s->shoot("Beam"));
+        s->setShootTime(samosJson["shootTime"]);
+    }
+
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -666,8 +697,9 @@ void MainWindow::paintEvent(QPaintEvent *)
     for (Entity *entity : rendering) {
 
         //If the texture is null, set it to the error texture
-        if (entity->getTexture() == nullptr)
+        if (entity->getTexture() == nullptr) {
             entity->setTexture(&errorTexture);
+        }
 
         //Try to draw the textrue, if it fails, set it to the error texture and try again
         try {
@@ -727,6 +759,8 @@ void MainWindow::updatePhysics()
     std::vector<Entity*> solidList;
     //Living objects list
     std::vector<Living*> livingList;
+    //Deletion list
+    std::vector<Entity*> toDel;
     for (Entity* ent : rendering) {
 
         if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
@@ -767,6 +801,11 @@ void MainWindow::updatePhysics()
                 }
             }
         } else {
+            if (ent->getEntType() == "Projectile") {
+                Projectile* p = static_cast<Projectile*>(ent);
+                if (updateProjectile(p))
+                    toDel.push_back(ent);
+            }
             //Non-living objects can't be grounded
             if (ent->getIsAffectedByGravity() && ent->getIsMovable())
                 ent->setVY(ent->getVY() + gravity / frameRate);
@@ -820,6 +859,16 @@ void MainWindow::updatePhysics()
             }
         }
     }
+
+    for (std::vector<Entity*>::iterator i = toDel.begin(); i != toDel.end(); i++) {
+        std::vector<Entity*> newRen;
+        for (std::vector<Entity*>::iterator j = rendering.begin(); j != rendering.end(); j++) {
+            if (*j != *i)
+                newRen.push_back(*j);
+        }
+        rendering = newRen;
+        delete *i;
+    }
 }
 
 void MainWindow::updateAnimations()
@@ -846,7 +895,6 @@ void MainWindow::updateAnimations()
                 // Else, make sure not to end up with a too high index
                 entity->setAnimation(entity->getAnimation() % entity->getCurrentAnimation().size());
         }
-
         // Every 'refreshRate' frames
         if (!Entity::values["textures"][entity->getName()][entity->getState()]["refreshRate"].is_null())
             if (frameCount % static_cast<int>(Entity::values["textures"][entity->getName()][entity->getState()]["refreshRate"]) == 0)

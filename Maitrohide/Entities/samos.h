@@ -11,7 +11,7 @@ public:
     Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox* box, QImage* texture, std::string entityType, int health, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable);
     ~Samos();
 
-    void shoot(std::string type);
+    Projectile* shoot(std::string type);
 
     bool getIsInAltForm() const;
     void setIsInAltForm(bool newIsInAltForm);
@@ -40,6 +40,9 @@ public:
     const std::string &getCanonDirection() const;
     void setCanonDirection(const std::string &newCanonDirection);
 
+    double getShootTime() const;
+    void setShootTime(double newShootTime);
+
 private:
     bool isInAltForm;
     int grenadeCount;
@@ -47,6 +50,7 @@ private:
     int missileCount;
     int maxMissileCount;
     double jumpTime = 0.3;
+    double shootTime = 0.0;
     std::string canonDirection = "Right";
     CollisionBox* wallBoxR;
     CollisionBox* wallBoxL;

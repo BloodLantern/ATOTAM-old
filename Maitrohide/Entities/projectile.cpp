@@ -1,8 +1,12 @@
 #include "projectile.h"
 
 Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name)
-    : Entity(x, y, new CollisionBox(7, 7), nullptr, "Projectile", false, facing, 0, name, true)
+    : Entity(x, y, new CollisionBox(14, 14), nullptr, "Projectile", false, facing, 0, name, true), projectileType(name)
 {
+    //Because animation are buggy
+    setLastFrameState("None");
+    setLastFrameFacing("None");
+
     //Bombs don't move
     if (type == "Bomb")
         facing = "None";
@@ -42,17 +46,17 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
     //Setting the damage and adjusting the speed depending on the projectile type
     if (type == "Beam") {
         damage = 20;
-        lifeTime = 1500;
+        lifeTime = 1.5;
         setState(facing);
     } else if (type == "Missile") {
         damage = 50;
-        lifeTime = 3000;
+        lifeTime = 3;
         setVX(getVX() / 2);
         setVY(getVY() / 2);
         setState(facing);
     } else if (type == "Grenade") {
         damage = 60;
-        lifeTime = 3000;
+        lifeTime = 3;
         setVX(getVX() / 2);
         setVY(getVY() / 2);
         setIsAffectedByGravity(true);
@@ -60,9 +64,31 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
         setState(facing);
     } else if (type == "Bomb") {
         damage = 50;
-        lifeTime = 2000;
+        lifeTime = 2;
     } else {
         throw unknownProjectileType;
+    }
+}
+
+void Projectile::hitting(Entity* ent)
+{
+    if (projectileType == "Beam") {
+        setVX(0);
+        setVY(0);
+        setState("Hit");
+        if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
+            Living* liv = static_cast<Living*>(ent);
+            liv->hit();
+        }
+    }
+}
+
+void Projectile::timeOut()
+{
+    if (projectileType == "Beam") {
+        setVX(0);
+        setVY(0);
+        setState("Hit");
     }
 }
 
@@ -76,12 +102,12 @@ void Projectile::setDamage(int newDamage)
     damage = newDamage;
 }
 
-int Projectile::getLifeTime() const
+double Projectile::getLifeTime() const
 {
     return lifeTime;
 }
 
-void Projectile::setLifeTime(int newLifeTime)
+void Projectile::setLifeTime(double newLifeTime)
 {
     lifeTime = newLifeTime;
 }

@@ -44,7 +44,11 @@
 			"wallJumpPower_y": 300,
 			"wallJumpPower_x": 500,
 			"wallFriction": 0.02,
-			"slowcap": 25
+			"slowcap": 25,
+			"shootTime": 0.5
+		},
+		"Beam": {
+			"texture": "Beam"
 		}
 	},
 	"livings": {
@@ -825,6 +829,25 @@
 				"width": 250,
 				"height": 16,
 				"count": 5,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [-42, -42],
+				"yOffset": [-9, -9],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": 3,
+				"dontReset": false
+			},
+			"None": {
+				"file": "projectiles.png",
+				"x": 0,
+				"y": 0,
+				"width": 0,
+				"height": 0,
+				"count": 0,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
 				"lines": 1,

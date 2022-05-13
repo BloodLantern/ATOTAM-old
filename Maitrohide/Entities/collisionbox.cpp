@@ -5,7 +5,7 @@ CollisionBox::CollisionBox(int x, int y, int width, int height) : x(x), y(y), wi
 
 }
 
-CollisionBox::CollisionBox(int width, int height) : width(width), height(height)
+CollisionBox::CollisionBox(int width, int height) : x(0), y(0), width(width), height(height)
 {
 
 }

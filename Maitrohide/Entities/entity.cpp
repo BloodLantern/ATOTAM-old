@@ -159,7 +159,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
          (animJson["reversed"] ? i > -1 : i < animJson["lines"]);
          (animJson["reversed"] ? i-- : i++)) {
         // For each image
-        if (facing == "Right" || facing == "UpRight" || facing == "DownRight")
+        if (facing == "Right" || facing == "UpRight" || facing == "DownRight" || facing == "None" || facing == "Down" || facing == "Up")
             for (int ii = 0;
                  ii < (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ animJson["emptyFramesReversed"] ?
                        imagesPerLine : imagesPerLine - static_cast<int>(animJson["emptyFrames"]) : imagesPerLine); ii++) {
@@ -194,10 +194,11 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
         QImage img = anim[i];
         if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
             img.setOffset(QPoint(animJson["xOffset"][0], animJson["yOffset"][0]));
-        else if (facing == "Right" || facing == "UpRight" || facing == "DownRight")
+        else if (facing == "Right" || facing == "UpRight" || facing == "DownRight" || facing == "None" || facing == "Down" || facing == "Up")
             img.setOffset(QPoint(animJson["xOffset"][1], animJson["yOffset"][1]));
         anim[i] = img;
     }
+
     return anim;
 }
 

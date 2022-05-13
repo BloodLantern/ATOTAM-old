@@ -2,6 +2,7 @@
 #define PROJECTILE_H
 
 #include "entity.h"
+#include "living.h"
 
 class Projectile : public Entity
 {
@@ -10,18 +11,21 @@ public:
     //enum ProjectileType {Beam, Missile, Grenade, Bomb};
     Projectile(double x, double y, std::string facing, std::string type, std::string name);
 
+    void hitting(Entity* ent);
+    void timeOut();
+
     int getDamage() const;
     void setDamage(int newDamage);
 
-    int getLifeTime() const;
-    void setLifeTime(int newLifeTime);
+    double getLifeTime() const;
+    void setLifeTime(double newLifeTime);
 
     const std::string &getProjectileType() const;
     void setProjectileType(const std::string &newProjectileType);
 
 private:
     int damage;
-    int lifeTime; // in ms, starts with a positive value, destroys the object when null or negative
+    double lifeTime; // in s, starts with a positive value, destroys the object when null or negative
     std::string projectileType;
 };
 
