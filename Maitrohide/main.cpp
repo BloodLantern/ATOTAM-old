@@ -45,16 +45,36 @@ void preciseSleep(double seconds) {
     while ((std::chrono::high_resolution_clock::now() - start).count() / 1e9 < seconds);
 }
 
+void animationClock(MainWindow* w) {
+    double waitTime = 1.0/(MainWindow::updateRate * MainWindow::gameSpeed);
+    //waitTime /=2;
+    while (MainWindow::running) {
+        preciseSleep(waitTime);
+        //preciseSleep(waitTime);
+        w->updateAnimations();
+        MainWindow::updateCount++;
+    }
+}
+
 void gameClock(MainWindow* w, Samos* s) {
     double waitTime = 1.0/(MainWindow::frameRate * MainWindow::gameSpeed);
     //waitTime /=2;
     while (MainWindow::running) {
         preciseSleep(waitTime);
         //preciseSleep(waitTime);
+
+        // Update FPS if it has to
+        if ((std::chrono::high_resolution_clock::now() - MainWindow::lastFpsShown).count() > MainWindow::showFpsUpdateRate)
+            MainWindow::fps = 1000000000 / (std::chrono::high_resolution_clock::now() - MainWindow::lastFrameTime).count();
+        // And update the last frame time
+        MainWindow::lastFrameTime = std::chrono::high_resolution_clock::now();
+
+        // Update physics
         w->getInputs();
         w->updateSamos(s);
         w->updatePhysics();
-        w->updateAnimations();
+
+        // Eventually render the game
         w->update();
         MainWindow::frameCount++;
     }
@@ -119,6 +139,7 @@ int main(int argc, char *argv[])
     w.addRenderable(&m4);
     Terrain m5(1600, 300, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
     w.addRenderable(&m5);
-    std::future<void> fobj1 = std::async(gameClock, &w, &s);
+    std::future<void> anim = std::async(animationClock, &w);
+    std::future<void> game = std::async(gameClock, &w, &s);
     return a.exec();
 }

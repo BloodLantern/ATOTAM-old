@@ -62,6 +62,7 @@ Maitrohide/build-Maitrohide-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/.qtc_clangd/comp
 Maitrohide/build-Maitrohide-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/.qtc_clangd/compile_commands.json
 Maitrohide/build-Maitrohide-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/.qtc_clangd/compile_commands.json
 Maitrohide/BUILD/*.*
+Maitrohide/RELEASE/*.*
 *.qrc
 Maitrohide/BUILD/Makefile
 *.debug
@@ -95,3 +96,4 @@ Maitrohide/BUILD/UsersmaximAppDataLocalTemptmpejrflfzq
 Maitrohide/BUILD/UsersmaximAppDataLocalTemptmpf7iq3c56
 Maitrohide/BUILD/UsersmaximAppDataLocalTemptmpj2s1fjk4
 Maitrohide/BUILD/UsersmaximAppDataLocalTemptmpxi7nmzo5
+Maitrohide/RELEASE/Makefile

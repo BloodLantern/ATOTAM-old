@@ -3,10 +3,17 @@
 
 bool MainWindow::running = true;
 double MainWindow::frameRate;
+double MainWindow::updateRate;
 double MainWindow::gameSpeed;
 bool MainWindow::renderHitboxes;
 int MainWindow::renderingMultiplier;
 unsigned long long MainWindow::frameCount;
+unsigned long long MainWindow::updateCount;
+std::chrono::system_clock::time_point MainWindow::lastFpsShown;
+std::chrono::system_clock::time_point MainWindow::lastFrameTime;
+unsigned int MainWindow::fps;
+bool MainWindow::showFps;
+unsigned int MainWindow::showFpsUpdateRate;
 double MainWindow::gravity;
 std::map<std::string, bool> MainWindow::inputList;
 QImage MainWindow::errorTexture("../assets/textures/error.png");
@@ -37,11 +44,14 @@ nlohmann::json MainWindow::loadKeyCodes()
 void MainWindow::loadGeneral()
 {
     //Loading the general settings of the game
-    frameRate = Entity::values["general"]["frameRate"];
     gameSpeed = Entity::values["general"]["gameSpeed"];
+    frameRate = Entity::values["general"]["frameRate"];
+    updateRate = Entity::values["general"]["updateRate"];
+    showFps = Entity::values["general"]["showFps"];
+    showFpsUpdateRate = Entity::values["general"]["showFpsUpdateRate"];
     gravity = Entity::values["general"]["gravity"];
-    renderHitboxes = Entity::values["general"]["renderHitboxes"];
     renderingMultiplier = Entity::values["general"]["renderingMultiplier"];
+    renderHitboxes = Entity::values["general"]["renderHitboxes"];
 }
 
 nlohmann::json MainWindow::keyCodes = MainWindow::loadKeyCodes();
@@ -473,7 +483,15 @@ void MainWindow::paintEvent(QPaintEvent *)
             }
         }
     }
-    painter.end();
+
+    // Draw fps if necessary
+    if (showFps) {
+        if ((std::chrono::high_resolution_clock::now() - lastFpsShown).count() > showFpsUpdateRate) {
+            lastFpsShown = std::chrono::high_resolution_clock::now();
+        }
+        painter.setPen(QColor("black"));
+        painter.drawText(QPoint(2, 12), QString::fromStdString(std::to_string(fps) + " FPS"));
+    }
 }
 
 void MainWindow::addRenderable(Entity *entity)
@@ -499,16 +517,16 @@ void MainWindow::updatePhysics()
             livingList.push_back(liv);
             //Calc earth's attraction's acceleration if the entity is affected
             if (liv->getIsAffectedByGravity() && !liv->getOnGround() && liv->getIsMovable()) {
-                liv->setVY(liv->getVY() + MainWindow::gravity / MainWindow::frameRate);
+                liv->setVY(liv->getVY() + MainWindow::gravity / MainWindow::updateRate);
             }
             //Calc frictions
             if (liv->getOnGround() && liv->getIsMovable()) {
                 //Grounded frictions
                 if (std::abs(liv->getVX()) < 500)
-                    liv->setVX(liv->getVX() * (1.0 - 0.1 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::frameRate));
+                    liv->setVX(liv->getVX() * (1.0 - 0.1 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::updateRate));
                 //To much speed might cause a problem
                 else if (std::abs(liv->getVX()) < 1000)
-                    liv->setVX(liv->getVX() * (1.0 - 0.05 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::frameRate));
+                    liv->setVX(liv->getVX() * (1.0 - 0.05 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::updateRate));
                 //Speedcap
                 else {
                     if (liv->getVX() > 0)
@@ -519,7 +537,7 @@ void MainWindow::updatePhysics()
             } else if (liv->getIsMovable()) {
                 //Air friction
                 if (std::abs(liv->getVX()) < 1000)
-                    liv->setVX(liv->getVX() * (1.0 - 0.01 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::frameRate));
+                    liv->setVX(liv->getVX() * (1.0 - 0.01 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::updateRate));
                 //Speedcap
                 else {
                     if (liv->getVX() > 0)
@@ -531,10 +549,10 @@ void MainWindow::updatePhysics()
         } else {
             //Non-living objects can't be grounded
             if (ent->getIsAffectedByGravity() && ent->getIsMovable())
-                ent->setVY(ent->getVY() + MainWindow::gravity / MainWindow::frameRate);
+                ent->setVY(ent->getVY() + MainWindow::gravity / MainWindow::updateRate);
             if (ent->getIsMovable()) {
                 if (std::abs(ent->getVX()) < 1000)
-                    ent->setVX(ent->getVX() * (1.0 - 0.01 * std::abs(ent->getVX()) * ent->getFrictionFactor() / MainWindow::frameRate));
+                    ent->setVX(ent->getVX() * (1.0 - 0.01 * std::abs(ent->getVX()) * ent->getFrictionFactor() / MainWindow::updateRate));
                 //Speedcap
                 else {
                     if (ent->getVX() > 0)
@@ -550,7 +568,7 @@ void MainWindow::updatePhysics()
         }
         //Move entities
         if (ent->getIsMovable())
-            ent->updateV(MainWindow::frameRate);
+            ent->updateV(MainWindow::updateRate);
     } //{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
 
     //Check for collisions and handle them
@@ -577,34 +595,37 @@ void MainWindow::updatePhysics()
 void MainWindow::updateAnimations()
 {
     for (Entity* entity : rendering) {
+        std::string state = entity->getState();
+        std::string facing = entity->getFacing();
         // Every 'refreshRate' frames
-        if (!Entity::values["textures"][entity->getName()][entity->getState()]["refreshRate"].is_null())
-            if (frameCount % static_cast<int>(Entity::values["textures"][entity->getName()][entity->getState()]["refreshRate"]) == 0)
+        if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
+            if (updateCount % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
                 // If the animation index still exists
                 if (entity->getCurrentAnimation().size() > entity->getAnimation())
                     // Increment the animation index
                     entity->setAnimation(entity->getAnimation() + 1);
 
         // If the entity state is different from the last frame
-        if (entity->getState() != entity->getLastFrameState()
-                || entity->getFacing() != entity->getLastFrameFacing()) {
+        if (state != entity->getLastFrameState()
+                || facing != entity->getLastFrameFacing()) {
             // Update the QImage array representing the animation
-            entity->setCurrentAnimation(entity->updateAnimation(entity->getState()));
+            entity->setCurrentAnimation(entity->updateAnimation(state));
             // If the animation should reset the next one
             if (!Entity::values["textures"][entity->getName()][entity->getLastFrameState()]["dontReset"])
                 // Because the animation changed, reset its
                 entity->setAnimation(0);
             else
                 // Else, make sure not to end up with a too high index
-                entity->setAnimation(entity->getAnimation() % entity->getCurrentAnimation().size());
+                if (entity->getAnimation() >= entity->getCurrentAnimation().size())
+                    entity->setAnimation(0);
         }
 
         // Every 'refreshRate' frames
-        if (!Entity::values["textures"][entity->getName()][entity->getState()]["refreshRate"].is_null())
-            if (frameCount % static_cast<int>(Entity::values["textures"][entity->getName()][entity->getState()]["refreshRate"]) == 0)
+        if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
+            if (updateCount % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
                 // If the animation has to loop
-                if (!Entity::values["textures"][entity->getName()][entity->getState()]["loop"].is_null()) {
-                    if (Entity::values["textures"][entity->getName()][entity->getState()]["loop"]) {
+                if (!Entity::values["textures"][entity->getName()][state]["loop"].is_null()) {
+                    if (Entity::values["textures"][entity->getName()][state]["loop"]) {
                         // If the animation index still exists
                         if (entity->getCurrentAnimation().size() - 1 < entity->getAnimation())
                             // Reset animation
@@ -620,8 +641,8 @@ void MainWindow::updateAnimations()
         entity->updateTexture();
 
         // Make sure to update these values for the next frame
-        entity->setLastFrameState(entity->getState());
-        entity->setLastFrameFacing(entity->getFacing());
+        entity->setLastFrameState(state);
+        entity->setLastFrameFacing(facing);
     }
 }
 
