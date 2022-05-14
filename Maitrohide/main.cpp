@@ -17,51 +17,24 @@
 
 #include <Entities/terrain.h>
 
-void preciseSleep(double seconds) {
-
-    double estimate = 5e-3;
-    double mean = 5e-3;
-    double m2 = 0;
-    int64_t count = 1;
-
-    while (seconds > estimate) {
-        auto start = std::chrono::high_resolution_clock::now();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        auto end = std::chrono::high_resolution_clock::now();
-
-        double observed = (end - start).count() / 1e9;
-        seconds -= observed;
-
-        ++count;
-        double delta = observed - mean;
-        mean += delta / count;
-        m2   += delta * (observed - mean);
-        double stddev = sqrt(m2 / (count - 1));
-        estimate = mean + stddev;
-    }
-
-    // spin lock
-    auto start = std::chrono::high_resolution_clock::now();
-    while ((std::chrono::high_resolution_clock::now() - start).count() / 1e9 < seconds);
-}
-
 void animationClock(MainWindow* w) {
-    double waitTime = 1.0/(MainWindow::updateRate * MainWindow::gameSpeed);
-    //waitTime /=2;
+    long waitTime = 1000000.0/(MainWindow::updateRate * MainWindow::gameSpeed);
     while (MainWindow::running) {
-        preciseSleep(waitTime);
-        //preciseSleep(waitTime);
+        auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
+
         w->updateAnimations();
         MainWindow::updateCount++;
+
+        while (std::chrono::high_resolution_clock::now() < end) {
+            std::this_thread::sleep_for(std::chrono::microseconds(100));
+        }
     }
 }
 
 void gameClock(MainWindow* w, Samos* s) {
-    double waitTime = 1.0/(MainWindow::frameRate * MainWindow::gameSpeed);
-    //waitTime /=2;
+    long waitTime = 1000000.0/(MainWindow::frameRate * MainWindow::gameSpeed);
     while (MainWindow::running) {
-        preciseSleep(waitTime);
-        //preciseSleep(waitTime);
+        auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
         // Update FPS if it has to
         if ((std::chrono::high_resolution_clock::now() - MainWindow::lastFpsShown).count() > MainWindow::showFpsUpdateRate)
@@ -77,6 +50,10 @@ void gameClock(MainWindow* w, Samos* s) {
         // Eventually render the game
         w->update();
         MainWindow::frameCount++;
+
+        while (std::chrono::high_resolution_clock::now() < end) {
+            std::this_thread::sleep_for(std::chrono::microseconds(100));
+        }
     }
 }
 
