@@ -786,18 +786,12 @@ void MainWindow::updatePhysics()
             livingList.push_back(liv);
             //Calc earth's attraction's acceleration if the entity is affected
             if (liv->getIsAffectedByGravity() && !liv->getOnGround() && liv->getIsMovable()) {
-                liv->setVY(liv->getVY() + MainWindow::gravity / MainWindow::updateRate);
+                liv->setVY(liv->getVY() + gravity / frameRate);
             }
             //Calc frictions
             if (liv->getOnGround() && liv->getIsMovable()) {
                 //Grounded frictions
-                if (std::abs(liv->getVX()) < 500)
-                    liv->setVX(liv->getVX() * (1.0 - 0.1 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::updateRate));
-                //To much speed might cause a problem
-                else if (std::abs(liv->getVX()) < 1000)
-                    liv->setVX(liv->getVX() * (1.0 - 0.05 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::updateRate));
-                //Speedcap
-                else {
+                if (std::abs(liv->getVX()) < speedcap) {
                     if (liv->getVX() > 0)
                         liv->setVX(1 / ((1 / liv->getVX()) + (static_cast<double>(paramJson["groundFriction"]) * liv->getFrictionFactor() / frameRate)));
                     else if (liv->getVX() < 0)
@@ -811,10 +805,7 @@ void MainWindow::updatePhysics()
                 }
             } else if (liv->getIsMovable()) {
                 //Air friction
-                if (std::abs(liv->getVX()) < 1000)
-                    liv->setVX(liv->getVX() * (1.0 - 0.01 * std::abs(liv->getVX()) * liv->getFrictionFactor() / MainWindow::updateRate));
-                //Speedcap
-                else {
+                if (std::abs(liv->getVX()) < speedcap) {
                     if (liv->getVX() > 0)
                         liv->setVX(1 / ((1 / liv->getVX()) + (static_cast<double>(paramJson["airFriction"]) * liv->getFrictionFactor() / frameRate)));
                     else if (liv->getVX() < 0)
@@ -835,12 +826,9 @@ void MainWindow::updatePhysics()
             }
             //Non-living objects can't be grounded
             if (ent->getIsAffectedByGravity() && ent->getIsMovable())
-                ent->setVY(ent->getVY() + MainWindow::gravity / MainWindow::updateRate);
+                ent->setVY(ent->getVY() + gravity / frameRate);
             if (ent->getIsMovable()) {
-                if (std::abs(ent->getVX()) < 1000)
-                    ent->setVX(ent->getVX() * (1.0 - 0.01 * std::abs(ent->getVX()) * ent->getFrictionFactor() / MainWindow::updateRate));
-                //Speedcap
-                else {
+                if (std::abs(ent->getVX()) < speedcap) {
                     if (ent->getVX() > 0)
                         ent->setVX(1 / ((1 / ent->getVX()) + (static_cast<double>(paramJson["airFriction"]) * ent->getFrictionFactor() / frameRate)));
                     else if (ent->getVX() < 0)
@@ -867,7 +855,7 @@ void MainWindow::updatePhysics()
         }
         //Move entities
         if (ent->getIsMovable())
-            ent->updateV(MainWindow::updateRate);
+            ent->updateV(frameRate);
     } //{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
 
     //Check for collisions and handle them

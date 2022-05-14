@@ -1,7 +1,7 @@
 {
 	"general": {
 		"gameSpeed": 1.0,
-		"frameRate": 144.0,
+		"frameRate": 60.0,
 		"updateRate": 60.0,
 		"showFps": true,
 		"showFpsUpdateRate": 1000000000,
