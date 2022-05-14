@@ -891,12 +891,13 @@ void MainWindow::updatePhysics()
 
 void MainWindow::updateAnimations()
 {
+    unsigned long long uC = updateCount;
     for (Entity* entity : rendering) {
         std::string state = entity->getState();
         std::string facing = entity->getFacing();
         // Every 'refreshRate' frames
         if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
-            if (updateCount % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
+            if (uC % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
                 // If the animation index still exists
                 if (entity->getCurrentAnimation().size() > entity->getAnimation())
                     // Increment the animation index
@@ -918,7 +919,7 @@ void MainWindow::updateAnimations()
         }
         // Every 'refreshRate' frames
         if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
-            if (updateCount % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
+            if (uC % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
                 // If the animation has to loop
                 if (!Entity::values["textures"][entity->getName()][state]["loop"].is_null()) {
                     if (Entity::values["textures"][entity->getName()][state]["loop"]) {

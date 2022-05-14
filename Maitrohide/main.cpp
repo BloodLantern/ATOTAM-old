@@ -17,12 +17,11 @@
 
 #include <Entities/terrain.h>
 
-void animationClock(MainWindow* w) {
+void animationClock() {
     long waitTime = 1000000.0/(MainWindow::updateRate * MainWindow::gameSpeed);
     while (MainWindow::running) {
         auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
-        w->updateAnimations();
         MainWindow::updateCount++;
 
         while (std::chrono::high_resolution_clock::now() < end) {
@@ -46,6 +45,7 @@ void gameClock(MainWindow* w, Samos* s) {
         w->getInputs();
         w->updateSamos(s);
         w->updatePhysics();
+        w->updateAnimations();
 
         // Eventually render the game
         w->update();
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     w.addRenderable(&m4);
     Terrain m5(1600, 300, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
     w.addRenderable(&m5);
-    std::future<void> anim = std::async(animationClock, &w);
+    std::future<void> anim = std::async(animationClock);
     std::future<void> game = std::async(gameClock, &w, &s);
     return a.exec();
 }
