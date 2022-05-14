@@ -26,7 +26,7 @@ Samos::~Samos()
     delete wallBoxR;
 }
 
-void Samos::shoot(std::string type)
+Projectile* Samos::shoot(std::string type)
 {
     Projectile* projectile = nullptr;
     double renderingM = values["general"]["renderingMultiplier"];
@@ -36,12 +36,12 @@ void Samos::shoot(std::string type)
         if (grenadeCount > 0)
             grenadeCount--;
         else
-            return;
+            return projectile;
     } else if (type == "Missile") {
         if (missileCount > 0)
             missileCount--;
         else
-            return;
+            return projectile;
     }
 
     //Spawn the projectile at certain coordinates to match the sprite
@@ -67,7 +67,7 @@ void Samos::shoot(std::string type)
         throw Entity::invalidDirection;
     }
 
-    delete projectile; // TEMP
+    return projectile;
 }
 
 bool Samos::getIsInAltForm() const
@@ -120,12 +120,12 @@ void Samos::setMaxMissileCount(int newMaxMissileCount)
     maxMissileCount = newMaxMissileCount;
 }
 
-int Samos::getJumpTime() const
+double Samos::getJumpTime() const
 {
     return jumpTime;
 }
 
-void Samos::setJumpTime(int newJumpTime)
+void Samos::setJumpTime(double newJumpTime)
 {
     jumpTime = newJumpTime;
 }
@@ -150,4 +150,24 @@ void Samos::setWallBoxL(CollisionBox *newWallBoxL)
 {
     delete wallBoxL;
     wallBoxL = newWallBoxL;
+}
+
+const std::string &Samos::getCanonDirection() const
+{
+    return canonDirection;
+}
+
+void Samos::setCanonDirection(const std::string &newCanonDirection)
+{
+    canonDirection = newCanonDirection;
+}
+
+double Samos::getShootTime() const
+{
+    return shootTime;
+}
+
+void Samos::setShootTime(double newShootTime)
+{
+    shootTime = newShootTime;
 }

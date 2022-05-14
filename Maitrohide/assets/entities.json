@@ -7,7 +7,11 @@
 		"showFpsUpdateRate": 1000000000,
 		"gravity": 700.0,
 		"renderingMultiplier": 2,
-		"renderHitboxes": false
+		"renderHitboxes": false,
+		"groundFriction": 0.1,
+		"airFriction": 0.01,
+		"speedcap": 1000,
+		"slowcap": 30
 	},
 	"names": {
 		"Samos": {
@@ -19,7 +23,35 @@
 			"type": "Samos",
 			"gravity": true,
 			"friction": 1,
-			"movable": true
+			"movingFriction": 0.1,
+			"movable": true,
+			"groundAcceleration": 1800,
+			"groundMaxSpeed": 450,
+			"airAcceleration": 900,
+			"airMaxSpeed": 200,
+			"crouchHitbox_offset_x": 0,
+			"crouchHitbox_offset_y": 11,
+			"crouchHitbox_ratio_x": 1,
+			"crouchHitbox_ratio_y": 1.35,
+			"fallingHitbox_offset_x": 0,
+			"fallingHitbox_offset_y": 3,
+			"fallingHitbox_ratio_x": 1,
+			"fallingHitbox_ratio_y": 1.2,
+			"spinJumpHitbox_offset_x": 0,
+			"spinJumpHitbox_offset_y": 14,
+			"spinJumpHitbox_ratio_x": 1,
+			"spinJumpHitbox_ratio_y": 3,
+			"jumpPower": 400,
+			"jumpTimeMax": 0.3,
+			"postJumpBoost": 600,
+			"wallJumpPower_y": 300,
+			"wallJumpPower_x": 500,
+			"wallFriction": 0.02,
+			"slowcap": 25,
+			"shootTime": 0.5
+		},
+		"Beam": {
+			"texture": "Beam"
 		}
 	},
 	"livings": {
@@ -800,6 +832,25 @@
 				"width": 250,
 				"height": 16,
 				"count": 5,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [-42, -42],
+				"yOffset": [-9, -9],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": 3,
+				"dontReset": false
+			},
+			"None": {
+				"file": "projectiles.png",
+				"x": 0,
+				"y": 0,
+				"width": 0,
+				"height": 0,
+				"count": 0,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
 				"lines": 1,

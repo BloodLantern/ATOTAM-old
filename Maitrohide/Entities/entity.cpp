@@ -11,134 +11,6 @@ bool Entity::checkCollision(Entity *obj1, CollisionBox *box1, Entity *obj2, Coll
             && (obj1->y + box1->getY() < obj2->y + box2->getY()  + box2->getHeight());
 }
 
-void Entity::handleCollision(Entity *obj1, Entity *obj2)
-{//{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
-
-    //Long if else to decide what to do between two entities after a collision
-    if (obj1->entType == "Terrain") {
-        if (obj2->entType == "Samos") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Monster") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Area") {
-            // TODO
-        } else if (obj2->entType == "DynamicObj") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "NPC") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Projectile") {
-            // TODO
-        }
-
-    } else if (obj1->entType == "Samos") {
-        if (obj2->entType == "Terrain") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Monster") {
-            calcCollisionReplacement(obj1, obj2);
-            // TODO hit
-        } else if (obj2->entType == "Area") {
-            // TODO
-        } else if (obj2->entType == "DynamicObj") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "NPC") {
-            // TODO
-        } else if (obj2->entType == "Projectile") {
-            // TODO
-        }
-
-    } else if (obj1->entType == "Monster") {
-        if (obj2->entType == "Terrain") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Samos") {
-            calcCollisionReplacement(obj1, obj2);
-            // TODO hit
-        } else if (obj2->entType == "Monster") {
-            // TODO
-        } else if (obj2->entType == "Area") {
-            // TODO
-        } else if (obj2->entType == "DynamicObj") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "NPC") {
-            // TODO
-        } else if (obj2->entType == "Projectile") {
-            // TODO
-        }
-
-    } else if (obj1->entType == "Area") {
-        if (obj2->entType == "Terrain") {
-            // TODO
-        } else if (obj2->entType == "Samos") {
-            // TODO
-        } else if (obj2->entType == "Monster") {
-            // TODO
-        } else if (obj2->entType == "Area") {
-            // TODO
-        } else if (obj2->entType == "DynamicObj") {
-            // TODO
-        } else if (obj2->entType == "NPC") {
-            // TODO
-        } else if (obj2->entType == "Projectile") {
-            // TODO
-        }
-
-    } else if (obj1->entType == "DynamicObj") {
-        if (obj2->entType == "Terrain") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Samos") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Monster") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Area") {
-            // TODO
-        } else if (obj2->entType == "DynamicObj") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "NPC") {
-            // TODO
-        } else if (obj2->entType == "Projectile") {
-            // TODO
-        }
-
-    } else if (obj1->entType == "NPC") {
-        if (obj2->entType == "Terrain") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Samos") {
-            // TODO
-        } else if (obj2->entType == "Monster") {
-            // TODO
-        } else if (obj2->entType == "Area") {
-            // TODO
-        } else if (obj2->entType == "DynamicObj") {
-            // TODO
-        } else if (obj2->entType == "NPC") {
-            // TODO
-        } else if (obj2->entType == "Projectile") {
-            // TODO
-        }
-
-    } else if (obj1->entType == "Projectile") {
-        if (obj2->entType == "Terrain") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "Samos") {
-            calcCollisionReplacement(obj1, obj2);
-            // TODO hit
-        } else if (obj2->entType == "Monster") {
-            calcCollisionReplacement(obj1, obj2);
-            // TODO hit
-        } else if (obj2->entType == "Area") {
-            // TODO
-        } else if (obj2->entType == "DynamicObj") {
-            calcCollisionReplacement(obj1, obj2);
-        } else if (obj2->entType == "NPC") {
-            // TODO
-        } else if (obj2->entType == "Projectile") {
-            // TODO
-        }
-
-    } else
-        //If entType has been given a wrong value
-        throw unknownEntityType;
-}
-
 void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
 {
     //Calc the minimal distance needed to move two entities so that they don't overlap anymore, along both axis and both directions
@@ -218,7 +90,7 @@ void Entity::updateV(double framerate)
     y += vY/framerate;
     //if the entity is moving very slowly, it just stops
     if (entType != "Samos")
-        if (std::abs(vX) < 30) vX = 0;
+        if (std::abs(vX) < static_cast<double>(values["general"]["slowcap"])) vX = 0;
 }
 
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
@@ -287,7 +159,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
          (animJson["reversed"] ? i > -1 : i < animJson["lines"]);
          (animJson["reversed"] ? i-- : i++)) {
         // For each image
-        if (facing == "Right" || facing == "UpRight" || facing == "DownRight")
+        if (facing == "Right" || facing == "UpRight" || facing == "DownRight" || facing == "None" || facing == "Down" || facing == "Up")
             for (int ii = 0;
                  ii < (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ animJson["emptyFramesReversed"] ?
                        imagesPerLine : imagesPerLine - static_cast<int>(animJson["emptyFrames"]) : imagesPerLine); ii++) {
@@ -322,10 +194,11 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
         QImage img = anim[i];
         if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
             img.setOffset(QPoint(animJson["xOffset"][0], animJson["yOffset"][0]));
-        else if (facing == "Right" || facing == "UpRight" || facing == "DownRight")
+        else if (facing == "Right" || facing == "UpRight" || facing == "DownRight" || facing == "None" || facing == "Down" || facing == "Up")
             img.setOffset(QPoint(animJson["xOffset"][1], animJson["yOffset"][1]));
         anim[i] = img;
     }
+
     return anim;
 }
 

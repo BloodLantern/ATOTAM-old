@@ -38,6 +38,7 @@ public:
     static nlohmann::json keyCodes;
     static nlohmann::json loadKeyCodes();
     static void loadGeneral();
+    static void handleCollision(Entity* obj1, Entity* obj2);
     static std::map<std::string, bool> inputList;
     static std::chrono::system_clock::time_point lastFpsShown; // Time of the last frame in which the shown fps were updated
     static std::chrono::system_clock::time_point lastFrameTime; // Time of the last frame in which the shown fps were updated
@@ -53,6 +54,7 @@ public:
     void updateAnimations();
     void updateSamos(Samos* s);
     void getInputs();
+    bool updateProjectile(Projectile* p);
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);
