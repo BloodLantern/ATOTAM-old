@@ -17,21 +17,9 @@
 
 #include <Entities/terrain.h>
 
-void animationClock() {
-    long waitTime = 1000000.0/(MainWindow::updateRate * MainWindow::gameSpeed);
-    while (MainWindow::running) {
-        auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
-
-        MainWindow::updateCount++;
-
-        while (std::chrono::high_resolution_clock::now() < end) {
-            std::this_thread::sleep_for(std::chrono::microseconds(100));
-        }
-    }
-}
-
 void gameClock(MainWindow* w, Samos* s) {
     long waitTime = 1000000.0/(MainWindow::frameRate * MainWindow::gameSpeed);
+    unsigned long long prevCount;
     while (MainWindow::running) {
         auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
@@ -45,14 +33,19 @@ void gameClock(MainWindow* w, Samos* s) {
         w->getInputs();
         w->updateSamos(s);
         w->updatePhysics();
-        w->updateAnimations();
+
+        prevCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
+        MainWindow::frameCount++;
+        MainWindow::updateCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
+        if (prevCount != MainWindow::updateCount)
+            w->updateAnimations();
 
         // Eventually render the game
         w->update();
-        MainWindow::frameCount++;
+
 
         while (std::chrono::high_resolution_clock::now() < end) {
-            std::this_thread::sleep_for(std::chrono::microseconds(100));
+            std::this_thread::sleep_for(std::chrono::microseconds(999));
         }
     }
 }
@@ -116,7 +109,6 @@ int main(int argc, char *argv[])
     w.addRenderable(&m4);
     Terrain m5(1600, 300, new CollisionBox(0, 0, 30*MainWindow::renderingMultiplier, 300*MainWindow::renderingMultiplier), &mur, "Terrain");
     w.addRenderable(&m5);
-    std::future<void> anim = std::async(animationClock);
     std::future<void> game = std::async(gameClock, &w, &s);
     return a.exec();
 }

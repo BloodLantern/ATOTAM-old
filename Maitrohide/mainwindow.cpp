@@ -89,128 +89,198 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
     //Long if else to decide what to do between two entities after a collision
     if (obj1->getEntType() == "Terrain") {
         if (obj2->getEntType() == "Samos") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Monster") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Area") {
             // TODO
+
         } else if (obj2->getEntType() == "DynamicObj") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "NPC") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Projectile") {
-            Projectile* p = static_cast<Projectile*>(obj2);
-            p->hitting(obj1);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Projectile* p = static_cast<Projectile*>(obj2);
+                p->hitting(obj1);
+            }
         }
 
     } else if (obj1->getEntType() == "Samos") {
         if (obj2->getEntType() == "Terrain") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Monster") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
             // TODO hit
         } else if (obj2->getEntType() == "Area") {
             // TODO
+
         } else if (obj2->getEntType() == "DynamicObj") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "NPC") {
             // TODO
         } else if (obj2->getEntType() == "Projectile") {
-            Projectile* p = static_cast<Projectile*>(obj2);
-            p->hitting(obj1);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Projectile* p = static_cast<Projectile*>(obj2);
+                p->hitting(obj1);
+            }
         }
 
     } else if (obj1->getEntType() == "Monster") {
         if (obj2->getEntType() == "Terrain") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Samos") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
             // TODO hit
         } else if (obj2->getEntType() == "Monster") {
             // TODO
+
         } else if (obj2->getEntType() == "Area") {
             // TODO
+
         } else if (obj2->getEntType() == "DynamicObj") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "NPC") {
             // TODO
+
         } else if (obj2->getEntType() == "Projectile") {
-            Projectile* p = static_cast<Projectile*>(obj2);
-            p->hitting(obj1);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Projectile* p = static_cast<Projectile*>(obj2);
+                p->hitting(obj1);
+            }
         }
 
     } else if (obj1->getEntType() == "Area") {
         if (obj2->getEntType() == "Terrain") {
             // TODO
+
         } else if (obj2->getEntType() == "Samos") {
             // TODO
+
         } else if (obj2->getEntType() == "Monster") {
             // TODO
+
         } else if (obj2->getEntType() == "Area") {
             // TODO
+
         } else if (obj2->getEntType() == "DynamicObj") {
             // TODO
+
         } else if (obj2->getEntType() == "NPC") {
             // TODO
+
         } else if (obj2->getEntType() == "Projectile") {
-            Projectile* p = static_cast<Projectile*>(obj2);
-            p->hitting(obj1);
+            // TODO
         }
 
     } else if (obj1->getEntType() == "DynamicObj") {
         if (obj2->getEntType() == "Terrain") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Samos") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Monster") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Area") {
             // TODO
+
         } else if (obj2->getEntType() == "DynamicObj") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "NPC") {
             // TODO
+
         } else if (obj2->getEntType() == "Projectile") {
-            Projectile* p = static_cast<Projectile*>(obj2);
-            p->hitting(obj1);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Projectile* p = static_cast<Projectile*>(obj2);
+                p->hitting(obj1);
+            }
         }
 
     } else if (obj1->getEntType() == "NPC") {
         if (obj2->getEntType() == "Terrain") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
+                Entity::calcCollisionReplacement(obj1, obj2);
+
         } else if (obj2->getEntType() == "Samos") {
             // TODO
+
         } else if (obj2->getEntType() == "Monster") {
             // TODO
+
         } else if (obj2->getEntType() == "Area") {
             // TODO
+
         } else if (obj2->getEntType() == "DynamicObj") {
             // TODO
+
         } else if (obj2->getEntType() == "NPC") {
             // TODO
+
         } else if (obj2->getEntType() == "Projectile") {
-            Projectile* p = static_cast<Projectile*>(obj2);
-            p->hitting(obj1);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Projectile* p = static_cast<Projectile*>(obj2);
+                p->hitting(obj1);
+            }
         }
 
     } else if (obj1->getEntType() == "Projectile") {
         if (obj2->getEntType() == "Terrain") {
-            Projectile* p = static_cast<Projectile*>(obj1);
-            p->hitting(obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Entity::calcCollisionReplacement(obj1, obj2);
+                Projectile* p = static_cast<Projectile*>(obj1);
+                p->hitting(obj2);
+            }
         } else if (obj2->getEntType() == "Samos") {
-            Entity::calcCollisionReplacement(obj1, obj2);
-            Projectile* p = static_cast<Projectile*>(obj1);
-            p->hitting(obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Entity::calcCollisionReplacement(obj1, obj2);
+                Projectile* p = static_cast<Projectile*>(obj1);
+                p->hitting(obj2);
+            }
         } else if (obj2->getEntType() == "Monster") {
-            Entity::calcCollisionReplacement(obj1, obj2);
-            Projectile* p = static_cast<Projectile*>(obj1);
-            p->hitting(obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Entity::calcCollisionReplacement(obj1, obj2);
+                Projectile* p = static_cast<Projectile*>(obj1);
+                p->hitting(obj2);
+            }
         } else if (obj2->getEntType() == "Area") {
             // TODO
+
         } else if (obj2->getEntType() == "DynamicObj") {
-            Entity::calcCollisionReplacement(obj1, obj2);
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Entity::calcCollisionReplacement(obj1, obj2);
+                Projectile* p = static_cast<Projectile*>(obj1);
+                p->hitting(obj2);
+            }
         } else if (obj2->getEntType() == "NPC") {
             // TODO
+
         } else if (obj2->getEntType() == "Projectile") {
             // TODO
         }
@@ -861,9 +931,7 @@ void MainWindow::updatePhysics()
     //Check for collisions and handle them
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
-            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
-                handleCollision(*i,*j);
-            }
+            handleCollision(*i,*j);
         }
     }
 
