@@ -21,7 +21,8 @@ SOURCES += \
     Entities/samos.cpp \
     Entities/terrain.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    save.cpp
 
 HEADERS += \
     Entities/collisionbox.h \
@@ -36,7 +37,8 @@ HEADERS += \
     Entities/samos.h \
     Entities/terrain.h \
     mainwindow.h \
-    nlohmann/json.hpp
+    nlohmann/json.hpp \
+    save.h
 
 FORMS += \
     mainwindow.ui
