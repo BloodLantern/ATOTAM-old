@@ -10,7 +10,7 @@ public:
     static Save load(std::ifstream file); // Creates and returns a Save object corresponding to the Json file represented by the stream
     Save(int samosHealth, int samosMaxHealth, int samosMissiles, int samosMaxMissiles, int samosGrenades, int samosMaxGrenades,
          unsigned long playTime, int deaths, int damageDone, int damageReceived); // Create a new Save object with these parameters
-    void save(); // Converts this Save object in Json and then serialize it
+    void save(std::ofstream file); // Converts this Save object in Json and then serialize it
     int getSamosHealth() const;
     void setSamosHealth(int newSamosHealth);
 

@@ -16,7 +16,7 @@ Save::Save(int samosHealth, int samosMaxHealth, int samosMissiles, int samosMaxM
 
 }
 
-void Save::save()
+void Save::save(std::ofstream file)
 {
     nlohmann::json json;
     json["samos"]["health"] = samosHealth;
@@ -29,6 +29,7 @@ void Save::save()
     json["deaths"] = deaths;
     json["damageDone"] = damageDone;
     json["damageReceived"] = damageReceived;
+    file << json;
 }
 
 int Save::getSamosHealth() const
