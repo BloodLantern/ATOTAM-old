@@ -32,9 +32,6 @@ public:
     int getDamage() const;
     void setDamage(int newDamage);
 
-    std::string getLastFrameState() const;
-    void setLastFrameState(std::string newLastFrameState);
-
 private:
     int health;
     int maxHealth;

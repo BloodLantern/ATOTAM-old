@@ -528,6 +528,21 @@ void MainWindow::updateSamos(Samos *s)
         }
     }
 
+
+    if (s->getShootTime() <= 0.0 && inputList["shoot"]) {
+        if (s->getState() == "Crouching")
+            s->setState("IdleCrouch");
+        else if (s->getState() == "Uncrouching" || s->getState() == "Landing")
+            s->setState("Standing");
+        else if (s->getState() == "JumpEnd" || s->getState() == "Jumping" || s->getState() == "SpinJump" || s->getState() == "WallJump")
+            s->setState("Falling");
+        else if (s->getState() == "Walking")
+            s->setState("WalkingAimForward");
+    }
+
+    if (s->getShootTime() > 0 && (s->getState() == "Walking" || s->getState() == "WalkingAimForward"))
+        s->setState("WalkingAimForward");
+
     if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
         s->setBox(new CollisionBox((static_cast<int>(samosJson["offset_x"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_x"])) * renderingMultiplier,
                   (static_cast<int>(samosJson["offset_y"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"])) * renderingMultiplier,
@@ -574,7 +589,7 @@ void MainWindow::updateSamos(Samos *s)
             }
         }
 
-        if (wallJump == "Right") {
+        if (wallJump == "Right" && (inputList["right"] || s->getState() == "WallJump" || s->getState() == "SpinJump")) {
             s->setFacing("Left");
             s->setState("WallJump");
             if (!inputList["jump"])
@@ -583,7 +598,7 @@ void MainWindow::updateSamos(Samos *s)
                 s->setVY(1 / ((1 / s->getVY()) + (static_cast<double>(samosJson["wallFriction"]) / frameRate)));
             else if (s->getVY() < 0)
                 s->setVY(1 / ((1 / s->getVY()) - (static_cast<double>(samosJson["wallFriction"]) / frameRate)));
-        } else if (wallJump == "Left") {
+        } else if (wallJump == "Left" && (inputList["left"] || s->getState() == "WallJump" || s->getState() == "SpinJump")) {
             s->setFacing("Right");
             s->setState("WallJump");
             if (!inputList["jump"])
@@ -978,7 +993,7 @@ void MainWindow::updateAnimations()
             entity->setCurrentAnimation(entity->updateAnimation(state));
             // If the animation should reset the next one
             if (!Entity::values["textures"][entity->getName()][entity->getLastFrameState()]["dontReset"])
-                // Because the animation changed, reset its
+                // Because the animation changed, reset it
                 entity->setAnimation(0);
             else
                 // Else, make sure not to end up with a too high index

@@ -330,8 +330,6 @@ const std::string &Entity::getState() const
 
 void Entity::setState(const std::string &newState)
 {
-    if (state != newState)
-        animation = 0;
     state = newState;
 }
 
