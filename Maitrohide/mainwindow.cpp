@@ -614,7 +614,7 @@ void MainWindow::updateSamos(Samos *s)
         }
     }
 
-    if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") {
+    if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "Crouching") {
         if (inputList["left"] && !inputList["right"]) {
             s->setFacing("Left");
             if (inputList["up"] && !inputList["down"]) {
@@ -645,7 +645,7 @@ void MainWindow::updateSamos(Samos *s)
                     s->setCanonDirection("Right");
             }
         }
-    } else if (s->getState() == "Standing" || s->getState() == "StandingAimUpDiag" || s->getState() == "StandingAimDownDiag" || s->getState() == "StandingAimUp") {
+    } else if (s->getState() == "Standing" || s->getState() == "StandingAimUpDiag" || s->getState() == "StandingAimDownDiag" || s->getState() == "StandingAimUp" || s->getState() == "Uncrouching") {
         if (inputList["left"] && !inputList["right"]) {
             s->setFacing("Left");
             if (inputList["up"] && !inputList["down"]) {

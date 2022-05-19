@@ -44,28 +44,28 @@ Projectile* Samos::shoot(std::string type)
             return projectile;
     }
 
+
+    std::string shootState;
+    if (getState() == "Falling" || getState() == "FallingAimUpDiag" || getState() == "FallingAimDownDiag" || getState() == "FallingAimUp" || getState() == "FallingAimDown"
+            || getState() == "SpinJump" || getState() == "WallJump" || getState() == "Jumping" || getState() == "JumpEnd")
+        shootState = "Falling";
+    else if (getState() == "IdleCrouch" || getState() == "CrouchAimUp" || getState() == "CrouchAimUpDiag" || getState() == "Crouching")
+        shootState = "Crouching";
+    else if (getState() == "Walking" || getState() == "WalkingAimForward" || getState() == "WalkingAimDown" || getState() == "WalkingAimUp")
+        shootState = "Walking";
+    else
+        shootState = "Standing";
+
+    if (canonDirection == "None")
+        canonDirection = "Right";
+
+    nlohmann::json offsetJson = values["names"]["Samos"]["shootOffset"][getFacing()][shootState][canonDirection];
+    int offset_x = offsetJson.is_null() ? 0 : static_cast<int>(offsetJson["x"]);
+    int offset_y = offsetJson.is_null() ? 0 : static_cast<int>(offsetJson["y"]);
+
+
     //Spawn the projectile at certain coordinates to match the sprite
-    if (canonDirection == "None") {
-        throw Entity::invalidDirection;
-    } else if (canonDirection == "Up") {
-        projectile = new Projectile(getX() + 11 * renderingM, getY() - 0 * renderingM, "Up", type, type);
-    } else if (canonDirection == "UpRight") {
-        projectile = new Projectile(getX() + 27 * renderingM, getY() - 0 * renderingM, "UpRight", type, type);
-    } else if (canonDirection == "Right") {
-        projectile = new Projectile(getX() + 30 * renderingM, getY() + 15 * renderingM, "Right", type, type);
-    } else if (canonDirection == "DownRight") {
-       projectile = new Projectile(getX() + 27 * renderingM, getY() + 30 * renderingM, "DownRight", type, type);
-    } else if (canonDirection == "Down") {
-        projectile = new Projectile(getX() + 11 * renderingM, getY() + 45 * renderingM, "Down", type, type);
-    } else if (canonDirection == "DownLeft") {
-        projectile = new Projectile(getX() + 0 * renderingM, getY() + 30 * renderingM, "DownLeft", type, type);
-    } else if (canonDirection == "Left") {
-        projectile = new Projectile(getX() + 0 * renderingM, getY() + 15 * renderingM, "Left", type, type);
-    } else if (canonDirection == "UpLeft") {
-        projectile = new Projectile(getX() + 0 * renderingM, getY() + 0 * renderingM, "UpLeft", type, type);
-    } else {
-        throw Entity::invalidDirection;
-    }
+    projectile = new Projectile(getX() + offset_x * renderingM, getY() + offset_y * renderingM, canonDirection, type, type);
 
     return projectile;
 }

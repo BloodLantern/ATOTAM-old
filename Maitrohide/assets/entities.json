@@ -48,7 +48,149 @@
 			"wallJumpPower_x": 500,
 			"wallFriction": 0.02,
 			"slowcap": 25,
-			"shootTime": 0.5
+			"shootTime": 0.5,
+			"shootOffset": {
+				"Right": {
+					"Standing": {
+						"Up": {
+							"x": 16,
+							"y": 0
+						},
+						"UpRight": {
+							"x": 32,
+							"y": 6
+						},
+						"Right": {
+							"x": 25,
+							"y": 24
+						},
+						"DownRight": {
+							"x": 30,
+							"y": 30
+						}
+					},
+					"Crouching": {
+						"Up": {
+							"x": 14,
+							"y": 11
+						},
+						"UpRight": {
+							"x": 30,
+							"y": 17
+						},
+						"Right": {
+							"x": 23,
+							"y": 35
+						}
+					},
+					"Falling": {
+						"Up": {
+							"x": 13,
+							"y": 4
+						},
+						"UpRight": {
+							"x": 29,
+							"y": 8
+						},
+						"Right": {
+							"x": 20,
+							"y": 29
+						},
+						"DownRight": {
+							"x": 27,
+							"y": 30
+						},
+						"Down": {
+							"x": 20,
+							"y": 50
+						}
+					},
+					"Walking": {
+						"UpRight": {
+							"x": 30,
+							"y": 5
+						},
+						"Right": {
+							"x": 30,
+							"y": 24
+						},
+						"DownRight": {
+							"x": 30,
+							"y": 30
+						}
+					}
+				},
+				"Left": {
+					"Standing": {
+						"Up": {
+							"x": 13,
+							"y": 0
+						},
+						"DownLeft": {
+							"x": 0,
+							"y": 30
+						},
+						"Left": {
+							"x": 5,
+							"y": 24
+						},
+						"UpLeft": {
+							"x": -1,
+							"y": 6
+						}
+					},
+					"Crouching": {
+						"Up": {
+							"x": 14,
+							"y": 11
+						},
+						"Left": {
+							"x": 6,
+							"y": 35
+						},
+						"UpLeft": {
+							"x": -2,
+							"y": 16
+						}
+					},
+					"Falling": {
+						"Up": {
+							"x": 15,
+							"y": 4
+						},
+						"Down": {
+							"x": 8,
+							"y": 50
+						},
+						"DownLeft": {
+							"x": 2,
+							"y": 30
+						},
+						"Left": {
+							"x": 7,
+							"y": 29
+						},
+						"UpLeft": {
+							"x": 1,
+							"y": 8
+						}
+					},
+					"Walking": {
+						"DownLeft": {
+							"x": 0,
+							"y": 30
+						},
+						"Left": {
+							"x": 0,
+							"y": 24
+						},
+						"UpLeft": {
+							"x": 0,
+							"y": 5
+						}
+					}
+				}
+			}
 		},
 		"Beam": {
 			"texture": "Beam"
@@ -511,8 +653,8 @@
 				"emptyFramesReversed": true,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [0, -15],
-				"yOffset": [0, 0],
+				"xOffset": [-6, -22],
+				"yOffset": [-7, -7],
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
@@ -530,8 +672,8 @@
 				"emptyFramesReversed": true,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-9, -5],
-				"yOffset": [10, 10],
+				"xOffset": [-14, -10],
+				"yOffset": [3, 3],
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
@@ -549,8 +691,8 @@
 				"emptyFramesReversed": true,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-10, -14],
-				"yOffset": [7, 7],
+				"xOffset": [-10, -17],
+				"yOffset": [8, 9],
 				"reversed": false,
 				"overlay": [],
 				"loop": false,

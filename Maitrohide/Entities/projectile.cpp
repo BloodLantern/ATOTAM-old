@@ -1,7 +1,7 @@
 #include "projectile.h"
 
 Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name)
-    : Entity(x, y, new CollisionBox(14, 14), nullptr, "Projectile", false, facing, 0, name, true), projectileType(name)
+    : Entity(x, y, new CollisionBox(16, 16), nullptr, "Projectile", false, facing, 0, name, true), projectileType(name)
 {
     //Because animation are buggy
     setLastFrameState("None");

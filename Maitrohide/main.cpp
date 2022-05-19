@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     MainWindow::loadGeneral();
     MainWindow w(&a);
     //w.show();
-    Samos s(100, 300, 99, 5, 5);
+    Samos s(500, 300, 99, 5, 5);
     w.showFullScreen();
     /*nlohmann::json entJson = Entity::values["names"]["Samos"];
     nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
