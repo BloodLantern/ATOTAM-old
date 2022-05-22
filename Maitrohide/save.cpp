@@ -1,21 +1,22 @@
 #include "save.h"
 
+// Setups a Json object corresponding to this file and then creates and returns a Save object using that Json object.
 Save Save::load(std::ifstream file)
 {
     nlohmann::json json;
     file >> json;
-    return Save(json["samos"]["health"], json["samos"]["maxHealth"], json["samos"]["missiles"], json["samos"]["maxMissiles"], json["samos"]["grenades"], json["samos"]["maxGrenade"],
-            json["playTime"], json["deaths"], json["damageDone"], json["damageReceived"]);
+    return Save(json);
 }
 
-Save::Save(int samosHealth, int samosMaxHealth, int samosMissiles, int samosMaxMissiles, int samosGrenades, int samosMaxGrenades,
-           unsigned long playTime, int deaths, int damageDone, int damageReceived)
-    : samosHealth(samosHealth), samosMaxHealth(samosMaxHealth), samosMissiles(samosMissiles), samosMaxMissiles(samosMaxMissiles), samosGrenades(samosGrenades), samosMaxGrenades(samosMaxGrenades),
-      playTime(playTime), deaths(deaths), damageDone(damageDone), damageReceived(damageReceived)
+Save::Save(nlohmann::json json)
+    : samosHealth(json["samos"]["health"]), samosMaxHealth(json["samos"]["maxHealth"]), samosMissiles(json["samos"]["missiles"]), samosMaxMissiles(json["samos"]["maxMissiles"]),
+      samosGrenades(json["samos"]["grenades"]), samosMaxGrenades(json["samos"]["maxGrenade"]), playTime(json["playTime"]), deaths(json["deaths"]), damageDone(json["damageDone"]),
+      damageReceived(json["damageReceived"])
 {
 
 }
 
+// Setups a Json object with all the fields of this object and serializes it in this file.
 void Save::save(std::ofstream file)
 {
     nlohmann::json json;
