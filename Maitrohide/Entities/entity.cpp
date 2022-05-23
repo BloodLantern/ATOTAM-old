@@ -124,7 +124,7 @@ Entity::~Entity()
 void Entity::updateTexture()
 {
     if (currentAnimation.size() > 0)
-        texture = &currentAnimation[animation];
+        texture = &currentAnimation[frame];
 }
 
 std::vector<QImage> Entity::updateAnimation(std::string state)
@@ -313,14 +313,14 @@ void Entity::setEntType(std::string newEntType)
     entType = newEntType;
 }
 
-unsigned int Entity::getAnimation() const
+unsigned int Entity::getFrame() const
 {
-    return animation;
+    return frame;
 }
 
-void Entity::setAnimation(unsigned int newAnimation)
+void Entity::setFrame(unsigned int newFrame)
 {
-    animation = newAnimation;
+    frame = newFrame;
 }
 
 const std::string &Entity::getState() const

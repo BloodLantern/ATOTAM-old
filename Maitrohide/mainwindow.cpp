@@ -77,7 +77,7 @@ bool MainWindow::updateProjectile(Projectile *p)
     if (p->getLifeTime() <= 0.0) {
         p->timeOut();
     }
-    if (p->getState() == "Hit" && p->getAnimation() == (static_cast<unsigned int>(Entity::values["textures"][p->getName()]["Hit"]["count"]) - 1))
+    if (p->getState() == "Hit" && p->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][p->getName()]["Hit"]["count"]) - 1))
         return true;
     else
         return false;
@@ -428,11 +428,11 @@ void MainWindow::updateSamos(Samos *s)
                 } else {
                     if (((!inputList["down"] && !inputList["up"]) || (inputList["down"] && inputList["up"])) && s->getState() != "IdleCrouch" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "Uncrouching" && s->getState() != "Crouching")
                         s->setState("Standing");
-                    else if (((s->getState() == "Crouching" && s->getAnimation() == 2) || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") && !inputList["up"])
+                    else if (((s->getState() == "Crouching" && s->getFrame() == 2) || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") && !inputList["up"])
                         s->setState("IdleCrouch");
                     else if (!inputList["up"] && !(s->getState() == "Uncrouching" && !inputList["down"]))
                         s->setState("Crouching");
-                    else if (((s->getState() == "Uncrouching" && s->getAnimation() == 2)))
+                    else if (((s->getState() == "Uncrouching" && s->getFrame() == 2)))
                         s->setState("Standing");
                     else if (s->getState() == "Uncrouching" || s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag")
                         s->setState("Uncrouching");
@@ -982,9 +982,9 @@ void MainWindow::updateAnimations()
         if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
             if (uC % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
                 // If the animation index still exists
-                if (entity->getCurrentAnimation().size() > entity->getAnimation())
+                if (entity->getCurrentAnimation().size() > entity->getFrame())
                     // Increment the animation index
-                    entity->setAnimation(entity->getAnimation() + 1);
+                    entity->setFrame(entity->getFrame() + 1);
 
         // If the entity state is different from the last frame
         if (state != entity->getLastFrameState()
@@ -994,11 +994,11 @@ void MainWindow::updateAnimations()
             // If the animation should reset the next one
             if (!Entity::values["textures"][entity->getName()][entity->getLastFrameState()]["dontReset"])
                 // Because the animation changed, reset it
-                entity->setAnimation(0);
+                entity->setFrame(0);
             else
                 // Else, make sure not to end up with a too high index
-                if (entity->getAnimation() >= entity->getCurrentAnimation().size())
-                    entity->setAnimation(0);
+                if (entity->getFrame() >= entity->getCurrentAnimation().size())
+                    entity->setFrame(0);
         }
         // Every 'refreshRate' frames
         if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
@@ -1007,14 +1007,14 @@ void MainWindow::updateAnimations()
                 if (!Entity::values["textures"][entity->getName()][state]["loop"].is_null()) {
                     if (Entity::values["textures"][entity->getName()][state]["loop"]) {
                         // If the animation index still exists
-                        if (entity->getCurrentAnimation().size() - 1 < entity->getAnimation())
+                        if (entity->getCurrentAnimation().size() - 1 < entity->getFrame())
                             // Reset animation
-                            entity->setAnimation(0);
+                            entity->setFrame(0);
                     } else
                         // If the animation index still exists
-                        if (entity->getCurrentAnimation().size() - 1 < entity->getAnimation())
+                        if (entity->getCurrentAnimation().size() - 1 < entity->getFrame())
                             // If the animation doesn't loop, make sure it stays on its last frame
-                            entity->setAnimation(entity->getAnimation() - 1);
+                            entity->setFrame(entity->getFrame() - 1);
                 }
 
         // Update the texture with the animation index

@@ -61,8 +61,8 @@ public:
     std::string getEntType() const;
     void setEntType(std::string newEntType);
 
-    unsigned int getAnimation() const;
-    void setAnimation(unsigned int newAnimation);
+    unsigned int getFrame() const;
+    void setFrame(unsigned int newFrame);
 
     const std::string &getState() const;
     void setState(const std::string &newState);
@@ -95,7 +95,7 @@ private:
     std::string name;
 
     // Rendering
-    unsigned int animation = 0;
+    unsigned int frame = 0;
     std::vector<QImage> currentAnimation; // Full current animation
     std::string state = "Standing"; // Which animation should be rendered
     std::string lastFrameState = "Standing"; // Which animation was rendered in the last frame
