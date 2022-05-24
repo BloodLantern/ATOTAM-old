@@ -3,7 +3,7 @@
 
 Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount)
     : Living(x, y, "Right", "Samos"),
-      isInAltForm(false), maxGrenadeCount(maxGrenadeCount), maxMissileCount(maxMissileCount),
+      isInAltForm(false), grenadeCount(maxGrenadeCount), maxGrenadeCount(maxGrenadeCount), missileCount(maxMissileCount), maxMissileCount(maxMissileCount),
       wallBoxR(new CollisionBox(getBox()->getX() + getBox()->getWidth(), getBox()->getY(), 2, getBox()->getHeight())),
       wallBoxL(new CollisionBox(getBox()->getX() - 2, getBox()->getY(), 2, getBox()->getHeight()))
 {
@@ -29,7 +29,7 @@ Samos::~Samos()
 Projectile* Samos::shoot(std::string type)
 {
     Projectile* projectile = nullptr;
-    double renderingM = values["general"]["renderingMultiplier"];
+    int renderingM = static_cast<int>(values["general"]["renderingMultiplier"]);
 
     //Can't shoot a missile/grenade if you don't have any
     if (type == "Grenade") {
@@ -59,13 +59,45 @@ Projectile* Samos::shoot(std::string type)
     if (canonDirection == "None")
         canonDirection = "Right";
 
+    if (canonDirection == "Right" || canonDirection == "UpRight" || canonDirection == "DownRight")
+        setFacing("Right");
+    if (canonDirection == "Left" || canonDirection == "UpLeft" || canonDirection == "DownLeft")
+        setFacing("Left");
+
     nlohmann::json offsetJson = values["names"]["Samos"]["shootOffset"][getFacing()][shootState][canonDirection];
+    nlohmann::json pOffsetJson = values["names"][type];
     int offset_x = offsetJson.is_null() ? 0 : static_cast<int>(offsetJson["x"]);
     int offset_y = offsetJson.is_null() ? 0 : static_cast<int>(offsetJson["y"]);
 
+    if (canonDirection == "None") {
+        offset_x -= static_cast<int>(pOffsetJson["width"]) / 2;
+        offset_y -= static_cast<int>(pOffsetJson["height"]) / 2;
+    } else if (canonDirection == "Up") {
+        offset_x -= static_cast<int>(pOffsetJson["width"]) / 2;
+        offset_y -= static_cast<int>(pOffsetJson["height"]);
+    } else if (canonDirection == "UpRight") {
+        offset_y -= static_cast<int>(pOffsetJson["height"]);
+    } else if (canonDirection == "Right") {
+        offset_y -= static_cast<int>(pOffsetJson["height"]) / 2;
+    } else if (canonDirection == "Down") {
+        offset_x -= static_cast<int>(pOffsetJson["width"]) / 2;
+    } else if (canonDirection == "DownLeft") {
+        offset_x -= static_cast<int>(pOffsetJson["width"]);
+    } else if (canonDirection == "Left") {
+        offset_x -= static_cast<int>(pOffsetJson["width"]);
+        offset_y -= static_cast<int>(pOffsetJson["height"]) / 2;
+    } else if (canonDirection == "UpLeft") {
+        offset_x -= static_cast<int>(pOffsetJson["width"]);
+        offset_y -= static_cast<int>(pOffsetJson["height"]);
+    }
 
     //Spawn the projectile at certain coordinates to match the sprite
     projectile = new Projectile(getX() + offset_x * renderingM, getY() + offset_y * renderingM, canonDirection, type, type);
+
+    if (projectile->getVX() != 0.0 && (projectile->getVX() * getVX() > 0.0))
+        projectile->setVX(projectile->getVX() + getVX());
+    if (projectile->getVY() != 0.0 && (projectile->getVY() * getVY() > 0.0))
+        projectile->setVY(projectile->getVY() + getVY());
 
     return projectile;
 }
@@ -170,4 +202,32 @@ double Samos::getShootTime() const
 void Samos::setShootTime(double newShootTime)
 {
     shootTime = newShootTime;
+}
+
+const std::string &Samos::getSelectedWeapon() const
+{
+    return selectedWeapon;
+}
+
+void Samos::setSelectedWeapon(const std::string &newSelectedWeapon)
+{
+    selectedWeapon = newSelectedWeapon;
+}
+
+void Samos::nextWeapon()
+{
+    if (selectedWeapon == "Beam")
+        selectedWeapon = "Missile";
+    else
+        selectedWeapon = "Beam";
+}
+
+double Samos::getSwitchDelay() const
+{
+    return switchDelay;
+}
+
+void Samos::setSwitchDelay(double newSwitchDelay)
+{
+    switchDelay = newSwitchDelay;
 }

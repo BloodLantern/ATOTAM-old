@@ -43,6 +43,13 @@ public:
     double getShootTime() const;
     void setShootTime(double newShootTime);
 
+    const std::string &getSelectedWeapon() const;
+    void setSelectedWeapon(const std::string &newSelectedWeapon);
+    void nextWeapon();
+
+    double getSwitchDelay() const;
+    void setSwitchDelay(double newSwitchDelay);
+
 private:
     bool isInAltForm;
     int grenadeCount;
@@ -51,7 +58,9 @@ private:
     int maxMissileCount;
     double jumpTime = 0.3;
     double shootTime = 0.0;
+    double switchDelay = 0.0;
     std::string canonDirection = "Right";
+    std::string selectedWeapon = "Beam";
     CollisionBox* wallBoxR;
     CollisionBox* wallBoxL;
 };

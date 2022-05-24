@@ -45,6 +45,7 @@ public:
     static unsigned int fps; // Fps count when 'lastFpsShown' was updated
     static bool showFps; // Whether to show fps in-game
     static unsigned int showFpsUpdateRate; // Time (in ns) between each fps update
+    static bool showUI;
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);

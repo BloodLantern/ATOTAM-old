@@ -1,11 +1,14 @@
 #include "projectile.h"
 
 Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name)
-    : Entity(x, y, new CollisionBox(16, 16), nullptr, "Projectile", false, facing, 0, name, true), projectileType(name)
+    : Entity(x, y, new CollisionBox(16, 16), nullptr, "Projectile", false, facing, 0, name, true), projectileType(type)
 {
-    //Because animation are buggy
+    //Because animations are buggy
     setLastFrameState("None");
     setLastFrameFacing("None");
+
+    setBox(new CollisionBox(static_cast<int>(values["names"][name]["width"]) * static_cast<int>(values["general"]["renderingMultiplier"]),
+            static_cast<int>(values["names"][name]["width"]) * static_cast<int>(values["general"]["renderingMultiplier"])));
 
     //Bombs don't move
     if (type == "Bomb")
@@ -80,12 +83,24 @@ void Projectile::hitting(Entity* ent)
             Living* liv = static_cast<Living*>(ent);
             liv->hit();
         }
+    } else if (projectileType == "Missile") {
+        setVX(0);
+        setVY(0);
+        setState("Hit");
+        if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
+            Living* liv = static_cast<Living*>(ent);
+            liv->hit();
+        }
     }
 }
 
 void Projectile::timeOut()
 {
     if (projectileType == "Beam") {
+        setVX(0);
+        setVY(0);
+        setState("Hit");
+    }else if (projectileType == "Missile") {
         setVX(0);
         setVY(0);
         setState("Hit");

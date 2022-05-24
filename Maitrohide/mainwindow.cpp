@@ -17,6 +17,7 @@ unsigned int MainWindow::showFpsUpdateRate;
 double MainWindow::gravity;
 std::map<std::string, bool> MainWindow::inputList;
 QImage MainWindow::errorTexture("../assets/textures/error.png");
+bool MainWindow::showUI = true;
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -577,7 +578,7 @@ void MainWindow::updateSamos(Samos *s)
         s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
     }
 
-    if (!s->getOnGround() && !inputList["aim"]) {
+    if (!s->getOnGround() && !inputList["aim"] && !inputList["shoot"] && s->getShootTime() <= 0) {
         std::string wallJump;
         for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
             if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
@@ -768,13 +769,38 @@ void MainWindow::updateSamos(Samos *s)
         }
     }
 
+    if (inputList["weapon"]) {
+        if (s->getSwitchDelay() == 0.0) {
+            s->nextWeapon();
+        } else if (s->getSwitchDelay() >= 3 * static_cast<double>(samosJson["switchDelay"])) {
+            s->nextWeapon();
+            s->setSwitchDelay(-1 - static_cast<double>(samosJson["switchDelay"]));
+        } else if (s->getSwitchDelay() >= -1 && s->getSwitchDelay() < 0.0) {
+            s->nextWeapon();
+            s->setSwitchDelay(-1 - static_cast<double>(samosJson["switchDelay"]));
+        }
+
+        s->setSwitchDelay(s->getSwitchDelay() + 1 / frameRate);
+
+    } else
+        s->setSwitchDelay(0.0);
+
     if (s->getShootTime() > 0.0) {
         s->setShootTime(s->getShootTime() - 1 / frameRate);
     }
 
     if (s->getShootTime() <= 0.0 && inputList["shoot"]) {
-        addRenderable(s->shoot("Beam"));
-        s->setShootTime(samosJson["shootTime"]);
+        Projectile* p = s->shoot(s->getSelectedWeapon());
+        if (p != nullptr) {
+            addRenderable(p);
+            s->setShootTime(static_cast<double>(samosJson["shootTime"]));
+        }
+    }
+
+    if (inputList["menu"]) {
+        s->setMissileCount(s->getMaxMissileCount());
+        s->setGrenadeCount(s->getMaxGrenadeCount());
+        s->setHealth(s->getMaxHealth());
     }
 
 }
@@ -787,6 +813,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
+
+    Samos* s;
 
     //Draw every entity in the rendering list
     for (Entity *entity : rendering) {
@@ -807,6 +835,9 @@ void MainWindow::paintEvent(QPaintEvent *)
                                     entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
                               *entity->getTexture());
         }
+
+        if (entity->getEntType() == "Samos")
+            s = static_cast<Samos*>(entity);
     }
 
     //Draw hitboxes if necessary
@@ -840,6 +871,38 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
         painter.setPen(QColor("black"));
         painter.drawText(QPoint(2, 12), QString::fromStdString(std::to_string(fps) + " FPS"));
+    }
+
+    //UI
+    if (s != nullptr && showUI) {
+
+        QFont f = painter.font();
+        f.setPointSize(f.pointSize() * renderingMultiplier);
+        painter.setFont(f);
+        painter.setPen(QColor("black"));
+
+        //Selected weapon
+        painter.fillRect(QRect(70,15,100,30), QColor("white"));
+        painter.drawRect(QRect(70,15,100,30));
+        painter.drawText(QPoint(80, 40), QString::fromStdString(s->getSelectedWeapon()));
+
+        //Missile count
+        painter.fillRect(QRect(200,15,70,30), QColor("white"));
+        painter.drawRect(QRect(200,15,70,30));
+        painter.drawText(QPoint(210, 40), QString::fromStdString("M : " + std::to_string(s->getMissileCount())));
+
+        //Grenade count
+        painter.fillRect(QRect(290,15,70,30), QColor("white"));
+        painter.drawRect(QRect(290,15,70,30));
+        painter.drawText(QPoint(300, 40), QString::fromStdString("G : " + std::to_string(s->getGrenadeCount())));
+
+        //Health count
+        painter.fillRect(QRect(380,15,80,30), QColor("white"));
+        painter.drawRect(QRect(380,15,80,30));
+        painter.drawText(QPoint(390, 40), QString::fromStdString("H : " + std::to_string(s->getHealth())));
+
+        f.setPointSize(f.pointSize() / renderingMultiplier);
+        painter.setFont(f);
     }
 }
 
@@ -1000,6 +1063,7 @@ void MainWindow::updateAnimations()
                 if (entity->getFrame() >= entity->getCurrentAnimation().size())
                     entity->setFrame(0);
         }
+
         // Every 'refreshRate' frames
         if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
             if (uC % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)

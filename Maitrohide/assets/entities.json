@@ -48,21 +48,22 @@
 			"wallJumpPower_x": 500,
 			"wallFriction": 0.02,
 			"slowcap": 25,
+			"switchDelay": 0.3,
 			"shootTime": 0.5,
 			"shootOffset": {
 				"Right": {
 					"Standing": {
 						"Up": {
-							"x": 16,
-							"y": 0
+							"x": 20,
+							"y": 8
 						},
 						"UpRight": {
 							"x": 32,
-							"y": 6
+							"y": 14
 						},
 						"Right": {
 							"x": 25,
-							"y": 24
+							"y": 28
 						},
 						"DownRight": {
 							"x": 30,
@@ -71,48 +72,48 @@
 					},
 					"Crouching": {
 						"Up": {
-							"x": 14,
-							"y": 11
+							"x": 18,
+							"y": 19
 						},
 						"UpRight": {
 							"x": 30,
-							"y": 17
+							"y": 25
 						},
 						"Right": {
 							"x": 23,
-							"y": 35
+							"y": 39
 						}
 					},
 					"Falling": {
 						"Up": {
-							"x": 13,
-							"y": 4
+							"x": 17,
+							"y": 12
 						},
 						"UpRight": {
 							"x": 29,
-							"y": 8
+							"y": 16
 						},
 						"Right": {
-							"x": 20,
-							"y": 29
+							"x": 22,
+							"y": 33
 						},
 						"DownRight": {
 							"x": 27,
 							"y": 30
 						},
 						"Down": {
-							"x": 20,
-							"y": 50
+							"x": 21,
+							"y": 52
 						}
 					},
 					"Walking": {
 						"UpRight": {
 							"x": 30,
-							"y": 5
+							"y": 13
 						},
 						"Right": {
 							"x": 30,
-							"y": 21
+							"y": 25
 						},
 						"DownRight": {
 							"x": 30,
@@ -123,77 +124,94 @@
 				"Left": {
 					"Standing": {
 						"Up": {
-							"x": 13,
-							"y": 0
+							"x": 17,
+							"y": 8
 						},
 						"DownLeft": {
-							"x": 0,
+							"x": 8,
 							"y": 30
 						},
 						"Left": {
-							"x": 5,
-							"y": 24
+							"x": 13,
+							"y": 28
 						},
 						"UpLeft": {
-							"x": -1,
-							"y": 6
+							"x": 7,
+							"y": 14
 						}
 					},
 					"Crouching": {
 						"Up": {
-							"x": 14,
-							"y": 11
+							"x": 18,
+							"y": 19
 						},
 						"Left": {
-							"x": 6,
-							"y": 35
+							"x": 14,
+							"y": 39
 						},
 						"UpLeft": {
-							"x": -2,
-							"y": 16
+							"x": 6,
+							"y": 25
 						}
 					},
 					"Falling": {
 						"Up": {
-							"x": 15,
-							"y": 4
+							"x": 19,
+							"y": 12
 						},
 						"Down": {
-							"x": 8,
-							"y": 50
+							"x": 15,
+							"y": 51
 						},
 						"DownLeft": {
-							"x": 2,
+							"x": 10,
 							"y": 30
 						},
 						"Left": {
-							"x": 7,
-							"y": 29
+							"x": 13,
+							"y": 33
 						},
 						"UpLeft": {
-							"x": 1,
-							"y": 8
+							"x": 9,
+							"y": 16
 						}
 					},
 					"Walking": {
 						"DownLeft": {
-							"x": 0,
+							"x": 8,
 							"y": 30
 						},
 						"Left": {
-							"x": -2,
-							"y": 21
+							"x": 6,
+							"y": 25
 						},
 						"UpLeft": {
-							"x": 0,
-							"y": 5
+							"x": 8,
+							"y": 13
 						}
 					}
 				}
 			}
 		},
 		"Beam": {
-			"texture": "Beam"
+			"texture": "Beam",
+			"height": 8,
+			"width": 8
+		},
+		"Missile": {
+			"texture": "Missile",
+			"height": 15,
+			"width": 15
+		},
+		"Bomb": {
+			"texture": "Bomb",
+			"height": 8,
+			"width": 8
+		},
+		"Grenade": {
+			"texture": "Grenade",
+			"height": 8,
+			"width": 8
 		}
 	},
 	"livings": {
@@ -1009,10 +1027,10 @@
 		"Missile": {
 			"UpLeft": {
 				"file": "projectiles.png",
-				"x": 13,
-				"y": 1,
-				"width": 13,
-				"height": 13,
+				"x": 12,
+				"y": 0,
+				"width": 15,
+				"height": 15,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
@@ -1028,9 +1046,9 @@
 			},
 			"Up": {
 				"file": "projectiles.png",
-				"x": 47,
+				"x": 43,
 				"y": 0,
-				"width": 6,
+				"width": 15,
 				"height": 15,
 				"count": 1,
 				"emptyFrames": 0,
@@ -1047,10 +1065,10 @@
 			},
 			"UpRight": {
 				"file": "projectiles.png",
-				"x": 73,
-				"y": 1,
-				"width": 13,
-				"height": 13,
+				"x": 72,
+				"y": 0,
+				"width": 15,
+				"height": 15,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
@@ -1067,9 +1085,9 @@
 			"Left": {
 				"file": "projectiles.png",
 				"x": 12,
-				"y": 35,
+				"y": 31,
 				"width": 15,
-				"height": 6,
+				"height": 15,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
@@ -1086,9 +1104,9 @@
 			"Right": {
 				"file": "projectiles.png",
 				"x": 72,
-				"y": 35,
+				"y": 31,
 				"width": 15,
-				"height": 6,
+				"height": 15,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
@@ -1104,10 +1122,10 @@
 			},
 			"DownLeft": {
 				"file": "projectiles.png",
-				"x": 13,
-				"y": 61,
-				"width": 13,
-				"height": 13,
+				"x": 12,
+				"y": 60,
+				"width": 15,
+				"height": 15,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
@@ -1123,9 +1141,9 @@
 			},
 			"Down": {
 				"file": "projectiles.png",
-				"x": 47,
+				"x": 43,
 				"y": 60,
-				"width": 6,
+				"width": 15,
 				"height": 15,
 				"count": 1,
 				"emptyFrames": 0,
@@ -1142,10 +1160,10 @@
 			},
 			"DownRight": {
 				"file": "projectiles.png",
-				"x": 73,
-				"y": 61,
-				"width": 13,
-				"height": 13,
+				"x": 72,
+				"y": 60,
+				"width": 15,
+				"height": 15,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
@@ -1163,15 +1181,15 @@
 				"file": "projectiles.png",
 				"x": 0,
 				"y": 327,
-				"width": 250,
+				"width": 300,
 				"height": 32,
-				"count": 5,
+				"count": 6,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": false,
-				"xOffset": [-42, -42],
-				"yOffset": [-9, -9],
+				"xOffset": [-35, -35],
+				"yOffset": [-15, -15],
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
