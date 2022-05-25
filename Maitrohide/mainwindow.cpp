@@ -143,20 +143,48 @@ void MainWindow::updateMenu()
             menuArrowsTime = 0.0;
 
         if (inputList["enter"] && !holdingMenu) {
-         if (menuOptions[selectedOption] == "Resume")
-             isPaused = false;
-         else if (menuOptions[selectedOption] == "Options") {
-             menu = "options";
-             selectedOption = 0;
-         } else if (menuOptions[selectedOption] == "Debug") {
-             menu = "debug";
-             selectedOption = 0;
-         } else if (menuOptions[selectedOption] == "Quit")
-             close();
-         else if (menuOptions[selectedOption] == "Back") {
-             menu = "main";
-             selectedOption = 0;
-         }
+            if (menuOptions[selectedOption] == "Resume")
+                isPaused = false;
+            else if (menuOptions[selectedOption] == "Options") {
+                menu = "options";
+                selectedOption = 0;
+            } else if (menuOptions[selectedOption] == "Debug") {
+                menu = "debug";
+                selectedOption = 0;
+            } else if (menuOptions[selectedOption] == "Quit")
+                close();
+            else if (menuOptions[selectedOption] == "Back") {
+                menu = "main";
+                selectedOption = 0;
+            } else if (menuOptions[selectedOption] == "Show FPS : ON")
+                showFps = false;
+            else if (menuOptions[selectedOption] == "Show FPS : OFF")
+                showFps = true;
+            else if (menuOptions[selectedOption] == "Show hitboxes : ON")
+                renderHitboxes = false;
+            else if (menuOptions[selectedOption] == "Show hitboxes : OFF")
+                 renderHitboxes = true;
+            else if (menuOptions[selectedOption] == "Max missiles")
+                 for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
+                     if ((*i)->getEntType() == "Samos") {
+                         Samos* s = static_cast<Samos*>(*i);
+                         s->setMissileCount(s->getMaxMissileCount());
+                     }
+                 }
+            else if (menuOptions[selectedOption] == "Max grenades")
+                 for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
+                     if ((*i)->getEntType() == "Samos") {
+                         Samos* s = static_cast<Samos*>(*i);
+                         s->setGrenadeCount(s->getMaxGrenadeCount());
+                     }
+                 }
+            else if (menuOptions[selectedOption] == "Max health")
+                 for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
+                     if ((*i)->getEntType() == "Samos") {
+                         Samos* s = static_cast<Samos*>(*i);
+                         s->setHealth(s->getMaxHealth());
+                     }
+                 }
         }
 
 
@@ -169,9 +197,14 @@ void MainWindow::updateMenu()
         } else if (menu == "options") {
             menuOptions.clear();
             menuOptions.push_back("Back");
+            menuOptions.push_back(std::string("Show FPS : ") + (showFps ? "ON" : "OFF"));
         } else if (menu == "debug") {
             menuOptions.clear();
             menuOptions.push_back("Back");
+            menuOptions.push_back("Max missiles");
+            menuOptions.push_back("Max grenades");
+            menuOptions.push_back("Max hp");
+            menuOptions.push_back(std::string("Show hitboxes : ") + (renderHitboxes ? "ON" : "OFF"));
         }
 
     } else
@@ -999,7 +1032,7 @@ void MainWindow::paintEvent(QPaintEvent *)
             painter.setPen(QColor("white"));
             if (selectedOption == i)
                 painter.setPen(QColor("cyan"));
-            painter.drawText(QPoint(size().width() / 2 - 5 * menuOptions[i].size(), size().height() / 2 - 15 * menuOptions.size() + 30 * i), QString::fromStdString(menuOptions[i]));
+            painter.drawText(0, size().height() / 2 - 15 * menuOptions.size() + 30 * i, size().width(), 50, Qt::AlignHCenter, QString::fromStdString(menuOptions[i]));
         }
     }
 
