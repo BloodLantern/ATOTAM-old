@@ -46,6 +46,7 @@ public:
     static bool showFps; // Whether to show fps in-game
     static unsigned int showFpsUpdateRate; // Time (in ns) between each fps update
     static bool showUI;
+    static bool isPaused;
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
@@ -56,12 +57,27 @@ public:
     void updateSamos(Samos* s);
     void getInputs();
     bool updateProjectile(Projectile* p);
+    void updateMenu();
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);
+    int getSelectedOption() const;
+    void setSelectedOption(int newSelectedOption);
+
+    const std::string &getMenu() const;
+    void setMenu(const std::string &newMenu);
+
+    const std::vector<std::string> &getMenuOptions() const;
+    void setMenuOptions(const std::vector<std::string> &newMenuOptions);
+
 private:
     Ui::MainWindow *ui;
     QApplication *m_qApp;
     std::vector<Entity*> rendering;
+    int selectedOption = 0;
+    std::string menu;
+    std::vector<std::string> menuOptions;
+    double menuArrowsTime = 0.0;
+    bool holdingMenu = false;
 };
 #endif // MAINWINDOW_H

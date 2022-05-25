@@ -10,5 +10,6 @@
 	"weapon": 69,
 	"shoot": 68,
 	"dash": 65,
-	"menu": 27
+	"menu": 27,
+	"enter": 13
 }

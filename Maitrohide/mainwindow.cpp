@@ -18,6 +18,7 @@ double MainWindow::gravity;
 std::map<std::string, bool> MainWindow::inputList;
 QImage MainWindow::errorTexture("../assets/textures/error.png");
 bool MainWindow::showUI = true;
+bool MainWindow::isPaused = false;
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -82,6 +83,104 @@ bool MainWindow::updateProjectile(Projectile *p)
         return true;
     else
         return false;
+}
+
+void MainWindow::updateMenu()
+{
+    if (isPaused) {
+        if (inputList["menu"] && !holdingMenu)
+            isPaused = false;
+
+        if (inputList["down"] && !inputList["up"] && !inputList["left"] && !inputList["right"]) {
+            if (menuArrowsTime == 0.0) {
+                selectedOption += 1;
+                if (selectedOption >= static_cast<int>(menuOptions.size()))
+                    selectedOption = 0;
+            } else if (menuArrowsTime >= 3 * static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
+                selectedOption += 1;
+                if (selectedOption >= static_cast<int>(menuOptions.size()))
+                    selectedOption = 0;
+                menuArrowsTime = -1 - static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]);
+            }
+
+            menuArrowsTime += + 1 / frameRate;
+
+        } else if (!inputList["down"] && inputList["up"] && !inputList["left"] && !inputList["right"]) {
+            if (menuArrowsTime == 0.0) {
+                selectedOption -= 1;
+                if (selectedOption < 0)
+                    selectedOption = menuOptions.size() - 1;
+            } else if (menuArrowsTime >= 3 * static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
+                selectedOption -= 1;
+                if (selectedOption < 0)
+                    selectedOption = menuOptions.size() - 1;
+                menuArrowsTime = -1 - static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]);
+            }
+
+            menuArrowsTime += + 1 / frameRate;
+
+        } else if (!inputList["down"] && !inputList["up"] && inputList["left"] && !inputList["right"]) {
+            if (menuArrowsTime == 0.0) {
+                // TODO
+            } else if (menuArrowsTime >= 3 * static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
+                // TODO
+                menuArrowsTime = -1 - static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]);
+            }
+
+            menuArrowsTime += + 1 / frameRate;
+
+        } else if (!inputList["down"] && !inputList["up"] && !inputList["left"] && inputList["right"]) {
+            if (menuArrowsTime == 0.0) {
+                // TODO
+            } else if (menuArrowsTime >= 3 * static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
+                // TODO
+                menuArrowsTime = -1 - static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]);
+            }
+
+            menuArrowsTime += + 1 / frameRate;
+
+        } else
+            menuArrowsTime = 0.0;
+
+        if (inputList["enter"] && !holdingMenu) {
+         if (menuOptions[selectedOption] == "Resume")
+             isPaused = false;
+         else if (menuOptions[selectedOption] == "Options") {
+             menu = "options";
+             selectedOption = 0;
+         } else if (menuOptions[selectedOption] == "Debug") {
+             menu = "debug";
+             selectedOption = 0;
+         } else if (menuOptions[selectedOption] == "Quit")
+             close();
+         else if (menuOptions[selectedOption] == "Back") {
+             menu = "main";
+             selectedOption = 0;
+         }
+        }
+
+
+        if (menu == "main") {
+            menuOptions.clear();
+            menuOptions.push_back("Resume");
+            menuOptions.push_back("Options");
+            menuOptions.push_back("Debug");
+            menuOptions.push_back("Quit");
+        } else if (menu == "options") {
+            menuOptions.clear();
+            menuOptions.push_back("Back");
+        } else if (menu == "debug") {
+            menuOptions.clear();
+            menuOptions.push_back("Back");
+        }
+
+    } else
+        if (inputList["menu"] && !holdingMenu) {
+            isPaused = true;
+            menu = "main";
+        }
+
+    holdingMenu = inputList["menu"] || inputList["enter"];
 }
 
 void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
@@ -772,10 +871,7 @@ void MainWindow::updateSamos(Samos *s)
     if (inputList["weapon"]) {
         if (s->getSwitchDelay() == 0.0) {
             s->nextWeapon();
-        } else if (s->getSwitchDelay() >= 3 * static_cast<double>(samosJson["switchDelay"])) {
-            s->nextWeapon();
-            s->setSwitchDelay(-1 - static_cast<double>(samosJson["switchDelay"]));
-        } else if (s->getSwitchDelay() >= -1 && s->getSwitchDelay() < 0.0) {
+        } else if (s->getSwitchDelay() >= 3 * static_cast<double>(samosJson["switchDelay"]) || (s->getSwitchDelay() >= -1 && s->getSwitchDelay() < 0.0)) {
             s->nextWeapon();
             s->setSwitchDelay(-1 - static_cast<double>(samosJson["switchDelay"]));
         }
@@ -796,13 +892,6 @@ void MainWindow::updateSamos(Samos *s)
             s->setShootTime(static_cast<double>(samosJson["shootTime"]));
         }
     }
-
-    if (inputList["menu"]) {
-        s->setMissileCount(s->getMaxMissileCount());
-        s->setGrenadeCount(s->getMaxGrenadeCount());
-        s->setHealth(s->getMaxHealth());
-    }
-
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -873,12 +962,13 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawText(QPoint(2, 12), QString::fromStdString(std::to_string(fps) + " FPS"));
     }
 
+    QFont f = painter.font();
+    f.setPointSize(f.pointSize() * renderingMultiplier);
+    painter.setFont(f);
+
     //UI
     if (s != nullptr && showUI) {
 
-        QFont f = painter.font();
-        f.setPointSize(f.pointSize() * renderingMultiplier);
-        painter.setFont(f);
         painter.setPen(QColor("black"));
 
         //Selected weapon
@@ -900,10 +990,21 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.fillRect(QRect(380,15,80,30), QColor("white"));
         painter.drawRect(QRect(380,15,80,30));
         painter.drawText(QPoint(390, 40), QString::fromStdString("H : " + std::to_string(s->getHealth())));
-
-        f.setPointSize(f.pointSize() / renderingMultiplier);
-        painter.setFont(f);
     }
+
+    //Menu
+    if (isPaused) {
+        painter.fillRect(QRect(0,0,size().width(),size().height()), QBrush(QColor(0,0,0,200)));
+        for (unsigned int i = 0; i < menuOptions.size(); i++) {
+            painter.setPen(QColor("white"));
+            if (selectedOption == i)
+                painter.setPen(QColor("cyan"));
+            painter.drawText(QPoint(size().width() / 2 - 5 * menuOptions[i].size(), size().height() / 2 - 15 * menuOptions.size() + 30 * i), QString::fromStdString(menuOptions[i]));
+        }
+    }
+
+    f.setPointSize(f.pointSize() / renderingMultiplier);
+    painter.setFont(f);
 }
 
 void MainWindow::addRenderable(Entity *entity)
@@ -1098,4 +1199,34 @@ const std::vector<Entity *> &MainWindow::getRendering() const
 void MainWindow::setRendering(const std::vector<Entity *> &newRendering)
 {
     rendering = newRendering;
+}
+
+int MainWindow::getSelectedOption() const
+{
+    return selectedOption;
+}
+
+void MainWindow::setSelectedOption(int newSelectedOption)
+{
+    selectedOption = newSelectedOption;
+}
+
+const std::string &MainWindow::getMenu() const
+{
+    return menu;
+}
+
+void MainWindow::setMenu(const std::string &newMenu)
+{
+    menu = newMenu;
+}
+
+const std::vector<std::string> &MainWindow::getMenuOptions() const
+{
+    return menuOptions;
+}
+
+void MainWindow::setMenuOptions(const std::vector<std::string> &newMenuOptions)
+{
+    menuOptions = newMenuOptions;
 }

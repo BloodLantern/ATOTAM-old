@@ -29,16 +29,21 @@ void gameClock(MainWindow* w, Samos* s) {
         // And update the last frame time
         MainWindow::lastFrameTime = std::chrono::high_resolution_clock::now();
 
-        // Update physics
         w->getInputs();
-        w->updateSamos(s);
-        w->updatePhysics();
 
-        prevCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
-        MainWindow::frameCount++;
-        MainWindow::updateCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
-        if (prevCount != MainWindow::updateCount)
-            w->updateAnimations();
+        if (!MainWindow::isPaused) {
+            // Update physics
+            w->updateSamos(s);
+            w->updatePhysics();
+
+            prevCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
+            MainWindow::frameCount++;
+            MainWindow::updateCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
+            if (prevCount != MainWindow::updateCount)
+                w->updateAnimations();
+        }
+
+        w->updateMenu();
 
         // Eventually render the game
         w->update();
