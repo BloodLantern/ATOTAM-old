@@ -151,8 +151,9 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     int imagesPerLine = (static_cast<int>(animJson["count"]) + static_cast<int>(animJson["emptyFrames"])) / static_cast<int>(animJson["lines"]);
     int width = static_cast<int>(animJson["width"]) / imagesPerLine;
     // Make sure not to get two images at a time
-    if (animJson["multi-directional"])
-        width /= 2;
+    if (!animJson["multi-directional"].is_null())
+        if (animJson["multi-directional"])
+            width /= 2;
     int height = static_cast<int>(animJson["height"]) / static_cast<int>(animJson["lines"]);
     // For each line
     for (int i = (animJson["reversed"] ? static_cast<int>(animJson["lines"]) - 1 : 0);
