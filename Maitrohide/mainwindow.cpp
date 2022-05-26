@@ -188,6 +188,10 @@ void MainWindow::updateMenu()
                          s->setHealth(s->getMaxHealth());
                      }
                  }
+            else if (menuOptions[selectedOption] == "Reload entities.json") {
+                Entity::values = Entity::loadNames();
+                loadGeneral();
+            }
         }
 
 
@@ -208,6 +212,7 @@ void MainWindow::updateMenu()
             menuOptions.push_back("Max grenades");
             menuOptions.push_back("Max hp");
             menuOptions.push_back(std::string("Show hitboxes : ") + (renderHitboxes ? "ON" : "OFF"));
+            menuOptions.push_back("Reload entities.json");
         }
 
     } else
@@ -665,6 +670,9 @@ void MainWindow::updateSamos(Samos *s)
         }
     }
 
+    if (s->getShootTime() > 0.0) {
+        s->setShootTime(s->getShootTime() - 1 / frameRate);
+    }
 
     if (s->getShootTime() <= 0.0 && inputList["shoot"]) {
         if (s->getState() == "Crouching")
@@ -918,10 +926,6 @@ void MainWindow::updateSamos(Samos *s)
     } else
         s->setSwitchDelay(0.0);
 
-    if (s->getShootTime() > 0.0) {
-        s->setShootTime(s->getShootTime() - 1 / frameRate);
-    }
-
     if (s->getShootTime() <= 0.0 && inputList["shoot"]) {
         Projectile* p = s->shoot(s->getSelectedWeapon());
         if (p != nullptr) {
@@ -943,45 +947,45 @@ void MainWindow::paintEvent(QPaintEvent *)
     Samos* s;
 
     //Draw every entity in the rendering list
-    for (Entity *entity : rendering) {
+    for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
 
         //If the texture is null, set it to the error texture
-        if (entity->getTexture() == nullptr) {
-            entity->setTexture(&errorTexture);
+        if ((*ent)->getTexture() == nullptr) {
+            (*ent)->setTexture(&errorTexture);
         }
 
         //Try to draw the textrue, if it fails, set it to the error texture and try again
         try {
-            painter.drawImage(QRect(entity->getX() + entity->getTexture()->offset().x(), entity->getY() + entity->getTexture()->offset().y(),
-                                    entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
-                              *entity->getTexture());
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x(), (*ent)->getY() + (*ent)->getTexture()->offset().y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                              *(*ent)->getTexture());
         } catch (...) {
-            entity->setTexture(&errorTexture);
-            painter.drawImage(QRect(entity->getX() + entity->getTexture()->offset().x(), entity->getY() + entity->getTexture()->offset().y(),
-                                    entity->getTexture()->width() * renderingMultiplier, entity->getTexture()->height() * renderingMultiplier),
-                              *entity->getTexture());
+            (*ent)->setTexture(&errorTexture);
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x(), (*ent)->getY() + (*ent)->getTexture()->offset().y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                              *(*ent)->getTexture());
         }
 
-        if (entity->getEntType() == "Samos")
-            s = static_cast<Samos*>(entity);
+        if ((*ent)->getEntType() == "Samos")
+            s = static_cast<Samos*>((*ent));
     }
 
     //Draw hitboxes if necessary
     if (renderHitboxes) {
-        for (Entity *entity : rendering) {
+        for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
             painter.setPen(QColor("blue"));
-            painter.drawRect(entity->getX() + entity->getBox()->getX(), entity->getY() + entity->getBox()->getY(),
-                             entity->getBox()->getWidth(), entity->getBox()->getHeight());
+            painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX(), (*ent)->getY() + (*ent)->getBox()->getY(),
+                             (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
 
             //Ground boxes
-            if (entity->getEntType() == "Samos" || entity->getEntType() == "Monster" || entity->getEntType() == "NPC" || entity->getEntType() == "DynamicObj") {
-                Living* liv = static_cast<Living*>(entity);
+            if ((*ent)->getEntType() == "Samos" || (*ent)->getEntType() == "Monster" || (*ent)->getEntType() == "NPC" || (*ent)->getEntType() == "DynamicObj") {
+                Living* liv = static_cast<Living*>((*ent));
                 painter.setPen(QColor("green"));
                 painter.drawRect(liv->getX() + liv->getGroundBox()->getX(), liv->getY() + liv->getGroundBox()->getY(),
                                  liv->getGroundBox()->getWidth(), liv->getGroundBox()->getHeight());
 
                 //Wall boxes
-                if (entity->getEntType() == "Samos") {
+                if ((*ent)->getEntType() == "Samos") {
                     Samos* s = static_cast<Samos*>(liv);
                     painter.drawRect(s->getX() + s->getWallBoxL()->getX(), s->getY() + s->getWallBoxL()->getY(), s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
                     painter.drawRect(s->getX() + s->getWallBoxR()->getX(), s->getY() + s->getWallBoxR()->getY(), s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
@@ -1076,12 +1080,12 @@ void MainWindow::updatePhysics()
     std::vector<Living*> livingList;
     //Deletion list
     std::vector<Entity*> toDel;
-    for (Entity* ent : rendering) {
+    for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
 
-        if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
-            Living* liv = static_cast<Living*>(ent);
+        if ((*ent)->getEntType() == "Samos" || (*ent)->getEntType() == "Monster" || (*ent)->getEntType() == "NPC" || (*ent)->getEntType() == "DynamicObj") {
+            Living* liv = static_cast<Living*>((*ent));
             livingList.push_back(liv);
-            //Calc earth's attraction's acceleration if the entity is affected
+            //Calc earth's attraction's acceleration if the (*ent)ity is affected
             if (liv->getIsAffectedByGravity() && !liv->getOnGround() && liv->getIsMovable()) {
                 liv->setVY(liv->getVY() + gravity / frameRate);
             }
@@ -1116,43 +1120,43 @@ void MainWindow::updatePhysics()
                 }
             }
         } else {
-            if (ent->getEntType() == "Projectile") {
-                Projectile* p = static_cast<Projectile*>(ent);
+            if ((*ent)->getEntType() == "Projectile") {
+                Projectile* p = static_cast<Projectile*>((*ent));
                 if (updateProjectile(p))
-                    toDel.push_back(ent);
+                    toDel.push_back((*ent));
             }
             //Non-living objects can't be grounded
-            if (ent->getIsAffectedByGravity() && ent->getIsMovable())
-                ent->setVY(ent->getVY() + gravity / frameRate);
-            if (ent->getIsMovable()) {
-                if (std::abs(ent->getVX()) < speedcap) {
-                    if (ent->getVX() > 0)
-                        ent->setVX(1 / ((1 / ent->getVX()) + (static_cast<double>(paramJson["airFriction"]) * ent->getFrictionFactor() / frameRate)));
-                    else if (ent->getVX() < 0)
-                        ent->setVX(1 / ((1 / ent->getVX()) - (static_cast<double>(paramJson["airFriction"]) * ent->getFrictionFactor() / frameRate)));
+            if ((*ent)->getIsAffectedByGravity() && (*ent)->getIsMovable())
+                (*ent)->setVY((*ent)->getVY() + gravity / frameRate);
+            if ((*ent)->getIsMovable()) {
+                if (std::abs((*ent)->getVX()) < speedcap) {
+                    if ((*ent)->getVX() > 0)
+                        (*ent)->setVX(1 / ((1 / (*ent)->getVX()) + (static_cast<double>(paramJson["airFriction"]) * (*ent)->getFrictionFactor() / frameRate)));
+                    else if ((*ent)->getVX() < 0)
+                        (*ent)->setVX(1 / ((1 / (*ent)->getVX()) - (static_cast<double>(paramJson["airFriction"]) * (*ent)->getFrictionFactor() / frameRate)));
                 //Speedcap
                 } else {
-                    if (ent->getVX() > 0)
-                        ent->setVX(speedcap);
+                    if ((*ent)->getVX() > 0)
+                        (*ent)->setVX(speedcap);
                     else
-                        ent->setVX(-speedcap);
+                        (*ent)->setVX(-speedcap);
                 }
             }
         }
         //Livings can only stand on terrain or dynamic objects
-        if (ent->getEntType() == "Terrain" || ent->getEntType() == "DynamicObj") {
-            solidList.push_back(ent);
+        if ((*ent)->getEntType() == "Terrain" || (*ent)->getEntType() == "DynamicObj") {
+            solidList.push_back((*ent));
         }
         //Speedcap
-        if (std::abs(ent->getVY()) > speedcap) {
-            if (ent->getVY() > 0)
-                ent->setVY(speedcap);
+        if (std::abs((*ent)->getVY()) > speedcap) {
+            if ((*ent)->getVY() > 0)
+                (*ent)->setVY(speedcap);
             else
-                ent->setVY(-speedcap);
+                (*ent)->setVY(-speedcap);
         }
-        //Move entities
-        if (ent->getIsMovable())
-            ent->updateV(frameRate);
+        //Move (*ent)ities
+        if ((*ent)->getIsMovable())
+            (*ent)->updateV(frameRate);
     } //{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
 
     //Check for collisions and handle them
@@ -1187,55 +1191,55 @@ void MainWindow::updatePhysics()
 void MainWindow::updateAnimations()
 {
     unsigned long long uC = updateCount;
-    for (Entity* entity : rendering) {
-        std::string state = entity->getState();
-        std::string facing = entity->getFacing();
+    for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
+        std::string state = (*ent)->getState();
+        std::string facing = (*ent)->getFacing();
         // Every 'refreshRate' frames
-        if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
-            if (uC % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
+        if (!Entity::values["textures"][(*ent)->getName()][state]["refreshRate"].is_null())
+            if (uC % static_cast<int>(Entity::values["textures"][(*ent)->getName()][state]["refreshRate"]) == 0)
                 // If the animation index still exists
-                if (entity->getCurrentAnimation().size() > entity->getFrame())
+                if ((*ent)->getCurrentAnimation().size() > (*ent)->getFrame())
                     // Increment the animation index
-                    entity->setFrame(entity->getFrame() + 1);
+                    (*ent)->setFrame((*ent)->getFrame() + 1);
 
-        // If the entity state is different from the last frame
-        if (state != entity->getLastFrameState()
-                || facing != entity->getLastFrameFacing()) {
+        // If the (*ent) state is different from the last frame
+        if (state != (*ent)->getLastFrameState()
+                || facing != (*ent)->getLastFrameFacing()) {
             // Update the QImage array representing the animation
-            entity->setCurrentAnimation(entity->updateAnimation(state));
+            (*ent)->setCurrentAnimation((*ent)->updateAnimation(state));
             // If the animation should reset the next one
-            if (!Entity::values["textures"][entity->getName()][entity->getLastFrameState()]["dontReset"])
+            if (!Entity::values["textures"][(*ent)->getName()][(*ent)->getLastFrameState()]["dontReset"])
                 // Because the animation changed, reset it
-                entity->setFrame(0);
+                (*ent)->setFrame(0);
             else
                 // Else, make sure not to end up with a too high index
-                if (entity->getFrame() >= entity->getCurrentAnimation().size())
-                    entity->setFrame(0);
+                if ((*ent)->getFrame() >= (*ent)->getCurrentAnimation().size())
+                    (*ent)->setFrame(0);
         }
 
         // Every 'refreshRate' frames
-        if (!Entity::values["textures"][entity->getName()][state]["refreshRate"].is_null())
-            if (uC % static_cast<int>(Entity::values["textures"][entity->getName()][state]["refreshRate"]) == 0)
+        if (!Entity::values["textures"][(*ent)->getName()][state]["refreshRate"].is_null())
+            if (uC % static_cast<int>(Entity::values["textures"][(*ent)->getName()][state]["refreshRate"]) == 0)
                 // If the animation has to loop
-                if (!Entity::values["textures"][entity->getName()][state]["loop"].is_null()) {
-                    if (Entity::values["textures"][entity->getName()][state]["loop"]) {
+                if (!Entity::values["textures"][(*ent)->getName()][state]["loop"].is_null()) {
+                    if (Entity::values["textures"][(*ent)->getName()][state]["loop"]) {
                         // If the animation index still exists
-                        if (entity->getCurrentAnimation().size() - 1 < entity->getFrame())
+                        if ((*ent)->getCurrentAnimation().size() - 1 < (*ent)->getFrame())
                             // Reset animation
-                            entity->setFrame(0);
+                            (*ent)->setFrame(0);
                     } else
                         // If the animation index still exists
-                        if (entity->getCurrentAnimation().size() - 1 < entity->getFrame())
+                        if ((*ent)->getCurrentAnimation().size() - 1 < (*ent)->getFrame())
                             // If the animation doesn't loop, make sure it stays on its last frame
-                            entity->setFrame(entity->getFrame() - 1);
+                            (*ent)->setFrame((*ent)->getFrame() - 1);
                 }
 
         // Update the texture with the animation index
-        entity->updateTexture();
+        (*ent)->updateTexture();
 
         // Make sure to update these values for the next frame
-        entity->setLastFrameState(state);
-        entity->setLastFrameFacing(facing);
+        (*ent)->setLastFrameState(state);
+        (*ent)->setLastFrameFacing(facing);
     }
 }
 

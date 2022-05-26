@@ -18,9 +18,10 @@
 #include <Entities/terrain.h>
 
 void gameClock(MainWindow* w, Samos* s) {
-    long waitTime = 1000000.0/(MainWindow::frameRate * MainWindow::gameSpeed);
+    long waitTime;
     unsigned long long prevCount;
     while (MainWindow::running) {
+        waitTime = 1000000.0/(MainWindow::frameRate * MainWindow::gameSpeed);
         auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
         // Update FPS if it has to

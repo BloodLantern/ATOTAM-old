@@ -11,7 +11,8 @@
 		"groundFriction": 0.1,
 		"airFriction": 0.01,
 		"speedcap": 1000,
-		"slowcap": 30
+		"slowcap": 30,
+		"mapViewer": false
 	},
 	"names": {
 		"Samos": {
@@ -294,7 +295,7 @@
 				"emptyFramesReversed": true,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-8, -16],
+				"xOffset": [-10, -16],
 				"yOffset": [10, 10],
 				"reversed": false,
 				"overlay": [],
