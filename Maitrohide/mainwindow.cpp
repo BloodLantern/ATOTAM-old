@@ -1162,7 +1162,8 @@ void MainWindow::updatePhysics()
     //Check for collisions and handle them
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
-            handleCollision(*i,*j);
+            if ((*i)->getBox() != nullptr && (*i)->getBox() != nullptr)
+                handleCollision(*i,*j);
         }
     }
 

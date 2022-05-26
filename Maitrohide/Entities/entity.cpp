@@ -118,7 +118,8 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
 
 Entity::~Entity()
 {
-    delete box;
+    if (box != nullptr)
+        delete box;
 }
 
 void Entity::updateTexture()
@@ -210,7 +211,8 @@ CollisionBox *Entity::getBox() const
 
 void Entity::setBox(CollisionBox *newBox)
 {
-    delete box;
+    if (box != nullptr)
+        delete box;
     box = newBox;
 }
 
