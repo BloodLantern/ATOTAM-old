@@ -7,6 +7,7 @@ class Terrain : public Entity
 {
 public:
     Terrain(double x, double y, CollisionBox* box, QImage* texture, std::string name);
+    Terrain(double x, double y, std::string name);
     ~Terrain();
 };
 

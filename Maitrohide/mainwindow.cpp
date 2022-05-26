@@ -214,6 +214,7 @@ void MainWindow::updateMenu()
         if (inputList["menu"] && !holdingMenu) {
             isPaused = true;
             menu = "main";
+            selectedOption = 0;
         }
 
     holdingMenu = inputList["menu"] || inputList["enter"];
