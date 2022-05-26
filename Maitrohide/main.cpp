@@ -32,9 +32,11 @@ void gameClock(MainWindow* w, Samos* s) {
         w->getInputs();
 
         if (!MainWindow::isPaused) {
-            // Update physics
-            w->updateSamos(s);
-            w->updatePhysics();
+            if (!MainWindow::mapViewer) {
+                // Update physics
+                w->updateSamos(s);
+                w->updatePhysics();
+            }
 
             prevCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
             MainWindow::frameCount++;
@@ -72,15 +74,8 @@ int main(int argc, char *argv[])
     MainWindow::loadGeneral();
     MainWindow w(&a);
     //w.show();
-    Samos s(500, 300, 99, 5, 5);
     w.showFullScreen();
-    /*nlohmann::json entJson = Entity::values["names"]["Samos"];
-    nlohmann::json textureJson = Entity::values["textures"][entJson["texture"]];
-    nlohmann::json variantJson = textureJson["Standing"];
-    QImage fullImage(QString::fromStdString(std::string("../assets/textures/") + std::string(textureJson["Standing"]["file"])));
-    QImage image = fullImage.copy(variantJson["x"], variantJson["y"], variantJson["width"], variantJson["height"]);
-    //QImage img1("../assets/Image.png");
-    Samos s(100, 10, 99, 5, 5, new CollisionBox(20, 0, 15*MainWindow::renderingMultiplier, 43*MainWindow::renderingMultiplier), &image, "Samos", 99, true, "Right", 1, "Samos", true);*/
+    Samos s(500, 300, 99, 5, 5);
     w.addRenderable(&s);
     QImage sol("../assets/sol.png");
     QImage mur("../assets/mur.png");

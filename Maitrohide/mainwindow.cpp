@@ -6,6 +6,7 @@ double MainWindow::frameRate;
 double MainWindow::updateRate;
 double MainWindow::gameSpeed;
 bool MainWindow::renderHitboxes;
+bool MainWindow::mapViewer;
 int MainWindow::renderingMultiplier;
 unsigned long long MainWindow::frameCount;
 unsigned long long MainWindow::updateCount;
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QApplication *app)
     //, rendering()
 {
     ui->setupUi(this);
+    installEventFilter(this);
     setFixedSize(1000, 500);
 }
 
@@ -54,6 +56,7 @@ void MainWindow::loadGeneral()
     gravity = Entity::values["general"]["gravity"];
     renderingMultiplier = Entity::values["general"]["renderingMultiplier"];
     renderHitboxes = Entity::values["general"]["renderHitboxes"];
+    mapViewer = Entity::values["general"]["mapViewer"];
 }
 
 nlohmann::json MainWindow::keyCodes = MainWindow::loadKeyCodes();
@@ -927,7 +930,7 @@ void MainWindow::updateSamos(Samos *s)
     }
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *)
 {
     running = false;
 }
@@ -1030,7 +1033,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.fillRect(QRect(0,0,size().width(),size().height()), QBrush(QColor(0,0,0,200)));
         for (unsigned int i = 0; i < menuOptions.size(); i++) {
             painter.setPen(QColor("white"));
-            if (selectedOption == i)
+            if (selectedOption == (int) i)
                 painter.setPen(QColor("cyan"));
             painter.drawText(0, size().height() / 2 - 15 * menuOptions.size() + 30 * i, size().width(), 50, Qt::AlignHCenter, QString::fromStdString(menuOptions[i]));
         }
@@ -1038,6 +1041,17 @@ void MainWindow::paintEvent(QPaintEvent *)
 
     f.setPointSize(f.pointSize() / renderingMultiplier);
     painter.setFont(f);
+}
+
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::FocusIn) {
+        if (object == this) {
+            // Update map
+            std::cout << "test" << std::endl;
+        }
+    }
+    return false;
 }
 
 void MainWindow::addRenderable(Entity *entity)

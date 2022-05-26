@@ -1,0 +1,20 @@
+{
+	"rooms": {
+		"0-0": {
+			"camera": {
+				"locked": true,
+				"startingPosition": [0, 0],
+				"endingPosition": [0, 0]
+			},
+			"content": {
+				"Terrain": {
+					"Wall": {
+						"x": [],
+						"y": [],
+						"count": 1
+					}
+				}
+			}
+		}
+	}
+}

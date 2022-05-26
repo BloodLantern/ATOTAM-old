@@ -22,6 +22,7 @@ SOURCES += \
     Entities/terrain.cpp \
     main.cpp \
     mainwindow.cpp \
+    map.cpp \
     save.cpp
 
 HEADERS += \
@@ -37,6 +38,7 @@ HEADERS += \
     Entities/samos.h \
     Entities/terrain.h \
     mainwindow.h \
+    map.h \
     nlohmann/json.hpp \
     save.h
 

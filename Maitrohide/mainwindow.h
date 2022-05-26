@@ -26,6 +26,7 @@ public:
     ~MainWindow();
 
     static bool renderHitboxes; // Render hitboxes as rectangles
+    static bool mapViewer; // Whether the game the game was launched as a map viewer
     static int renderingMultiplier; // Textures are rendered with their size being multiplied by this value
     static QImage errorTexture;
     static bool running;
@@ -50,6 +51,7 @@ public:
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
+    bool eventFilter(QObject *object, QEvent *event);
     void addRenderable(Entity *entity);
     void clearRendering();
     void updatePhysics();
