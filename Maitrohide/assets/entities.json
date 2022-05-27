@@ -12,7 +12,8 @@
 		"airFriction": 0.01,
 		"speedcap": 1000,
 		"slowcap": 30,
-		"mapViewer": false
+		"mapViewer": false,
+		"map": "test"
 	},
 	"names": {
 		"Samos": {

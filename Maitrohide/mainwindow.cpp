@@ -20,6 +20,7 @@ std::map<std::string, bool> MainWindow::inputList;
 QImage MainWindow::errorTexture("../assets/textures/error.png");
 bool MainWindow::showUI = true;
 bool MainWindow::isPaused = false;
+Map MainWindow::currentMap("test");
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -27,7 +28,6 @@ MainWindow::MainWindow(QApplication *app)
     //, rendering()
 {
     ui->setupUi(this);
-    installEventFilter(this);
     setFixedSize(1000, 500);
 }
 
@@ -57,6 +57,7 @@ void MainWindow::loadGeneral()
     renderingMultiplier = Entity::values["general"]["renderingMultiplier"];
     renderHitboxes = Entity::values["general"]["renderHitboxes"];
     mapViewer = Entity::values["general"]["mapViewer"];
+    currentMap = Map(Entity::values["general"]["map"]);
 }
 
 nlohmann::json MainWindow::keyCodes = MainWindow::loadKeyCodes();
@@ -91,8 +92,14 @@ bool MainWindow::updateProjectile(Projectile *p)
 void MainWindow::updateMenu()
 {
     if (isPaused) {
-        if (inputList["menu"] && !holdingMenu)
-            isPaused = false;
+        if (inputList["menu"] && !holdingMenu) {
+            if (menu == "main")
+                isPaused = false;
+            else {
+                menu = "main";
+                selectedOption = 0;
+            }
+        }
 
         if (inputList["down"] && !inputList["up"] && !inputList["left"] && !inputList["right"]) {
             if (menuArrowsTime == 0.0) {
@@ -191,7 +198,10 @@ void MainWindow::updateMenu()
             else if (menuOptions[selectedOption] == "Reload entities.json") {
                 Entity::values = Entity::loadNames();
                 loadGeneral();
-            }
+            } else if (menuOptions[selectedOption] == "Map viewer mode : ON")
+                mapViewer = false;
+            else if (menuOptions[selectedOption] == "Map viewer mode : OFF")
+                mapViewer = true;
         }
 
 
@@ -213,6 +223,7 @@ void MainWindow::updateMenu()
             menuOptions.push_back("Max hp");
             menuOptions.push_back(std::string("Show hitboxes : ") + (renderHitboxes ? "ON" : "OFF"));
             menuOptions.push_back("Reload entities.json");
+            menuOptions.push_back(std::string("Map viewer mode : ") + (mapViewer ? "ON" : "OFF"));
         }
 
     } else
@@ -1048,17 +1059,6 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.setFont(f);
 }
 
-bool MainWindow::eventFilter(QObject *object, QEvent *event)
-{
-    if (event->type() == QEvent::FocusIn) {
-        if (object == this) {
-            // Update map
-            std::cout << "test" << std::endl;
-        }
-    }
-    return false;
-}
-
 void MainWindow::addRenderable(Entity *entity)
 {
     rendering.push_back(entity);
@@ -1066,6 +1066,8 @@ void MainWindow::addRenderable(Entity *entity)
 
 void MainWindow::clearRendering()
 {
+    for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent ++)
+        delete *ent;
     rendering = {};
 }
 

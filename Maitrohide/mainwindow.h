@@ -12,6 +12,7 @@
 #include "Entities/entity.h"
 #include "Entities/living.h"
 #include "Entities/samos.h"
+#include "map.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,6 +38,7 @@ public:
     static unsigned long long updateCount;
     static double gravity; //p.s^-2
     static nlohmann::json keyCodes;
+    static Map currentMap;
     static nlohmann::json loadKeyCodes();
     static void loadGeneral();
     static void handleCollision(Entity* obj1, Entity* obj2);
@@ -51,7 +53,6 @@ public:
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
-    bool eventFilter(QObject *object, QEvent *event);
     void addRenderable(Entity *entity);
     void clearRendering();
     void updatePhysics();

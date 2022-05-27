@@ -35,9 +35,26 @@ void gameClock(MainWindow* w, Samos* s) {
         if (!MainWindow::isPaused) {
             if (!MainWindow::mapViewer) {
                 // Update physics
-                w->updateSamos(s);
+                if (s != nullptr)
+                    w->updateSamos(s);
                 w->updatePhysics();
+            } else if (MainWindow::inputList["enter"]) {
+                if (s != nullptr) {
+                    std::vector<Entity*> oldRen = w->getRendering();
+                    std::vector<Entity*> newRen;
+                    for (std::vector<Entity*>::iterator j = oldRen.begin(); j != oldRen.end(); j++) {
+                        if (*j != s)
+                            newRen.push_back(*j);
+                    }
+                    w->setRendering(newRen);
+                }
+                w->clearRendering();
+                w->setRendering(Map::loadMap(MainWindow::currentMap));
+                if (s != nullptr)
+                    w->addRenderable(s);
             }
+
+
 
             prevCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
             MainWindow::frameCount++;
@@ -76,38 +93,19 @@ int main(int argc, char *argv[])
     MainWindow w(&a);
     //w.show();
     w.showFullScreen();
-    Samos s(500, 300, 99, 5, 5);
-    w.addRenderable(&s);
-    Terrain s1(60, 400, "Ground");
-    w.addRenderable(&s1);
-    Terrain s2(60, 1020, "Ground");
-    w.addRenderable(&s2);
-    Terrain s3(660, 1020, "Ground");
-    w.addRenderable(&s3);
-    Terrain s4(1260, 1020, "Ground");
-    w.addRenderable(&s4);
-    Terrain s5(60, 0, "Ground");
-    w.addRenderable(&s5);
-    Terrain s6(660, 0, "Ground");
-    w.addRenderable(&s6);
-    Terrain s7(1260, 0, "Ground");
-    w.addRenderable(&s7);
-    Terrain s8(400, 625, "Ground");
-    w.addRenderable(&s8);
-    Terrain s9(200, 850, "Ground");
-    w.addRenderable(&s9);
-    Terrain s10(1060, 300, "Ground");
-    w.addRenderable(&s10);
-    Terrain m1(0, 0, "Wall");
-    w.addRenderable(&m1);
-    Terrain m2(0, 600, "Wall");
-    w.addRenderable(&m2);
-    Terrain m3(1860, 0, "Wall");
-    w.addRenderable(&m3);
-    Terrain m4(1860, 600, "Wall");
-    w.addRenderable(&m4);
-    Terrain m5(1600, 300, "Wall");
-    w.addRenderable(&m5);
-    std::future<void> game = std::async(gameClock, &w, &s);
+
+    // Only instantiate samos if not in map viewer mode
+    Samos* sp = nullptr;
+    if (!MainWindow::mapViewer) {
+        sp = new Samos(500, 300, 99, 5, 5);
+        w.addRenderable(sp);
+        // Start the game update clock
+    }
+
+    // Load map
+    for (Entity* entity : Map::loadMap(Map("test")))
+        w.addRenderable(entity);
+
+    std::future<void> game = std::async(gameClock, &w, sp);
     return a.exec();
 }
