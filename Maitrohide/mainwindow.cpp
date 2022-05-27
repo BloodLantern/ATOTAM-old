@@ -157,6 +157,10 @@ void MainWindow::updateMenu()
                         paramsfile << params;
                         paramsfile.close();
                     }
+                } else if (menuOptions[selectedOption].substr(0,15) == "< Game speed : ") {
+                    if (gameSpeed > 0.1) {
+                        gameSpeed -= 0.1;
+                    }
                 }
             } else if (menuArrowsTime >= 5 * static_cast<double>(Entity::values["general"]["menuCoolDown"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
                 if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
@@ -166,6 +170,10 @@ void MainWindow::updateMenu()
                         std::ofstream paramsfile("../assets/params.json");
                         paramsfile << params;
                         paramsfile.close();
+                    }
+                } else if (menuOptions[selectedOption].substr(0,15) == "< Game speed : ") {
+                    if (gameSpeed > 0.1) {
+                        gameSpeed -= 0.1;
                     }
                 }
                 menuArrowsTime = -1 - static_cast<double>(Entity::values["general"]["menuCoolDown"]) / 2;
@@ -183,6 +191,10 @@ void MainWindow::updateMenu()
                         paramsfile << params;
                         paramsfile.close();
                     }
+                } else if (menuOptions[selectedOption].substr(0,15) == "< Game speed : ") {
+                    if (gameSpeed < 10.0) {
+                        gameSpeed += 0.1;
+                    }
                 }
             } else if (menuArrowsTime >= 5 * static_cast<double>(Entity::values["general"]["menuCoolDown"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
                 if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
@@ -192,6 +204,10 @@ void MainWindow::updateMenu()
                         std::ofstream paramsfile("../assets/params.json");
                         paramsfile << params;
                         paramsfile.close();
+                    }
+                } else if (menuOptions[selectedOption].substr(0,15) == "< Game speed : ") {
+                    if (gameSpeed < 10.0) {
+                        gameSpeed += 0.1;
                     }
                 }
                 menuArrowsTime = -1 - static_cast<double>(Entity::values["general"]["menuCoolDown"]) / 2;
@@ -307,6 +323,7 @@ void MainWindow::updateMenu()
         } else if (menu == "debug") {
             menuOptions.clear();
             menuOptions.push_back("Back");
+            menuOptions.push_back(std::string("< Game speed : ") + std::to_string(gameSpeed) + " >");
             menuOptions.push_back("Max missiles");
             menuOptions.push_back("Max grenades");
             menuOptions.push_back("Max hp");
