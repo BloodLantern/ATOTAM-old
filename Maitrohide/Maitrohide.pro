@@ -10,16 +10,24 @@ CONFIG += c++11
 
 SOURCES += \
     Entities/collisionbox.cpp \
+    Entities/door.cpp \
     Entities/entity.cpp \
-    #Entities/monster.cpp \
-    #Entities/movingentity.cpp \
-    #Entities/movingmonster.cpp \
-    #Entities/player.cpp \
-    #Entities/staticmonster.cpp \
     Entities/living.cpp \
     Entities/projectile.cpp \
     Entities/samos.cpp \
     Entities/terrain.cpp \
+    Entities/area.cpp \
+    Easing/Back.cpp \
+    Easing/Bounce.cpp \
+    Easing/Circ.cpp \
+    Easing/Cubic.cpp \
+    Easing/Elastic.cpp \
+    Easing/Expo.cpp \
+    Easing/Linear.cpp \
+    Easing/Quad.cpp \
+    Easing/Quart.cpp \
+    Easing/Quint.cpp \
+    Easing/Sine.cpp \
     main.cpp \
     mainwindow.cpp \
     map.cpp \
@@ -27,16 +35,24 @@ SOURCES += \
 
 HEADERS += \
     Entities/collisionbox.h \
+    Entities/door.h \
     Entities/entity.h \
-    #Entities/monster.h \
-    #Entities/movingentity.h \
-    #Entities/movingmonster.h \
-    #Entities/player.h \
-    #Entities/staticmonster.h \
     Entities/living.h \
     Entities/projectile.h \
     Entities/samos.h \
     Entities/terrain.h \
+    Entities/area.h \
+    Easing/Back.h \
+    Easing/Bounce.h \
+    Easing/Circ.h \
+    Easing/Cubic.h \
+    Easing/Elastic.h \
+    Easing/Expo.h \
+    Easing/Linear.h \
+    Easing/Quad.h \
+    Easing/Quart.h \
+    Easing/Quint.h \
+    Easing/Sine.h \
     mainwindow.h \
     map.h \
     nlohmann/json.hpp \

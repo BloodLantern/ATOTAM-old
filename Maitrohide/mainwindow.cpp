@@ -24,6 +24,7 @@ bool MainWindow::isPaused = false;
 bool MainWindow::fullscreen = false;
 std::pair<int,int> MainWindow::resolution = {1920,1080};
 Map MainWindow::currentMap("test");
+QPoint camera(0, 0);
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -1057,12 +1058,12 @@ void MainWindow::paintEvent(QPaintEvent *)
 
         //Try to draw the textrue, if it fails, set it to the error texture and try again
         try {
-            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x(), (*ent)->getY() + (*ent)->getTexture()->offset().y(),
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() + camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() + camera.y(),
                                     (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
                               *(*ent)->getTexture());
         } catch (...) {
             (*ent)->setTexture(&errorTexture);
-            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x(), (*ent)->getY() + (*ent)->getTexture()->offset().y(),
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() + camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() + camera.y(),
                                     (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
                               *(*ent)->getTexture());
         }
@@ -1075,21 +1076,30 @@ void MainWindow::paintEvent(QPaintEvent *)
     if (renderHitboxes) {
         for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
             painter.setPen(QColor("blue"));
-            painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX(), (*ent)->getY() + (*ent)->getBox()->getY(),
+            // Select another color for specific entity types
+            if ((*ent)->getEntType() == "Monster")
+                painter.setPen(QColor("red"));
+            else if ((*ent)->getEntType() == "Area")
+                painter.setPen(QColor("gray"));
+            else if ((*ent)->getEntType() == "Samos")
+                painter.setPen(QColor("yellow"));
+            painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() + camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() + camera.y(),
                              (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
 
             //Ground boxes
             if ((*ent)->getEntType() == "Samos" || (*ent)->getEntType() == "Monster" || (*ent)->getEntType() == "NPC" || (*ent)->getEntType() == "DynamicObj") {
                 Living* liv = static_cast<Living*>((*ent));
                 painter.setPen(QColor("green"));
-                painter.drawRect(liv->getX() + liv->getGroundBox()->getX(), liv->getY() + liv->getGroundBox()->getY(),
+                painter.drawRect(liv->getX() + liv->getGroundBox()->getX() + camera.x(), liv->getY() + liv->getGroundBox()->getY() + camera.y(),
                                  liv->getGroundBox()->getWidth(), liv->getGroundBox()->getHeight());
 
                 //Wall boxes
                 if ((*ent)->getEntType() == "Samos") {
                     Samos* s = static_cast<Samos*>(liv);
-                    painter.drawRect(s->getX() + s->getWallBoxL()->getX(), s->getY() + s->getWallBoxL()->getY(), s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
-                    painter.drawRect(s->getX() + s->getWallBoxR()->getX(), s->getY() + s->getWallBoxR()->getY(), s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
+                    painter.drawRect(s->getX() + s->getWallBoxL()->getX() + camera.x(), s->getY() + s->getWallBoxL()->getY() + camera.y(),
+                                     s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
+                    painter.drawRect(s->getX() + s->getWallBoxR()->getX() + camera.x(), s->getY() + s->getWallBoxR()->getY() + camera.y(),
+                                     s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
                 }
             }
         }
@@ -1301,7 +1311,10 @@ void MainWindow::updateAnimations()
             // Update the QImage array representing the animation
             (*ent)->setCurrentAnimation((*ent)->updateAnimation(state));
             // If the animation should reset the next one
-            if (!Entity::values["textures"][(*ent)->getName()][(*ent)->getLastFrameState()]["dontReset"])
+            if (!Entity::values["textures"]
+                    [Entity::values["names"][(*ent)->getName()]["texture"]]
+                    [(*ent)->getLastFrameState()]
+                    ["dontReset"])
                 // Because the animation changed, reset it
                 (*ent)->setFrame(0);
             else

@@ -1,5 +1,7 @@
 #include "map.h"
 #include <fstream>
+#include <Entities/area.h>
+#include <Entities/door.h>
 #include <Entities/terrain.h>
 #include <iostream>
 
@@ -14,7 +16,7 @@ std::vector<Entity*> Map::loadMap(Map map)
         // Iterate over a map of entityNames
         for (const std::pair<std::string, nlohmann::json> name : entity.second.get<nlohmann::json::object_t>())
             // For the entity count
-            for (unsigned int i = 0; i < name.second["count"]; i++)
+            for (unsigned int i = 0; i < name.second["x"].size(); i++)
                 // Create and add the right entity
                 if (entity.first == "Terrain") {
                     Terrain *t = new Terrain(name.second["x"][i], name.second["y"][i], name.first);
@@ -29,20 +31,24 @@ std::vector<Entity*> Map::loadMap(Map map)
                     //NPC t(name.second["x"][i], name.second["y"][i], name.first);
                     //entities.push_back(t);
                 } else if (entity.first == "Area") {
-                    //Area t(name.second["x"][i], name.second["y"][i], name.first);
-                    //entities.push_back(t);
+                    Area *t = new Area(name.second["x"][i], name.second["y"][i], name.first);
+                    entities.push_back(t);
+                } else if (entity.first == "Door") {
+                    Door *t = new Door(name.second["x"][i], name.second["y"][i], name.first);
+                    entities.push_back(t);
                 }
     return entities;
 }
 
 Map::Map(std::string file)
-    : filePath("../assets/maps/" + file + ".json"), room(0, 0)
+    : filePath("../assets/maps/" + file + ".json")
 {
     // Init Json object
     std::ifstream fileStream(this->filePath);
     fileStream >> json;
 
     name = json["name"];
+    room = QPoint(json["startingRoom"][0], json["startingRoom"][1]);
 }
 
 std::string Map::getStringRoom()

@@ -40,6 +40,7 @@ public:
     static double gravity; //p.s^-2
     static nlohmann::json keyCodes;
     static Map currentMap;
+    static QPoint camera;
     static nlohmann::json loadKeyCodes();
     static void loadGeneral();
     static void handleCollision(Entity* obj1, Entity* obj2);
