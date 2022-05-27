@@ -18,6 +18,7 @@ unsigned int MainWindow::showFpsUpdateRate;
 double MainWindow::gravity;
 std::map<std::string, bool> MainWindow::inputList;
 QImage MainWindow::errorTexture("../assets/textures/error.png");
+QImage MainWindow::emptyTexture("../assets/textures/empty.png");
 bool MainWindow::showUI = true;
 bool MainWindow::isPaused = false;
 bool MainWindow::fullscreen = false;
@@ -123,11 +124,11 @@ void MainWindow::updateMenu()
                 selectedOption += 1;
                 if (selectedOption >= static_cast<int>(menuOptions.size()))
                     selectedOption = 0;
-            } else if (menuArrowsTime >= 3 * static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
+            } else if (menuArrowsTime >= 5 * static_cast<double>(Entity::values["general"]["menuCoolDown"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
                 selectedOption += 1;
                 if (selectedOption >= static_cast<int>(menuOptions.size()))
                     selectedOption = 0;
-                menuArrowsTime = -1 - static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]);
+                menuArrowsTime = -1 - static_cast<double>(Entity::values["general"]["menuCoolDown"]);
             }
 
             menuArrowsTime += + 1 / frameRate;
@@ -137,31 +138,63 @@ void MainWindow::updateMenu()
                 selectedOption -= 1;
                 if (selectedOption < 0)
                     selectedOption = menuOptions.size() - 1;
-            } else if (menuArrowsTime >= 3 * static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
+            } else if (menuArrowsTime >= 5 * static_cast<double>(Entity::values["general"]["menuCoolDown"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
                 selectedOption -= 1;
                 if (selectedOption < 0)
                     selectedOption = menuOptions.size() - 1;
-                menuArrowsTime = -1 - static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]);
+                menuArrowsTime = -1 - static_cast<double>(Entity::values["general"]["menuCoolDown"]);
             }
 
             menuArrowsTime += + 1 / frameRate;
 
         } else if (!inputList["down"] && !inputList["up"] && inputList["left"] && !inputList["right"]) {
             if (menuArrowsTime == 0.0) {
-                // TODO
-            } else if (menuArrowsTime >= 3 * static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
-                // TODO
-                menuArrowsTime = -1 - static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]);
+                if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
+                    if (frameRate > 60.0) {
+                        frameRate--;
+                        params["frameRate"] = frameRate;
+                        std::ofstream paramsfile("../assets/params.json");
+                        paramsfile << params;
+                        paramsfile.close();
+                    }
+                }
+            } else if (menuArrowsTime >= 5 * static_cast<double>(Entity::values["general"]["menuCoolDown"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
+                if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
+                    if (frameRate > 60.0) {
+                        frameRate--;
+                        params["frameRate"] = frameRate;
+                        std::ofstream paramsfile("../assets/params.json");
+                        paramsfile << params;
+                        paramsfile.close();
+                    }
+                }
+                menuArrowsTime = -1 - static_cast<double>(Entity::values["general"]["menuCoolDown"]) / 2;
             }
 
             menuArrowsTime += + 1 / frameRate;
 
         } else if (!inputList["down"] && !inputList["up"] && !inputList["left"] && inputList["right"]) {
             if (menuArrowsTime == 0.0) {
-                // TODO
-            } else if (menuArrowsTime >= 3 * static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
-                // TODO
-                menuArrowsTime = -1 - static_cast<double>(Entity::values["names"]["Samos"]["switchDelay"]);
+                if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
+                    if (frameRate < 144.0) {
+                        frameRate++;
+                        params["frameRate"] = frameRate;
+                        std::ofstream paramsfile("../assets/params.json");
+                        paramsfile << params;
+                        paramsfile.close();
+                    }
+                }
+            } else if (menuArrowsTime >= 5 * static_cast<double>(Entity::values["general"]["menuCoolDown"]) || (menuArrowsTime >= -1 && menuArrowsTime < 0.0)) {
+                if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
+                    if (frameRate < 144.0) {
+                        frameRate++;
+                        params["frameRate"] = frameRate;
+                        std::ofstream paramsfile("../assets/params.json");
+                        paramsfile << params;
+                        paramsfile.close();
+                    }
+                }
+                menuArrowsTime = -1 - static_cast<double>(Entity::values["general"]["menuCoolDown"]) / 2;
             }
 
             menuArrowsTime += + 1 / frameRate;
@@ -185,13 +218,13 @@ void MainWindow::updateMenu()
                 selectedOption = 0;
             } else if (menuOptions[selectedOption] == "Show FPS : ON") {
                 showFps = false;
-                params["showFps"] = false;
+                params["showFps"] = showFps;
                 std::ofstream paramsfile("../assets/params.json");
                 paramsfile << params;
                 paramsfile.close();
             } else if (menuOptions[selectedOption] == "Show FPS : OFF") {
                 showFps = true;
-                params["showFps"] = true;
+                params["showFps"] = showFps;
                 std::ofstream paramsfile("../assets/params.json");
                 paramsfile << params;
                 paramsfile.close();
@@ -268,6 +301,7 @@ void MainWindow::updateMenu()
         } else if (menu == "options") {
             menuOptions.clear();
             menuOptions.push_back("Back");
+            menuOptions.push_back(std::string("< FPS : ") + std::to_string(int(frameRate)) + " >");
             menuOptions.push_back(std::string("Show FPS : ") + (showFps ? "ON" : "OFF"));
             menuOptions.push_back(std::string("Fullscreen : ") + (fullscreen ? "ON" : "OFF"));
         } else if (menu == "debug") {
@@ -1018,7 +1052,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
         //If the texture is null, set it to the error texture
         if ((*ent)->getTexture() == nullptr) {
-            (*ent)->setTexture(&errorTexture);
+            (*ent)->setTexture(&emptyTexture);
         }
 
         //Try to draw the textrue, if it fails, set it to the error texture and try again

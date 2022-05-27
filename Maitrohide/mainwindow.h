@@ -30,6 +30,7 @@ public:
     static bool mapViewer; // Whether the game the game was launched as a map viewer
     static int renderingMultiplier; // Textures are rendered with their size being multiplied by this value
     static QImage errorTexture;
+    static QImage emptyTexture;
     static bool running;
     static double frameRate; //fps
     static double updateRate; // How many game updates in one second
