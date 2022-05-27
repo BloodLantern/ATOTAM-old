@@ -50,7 +50,8 @@ public:
     static unsigned int showFpsUpdateRate; // Time (in ns) between each fps update
     static bool showUI;
     static bool isPaused;
-
+    static bool fullscreen;
+    static std::pair<int,int> resolution;
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
     void addRenderable(Entity *entity);
@@ -61,6 +62,8 @@ public:
     void getInputs();
     bool updateProjectile(Projectile* p);
     void updateMenu();
+    static nlohmann::json params;
+    static nlohmann::json loadParams();
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);

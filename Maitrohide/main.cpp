@@ -91,8 +91,10 @@ int main(int argc, char *argv[])
 
     MainWindow::loadGeneral();
     MainWindow w(&a);
-    //w.show();
-    w.showFullScreen();
+    if (MainWindow::fullscreen)
+        w.showFullScreen();
+    else
+        w.show();
 
     // Only instantiate samos if not in map viewer mode
     Samos* sp = nullptr;
