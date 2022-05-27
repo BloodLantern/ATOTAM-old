@@ -955,7 +955,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    Samos* s;
+    Samos* s = nullptr;
 
     //Draw every entity in the rendering list
     for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {

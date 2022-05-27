@@ -49,7 +49,7 @@ void gameClock(MainWindow* w, Samos* s) {
                     w->setRendering(newRen);
                 }
                 w->clearRendering();
-                w->setRendering(Map::loadMap(MainWindow::currentMap));
+                w->setRendering(Map::loadMap(Map(MainWindow::currentMap.getName())));
                 if (s != nullptr)
                     w->addRenderable(s);
             }
@@ -99,13 +99,13 @@ int main(int argc, char *argv[])
     if (!MainWindow::mapViewer) {
         sp = new Samos(500, 300, 99, 5, 5);
         w.addRenderable(sp);
-        // Start the game update clock
     }
 
     // Load map
-    for (Entity* entity : Map::loadMap(Map("test")))
+    for (Entity* entity : Map::loadMap(Map(MainWindow::currentMap.getName())))
         w.addRenderable(entity);
 
+    // Start the game update clock
     std::future<void> game = std::async(gameClock, &w, sp);
     return a.exec();
 }
