@@ -38,20 +38,8 @@ void gameClock(MainWindow* w, Samos* s) {
                 if (s != nullptr)
                     w->updateSamos(s);
                 w->updatePhysics();
-            } else if (MainWindow::inputList["enter"]) {
-                if (s != nullptr) {
-                    std::vector<Entity*> oldRen = w->getRendering();
-                    std::vector<Entity*> newRen;
-                    for (std::vector<Entity*>::iterator j = oldRen.begin(); j != oldRen.end(); j++) {
-                        if (*j != s)
-                            newRen.push_back(*j);
-                    }
-                    w->setRendering(newRen);
-                }
-                w->clearRendering();
-                w->setRendering(Map::loadMap(Map(MainWindow::currentMap.getName())));
-                if (s != nullptr)
-                    w->addRenderable(s);
+            } else {
+                w->updateMapViewer();
             }
 
 

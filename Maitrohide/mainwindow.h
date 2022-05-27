@@ -40,11 +40,11 @@ public:
     static double gravity; //p.s^-2
     static nlohmann::json keyCodes;
     static Map currentMap;
-    static QPoint camera;
     static nlohmann::json loadKeyCodes();
     static void loadGeneral();
     static void handleCollision(Entity* obj1, Entity* obj2);
     static std::map<std::string, bool> inputList;
+    static std::map<std::string, double> inputTime;
     static std::chrono::system_clock::time_point lastFpsShown; // Time of the last frame in which the shown fps were updated
     static std::chrono::system_clock::time_point lastFrameTime; // Time of the last frame in which the shown fps were updated
     static unsigned int fps; // Fps count when 'lastFpsShown' was updated
@@ -54,6 +54,8 @@ public:
     static bool isPaused;
     static bool fullscreen;
     static std::pair<int,int> resolution;
+    static double mapViewerCameraSpeed;
+
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
     void addRenderable(Entity *entity);
@@ -61,6 +63,7 @@ public:
     void updatePhysics();
     void updateAnimations();
     void updateSamos(Samos* s);
+    void updateMapViewer();
     void getInputs();
     bool updateProjectile(Projectile* p);
     void updateMenu();
@@ -78,6 +81,9 @@ public:
     const std::vector<std::string> &getMenuOptions() const;
     void setMenuOptions(const std::vector<std::string> &newMenuOptions);
 
+    QPoint getCamera() const;
+    void setCamera(QPoint newCamera);
+
 private:
     Ui::MainWindow *ui;
     QApplication *m_qApp;
@@ -86,6 +92,6 @@ private:
     std::string menu;
     std::vector<std::string> menuOptions;
     double menuArrowsTime = 0.0;
-    bool holdingMenu = false;
+    QPoint camera = QPoint(0,0);
 };
 #endif // MAINWINDOW_H
