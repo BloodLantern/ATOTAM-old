@@ -21,8 +21,7 @@ Living::Living(double x, double y, std::string facing, std::string name)
 
 Living::~Living()
 {
-    if (groundBox != nullptr)
-        delete groundBox;
+    delete groundBox;
 }
 
 void Living::hit()
@@ -57,8 +56,7 @@ CollisionBox *Living::getGroundBox() const
 
 void Living::setGroundBox(CollisionBox *newGroundBox)
 {
-    if (groundBox != nullptr)
-        delete groundBox;
+    delete groundBox;
     groundBox = newGroundBox;
 }
 
