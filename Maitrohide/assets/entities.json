@@ -1,19 +1,18 @@
 {
 	"general": {
 		"gameSpeed": 1.0,
-		"frameRate": 144.0,
+		"frameRate": 60.0,
 		"updateRate": 60.0,
 		"showFps": true,
 		"showFpsUpdateRate": 1000000000,
 		"gravity": 700.0,
 		"renderingMultiplier": 2,
-		"renderHitboxes": true,
+		"renderHitboxes": false,
 		"groundFriction": 0.1,
 		"airFriction": 0.01,
 		"speedcap": 1000,
 		"slowcap": 30,
-		"mapViewer": false,
-		"map": "test"
+		"mapViewer": false
 	},
 	"names": {
 		"Samos": {

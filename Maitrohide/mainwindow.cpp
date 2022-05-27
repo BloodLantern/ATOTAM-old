@@ -20,7 +20,6 @@ std::map<std::string, bool> MainWindow::inputList;
 QImage MainWindow::errorTexture("../assets/textures/error.png");
 bool MainWindow::showUI = true;
 bool MainWindow::isPaused = false;
-Map MainWindow::currentMap("test");
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -58,7 +57,6 @@ void MainWindow::loadGeneral()
     renderingMultiplier = Entity::values["general"]["renderingMultiplier"];
     renderHitboxes = Entity::values["general"]["renderHitboxes"];
     mapViewer = Entity::values["general"]["mapViewer"];
-    currentMap = Map(Entity::values["general"]["map"]);
 }
 
 nlohmann::json MainWindow::keyCodes = MainWindow::loadKeyCodes();
@@ -1050,21 +1048,15 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.setFont(f);
 }
 
-void MainWindow::changeEvent(QEvent *event)
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
 {
-    if (event->type() == QEvent::ActivationChange) {
-        if (this->isActiveWindow()) {
-            // Window is now focused
-            if (mapViewer) {
-                // Reload map
-                clearRendering();
-                for (Entity* entity : Map::loadMap(Map("test")))
-                    addRenderable(entity);
-            }
-        } else {
-            // Window is now unfocused
+    if (event->type() == QEvent::FocusIn) {
+        if (object == this) {
+            // Update map
+            std::cout << "test" << std::endl;
         }
     }
+    return false;
 }
 
 void MainWindow::addRenderable(Entity *entity)

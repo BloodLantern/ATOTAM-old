@@ -1,27 +1,18 @@
 {
-	"name": "Test",
 	"rooms": {
 		"0-0": {
+			"camera": {
+				"locked": true,
+				"startingPosition": [0, 0],
+				"endingPosition": [0, 0]
+			},
 			"content": {
 				"Terrain": {
 					"Wall": {
-						"x": [0, 0, 1860, 1860, 1600],
-						"y": [0, 600, 0, 600, 300],
-						"count": 5
-					},
-					"Ground": {
-						"x": [60, 60, 660, 1260, 60, 660, 1260, 400, 200, 1060],
-						"y": [400, 1020, 1020, 1020, 0, 0, 0, 625, 850, 300],
-						"count": 10
+						"x": [],
+						"y": [],
+						"count": 1
 					}
-				},
-				"DynamicObj": {
-				},
-				"Monster": {
-				},
-				"NPC": {
-				},
-				"Area": {
 				}
 			}
 		}
