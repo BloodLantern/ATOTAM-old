@@ -8,9 +8,10 @@
 class Map
 {
 public:
-    static std::vector<Entity*> loadMap(Map map); // Loads a map into a MainWindow
-    Map(std::string file);
-    std::string getStringRoom();
+    static Map loadMap(std::string id); // Loads a map via its ID and returns it
+    std::vector<Entity*> loadRoom(int id); // Loads the selected room id and returns the array of entities it contains
+    std::vector<Entity*> loadRoom(); // Loads the current room id and returns the array of entities it contains
+
     const std::string &getName() const;
     void setName(const std::string &newName);
 
@@ -20,14 +21,14 @@ public:
     const nlohmann::json &getJson() const;
     void setJson(const nlohmann::json &newJson);
 
-    QPoint getRoom() const;
-    void setRoom(QPoint newRoom);
+    int getCurrentRoomId() const;
+    void setCurrentRoomId(int newCurrentRoomId);
 
 private:
+    Map(nlohmann::json json);
     std::string name;
-    std::string filePath;
     nlohmann::json json;
-    QPoint room; // Default room
+    int currentRoomId;
 };
 
 #endif // MAP_H

@@ -62,7 +62,7 @@ FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    Maitrohide_fr_FR.ts
+    ATOTAM_fr_FR.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 

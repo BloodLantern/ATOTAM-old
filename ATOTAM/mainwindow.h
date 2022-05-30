@@ -55,6 +55,7 @@ public:
     static bool fullscreen;
     static std::pair<int,int> resolution;
     static double mapViewerCameraSpeed;
+    static const std::string assetsPath;
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);

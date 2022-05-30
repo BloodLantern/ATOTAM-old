@@ -1,6 +1,5 @@
 #include "entity.h"
 #include <QPainter>
-#include <iostream>
 
 bool Entity::checkCollision(Entity *obj1, CollisionBox *box1, Entity *obj2, CollisionBox *box2)
 {
@@ -72,16 +71,19 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
     }
 }
 
-nlohmann::json Entity::loadNames()
+std::string assetsPath;
+
+nlohmann::json Entity::loadNames(std::string assetsPath_)
 {
+    assetsPath = assetsPath_;
     //loading the json with the info about mobs
-    std::ifstream names_file("../assets/entities.json");
+    std::ifstream names_file(assetsPath + "/entities.json");
     nlohmann::json temp;
     names_file >> temp;
     return temp;
 }
 
-nlohmann::json Entity::values = Entity::loadNames();
+nlohmann::json Entity::values;
 
 void Entity::updateV(double framerate)
 {
@@ -136,7 +138,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     // Getting a json object representing the animation
     nlohmann::json animJson = values["textures"][values["names"][name]["texture"]][state];
     // Getting the full animation image which will be cropped afterwards
-    QImage fullAnim = QImage(QString::fromStdString(std::string("../assets/textures/") + std::string(animJson["file"])))
+    QImage fullAnim = QImage(QString::fromStdString(std::string(assetsPath + "/textures/") + std::string(animJson["file"])))
             .copy(animJson["x"], animJson["y"], animJson["width"], animJson["height"]);
     // If the animation is multi-directional the program shouldn't keep the irrelevant part
     if (!animJson["multi-directional"].is_null())

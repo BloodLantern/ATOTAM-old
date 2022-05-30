@@ -1,8 +1,8 @@
 {
 	"name": "test",
-	"startingRoom": [0, 0],
+	"startingRoom": 0,
 	"rooms": {
-		"0-0": {
+		"0": {
 			"content": {
 				"Terrain": {
 					"Wall": {
@@ -30,7 +30,7 @@
 				}
 			}
 		},
-		"1-0": {
+		"1": {
 			"content": {
 				"Terrain": {
 					"Wall": {

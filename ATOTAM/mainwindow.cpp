@@ -18,13 +18,14 @@ unsigned int MainWindow::showFpsUpdateRate;
 double MainWindow::gravity;
 std::map<std::string, bool> MainWindow::inputList;
 std::map<std::string, double> MainWindow::inputTime;
-QImage MainWindow::errorTexture("../assets/textures/error.png");
-QImage MainWindow::emptyTexture("../assets/textures/empty.png");
+const std::string MainWindow::assetsPath = "../ATOTAM/assets";
+QImage MainWindow::errorTexture(QString::fromStdString(assetsPath + "/textures/error.png"));
+QImage MainWindow::emptyTexture(QString::fromStdString(assetsPath + "/textures/empty.png"));
 bool MainWindow::showUI = true;
 bool MainWindow::isPaused = false;
 bool MainWindow::fullscreen = false;
 std::pair<int,int> MainWindow::resolution = {1920,1080};
-Map MainWindow::currentMap("test");
+Map MainWindow::currentMap = Map::loadMap("test");
 double MainWindow::mapViewerCameraSpeed;
 
 MainWindow::MainWindow(QApplication *app)
@@ -44,7 +45,7 @@ MainWindow::~MainWindow()
 nlohmann::json MainWindow::loadKeyCodes()
 {
     //Loading keybinds
-    std::ifstream keys_file("../assets/inputs.json");
+    std::ifstream keys_file(assetsPath + "/inputs.json");
     nlohmann::json temp;
     keys_file >> temp;
     return temp;
@@ -53,7 +54,7 @@ nlohmann::json MainWindow::loadKeyCodes()
 nlohmann::json MainWindow::loadParams()
 {
     //loading the json with the info about mobs
-    std::ifstream names_file("../assets/params.json");
+    std::ifstream names_file(assetsPath + "/params.json");
     nlohmann::json temp;
     names_file >> temp;
     return temp;
@@ -71,7 +72,7 @@ void MainWindow::loadGeneral()
     renderingMultiplier = Entity::values["general"]["renderingMultiplier"];
     renderHitboxes = Entity::values["general"]["renderHitboxes"];
     mapViewer = Entity::values["general"]["mapViewer"];
-    currentMap = Map(Entity::values["general"]["map"]);
+    currentMap = Map::loadMap(Entity::values["general"]["map"]);
     mapViewerCameraSpeed = Entity::values["general"]["mapViewerCameraSpeed"];
 
     frameRate = params["frameRate"];
@@ -163,7 +164,7 @@ void MainWindow::updateMenu()
                     if (frameRate > 60.0) {
                         frameRate--;
                         params["frameRate"] = frameRate;
-                        std::ofstream paramsfile("../assets/params.json");
+                        std::ofstream paramsfile(assetsPath + "/params.json");
                         paramsfile << params;
                         paramsfile.close();
                     }
@@ -177,7 +178,7 @@ void MainWindow::updateMenu()
                     if (frameRate > 60.0) {
                         frameRate--;
                         params["frameRate"] = frameRate;
-                        std::ofstream paramsfile("../assets/params.json");
+                        std::ofstream paramsfile(assetsPath + "/params.json");
                         paramsfile << params;
                         paramsfile.close();
                     }
@@ -197,7 +198,7 @@ void MainWindow::updateMenu()
                     if (frameRate < 144.0) {
                         frameRate++;
                         params["frameRate"] = frameRate;
-                        std::ofstream paramsfile("../assets/params.json");
+                        std::ofstream paramsfile(assetsPath + "/params.json");
                         paramsfile << params;
                         paramsfile.close();
                     }
@@ -211,7 +212,7 @@ void MainWindow::updateMenu()
                     if (frameRate < 144.0) {
                         frameRate++;
                         params["frameRate"] = frameRate;
-                        std::ofstream paramsfile("../assets/params.json");
+                        std::ofstream paramsfile(assetsPath + "/params.json");
                         paramsfile << params;
                         paramsfile.close();
                     }
@@ -245,13 +246,13 @@ void MainWindow::updateMenu()
             } else if (menuOptions[selectedOption] == "Show FPS : ON") {
                 showFps = false;
                 params["showFps"] = showFps;
-                std::ofstream paramsfile("../assets/params.json");
+                std::ofstream paramsfile(assetsPath + "/params.json");
                 paramsfile << params;
                 paramsfile.close();
             } else if (menuOptions[selectedOption] == "Show FPS : OFF") {
                 showFps = true;
                 params["showFps"] = showFps;
-                std::ofstream paramsfile("../assets/params.json");
+                std::ofstream paramsfile(assetsPath + "/params.json");
                 paramsfile << params;
                 paramsfile.close();
             } else if (menuOptions[selectedOption] == "Show hitboxes : ON")
@@ -280,9 +281,9 @@ void MainWindow::updateMenu()
                      }
                  }
             else if (menuOptions[selectedOption] == "Reload entities.json") {
-                Entity::values = Entity::loadNames();
+                Entity::values = Entity::loadNames(assetsPath);
                 loadGeneral();
-            } else if (menuOptions[selectedOption] == "Reload map") {
+            } else if (menuOptions[selectedOption] == "Reload room") {
                 Entity* s = nullptr;
                 std::vector<Entity*> newRen;
                 for (std::vector<Entity*>::iterator j = rendering.begin(); j != rendering.end(); j++) {
@@ -293,7 +294,7 @@ void MainWindow::updateMenu()
                 }
                 rendering = newRen;
                 clearRendering();
-                rendering = Map::loadMap(Map(currentMap.getName()));
+                rendering = currentMap.loadRoom();
                 if (s != nullptr)
                     addRenderable(s);
             } else if (menuOptions[selectedOption] == "Map viewer mode : ON")
@@ -303,14 +304,14 @@ void MainWindow::updateMenu()
             else if (menuOptions[selectedOption] == "Fullscreen : ON") {
                 fullscreen = false;
                 params["fullscreen"] = false;
-                std::ofstream paramsfile("../assets/params.json");
+                std::ofstream paramsfile(assetsPath + "/params.json");
                 paramsfile << params;
                 paramsfile.close();
                 showNormal();
             } else if (menuOptions[selectedOption] == "Fullscreen : OFF") {
                 fullscreen = true;
                 params["fullscreen"] = true;
-                std::ofstream paramsfile("../assets/params.json");
+                std::ofstream paramsfile(assetsPath + "/params.json");
                 paramsfile << params;
                 paramsfile.close();
                 showFullScreen();
@@ -340,7 +341,7 @@ void MainWindow::updateMenu()
             menuOptions.push_back(std::string("Show hitboxes : ") + (renderHitboxes ? "ON" : "OFF"));
             menuOptions.push_back("Reload entities.json");
             menuOptions.push_back(std::string("Map viewer mode : ") + (mapViewer ? "ON" : "OFF"));
-            menuOptions.push_back("Reload map");
+            menuOptions.push_back("Reload room");
         }
 
     } else
@@ -1083,7 +1084,7 @@ void MainWindow::updateMapViewer()
         }
         rendering = newRen;
         clearRendering();
-        rendering = Map::loadMap(Map(currentMap.getName()));
+        rendering = currentMap.loadRoom();
         if (s != nullptr)
             addRenderable(s);
     }

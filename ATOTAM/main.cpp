@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
         }
     }
 
+    Entity::values = Entity::loadNames(MainWindow::assetsPath);
     MainWindow::loadGeneral();
     MainWindow w(&a);
     if (MainWindow::fullscreen)
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
     }
 
     // Load map
-    for (Entity* entity : Map::loadMap(Map(MainWindow::currentMap.getName())))
+    for (Entity* entity : MainWindow::currentMap.loadRoom())
         w.addRenderable(entity);
 
     // Start the game update clock

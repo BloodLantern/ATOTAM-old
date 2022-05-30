@@ -1,16 +1,40 @@
+#include "mainwindow.h"
 #include "map.h"
 #include <fstream>
 #include <Entities/area.h>
 #include <Entities/door.h>
 #include <Entities/terrain.h>
-#include <iostream>
 
-std::vector<Entity*> Map::loadMap(Map map)
+Map Map::loadMap(std::string id)
+{
+    std::ifstream file(MainWindow::assetsPath + "/maps/" + id + ".json");
+    nlohmann::json json;
+    file >> json;
+    return Map(json);
+}
+
+Map::Map(nlohmann::json json)
+    : name(json["name"]), json(json), currentRoomId(json["startingRoom"])
+{
+
+}
+
+int Map::getCurrentRoomId() const
+{
+    return currentRoomId;
+}
+
+void Map::setCurrentRoomId(int newCurrentRoomId)
+{
+    currentRoomId = newCurrentRoomId;
+}
+
+std::vector<Entity *> Map::loadRoom(int id)
 {
     // Result
     std::vector<Entity*> entities;
     // Json node of the selected room
-    nlohmann::json roomJson = map.getJson()["rooms"][map.getStringRoom()];
+    nlohmann::json roomJson = json["rooms"][std::to_string(id)];
     // Iterate over a map of entityTypes
     for (const std::pair<std::string, nlohmann::json> entity : roomJson["content"].get<nlohmann::json::object_t>())
         // Iterate over a map of entityNames
@@ -40,24 +64,9 @@ std::vector<Entity*> Map::loadMap(Map map)
     return entities;
 }
 
-Map::Map(std::string file)
-    : filePath("../assets/maps/" + file + ".json")
+std::vector<Entity *> Map::loadRoom()
 {
-    // Init Json object
-    std::ifstream fileStream(this->filePath);
-    fileStream >> json;
-
-    name = json["name"];
-    room = QPoint(json["startingRoom"][0], json["startingRoom"][1]);
-}
-
-std::string Map::getStringRoom()
-{
-    std::string result = "";
-    result += std::to_string(room.x());
-    result += "-";
-    result += std::to_string(room.y());
-    return result;
+    return loadRoom(currentRoomId);
 }
 
 const std::string &Map::getName() const
@@ -70,16 +79,6 @@ void Map::setName(const std::string &newName)
     name = newName;
 }
 
-const std::string &Map::getFilePath() const
-{
-    return filePath;
-}
-
-void Map::setFilePath(const std::string &newFilePath)
-{
-    filePath = newFilePath;
-}
-
 const nlohmann::json &Map::getJson() const
 {
     return json;
@@ -88,14 +87,4 @@ const nlohmann::json &Map::getJson() const
 void Map::setJson(const nlohmann::json &newJson)
 {
     json = newJson;
-}
-
-QPoint Map::getRoom() const
-{
-    return room;
-}
-
-void Map::setRoom(QPoint newRoom)
-{
-    room = newRoom;
 }
