@@ -19,16 +19,6 @@ Map::Map(nlohmann::json json)
 
 }
 
-int Map::getCurrentRoomId() const
-{
-    return currentRoomId;
-}
-
-void Map::setCurrentRoomId(int newCurrentRoomId)
-{
-    currentRoomId = newCurrentRoomId;
-}
-
 std::vector<Entity *> Map::loadRoom(int id)
 {
     // Result
@@ -44,22 +34,31 @@ std::vector<Entity *> Map::loadRoom(int id)
                 // Create and add the right entity
                 if (entity.first == "Terrain") {
                     Terrain *t = new Terrain(name.second["x"][i], name.second["y"][i], name.first);
+                    if (!name.second["state"].is_null())
+                        t->setState(name.second["state"]);
+                    else
+                        t->setState("None");
                     entities.push_back(t);
                 } else if (entity.first == "DynamicObj") {
-                    //DynamicObj t(name.second["x"][i], name.second["y"][i], name.first);
-                    //entities.push_back(t);
+                    //DynamicObj d(name.second["x"][i], name.second["y"][i], name.first);
+                    //entities.push_back(d);
                 } else if (entity.first == "Monster") {
-                    //Monster t(name.second["x"][i], name.second["y"][i], name.first);
-                    //entities.push_back(t);
+                    //Monster m(name.second["x"][i], name.second["y"][i], name.first);
+                    //entities.push_back(m);
                 } else if (entity.first == "NPC") {
-                    //NPC t(name.second["x"][i], name.second["y"][i], name.first);
-                    //entities.push_back(t);
+                    //NPC n(name.second["x"][i], name.second["y"][i], name.first);
+                    //entities.push_back(n);
                 } else if (entity.first == "Area") {
-                    Area *t = new Area(name.second["x"][i], name.second["y"][i], name.first);
-                    entities.push_back(t);
+                    Area *a = new Area(name.second["x"][i], name.second["y"][i], name.first);
+                    entities.push_back(a);
                 } else if (entity.first == "Door") {
-                    Door *t = new Door(name.second["x"][i], name.second["y"][i], name.first);
-                    entities.push_back(t);
+                    Door *d = new Door(name.second["x"][i], name.second["y"][i], name.first);
+                    if (!name.second["state"].is_null())
+                        d->setState(name.second["state"]);
+                    else
+                        d->setState("None");
+                    d->setEndingRoom(name.second["to"]);
+                    entities.push_back(d);
                 }
     return entities;
 }
@@ -67,6 +66,16 @@ std::vector<Entity *> Map::loadRoom(int id)
 std::vector<Entity *> Map::loadRoom()
 {
     return loadRoom(currentRoomId);
+}
+
+int Map::getCurrentRoomId() const
+{
+    return currentRoomId;
+}
+
+void Map::setCurrentRoomId(int newCurrentRoomId)
+{
+    currentRoomId = newCurrentRoomId;
 }
 
 const std::string &Map::getName() const

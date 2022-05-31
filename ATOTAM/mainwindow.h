@@ -42,7 +42,6 @@ public:
     static Map currentMap;
     static nlohmann::json loadKeyCodes();
     static void loadGeneral();
-    static void handleCollision(Entity* obj1, Entity* obj2);
     static std::map<std::string, bool> inputList;
     static std::map<std::string, double> inputTime;
     static std::chrono::system_clock::time_point lastFpsShown; // Time of the last frame in which the shown fps were updated
@@ -56,12 +55,14 @@ public:
     static std::pair<int,int> resolution;
     static double mapViewerCameraSpeed;
     static const std::string assetsPath;
+    static bool doorTransition;
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
     void addRenderable(Entity *entity);
     void clearRendering();
     void updatePhysics();
+    void handleCollision(Entity* obj1, Entity* obj2);
     void updateAnimations();
     void updateSamos(Samos* s);
     void updateMapViewer();

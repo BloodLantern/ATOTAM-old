@@ -18,3 +18,13 @@ Area::~Area()
 {
 
 }
+
+const std::string &Area::getAreaType() const
+{
+    return areaType;
+}
+
+void Area::setAreaType(const std::string &newAreaType)
+{
+    areaType = newAreaType;
+}

@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <Entities/area.h>
+#include <Entities/door.h>
+
 bool MainWindow::running = true;
 double MainWindow::frameRate;
 double MainWindow::updateRate;
@@ -27,6 +30,7 @@ bool MainWindow::fullscreen = false;
 std::pair<int,int> MainWindow::resolution = {1920,1080};
 Map MainWindow::currentMap = Map::loadMap("test");
 double MainWindow::mapViewerCameraSpeed;
+bool MainWindow::doorTransition = false;
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -395,7 +399,16 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
             // TODO hit
         } else if (obj2->getEntType() == "Area") {
             // TODO
-
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Area* a = static_cast<Area*>(obj2);
+                if (a->getAreaType() == "Door") {
+                    Door* d = static_cast<Door*>(a);
+                    currentMap.setCurrentRoomId(d->getEndingRoom());
+                    for (Entity* entity : currentMap.loadRoom())
+                        addRenderable(entity);
+                    doorTransition = true;
+                }
+            }
         } else if (obj2->getEntType() == "DynamicObj") {
             if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
                 Entity::calcCollisionReplacement(obj1, obj2);
@@ -445,7 +458,16 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
 
         } else if (obj2->getEntType() == "Samos") {
             // TODO
-
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                Area* a = static_cast<Area*>(obj1);
+                if (a->getAreaType() == "Door") {
+                    Door* d = static_cast<Door*>(a);
+                    currentMap.setCurrentRoomId(d->getEndingRoom());
+                    for (Entity* entity : currentMap.loadRoom())
+                        addRenderable(entity);
+                    doorTransition = true;
+                }
+            }
         } else if (obj2->getEntType() == "Monster") {
             // TODO
 
@@ -1090,14 +1112,14 @@ void MainWindow::updateMapViewer()
     }
 
     if (inputList["down"] && !inputList["up"]) {
-        camera.setY(camera.y() - mapViewerCameraSpeed / frameRate);
-    } else if (!inputList["down"] && inputList["up"]) {
         camera.setY(camera.y() + mapViewerCameraSpeed / frameRate);
+    } else if (!inputList["down"] && inputList["up"]) {
+        camera.setY(camera.y() - mapViewerCameraSpeed / frameRate);
     }
     if (inputList["left"] && !inputList["right"]) {
-        camera.setX(camera.x() + mapViewerCameraSpeed / frameRate);
-    } else if (!inputList["left"] && inputList["right"]) {
         camera.setX(camera.x() - mapViewerCameraSpeed / frameRate);
+    } else if (!inputList["left"] && inputList["right"]) {
+        camera.setX(camera.x() + mapViewerCameraSpeed / frameRate);
     }
 
 }
@@ -1123,12 +1145,12 @@ void MainWindow::paintEvent(QPaintEvent *)
 
         //Try to draw the textrue, if it fails, set it to the error texture and try again
         try {
-            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() + camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() + camera.y(),
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
                                     (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
                               *(*ent)->getTexture());
         } catch (...) {
             (*ent)->setTexture(&errorTexture);
-            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() + camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() + camera.y(),
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
                                     (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
                               *(*ent)->getTexture());
         }
@@ -1148,22 +1170,22 @@ void MainWindow::paintEvent(QPaintEvent *)
                 painter.setPen(QColor("gray"));
             else if ((*ent)->getEntType() == "Samos")
                 painter.setPen(QColor("orange"));
-            painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() + camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() + camera.y(),
+            painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
                              (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
 
             //Ground boxes
             if ((*ent)->getEntType() == "Samos" || (*ent)->getEntType() == "Monster" || (*ent)->getEntType() == "NPC" || (*ent)->getEntType() == "DynamicObj") {
                 Living* liv = static_cast<Living*>((*ent));
                 painter.setPen(QColor("green"));
-                painter.drawRect(liv->getX() + liv->getGroundBox()->getX() + camera.x(), liv->getY() + liv->getGroundBox()->getY() + camera.y(),
+                painter.drawRect(liv->getX() + liv->getGroundBox()->getX() - camera.x(), liv->getY() + liv->getGroundBox()->getY() - camera.y(),
                                  liv->getGroundBox()->getWidth(), liv->getGroundBox()->getHeight());
 
                 //Wall boxes
                 if ((*ent)->getEntType() == "Samos") {
                     Samos* s = static_cast<Samos*>(liv);
-                    painter.drawRect(s->getX() + s->getWallBoxL()->getX() + camera.x(), s->getY() + s->getWallBoxL()->getY() + camera.y(),
+                    painter.drawRect(s->getX() + s->getWallBoxL()->getX() - camera.x(), s->getY() + s->getWallBoxL()->getY() - camera.y(),
                                      s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
-                    painter.drawRect(s->getX() + s->getWallBoxR()->getX() + camera.x(), s->getY() + s->getWallBoxR()->getY() + camera.y(),
+                    painter.drawRect(s->getX() + s->getWallBoxR()->getX() - camera.x(), s->getY() + s->getWallBoxR()->getY() - camera.y(),
                                      s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
                 }
             }

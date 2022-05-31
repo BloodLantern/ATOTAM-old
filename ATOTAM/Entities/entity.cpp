@@ -109,6 +109,11 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     double renderingM = values["general"]["renderingMultiplier"];
 
     entType = entJson["type"];
+    if (!entJson["defaultState"].is_null())
+        state = entJson["defaultState"];
+    else
+        state = "None";
+    lastFrameState = "None";
     isAffectedByGravity = entJson["gravity"];
     frictionFactor = entJson["friction"];
     isMovable = entJson["movable"];
