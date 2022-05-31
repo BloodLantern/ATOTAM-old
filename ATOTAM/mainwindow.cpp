@@ -404,8 +404,8 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                 if (a->getAreaType() == "Door") {
                     Door* d = static_cast<Door*>(a);
                     currentMap.setCurrentRoomId(d->getEndingRoom());
-                    for (Entity* entity : currentMap.loadRoom())
-                        addRenderable(entity);
+                    //for (Entity* entity : currentMap.loadRoom())
+                      //  addRenderable(entity);
                     doorTransition = true;
                 }
             }
@@ -463,8 +463,8 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                 if (a->getAreaType() == "Door") {
                     Door* d = static_cast<Door*>(a);
                     currentMap.setCurrentRoomId(d->getEndingRoom());
-                    for (Entity* entity : currentMap.loadRoom())
-                        addRenderable(entity);
+                    //for (Entity* entity : currentMap.loadRoom())
+                      //  addRenderable(entity);
                     doorTransition = true;
                 }
             }
