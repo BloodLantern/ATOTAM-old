@@ -68,6 +68,7 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
     } else if (type == "Bomb") {
         damage = 50;
         lifeTime = 2;
+        setState("Normal");
     } else {
         throw unknownProjectileType;
     }
@@ -100,7 +101,11 @@ void Projectile::timeOut()
         setVX(0);
         setVY(0);
         setState("Hit");
-    }else if (projectileType == "Missile") {
+    } else if (projectileType == "Missile") {
+        setVX(0);
+        setVY(0);
+        setState("Hit");
+    } else if (projectileType == "Bomb") {
         setVX(0);
         setVY(0);
         setState("Hit");

@@ -97,8 +97,8 @@ private:
     // Rendering
     unsigned int frame = 0;
     std::vector<QImage> currentAnimation; // Full current animation
-    std::string state = "Standing"; // Which animation should be rendered
-    std::string lastFrameState = "Standing"; // Which animation was rendered in the last frame
+    std::string state = "None"; // Which animation should be rendered
+    std::string lastFrameState = "None"; // Which animation was rendered in the last frame
 };
 
 #endif // ENTITY_H

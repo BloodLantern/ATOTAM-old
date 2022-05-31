@@ -3,6 +3,8 @@
 
 bool Entity::checkCollision(Entity *obj1, CollisionBox *box1, Entity *obj2, CollisionBox *box2)
 {
+    if (box1 == nullptr || box2 == nullptr)
+        return false;
     //Big check to see if two boxes overlap
     return ((obj1->x + box1->getX() + box1->getWidth() > obj2->x + box2->getX())
             && (obj1->x + box1->getX() < obj2->x + box2->getX()  + box2->getWidth())
@@ -42,31 +44,39 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
         if (std::abs(minX) < std::abs(minY)) {
             obj1->x -= minX / 2;
             obj2->x += minX / 2;
-            obj1->vX = 0;
-            obj2->vX = 0;
+            if (std::signbit(obj1->getVX()) == std::signbit(minX))
+                obj1->vX = 0;
+            if (std::signbit(obj2->getVX()) == std::signbit(-minX))
+                obj2->vX = 0;
         } else {
             obj1->y -= minY / 2;
             obj2->y += minY / 2;
-            obj1->vY = 0;
-            obj2->vY = 0;
+            if (std::signbit(obj1->getVY()) == std::signbit(minY))
+                obj1->vY = 0;
+            if (std::signbit(obj2->getVY()) == std::signbit(-minY))
+                obj2->vY = 0;
         }
     } else if (!obj1->isMovable && obj2->isMovable) {
         //Same thing
         if (std::abs(minX) < std::abs(minY)) {
             obj2->x += minX;
-            obj2->vX = 0;
+            if (std::signbit(obj2->getVX()) == std::signbit(-minX))
+                obj2->vX = 0;
         } else {
             obj2->y += minY;
-            obj2->vY = 0;
+            if (std::signbit(obj2->getVY()) == std::signbit(-minY))
+                obj2->vY = 0;
         }
     } else if (obj1->isMovable && !obj2->isMovable) {
         //Read previous comments bro
         if (std::abs(minX) < std::abs(minY)) {
             obj1->x -= minX;
-            obj1->vX = 0;
+            if (std::signbit(obj1->getVX()) == std::signbit(minX))
+                obj1->vX = 0;
         } else {
             obj1->y -= minY;
-            obj1->vY = 0;
+            if (std::signbit(obj1->getVY()) == std::signbit(minY))
+                obj1->vY = 0;
         }
     }
 }

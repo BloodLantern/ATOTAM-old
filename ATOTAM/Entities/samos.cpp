@@ -8,6 +8,7 @@ Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMiss
       wallBoxL(new CollisionBox(getBox()->getX() - 2, getBox()->getY(), 2, getBox()->getHeight()))
 {
     setMaxHealth(maxHealth);
+    setState("Standing");
 }
 
 Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount, CollisionBox *box, QImage *texture, std::string entityType, int health, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
@@ -17,7 +18,7 @@ Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMiss
       wallBoxR(new CollisionBox(box->getX() + box->getWidth(), box->getY(), 2, box->getHeight())),
       wallBoxL(new CollisionBox(box->getX() - 2, box->getY(), 2, box->getHeight()))
 {
-
+    setState("Standing");
 }
 
 Samos::~Samos()
@@ -53,6 +54,8 @@ Projectile* Samos::shoot(std::string type)
         shootState = "Crouching";
     else if (getState() == "Walking" || getState() == "WalkingAimForward" || getState() == "WalkingAimDown" || getState() == "WalkingAimUp")
         shootState = "Walking";
+    else if (getState() == "MorphBall")
+        shootState = "Morph";
     else
         shootState = "Standing";
 
@@ -69,7 +72,7 @@ Projectile* Samos::shoot(std::string type)
     int offset_x = offsetJson.is_null() ? 0 : static_cast<int>(offsetJson["x"]);
     int offset_y = offsetJson.is_null() ? 0 : static_cast<int>(offsetJson["y"]);
 
-    if (canonDirection == "None") {
+    if (isInAltForm) {
         offset_x -= static_cast<int>(pOffsetJson["width"]) / 2;
         offset_y -= static_cast<int>(pOffsetJson["height"]) / 2;
     } else if (canonDirection == "Up") {
