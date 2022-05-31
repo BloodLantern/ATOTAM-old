@@ -23,6 +23,7 @@
 			"width": 16,
 			"height": 43,
 			"type": "Samos",
+			"defaultState": "Standing",
 			"gravity": true,
 			"friction": 1,
 			"movingFriction": 0.1,
@@ -245,6 +246,7 @@
 			"width": 30,
 			"height": 300,
 			"type": "Terrain",
+			"defaultState": "Normal",
 			"gravity":  false,
 			"friction": 0,
 			"movable": false
@@ -256,6 +258,7 @@
 			"width": 300,
 			"height": 30,
 			"type": "Terrain",
+			"defaultState": "Normal",
 			"gravity":  false,
 			"friction": 0,
 			"movable": false
@@ -267,6 +270,7 @@
 			"width": 10,
 			"height": 110,
 			"type": "Area",
+			"defaultState": "Normal",
 			"gravity":  false,
 			"friction": 0,
 			"movable": false
@@ -278,6 +282,7 @@
 			"width": 10,
 			"height": 110,
 			"type": "Area",
+			"defaultState": "Normal",
 			"gravity":  false,
 			"friction": 0,
 			"movable": false
@@ -292,6 +297,25 @@
 	},
 	"textures": {
 		"Samos": {
+			"None": {
+				"file": "samos.png",
+				"x": 94,
+				"y": 306,
+				"width": 285,
+				"height": 48,
+				"count": 3,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": true,
+				"xOffset": [-14, -12],
+				"yOffset": [12, 12],
+				"reversed": false,
+				"overlay": [],
+				"loop": true,
+				"refreshRate": 30,
+				"dontReset": false
+			},
 			"Standing": {
 				"file": "samos.png",
 				"x": 94,
