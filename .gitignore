@@ -32,9 +32,7 @@
 .app
 ATOTAM/ATOTAM.pro.user
 ATOTAM/ATOTAM_en_US.ts.autosave
-ATOTAM/BUILD/.*
-BUILD/.
-ATOTAM/RELEASE/.
+BUILD/*.*
 *.qrc
 ATOTAM/BUILD/Makefile
 *.debug

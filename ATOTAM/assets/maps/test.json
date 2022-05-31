@@ -3,6 +3,8 @@
 	"startingRoom": 0,
 	"rooms": {
 		"0": {
+			"position": [0, 0],
+			"size": [1920, 1080],
 			"content": {
 				"Terrain": {
 					"Wall": {
@@ -16,14 +18,6 @@
 						"state": "None"
 					}
 				},
-				"DynamicObj": {
-				},
-				"Monster": {
-				},
-				"NPC": {
-				},
-				"Area": {
-				},
 				"Door": {
 					"DoorRight": {
 						"x": [1900],
@@ -35,6 +29,8 @@
 			}
 		},
 		"1": {
+			"position": [1920, 0],
+			"size": [1920, 1080],
 			"content": {
 				"Terrain": {
 					"Wall": {
@@ -47,14 +43,6 @@
 						"y": [400, 1020, 1020, 1020, 1020, 0, 0, 0, 625, 850, 300],
 						"state": "None"
 					}
-				},
-				"DynamicObj": {
-				},
-				"Monster": {
-				},
-				"NPC": {
-				},
-				"Area": {
 				},
 				"Door": {
 					"DoorLeft": {

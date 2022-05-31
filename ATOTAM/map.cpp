@@ -33,26 +33,16 @@ std::vector<Entity *> Map::loadRoom(int id)
             for (unsigned int i = 0; i < name.second["x"].size(); i++)
                 // Create and add the right entity
                 if (entity.first == "Terrain") {
-                    Terrain *t = new Terrain(name.second["x"][i], name.second["y"][i], name.first);
+                    Terrain *t = new Terrain(static_cast<int>(roomJson["position"][0]) + static_cast<int>(name.second["x"][i]),
+                            static_cast<int>(roomJson["position"][1]) + static_cast<int>(name.second["y"][i]), name.first);
                     if (!name.second["state"].is_null())
                         t->setState(name.second["state"]);
                     else
                         t->setState("None");
                     entities.push_back(t);
-                } else if (entity.first == "DynamicObj") {
-                    //DynamicObj d(name.second["x"][i], name.second["y"][i], name.first);
-                    //entities.push_back(d);
-                } else if (entity.first == "Monster") {
-                    //Monster m(name.second["x"][i], name.second["y"][i], name.first);
-                    //entities.push_back(m);
-                } else if (entity.first == "NPC") {
-                    //NPC n(name.second["x"][i], name.second["y"][i], name.first);
-                    //entities.push_back(n);
-                } else if (entity.first == "Area") {
-                    Area *a = new Area(name.second["x"][i], name.second["y"][i], name.first);
-                    entities.push_back(a);
                 } else if (entity.first == "Door") {
-                    Door *d = new Door(name.second["x"][i], name.second["y"][i], name.first);
+                    Door *d = new Door(static_cast<int>(roomJson["position"][0]) + static_cast<int>(name.second["x"][i]),
+                            static_cast<int>(roomJson["position"][1]) + static_cast<int>(name.second["y"][i]), name.first);
                     if (!name.second["state"].is_null())
                         d->setState(name.second["state"]);
                     else
