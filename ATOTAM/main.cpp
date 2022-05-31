@@ -104,6 +104,8 @@ void gameClock(MainWindow* w, Samos* s) {
                     w->addRenderable(s);
                     for (Entity* entity : MainWindow::currentMap.loadRoom())
                         w->addRenderable(entity);
+
+                    w->updateAnimations();
                 }
             }
         }

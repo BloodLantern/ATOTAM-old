@@ -356,7 +356,7 @@ void MainWindow::updateMenu()
         }
 }
 
-void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
+std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
 {//{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
 
     //Long if else to decide what to do between two entities after a collision
@@ -404,9 +404,9 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                 if (a->getAreaType() == "Door") {
                     Door* d = static_cast<Door*>(a);
                     currentMap.setCurrentRoomId(d->getEndingRoom());
-                    //for (Entity* entity : currentMap.loadRoom())
-                      //  addRenderable(entity);
+                    std::vector<Entity*> nextRen = currentMap.loadRoom();
                     doorTransition = true;
+                    return nextRen;
                 }
             }
         } else if (obj2->getEntType() == "DynamicObj") {
@@ -463,9 +463,9 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                 if (a->getAreaType() == "Door") {
                     Door* d = static_cast<Door*>(a);
                     currentMap.setCurrentRoomId(d->getEndingRoom());
-                    //for (Entity* entity : currentMap.loadRoom())
-                      //  addRenderable(entity);
+                    std::vector<Entity*> nextRen = currentMap.loadRoom();
                     doorTransition = true;
+                    return nextRen;
                 }
             }
         } else if (obj2->getEntType() == "Monster") {
@@ -579,6 +579,8 @@ void MainWindow::handleCollision(Entity *obj1, Entity *obj2)
     } else
         //If getEntType() has been given a wrong value
         throw Entity::unknownEntityType;
+
+    return {};
 }
 
 void MainWindow::updateSamos(Samos *s)
@@ -1502,12 +1504,17 @@ void MainWindow::updatePhysics()
             (*ent)->updateV(frameRate);
     } //{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
 
+    std::vector<Entity*> toAdd;
     //Check for collisions and handle them
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
-            handleCollision(*i,*j);
+            for (Entity* ent : handleCollision(*i,*j))
+                toAdd.push_back(ent);
         }
     }
+
+    for (Entity* ent : toAdd)
+        addRenderable(ent);
 
     //Update the grounded state of livings
     for (std::vector<Living*>::iterator i = livingList.begin(); i != livingList.end(); i++) {

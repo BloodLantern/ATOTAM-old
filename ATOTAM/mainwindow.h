@@ -62,7 +62,7 @@ public:
     void addRenderable(Entity *entity);
     void clearRendering();
     void updatePhysics();
-    void handleCollision(Entity* obj1, Entity* obj2);
+    std::vector<Entity*> handleCollision(Entity* obj1, Entity* obj2);
     void updateAnimations();
     void updateSamos(Samos* s);
     void updateMapViewer();
