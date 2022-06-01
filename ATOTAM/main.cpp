@@ -17,6 +17,7 @@
 
 #include <Entities/terrain.h>
 
+#include <Easing/Cubic.h>
 #include <Easing/Sine.h>
 
 void gameClock(MainWindow* w, Samos* s) {
@@ -37,7 +38,7 @@ void gameClock(MainWindow* w, Samos* s) {
         // And update the last frame time
         MainWindow::lastFrameTime = std::chrono::high_resolution_clock::now();
 
-        if (!MainWindow::doorTransition) {
+        if (MainWindow::doorTransition == "") {
             w->getInputs();
 
             if (!MainWindow::isPaused) {
@@ -76,8 +77,14 @@ void gameClock(MainWindow* w, Samos* s) {
 
                 // Set camera position
                 QPoint camera = w->getCamera();
-                camera.setX(Sine::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), startingCameraPos->x() == 0 ? 1920 : -1920, cameraMoveTime));
-                //camera.setY(Sine::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), startingCameraPos->y() == 0 ? 1920 : 0, cameraMoveTime));
+                if (MainWindow::doorTransition == "DoorRight")
+                    camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), 1920, cameraMoveTime));
+                else if (MainWindow::doorTransition == "DoorLeft")
+                    camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), -1920, cameraMoveTime));
+                else if (MainWindow::doorTransition == "DoorUp")
+                    camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*Remember that Y axis is reversed*/ -1920, cameraMoveTime));
+                else if (MainWindow::doorTransition == "DoorDown")
+                    camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*See above*/ 1920, cameraMoveTime));
                 w->setCamera(camera);
 
                 // Set Samos position
@@ -89,7 +96,7 @@ void gameClock(MainWindow* w, Samos* s) {
                 if (timeLeftCameraMove <= 0) {
                     delete startingCameraPos;
                     startingCameraPos = nullptr;
-                    MainWindow::doorTransition = false;
+                    MainWindow::doorTransition = "";
 
                     // Create a vector containing the old rendering without Samos
                     std::vector<Entity*> newRen;

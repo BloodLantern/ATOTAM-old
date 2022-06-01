@@ -61,3 +61,6 @@ BUILD/UsersmaximAppDataLocalTemptmpfb5jci2q
 BUILD/UsersmaximAppDataLocalTemptmpeo5c9ev3
 BUILD/UsersmaximAppDataLocalTemptmptj9vcn4x
 BUILD/UsersmaximAppDataLocalTemptmpyiky0jhc
+BUILD/.qtc_clangd/compile_commands.json
+BUILD/Makefile.Release
+*.Release

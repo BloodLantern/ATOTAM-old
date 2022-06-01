@@ -30,7 +30,7 @@ bool MainWindow::fullscreen = false;
 std::pair<int,int> MainWindow::resolution = {1920,1080};
 Map MainWindow::currentMap = Map::loadMap("test");
 double MainWindow::mapViewerCameraSpeed;
-bool MainWindow::doorTransition = false;
+std::string MainWindow::doorTransition = "";
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -405,7 +405,7 @@ std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                     Door* d = static_cast<Door*>(a);
                     currentMap.setCurrentRoomId(d->getEndingRoom());
                     std::vector<Entity*> nextRen = currentMap.loadRoom();
-                    doorTransition = true;
+                    doorTransition = d->getName();
                     return nextRen;
                 }
             }
@@ -464,7 +464,7 @@ std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                     Door* d = static_cast<Door*>(a);
                     currentMap.setCurrentRoomId(d->getEndingRoom());
                     std::vector<Entity*> nextRen = currentMap.loadRoom();
-                    doorTransition = true;
+                    doorTransition = d->getName();
                     return nextRen;
                 }
             }

@@ -55,7 +55,7 @@ public:
     static std::pair<int,int> resolution;
     static double mapViewerCameraSpeed;
     static const std::string assetsPath;
-    static bool doorTransition;
+    static std::string doorTransition;
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
