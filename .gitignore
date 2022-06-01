@@ -64,3 +64,5 @@ BUILD/UsersmaximAppDataLocalTemptmpyiky0jhc
 BUILD/.qtc_clangd/compile_commands.json
 BUILD/Makefile.Release
 *.Release
+BUILD/.qtc_clangd/.cache/clangd/index/mainwindow.cpp.CD59DAB53057070F.idx
+BUILD/Makefile.Release

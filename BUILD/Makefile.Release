@@ -1160,6 +1160,7 @@ release/main.o: ../ATOTAM/main.cpp ../ATOTAM/mainwindow.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/QLocale \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/QTranslator \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qtranslator.h \
+		../ATOTAM/Easing/Cubic.h \
 		../ATOTAM/Easing/Sine.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\ATOTAM\main.cpp
 
