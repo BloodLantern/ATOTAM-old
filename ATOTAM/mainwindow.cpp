@@ -394,7 +394,14 @@ std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                     Door* d = static_cast<Door*>(a);
                     currentMap.setCurrentRoomId(d->getEndingRoom());
                     std::vector<Entity*> nextRen = currentMap.loadRoom();
-                    doorTransition = d->getName();
+                    if (d->getState().find("Right") != std::string::npos)
+                        doorTransition = "Right";
+                    else if (d->getState().find("Left") != std::string::npos)
+                        doorTransition = "Left";
+                    else if (d->getState().find("Up") != std::string::npos)
+                        doorTransition = "Up";
+                    else if (d->getState().find("Down") != std::string::npos)
+                        doorTransition = "Down";
                     return nextRen;
                 }
             }
@@ -453,7 +460,14 @@ std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                     Door* d = static_cast<Door*>(a);
                     currentMap.setCurrentRoomId(d->getEndingRoom());
                     std::vector<Entity*> nextRen = currentMap.loadRoom();
-                    doorTransition = d->getName();
+                    if (d->getState().find("Right") != std::string::npos)
+                        doorTransition = "Right";
+                    else if (d->getState().find("Left") != std::string::npos)
+                        doorTransition = "Left";
+                    else if (d->getState().find("Up") != std::string::npos)
+                        doorTransition = "Up";
+                    else if (d->getState().find("Down") != std::string::npos)
+                        doorTransition = "Down";
                     return nextRen;
                 }
             }

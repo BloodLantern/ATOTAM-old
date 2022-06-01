@@ -29,27 +29,33 @@ std::vector<Entity *> Map::loadRoom(int id)
     for (const std::pair<std::string, nlohmann::json> entity : roomJson["content"].get<nlohmann::json::object_t>())
         // Iterate over a map of entityNames
         for (const std::pair<std::string, nlohmann::json> name : entity.second.get<nlohmann::json::object_t>())
-            // For the entity count
-            for (unsigned int i = 0; i < name.second["x"].size(); i++)
-                // Create and add the right entity
+            // For each entity json node
+            for (nlohmann::json obj : name.second) {
+                Entity* e = nullptr;
+
+                // Specific Entities fields and initialization
                 if (entity.first == "Terrain") {
-                    Terrain *t = new Terrain(static_cast<int>(roomJson["position"][0]) + static_cast<int>(name.second["x"][i]),
-                            static_cast<int>(roomJson["position"][1]) + static_cast<int>(name.second["y"][i]), name.first);
-                    if (!name.second["state"].is_null())
-                        t->setState(name.second["state"]);
-                    else
-                        t->setState("None");
-                    entities.push_back(t);
+                    Terrain *t = new Terrain(static_cast<int>(roomJson["position"][0]) + static_cast<int>(obj["x"]),
+                            static_cast<int>(roomJson["position"][1]) + static_cast<int>(obj["y"]), name.first);
+                    e = t;
                 } else if (entity.first == "Door") {
-                    Door *d = new Door(static_cast<int>(roomJson["position"][0]) + static_cast<int>(name.second["x"][i]),
-                            static_cast<int>(roomJson["position"][1]) + static_cast<int>(name.second["y"][i]), name.first);
-                    if (!name.second["state"].is_null())
-                        d->setState(name.second["state"]);
-                    else
-                        d->setState("None");
-                    d->setEndingRoom(name.second["to"]);
-                    entities.push_back(d);
+                    Door *d = new Door(static_cast<int>(roomJson["position"][0]) + static_cast<int>(obj["x"]),
+                            static_cast<int>(roomJson["position"][1]) + static_cast<int>(obj["y"]), name.first);
+                    e = d;
+                    d->setEndingRoom(obj["to"]);
                 }
+
+                // Make sure not to use a null Entity pointer
+                if (e == nullptr)
+                    continue;
+
+                // Shared entity fields
+                if (obj["state"].is_null())
+                    e->setState("None");
+                else
+                    e->setState(obj["state"]);
+                entities.push_back(e);
+            }
     return entities;
 }
 

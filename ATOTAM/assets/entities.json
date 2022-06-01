@@ -263,26 +263,14 @@
 			"friction": 0,
 			"movable": false
 		},
-		"DoorLeft": {
-			"texture": "DoorLeft",
+		"Door": {
+			"texture": "Door",
 			"offset_x": 0,
 			"offset_y": 0,
 			"width": 20,
 			"height": 220,
 			"type": "Area",
-			"defaultState": "Normal",
-			"gravity":  false,
-			"friction": 0,
-			"movable": false
-		},
-		"DoorRight": {
-			"texture": "DoorRight",
-			"offset_x": 0,
-			"offset_y": 0,
-			"width": 20,
-			"height": 220,
-			"type": "Area",
-			"defaultState": "Normal",
+			"defaultState": "None",
 			"gravity":  false,
 			"friction": 0,
 			"movable": false
@@ -1545,9 +1533,9 @@
 				"dontReset": false
 			}
 		},
-		"DoorLeft": {
-			"Normal": {
-				"file": "Door.png",
+		"Door": {
+			"Right": {
+				"file": "VerticalDoor.png",
 				"x": 0,
 				"y": 0,
 				"width": 10,
@@ -1565,8 +1553,8 @@
 				"refreshRate": -1,
 				"dontReset": false
 			},
-			"None": {
-				"file": "Door.png",
+			"Left": {
+				"file": "VerticalDoor.png",
 				"x": 0,
 				"y": 0,
 				"width": 10,
@@ -1583,15 +1571,32 @@
 				"loop": false,
 				"refreshRate": -1,
 				"dontReset": false
-			}
-		},
-		"DoorRight": {
-			"Normal": {
-				"file": "Door.png",
+			},
+			"Up": {
+				"file": "HorizontalDoor.png",
 				"x": 0,
 				"y": 0,
-				"width": 10,
-				"height": 110,
+				"width": 110,
+				"height": 10,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1,
+				"dontReset": false
+			},
+			"Down": {
+				"file": "HorizontalDoor.png",
+				"x": 0,
+				"y": 0,
+				"width": 110,
+				"height": 10,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,

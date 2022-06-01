@@ -25,7 +25,7 @@ void gameClock(MainWindow* w, Samos* s) {
     unsigned long long prevCount;
     double timeLeftCameraMove;
     QPoint* startingCameraPos = nullptr;
-    int startingSamosPosX;
+    QPoint startingSamosPos;
     const double cameraMoveTime = 0.75;
     const int samosDoorMove = 100;
     while (MainWindow::running) {
@@ -69,7 +69,7 @@ void gameClock(MainWindow* w, Samos* s) {
                 // Set starting values
                 if (startingCameraPos == nullptr) {
                     startingCameraPos = new QPoint(w->getCamera());
-                    startingSamosPosX = s->getX();
+                    startingSamosPos = QPoint(s->getX(), s->getY());
                     timeLeftCameraMove = cameraMoveTime;
                 } else
                     // Set time left
@@ -77,20 +77,31 @@ void gameClock(MainWindow* w, Samos* s) {
 
                 // Set camera position
                 QPoint camera = w->getCamera();
-                if (MainWindow::doorTransition == "DoorRight")
+                if (MainWindow::doorTransition == "Right")
                     camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), 1920, cameraMoveTime));
-                else if (MainWindow::doorTransition == "DoorLeft")
+                else if (MainWindow::doorTransition == "Left")
                     camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), -1920, cameraMoveTime));
-                else if (MainWindow::doorTransition == "DoorUp")
+                else if (MainWindow::doorTransition == "Up")
                     camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*Remember that Y axis is reversed*/ -1920, cameraMoveTime));
-                else if (MainWindow::doorTransition == "DoorDown")
+                else if (MainWindow::doorTransition == "Down")
                     camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*See above*/ 1920, cameraMoveTime));
                 w->setCamera(camera);
 
                 // Set Samos position
-                int samosX = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPosX,
-                                           startingCameraPos->x() == 0 ? samosDoorMove : -samosDoorMove, cameraMoveTime);
-                s->setX(samosX);
+                int samosPos = 0;
+                if (MainWindow::doorTransition == "Right") {
+                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), samosDoorMove, cameraMoveTime);
+                    s->setX(samosPos);
+                } else if (MainWindow::doorTransition == "Left") {
+                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), -samosDoorMove, cameraMoveTime);
+                    s->setX(samosPos);
+                } else if (MainWindow::doorTransition == "Up") {
+                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), -samosDoorMove, cameraMoveTime);
+                    s->setY(samosPos);
+                } else if (MainWindow::doorTransition == "Down") {
+                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), samosDoorMove, cameraMoveTime);
+                    s->setY(samosPos);
+                }
 
                 // When the move is over
                 if (timeLeftCameraMove <= 0) {
