@@ -18,7 +18,6 @@
 #include <Entities/terrain.h>
 
 #include <Easing/Cubic.h>
-#include <Easing/Sine.h>
 
 void gameClock(MainWindow* w, Samos* s) {
     long waitTime;
@@ -90,16 +89,16 @@ void gameClock(MainWindow* w, Samos* s) {
                 // Set Samos position
                 int samosPos = 0;
                 if (MainWindow::doorTransition == "Right") {
-                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), samosDoorMove, cameraMoveTime);
+                    samosPos = Cubic::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), samosDoorMove, cameraMoveTime);
                     s->setX(samosPos);
                 } else if (MainWindow::doorTransition == "Left") {
-                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), -samosDoorMove, cameraMoveTime);
+                    samosPos = Cubic::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), -samosDoorMove, cameraMoveTime);
                     s->setX(samosPos);
                 } else if (MainWindow::doorTransition == "Up") {
-                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), -samosDoorMove, cameraMoveTime);
+                    samosPos = Cubic::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), -1.5*samosDoorMove, cameraMoveTime);
                     s->setY(samosPos);
                 } else if (MainWindow::doorTransition == "Down") {
-                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), samosDoorMove, cameraMoveTime);
+                    samosPos = Cubic::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), 1.25*samosDoorMove, cameraMoveTime);
                     s->setY(samosPos);
                 }
 
