@@ -81,7 +81,7 @@ public:
 
 private:
     CollisionBox* box;
-    QImage* texture = 0; // Image to be rendered now
+    QImage* texture = nullptr; // Image to be rendered now
     double x; //in px
     double y; //in px
     double vX = 0; //in px/s

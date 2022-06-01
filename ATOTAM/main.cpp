@@ -96,10 +96,10 @@ void gameClock(MainWindow* w, Samos* s) {
                     samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), -samosDoorMove, cameraMoveTime);
                     s->setX(samosPos);
                 } else if (MainWindow::doorTransition == "Up") {
-                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), -2*samosDoorMove, cameraMoveTime);
+                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), -samosDoorMove, cameraMoveTime);
                     s->setY(samosPos);
                 } else if (MainWindow::doorTransition == "Down") {
-                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), 2*samosDoorMove, cameraMoveTime);
+                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), samosDoorMove, cameraMoveTime);
                     s->setY(samosPos);
                 }
 
