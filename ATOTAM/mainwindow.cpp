@@ -290,6 +290,8 @@ void MainWindow::updateMenu()
             } else if (menuOptions[selectedOption] == "Reload room") {
                 clearRendering("Samos");
                 addRenderable(currentMap.loadRoom());
+            } else if (menuOptions[selectedOption] == "Reload map") {
+                currentMap = Map::loadMap(currentMap.getName());
             } else if (menuOptions[selectedOption] == "Map viewer mode : ON")
                 mapViewer = false;
             else if (menuOptions[selectedOption] == "Map viewer mode : OFF")
@@ -335,6 +337,7 @@ void MainWindow::updateMenu()
             menuOptions.push_back("Reload entities.json");
             menuOptions.push_back(std::string("Map viewer mode : ") + (mapViewer ? "ON" : "OFF"));
             menuOptions.push_back("Reload room");
+            menuOptions.push_back("Reload map");
         }
 
     } else
@@ -1242,11 +1245,16 @@ void MainWindow::updateSamos(Samos *s)
             s->setShootTime(static_cast<double>(samosJson["shootTime"]));
         }
     }
+
+
+    // Camera
+
 }
 
 void MainWindow::updateMapViewer()
 {
     if (inputList["enter"] && inputTime["enter"] == 0.0) {
+        currentMap = Map::loadMap(currentMap.getName());
         clearRendering("Samos");
         addRenderable(currentMap.loadRoom());
     }
