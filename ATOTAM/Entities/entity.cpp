@@ -116,7 +116,6 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
 {
     //fast constructor using the json file
     nlohmann::json entJson = values["names"][name];
-    double renderingM = values["general"]["renderingMultiplier"];
 
     entType = entJson["type"];
     if (!entJson["defaultState"].is_null())
@@ -127,10 +126,7 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     isAffectedByGravity = entJson["gravity"];
     frictionFactor = entJson["friction"];
     isMovable = entJson["movable"];
-    box = new CollisionBox(static_cast<int>(entJson["offset_x"]) * renderingM,
-                            static_cast<int>(entJson["offset_y"]) * renderingM,
-                            static_cast<int>(entJson["width"]) * renderingM,
-                            static_cast<int>(entJson["height"]) * renderingM);
+    box = new CollisionBox(entJson["offset_x"], entJson["offset_y"], entJson["width"], entJson["height"]);
 }
 
 Entity::~Entity()

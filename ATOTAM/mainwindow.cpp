@@ -288,19 +288,8 @@ void MainWindow::updateMenu()
                 Entity::values = Entity::loadNames(assetsPath);
                 loadGeneral();
             } else if (menuOptions[selectedOption] == "Reload room") {
-                Entity* s = nullptr;
-                std::vector<Entity*> newRen;
-                for (std::vector<Entity*>::iterator j = rendering.begin(); j != rendering.end(); j++) {
-                    if ((*j)->getEntType() == "Samos")
-                        s = *j;
-                    else
-                        newRen.push_back(*j);
-                }
-                rendering = newRen;
-                clearRendering();
-                if (s != nullptr)
-                    addRenderable(s);
-                rendering = currentMap.loadRoom();
+                clearRendering("Samos");
+                addRenderable(currentMap.loadRoom());
             } else if (menuOptions[selectedOption] == "Map viewer mode : ON")
                 mapViewer = false;
             else if (menuOptions[selectedOption] == "Map viewer mode : OFF")
@@ -594,8 +583,8 @@ void MainWindow::updateSamos(Samos *s)
     } else if (s->getState() == "UnMorphBalling" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["UnMorphBalling"]["count"]) - 1)) {
         if (s->getOnGround() || !s->getIsAffectedByGravity()) {
             s->setState("IdleCrouch");
-            s->setY(s->getY() - (static_cast<double>(samosJson["crouchHitbox_height"]) + static_cast<int>(samosJson["crouchHitbox_offset_y"]) -
-                    static_cast<double>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"])) * renderingMultiplier);
+            s->setY(s->getY() - static_cast<double>(samosJson["crouchHitbox_height"]) - static_cast<int>(samosJson["crouchHitbox_offset_y"]) +
+                    static_cast<double>(samosJson["morphBallHitbox_height"]) + static_cast<int>(samosJson["morphBallHitbox_offset_y"]));
         } else
             s->setState("Falling");
     }
@@ -719,26 +708,29 @@ void MainWindow::updateSamos(Samos *s)
         if (inputList["morph"] && inputTime["morph"] == 0.0) {
             s->setState("MorphBalling");
             if (s->getOnGround() || !s->getIsAffectedByGravity()) {
-                if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                    s->setY(s->getY() - (static_cast<double>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]) -
-                            static_cast<double>(samosJson["fallingHitbox_height"]) - static_cast<int>(samosJson["fallingHitbox_offset_y"])) * renderingMultiplier);
+                if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag") || (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                    s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
+                            static_cast<int>(samosJson["fallingHitbox_height"]) + static_cast<int>(samosJson["fallingHitbox_offset_y"]));
                 } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-                    s->setY(s->getY() - (static_cast<double>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]) -
-                            static_cast<double>(samosJson["spinJumpHitbox_height"]) - static_cast<int>(samosJson["spinJumpHitbox_offset_y"])) * renderingMultiplier);
-                }
-                s->setY(s->getY() + (static_cast<double>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]) -
-                       static_cast<double>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"])) * renderingMultiplier);
+                    s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
+                            static_cast<int>(samosJson["spinJumpHitbox_height"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"]));
+                } else if (s->getState() == "IdleCrouch" || s->getState() == "Crouching" || s->getState() == "UnCrouching") {
+                    s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
+                            static_cast<int>(samosJson["crouchHitbox_height"]) + static_cast<int>(samosJson["crouchHitbox_offset_y"]));
+                } else
+                    s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
+                            static_cast<int>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]));
            }
         } else if (inputList["aim"] && s->getState() != "MorphBalling") {
             if (s->getOnGround() || !s->getIsAffectedByGravity()) {
                 if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
                         || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
                     if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                        s->setY(s->getY() - (static_cast<double>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]) -
-                                static_cast<double>(samosJson["fallingHitbox_height"]) - static_cast<int>(samosJson["fallingHitbox_offset_y"])) * renderingMultiplier);
+                        s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
+                                static_cast<double>(samosJson["fallingHitbox_height"]) + static_cast<int>(samosJson["fallingHitbox_offset_y"]));
                     } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-                        s->setY(s->getY() - (static_cast<double>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]) -
-                                static_cast<double>(samosJson["spinJumpHitbox_height"]) - static_cast<int>(samosJson["spinJumpHitbox_offset_y"])) * renderingMultiplier);
+                        s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
+                                static_cast<double>(samosJson["spinJumpHitbox_height"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"]));
                     }
                     s->setState("Landing");
                 } else if (inputList["jump"] && s->getJumpTime() == -1) {
@@ -798,11 +790,11 @@ void MainWindow::updateSamos(Samos *s)
                 if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
                         || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
                     if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                        s->setY(s->getY() - (static_cast<double>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]) -
-                                static_cast<double>(samosJson["fallingHitbox_height"]) - static_cast<int>(samosJson["fallingHitbox_offset_y"])) * renderingMultiplier);
+                        s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
+                                static_cast<double>(samosJson["fallingHitbox_height"]) + static_cast<int>(samosJson["fallingHitbox_offset_y"]));
                     } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-                        s->setY(s->getY() - (static_cast<double>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]) -
-                                static_cast<double>(samosJson["spinJumpHitbox_height"]) - static_cast<int>(samosJson["spinJumpHitbox_offset_y"])) * renderingMultiplier);
+                        s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
+                                static_cast<double>(samosJson["spinJumpHitbox_height"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"]));
                     }
                     s->setState("Landing");
                 } else if (inputList["left"] && !inputList["right"]) {
@@ -997,30 +989,19 @@ void MainWindow::updateSamos(Samos *s)
         s->setState("WalkingAimForward");
 
     if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-        s->setBox(new CollisionBox(static_cast<int>(samosJson["spinJumpHitbox_offset_x"]) * renderingMultiplier,
-                  static_cast<int>(samosJson["spinJumpHitbox_offset_y"]) * renderingMultiplier,
-                  static_cast<double>(samosJson["spinJumpHitbox_width"]) * renderingMultiplier,
-                  static_cast<double>(samosJson["spinJumpHitbox_height"]) * renderingMultiplier));
+        s->setBox(new CollisionBox(samosJson["spinJumpHitbox_offset_x"], samosJson["spinJumpHitbox_offset_y"],
+                  samosJson["spinJumpHitbox_width"], samosJson["spinJumpHitbox_height"]));
     } else if (s->getState() == "MorphBall" || s->getState() == "MorphBalling" || s->getState() == "UnMorphBalling") {
-        s->setBox(new CollisionBox(static_cast<int>(samosJson["morphBallHitbox_offset_x"]) * renderingMultiplier,
-                  static_cast<int>(samosJson["morphBallHitbox_offset_y"]) * renderingMultiplier,
-                  static_cast<double>(samosJson["morphBallHitbox_width"]) * renderingMultiplier,
-                  static_cast<double>(samosJson["morphBallHitbox_height"]) * renderingMultiplier));
+        s->setBox(new CollisionBox(samosJson["morphBallHitbox_offset_x"], samosJson["morphBallHitbox_offset_y"],
+                  samosJson["morphBallHitbox_width"], samosJson["morphBallHitbox_height"]));
     } else if (s->getState() == "Falling" || s->getState() == "FallingAimUp" || s->getState() == "FallingAimUpDiag" || s->getState() == "FallingAimDownDiag" || s->getState() == "FallingAimDown") {
-        s->setBox(new CollisionBox(static_cast<int>(samosJson["fallingHitbox_offset_x"]) * renderingMultiplier,
-                  static_cast<int>(samosJson["fallingHitbox_offset_y"]) * renderingMultiplier,
-                  static_cast<double>(samosJson["fallingHitbox_width"]) * renderingMultiplier,
-                  static_cast<double>(samosJson["fallingHitbox_height"]) * renderingMultiplier));
+        s->setBox(new CollisionBox(samosJson["fallingHitbox_offset_x"], samosJson["fallingHitbox_offset_y"],
+                samosJson["fallingHitbox_width"], samosJson["fallingHitbox_height"]));
     } else if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "UnCrouching" || s->getState() == "Crouching") {
-        s->setBox(new CollisionBox(static_cast<int>(samosJson["crouchHitbox_offset_x"]) * renderingMultiplier,
-                  static_cast<int>(samosJson["crouchHitbox_offset_y"]) * renderingMultiplier,
-                  static_cast<double>(samosJson["crouchHitbox_width"]) * renderingMultiplier,
-                  static_cast<double>(samosJson["crouchHitbox_height"]) * renderingMultiplier));
+        s->setBox(new CollisionBox(samosJson["crouchHitbox_offset_x"], samosJson["crouchHitbox_offset_y"],
+                  samosJson["crouchHitbox_width"], samosJson["crouchHitbox_height"]));
     } else {
-        s->setBox(new CollisionBox(static_cast<int>(samosJson["offset_x"]) * renderingMultiplier,
-                  static_cast<int>(samosJson["offset_y"]) * renderingMultiplier,
-                  static_cast<int>(samosJson["width"]) * renderingMultiplier,
-                  static_cast<int>(samosJson["height"]) * renderingMultiplier));
+        s->setBox(new CollisionBox(samosJson["offset_x"], samosJson["offset_y"], samosJson["width"], samosJson["height"]));
     }
 
     s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
@@ -1252,19 +1233,8 @@ void MainWindow::updateSamos(Samos *s)
 void MainWindow::updateMapViewer()
 {
     if (inputList["enter"] && inputTime["enter"] == 0.0) {
-        Entity* s = nullptr;
-        std::vector<Entity*> newRen;
-        for (std::vector<Entity*>::iterator j = rendering.begin(); j != rendering.end(); j++) {
-            if ((*j)->getEntType() == "Samos")
-                s = *j;
-            else
-                newRen.push_back(*j);
-        }
-        rendering = newRen;
-        clearRendering();
-        if (s != nullptr)
-            addRenderable(s);
-        rendering = currentMap.loadRoom();
+        clearRendering("Samos");
+        addRenderable(currentMap.loadRoom());
     }
 
     if (inputList["down"] && !inputList["up"]) {
@@ -1358,7 +1328,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     }
 
     QFont f = painter.font();
-    f.setPointSize(f.pointSize() * renderingMultiplier);
+    f.setPointSize(f.pointSize() * 2);
     painter.setFont(f);
 
     //UI
@@ -1398,7 +1368,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
 
-    f.setPointSize(f.pointSize() / renderingMultiplier);
+    f.setPointSize(f.pointSize() / 2);
     painter.setFont(f);
 }
 
@@ -1407,11 +1377,21 @@ void MainWindow::addRenderable(Entity *entity)
     rendering.push_back(entity);
 }
 
-void MainWindow::clearRendering()
+void MainWindow::addRenderable(std::vector<Entity*> entities)
 {
+    for (std::vector<Entity*>::iterator entity = entities.begin(); entity != entities.end(); entity++)
+        rendering.push_back(*entity);
+}
+
+void MainWindow::clearRendering(std::string excludedType)
+{
+    std::vector<Entity*> nextRen;
     for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent ++)
-        delete *ent;
-    rendering = {};
+        if ((*ent)->getEntType() != excludedType)
+            delete *ent;
+        else
+            nextRen.push_back(*ent);
+    rendering = nextRen;
 }
 
 void MainWindow::updatePhysics()
@@ -1513,8 +1493,7 @@ void MainWindow::updatePhysics()
         }
     }
 
-    for (Entity* ent : toAdd)
-        addRenderable(ent);
+    addRenderable(toAdd);
 
     //Update the grounded state of livings
     for (std::vector<Living*>::iterator i = livingList.begin(); i != livingList.end(); i++) {

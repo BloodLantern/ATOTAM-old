@@ -60,7 +60,8 @@ public:
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
     void addRenderable(Entity *entity);
-    void clearRendering();
+    void addRenderable(std::vector<Entity*> entities);
+    void clearRendering(std::string excludeType = "");
     void updatePhysics();
     std::vector<Entity*> handleCollision(Entity* obj1, Entity* obj2);
     void updateAnimations();

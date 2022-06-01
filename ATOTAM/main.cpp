@@ -98,19 +98,10 @@ void gameClock(MainWindow* w, Samos* s) {
                     startingCameraPos = nullptr;
                     MainWindow::doorTransition = "";
 
-                    // Create a vector containing the old rendering without Samos
-                    std::vector<Entity*> newRen;
-                    for (Entity* entity : w->getRendering())
-                        if (entity->getEntType() != "Samos")
-                            newRen.push_back(entity);
                     // Set it to delete everything
-                    w->setRendering(newRen);
-                    w->clearRendering();
+                    w->clearRendering("Samos");
 
-                    // Then add Samos and the new room
-                    w->addRenderable(s);
-                    for (Entity* entity : MainWindow::currentMap.loadRoom())
-                        w->addRenderable(entity);
+                    w->addRenderable(MainWindow::currentMap.loadRoom());
 
                     w->updateAnimations();
                 }

@@ -30,7 +30,6 @@ Samos::~Samos()
 Projectile* Samos::shoot(std::string type)
 {
     Projectile* projectile = nullptr;
-    int renderingM = static_cast<int>(values["general"]["renderingMultiplier"]);
 
     //Can't shoot a missile/grenade if you don't have any
     if (type == "Grenade") {
@@ -95,7 +94,7 @@ Projectile* Samos::shoot(std::string type)
     }
 
     //Spawn the projectile at certain coordinates to match the sprite
-    projectile = new Projectile(getX() + offset_x * renderingM, getY() + offset_y * renderingM, canonDirection, type, type);
+    projectile = new Projectile(getX() + offset_x, getY() + offset_y, canonDirection, type, type);
 
     if (projectile->getVX() != 0.0 && (projectile->getVX() * getVX() > 0.0))
         projectile->setVX(projectile->getVX() + getVX());

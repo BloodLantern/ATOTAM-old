@@ -18,10 +18,10 @@
 	"names": {
 		"Samos": {
 			"texture": "Samos",
-			"offset_x": 10,
-			"offset_y": 11,
-			"width": 16,
-			"height": 43,
+			"offset_x": 20,
+			"offset_y": 22,
+			"width": 32,
+			"height": 86,
 			"type": "Samos",
 			"defaultState": "Standing",
 			"gravity": true,
@@ -36,22 +36,22 @@
 			"morphGroundMaxSpeed": 450.0,
 			"morphAirAcceleration": 900.0,
 			"morphAirMaxSpeed": 200.0,
-			"crouchHitbox_offset_x": 10,
-			"crouchHitbox_offset_y": 22,
-			"crouchHitbox_width": 16,
-			"crouchHitbox_height": 32,
-			"fallingHitbox_offset_x": 10,
-			"fallingHitbox_offset_y": 14,
-			"fallingHitbox_width": 16,
-			"fallingHitbox_height": 36,
-			"spinJumpHitbox_offset_x": 10,
-			"spinJumpHitbox_offset_y": 23,
-			"spinJumpHitbox_width": 16,
-			"spinJumpHitbox_height": 17,
-			"morphBallHitbox_offset_x": 10,
-			"morphBallHitbox_offset_y": 24,
-			"morphBallHitbox_width": 16,
-			"morphBallHitbox_height": 16,
+			"crouchHitbox_offset_x": 20,
+			"crouchHitbox_offset_y": 44,
+			"crouchHitbox_width": 32,
+			"crouchHitbox_height": 64,
+			"fallingHitbox_offset_x": 20,
+			"fallingHitbox_offset_y": 28,
+			"fallingHitbox_width": 32,
+			"fallingHitbox_height": 72,
+			"spinJumpHitbox_offset_x": 20,
+			"spinJumpHitbox_offset_y": 46,
+			"spinJumpHitbox_width": 32,
+			"spinJumpHitbox_height": 34,
+			"morphBallHitbox_offset_x": 20,
+			"morphBallHitbox_offset_y": 48,
+			"morphBallHitbox_width": 32,
+			"morphBallHitbox_height": 32,
 			"jumpPower": 400,
 			"jumpTimeMax": 0.3,
 			"postJumpBoost": 600,
@@ -68,152 +68,152 @@
 				"Right": {
 					"Standing": {
 						"Up": {
-							"x": 20,
+							"x": 40,
 							"y": 0
 						},
 						"UpRight": {
-							"x": 38,
-							"y": 8
+							"x": 76,
+							"y": 16
 						},
 						"Right": {
-							"x": 32,
-							"y": 28
+							"x": 64,
+							"y": 56
 						},
 						"DownRight": {
-							"x": 35,
-							"y": 35
+							"x": 70,
+							"y": 70
 						}
 					},
 					"Crouching": {
 						"Up": {
-							"x": 18,
-							"y": 11
+							"x": 36,
+							"y": 22
 						},
 						"UpRight": {
-							"x": 35,
-							"y": 20
+							"x": 70,
+							"y": 40
 						},
 						"Right": {
-							"x": 30,
-							"y": 39
+							"x": 60,
+							"y": 78
 						}
 					},
 					"Falling": {
 						"Up": {
-							"x": 17,
-							"y": 4
+							"x": 34,
+							"y": 8
 						},
 						"UpRight": {
-							"x": 33,
-							"y": 12
+							"x": 66,
+							"y": 24
 						},
 						"Right": {
-							"x": 27,
-							"y": 33
+							"x": 54,
+							"y": 66
 						},
 						"DownRight": {
-							"x": 32,
-							"y": 37
+							"x": 64,
+							"y": 74
 						},
 						"Down": {
-							"x": 23,
-							"y": 52
+							"x": 46,
+							"y": 104
 						}
 					},
 					"Walking": {
 						"UpRight": {
-							"x": 35,
-							"y": 8
+							"x": 70,
+							"y": 16
 						},
 						"Right": {
-							"x": 37,
-							"y": 25
+							"x": 74,
+							"y": 50
 						},
 						"DownRight": {
-							"x": 33,
-							"y": 33
+							"x": 66,
+							"y": 66
 						}
 					},
 					"Morph": {
 						"Right": {
-							"x": 18,
-							"y": 32
+							"x": 36,
+							"y": 64
 						}
 					}
 				},
 				"Left": {
 					"Standing": {
 						"Up": {
-							"x": 17,
+							"x": 34,
 							"y": 0
 						},
 						"DownLeft": {
-							"x": 3,
-							"y": 35
+							"x": 6,
+							"y": 70
 						},
 						"Left": {
-							"x": 5,
-							"y": 28
+							"x": 10,
+							"y": 56
 						},
 						"UpLeft": {
 							"x": 0,
-							"y": 7
+							"y": 14
 						}
 					},
 					"Crouching": {
 						"Up": {
-							"x": 18,
-							"y": 11
+							"x": 36,
+							"y": 22
 						},
 						"Left": {
-							"x": 6,
-							"y": 39
+							"x": 12,
+							"y": 78
 						},
 						"UpLeft": {
 							"x": 0,
-							"y": 18
+							"y": 36
 						}
 					},
 					"Falling": {
 						"Up": {
-							"x": 19,
-							"y": 4
+							"x": 38,
+							"y": 8
 						},
 						"Down": {
-							"x": 11,
-							"y": 52
+							"x": 22,
+							"y": 104
 						},
 						"DownLeft": {
-							"x": 5,
-							"y": 36
+							"x": 10,
+							"y": 72
 						},
 						"Left": {
-							"x": 8,
-							"y": 33
+							"x": 16,
+							"y": 66
 						},
 						"UpLeft": {
-							"x": 3,
-							"y": 11
+							"x": 6,
+							"y": 22
 						}
 					},
 					"Walking": {
 						"DownLeft": {
-							"x": 4,
-							"y": 34
+							"x": 8,
+							"y": 68
 						},
 						"Left": {
-							"x": -2,
-							"y": 25
+							"x": -4,
+							"y": 50
 						},
 						"UpLeft": {
-							"x": 4,
-							"y": 8
+							"x": 8,
+							"y": 16
 						}
 					},
 					"Morph": {
 						"Left": {
-							"x": 18,
-							"y": 32
+							"x": 36,
+							"y": 64
 						}
 					}
 				}
@@ -221,30 +221,30 @@
 		},
 		"Beam": {
 			"texture": "Beam",
-			"height": 8,
-			"width": 8
+			"height": 16,
+			"width": 16
 		},
 		"Missile": {
 			"texture": "Missile",
-			"height": 15,
-			"width": 15
+			"height": 30,
+			"width": 30
 		},
 		"Bomb": {
 			"texture": "Bomb",
-			"height": 8,
-			"width": 8
+			"height": 16,
+			"width": 16
 		},
 		"Grenade": {
 			"texture": "Grenade",
-			"height": 8,
-			"width": 8
+			"height": 16,
+			"width": 16
 		},
 		"Wall": {
 			"texture": "Wall",
 			"offset_x": 0,
 			"offset_y": 0,
-			"width": 30,
-			"height": 300,
+			"width": 60,
+			"height": 600,
 			"type": "Terrain",
 			"defaultState": "Normal",
 			"gravity":  false,
@@ -255,8 +255,8 @@
 			"texture": "Ground",
 			"offset_x": 0,
 			"offset_y": 0,
-			"width": 300,
-			"height": 30,
+			"width": 600,
+			"height": 60,
 			"type": "Terrain",
 			"defaultState": "Normal",
 			"gravity":  false,
@@ -267,8 +267,8 @@
 			"texture": "DoorLeft",
 			"offset_x": 0,
 			"offset_y": 0,
-			"width": 10,
-			"height": 110,
+			"width": 20,
+			"height": 220,
 			"type": "Area",
 			"defaultState": "Normal",
 			"gravity":  false,
@@ -279,8 +279,8 @@
 			"texture": "DoorRight",
 			"offset_x": 0,
 			"offset_y": 0,
-			"width": 10,
-			"height": 110,
+			"width": 20,
+			"height": 220,
 			"type": "Area",
 			"defaultState": "Normal",
 			"gravity":  false,

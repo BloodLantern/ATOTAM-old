@@ -7,8 +7,7 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
     setLastFrameState("None");
     setLastFrameFacing("None");
 
-    setBox(new CollisionBox(static_cast<int>(values["names"][name]["width"]) * static_cast<int>(values["general"]["renderingMultiplier"]),
-            static_cast<int>(values["names"][name]["width"]) * static_cast<int>(values["general"]["renderingMultiplier"])));
+    setBox(new CollisionBox(values["names"][name]["width"], values["names"][name]["width"]));
 
     //Bombs don't move
     if (type == "Bomb")
