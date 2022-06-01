@@ -84,8 +84,8 @@ private:
     QImage* texture = 0; // Image to be rendered now
     double x; //in px
     double y; //in px
-    double vX; //in px/s
-    double vY; //in px/s
+    double vX = 0; //in px/s
+    double vY = 0; //in px/s
     std::string entType;
     bool isAffectedByGravity;
     std::string facing;

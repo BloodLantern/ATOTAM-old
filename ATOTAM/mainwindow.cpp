@@ -1534,27 +1534,33 @@ void MainWindow::updatePhysics()
         if ((*i)->getIsMovable()) {
             if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
                 (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
-                Projectile* p = static_cast<Projectile*>(*i);
-                p->timeOut();
+                if ((*i)->getEntType() == "Projectile") {
+                    Projectile* p = static_cast<Projectile*>(*i);
+                    p->timeOut();
+                }
             } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
                 (*i)->setX(roomS_x - (*i)->getBox()->getX());
-                Projectile* p = static_cast<Projectile*>(*i);
-                p->timeOut();
+                if ((*i)->getEntType() == "Projectile") {
+                    Projectile* p = static_cast<Projectile*>(*i);
+                    p->timeOut();
+                }
             } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
                 (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
-                Projectile* p = static_cast<Projectile*>(*i);
-                p->timeOut();
+                if ((*i)->getEntType() == "Projectile") {
+                    Projectile* p = static_cast<Projectile*>(*i);
+                    p->timeOut();
+                }
             } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
                 (*i)->setY(roomS_y - (*i)->getBox()->getY());
-                Projectile* p = static_cast<Projectile*>(*i);
-                p->timeOut();
+                if ((*i)->getEntType() == "Projectile") {
+                    Projectile* p = static_cast<Projectile*>(*i);
+                    p->timeOut();
+                }
             }
         }
     }
 
     addRenderable(toAdd);
-    for (Entity* ent : toAdd)
-        ent->updateAnimation(ent->getState());
 
     //Update the grounded state of livings
     for (std::vector<Living*>::iterator i = livingList.begin(); i != livingList.end(); i++) {

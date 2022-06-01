@@ -118,15 +118,15 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     nlohmann::json entJson = values["names"][name];
 
     entType = entJson["type"];
-    if (!entJson["defaultState"].is_null())
-        state = entJson["defaultState"];
-    else
-        state = "None";
+    state = entJson["defaultState"];
     lastFrameState = "None";
     isAffectedByGravity = entJson["gravity"];
     frictionFactor = entJson["friction"];
     isMovable = entJson["movable"];
     box = new CollisionBox(entJson["offset_x"], entJson["offset_y"], entJson["width"], entJson["height"]);
+    currentAnimation = updateAnimation(state);
+    frame = 0;
+    updateTexture();
 }
 
 Entity::~Entity()

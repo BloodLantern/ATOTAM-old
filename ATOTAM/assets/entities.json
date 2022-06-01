@@ -221,21 +221,25 @@
 		},
 		"Beam": {
 			"texture": "Beam",
+			"defaultState": "None",
 			"height": 16,
 			"width": 16
 		},
 		"Missile": {
 			"texture": "Missile",
+			"defaultState": "None",
 			"height": 30,
 			"width": 30
 		},
 		"Bomb": {
 			"texture": "Bomb",
+			"defaultState": "None",
 			"height": 16,
 			"width": 16
 		},
 		"Grenade": {
 			"texture": "Grenade",
+			"defaultState": "None",
 			"height": 16,
 			"width": 16
 		},
