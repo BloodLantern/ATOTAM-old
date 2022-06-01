@@ -1330,6 +1330,10 @@ void MainWindow::paintEvent(QPaintEvent *)
                 }
             }
         }
+        nlohmann::json mapJson = currentMap.getJson()["rooms"][std::to_string(currentMap.getCurrentRoomId())];
+
+        painter.setPen(QColor("magenta"));
+        painter.drawRect(static_cast<int>(mapJson["position"][0]) - camera.x(), static_cast<int>(mapJson["position"][1]) - camera.y(), mapJson["size"][0], mapJson["size"][1]);
     }
 
     // Draw fps if necessary
@@ -1419,6 +1423,16 @@ void MainWindow::updatePhysics()
     std::vector<Living*> livingList;
     //Deletion list
     std::vector<Entity*> toDel;
+
+    nlohmann::json mapJson = currentMap.getJson()["rooms"][std::to_string(currentMap.getCurrentRoomId())];
+
+    int roomS_x = mapJson["position"][0];
+    int roomS_y = mapJson["position"][1];
+    int roomE_x = mapJson["size"][0];
+    int roomE_y = mapJson["size"][1];
+    roomE_x += roomS_x;
+    roomE_y += roomS_y;
+
     for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
 
         if ((*ent)->getEntType() == "Samos" || (*ent)->getEntType() == "Monster" || (*ent)->getEntType() == "NPC" || (*ent)->getEntType() == "DynamicObj") {
@@ -1505,9 +1519,30 @@ void MainWindow::updatePhysics()
             for (Entity* ent : handleCollision(*i,*j))
                 toAdd.push_back(ent);
         }
+        if ((*i)->getIsMovable()) {
+            if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
+                (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
+                Projectile* p = static_cast<Projectile*>(*i);
+                p->timeOut();
+            } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
+                (*i)->setX(roomS_x - (*i)->getBox()->getX());
+                Projectile* p = static_cast<Projectile*>(*i);
+                p->timeOut();
+            } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
+                (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
+                Projectile* p = static_cast<Projectile*>(*i);
+                p->timeOut();
+            } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
+                (*i)->setY(roomS_y - (*i)->getBox()->getY());
+                Projectile* p = static_cast<Projectile*>(*i);
+                p->timeOut();
+            }
+        }
     }
 
     addRenderable(toAdd);
+    for (Entity* ent : toAdd)
+        ent->updateAnimation(ent->getState());
 
     //Update the grounded state of livings
     for (std::vector<Living*>::iterator i = livingList.begin(); i != livingList.end(); i++) {
@@ -1518,6 +1553,8 @@ void MainWindow::updatePhysics()
                 break;
             }
         }
+        if ((*i)->getY() + (*i)->getGroundBox()->getY() + (*i)->getGroundBox()->getHeight() > roomE_y)
+            (*i)->setOnGround(true);
     }
 
     for (std::vector<Entity*>::iterator i = toDel.begin(); i != toDel.end(); i++) {
