@@ -263,12 +263,24 @@
 			"friction": 0,
 			"movable": false
 		},
-		"Door": {
+		"VerticalDoor": {
 			"texture": "Door",
 			"offset_x": 0,
 			"offset_y": 0,
 			"width": 20,
 			"height": 220,
+			"type": "Area",
+			"defaultState": "None",
+			"gravity":  false,
+			"friction": 0,
+			"movable": false
+		},
+		"HorizontalDoor": {
+			"texture": "Door",
+			"offset_x": 0,
+			"offset_y": 0,
+			"width": 220,
+			"height": 20,
 			"type": "Area",
 			"defaultState": "None",
 			"gravity":  false,

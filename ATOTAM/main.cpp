@@ -82,9 +82,9 @@ void gameClock(MainWindow* w, Samos* s) {
                 else if (MainWindow::doorTransition == "Left")
                     camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), -1920, cameraMoveTime));
                 else if (MainWindow::doorTransition == "Up")
-                    camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*Remember that Y axis is reversed*/ -1920, cameraMoveTime));
+                    camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*Remember that Y axis is reversed*/ -1080, cameraMoveTime));
                 else if (MainWindow::doorTransition == "Down")
-                    camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*See above*/ 1920, cameraMoveTime));
+                    camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*See above*/ 1080, cameraMoveTime));
                 w->setCamera(camera);
 
                 // Set Samos position
@@ -96,10 +96,10 @@ void gameClock(MainWindow* w, Samos* s) {
                     samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), -samosDoorMove, cameraMoveTime);
                     s->setX(samosPos);
                 } else if (MainWindow::doorTransition == "Up") {
-                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), -samosDoorMove, cameraMoveTime);
+                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), -2*samosDoorMove, cameraMoveTime);
                     s->setY(samosPos);
                 } else if (MainWindow::doorTransition == "Down") {
-                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), samosDoorMove, cameraMoveTime);
+                    samosPos = Sine::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), 2*samosDoorMove, cameraMoveTime);
                     s->setY(samosPos);
                 }
 

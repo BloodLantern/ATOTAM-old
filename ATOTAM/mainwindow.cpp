@@ -291,7 +291,9 @@ void MainWindow::updateMenu()
                 clearRendering("Samos");
                 addRenderable(currentMap.loadRoom());
             } else if (menuOptions[selectedOption] == "Reload map") {
+                int mapId = currentMap.getCurrentRoomId();
                 currentMap = Map::loadMap(currentMap.getName());
+                currentMap.setCurrentRoomId(mapId);
             } else if (menuOptions[selectedOption] == "Map viewer mode : ON")
                 mapViewer = false;
             else if (menuOptions[selectedOption] == "Map viewer mode : OFF")
@@ -1254,7 +1256,9 @@ void MainWindow::updateSamos(Samos *s)
 void MainWindow::updateMapViewer()
 {
     if (inputList["enter"] && inputTime["enter"] == 0.0) {
+        int mapId = currentMap.getCurrentRoomId();
         currentMap = Map::loadMap(currentMap.getName());
+        currentMap.setCurrentRoomId(mapId);
         clearRendering("Samos");
         addRenderable(currentMap.loadRoom());
     }
