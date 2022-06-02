@@ -54,6 +54,10 @@ std::vector<Entity *> Map::loadRoom(int id)
                     e->setState("None");
                 else
                     e->setState(obj["state"]);
+
+                e->setCurrentAnimation(e->updateAnimation(e->getState()));
+                e->setFrame(0);
+                e->updateTexture();
                 entities.push_back(e);
             }
     return entities;

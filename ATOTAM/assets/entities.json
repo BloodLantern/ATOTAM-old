@@ -13,7 +13,9 @@
 		"mapViewer": false,
 		"map": "test",
 		"menuCoolDown": 0.1,
-		"mapViewerCameraSpeed": 2000.0
+		"mapViewerCameraSpeed": 2000.0,
+		"camera_rx": -996,
+		"camera_ry": -594
 	},
 	"names": {
 		"Samos": {
@@ -45,17 +47,17 @@
 			"fallingHitbox_width": 32,
 			"fallingHitbox_height": 72,
 			"spinJumpHitbox_offset_x": 20,
-			"spinJumpHitbox_offset_y": 46,
+			"spinJumpHitbox_offset_y": 60,
 			"spinJumpHitbox_width": 32,
 			"spinJumpHitbox_height": 34,
 			"morphBallHitbox_offset_x": 20,
-			"morphBallHitbox_offset_y": 48,
+			"morphBallHitbox_offset_y": 76,
 			"morphBallHitbox_width": 32,
 			"morphBallHitbox_height": 32,
 			"jumpPower": 400,
 			"jumpTimeMax": 0.3,
 			"postJumpBoost": 600,
-			"morphJumpPower": 200,
+			"morphJumpPower": 250,
 			"morphJumpTimeMax": 0.3,
 			"morphPostJumpBoost": 500,
 			"wallJumpPower_y": 300,
@@ -137,7 +139,7 @@
 					"Morph": {
 						"Right": {
 							"x": 36,
-							"y": 64
+							"y": 92
 						}
 					}
 				},
@@ -213,7 +215,7 @@
 					"Morph": {
 						"Left": {
 							"x": 36,
-							"y": 64
+							"y": 92
 						}
 					}
 				}
@@ -579,7 +581,7 @@
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [-14, -14],
-				"yOffset": [5, 5],
+				"yOffset": [33, 33],
 				"reversed": false,
 				"overlay": [],
 				"loop": false,
@@ -598,7 +600,7 @@
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [-14, -14],
-				"yOffset": [5, 5],
+				"yOffset": [33, 33],
 				"reversed": true,
 				"overlay": [],
 				"loop": false,
@@ -617,7 +619,7 @@
 				"lines": 2,
 				"multi-directional": true,
 				"xOffset": [-14, -14],
-				"yOffset": [6, 6],
+				"yOffset": [34, 34],
 				"reversed": false,
 				"overlay": [],
 				"loop": true,
@@ -883,7 +885,7 @@
 				"lines": 2,
 				"multi-directional": true,
 				"xOffset": [-5, -21],
-				"yOffset": [12, 12],
+				"yOffset": [26, 26],
 				"reversed": false,
 				"overlay": [],
 				"loop": true,
@@ -902,7 +904,7 @@
 				"lines": 1,
 				"multi-directional": true,
 				"xOffset": [-21, -3],
-				"yOffset": [12, 12],
+				"yOffset": [26, 26],
 				"reversed": false,
 				"overlay": [],
 				"loop": false,

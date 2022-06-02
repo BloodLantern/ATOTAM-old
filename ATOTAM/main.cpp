@@ -25,6 +25,7 @@ void gameClock(MainWindow* w, Samos* s) {
     double timeLeftCameraMove;
     QPoint* startingCameraPos = nullptr;
     QPoint startingSamosPos;
+    QPoint cameraDist;
     const double cameraMoveTime = 0.75;
     const int samosDoorMove = 100;
     while (MainWindow::running) {
@@ -65,25 +66,55 @@ void gameClock(MainWindow* w, Samos* s) {
                 // Make sure we can't pause while changing room
                 MainWindow::isPaused = false;
 
+                nlohmann::json mapJson = MainWindow::currentMap.getJson()["rooms"][std::to_string(MainWindow::currentMap.getCurrentRoomId())];
+
+                int roomS_x = mapJson["position"][0];
+                int roomS_y = mapJson["position"][1];
+                int roomE_x = mapJson["size"][0];
+                int roomE_y = mapJson["size"][1];
+                roomE_x += roomS_x;
+                roomE_y += roomS_y;
+
                 // Set starting values
+
                 if (startingCameraPos == nullptr) {
                     startingCameraPos = new QPoint(w->getCamera());
                     startingSamosPos = QPoint(s->getX(), s->getY());
                     timeLeftCameraMove = cameraMoveTime;
+                    if (MainWindow::doorTransition == "Right") {
+                        cameraDist.setX(roomS_x);
+                        cameraDist.setY(s->getY() + static_cast<int>(Entity::values["general"]["camera_ry"]));
+                    } else if (MainWindow::doorTransition == "Left") {
+                        cameraDist.setX(roomE_x - 1920);
+                        cameraDist.setY(s->getY() + static_cast<int>(Entity::values["general"]["camera_ry"]));
+                    } else if (MainWindow::doorTransition == "Up") {
+                        cameraDist.setX(s->getX() + static_cast<int>(Entity::values["general"]["camera_rx"]));
+                        cameraDist.setY(roomE_y - 1080);
+                    } else if (MainWindow::doorTransition == "Down") {
+                        cameraDist.setX(s->getX() + static_cast<int>(Entity::values["general"]["camera_rx"]));
+                        cameraDist.setY(roomS_y);
+                    }
+                    if (cameraDist.x() < roomS_x)
+                        cameraDist.setX(roomS_x);
+                    else if (cameraDist.x() + 1920 > roomE_x)
+                        cameraDist.setX(roomE_x - 1920);
+                    if (cameraDist.y() < roomS_y)
+                        cameraDist.setY(roomS_y);
+                    else if (cameraDist.y() + 1080 > roomE_y)
+                        cameraDist.setY(roomE_y - 1080);
+
+                    cameraDist.setX(cameraDist.x() - startingCameraPos->x());
+                    cameraDist.setY(cameraDist.y() - startingCameraPos->y());
                 } else
                     // Set time left
                     timeLeftCameraMove -= 1 / MainWindow::frameRate;
 
                 // Set camera position
                 QPoint camera = w->getCamera();
-                if (MainWindow::doorTransition == "Right")
-                    camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), 1920, cameraMoveTime));
-                else if (MainWindow::doorTransition == "Left")
-                    camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), -1920, cameraMoveTime));
-                else if (MainWindow::doorTransition == "Up")
-                    camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*Remember that Y axis is reversed*/ -1080, cameraMoveTime));
-                else if (MainWindow::doorTransition == "Down")
-                    camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), /*See above*/ 1080, cameraMoveTime));
+
+                camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), cameraDist.x(), cameraMoveTime));
+                camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), cameraDist.y(), cameraMoveTime));
+
                 w->setCamera(camera);
 
                 // Set Samos position
