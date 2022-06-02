@@ -66,6 +66,9 @@
 			"slowcap": 25,
 			"switchDelay": 0.3,
 			"shootTime": 0.5,
+			"maxHealth": 99,
+			"invulnerable": false,
+			"damage": 0,
 			"shootOffset": {
 				"Right": {
 					"Standing": {
@@ -292,13 +295,12 @@
 			"gravity":  false,
 			"friction": 0,
 			"movable": false
-		}
-	},
-	"livings": {
-		"Samos": {
-			"maxHealth": 99,
-			"invulnerable": false,
-			"damage": 0
+		},
+		"Test": {
+			"behavior": "Static",
+			"damage": 20,
+			"attackSpeed": 1.0,
+			"ranged": false
 		}
 	},
 	"textures": {

@@ -13,6 +13,7 @@ SOURCES += \
     Entities/door.cpp \
     Entities/entity.cpp \
     Entities/living.cpp \
+    Entities/monster.cpp \
     Entities/projectile.cpp \
     Entities/samos.cpp \
     Entities/terrain.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     Entities/door.h \
     Entities/entity.h \
     Entities/living.h \
+    Entities/monster.h \
     Entities/projectile.h \
     Entities/samos.h \
     Entities/terrain.h \
