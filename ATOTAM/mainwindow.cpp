@@ -593,6 +593,9 @@ std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
 
 void MainWindow::updateSamos(Samos *s)
 {
+    if (s->getState() == "MorphBallStop" || s->getState() == "MorphBallSlow" || s->getState() == "MorphBallSuperSlow")
+        s->setState("MorphBall");
+
     nlohmann::json samosJson = Entity::values["names"]["Samos"];
 
 
@@ -1248,6 +1251,14 @@ void MainWindow::updateSamos(Samos *s)
         }
     }
 
+    if (s->getState() == "MorphBall") {
+        if (std::abs(s->getVX()) < 1)
+            s->setState("MorphBallStop");
+        else if (std::abs(s->getVX()) < 100)
+            s->setState("MorphBallSuperSlow");
+        else if (std::abs(s->getVX()) < 200)
+            s->setState("MorphBallSlow");
+    }
 
     // Camera
     nlohmann::json mapJson = currentMap.getJson()["rooms"][std::to_string(currentMap.getCurrentRoomId())];
