@@ -4,7 +4,7 @@ Monster::Monster(double x, double y, std::string facing, std::string name)
     : Living(x, y, facing, name)
 {
     // Json initialization
-    nlohmann::json monsterJson = values["monsters"][name];
+    nlohmann::json monsterJson = values["names"][name];
     behavior = monsterJson["behavior"];
     damage = monsterJson["damage"];
     attackSpeed = monsterJson["attackSpeed"];

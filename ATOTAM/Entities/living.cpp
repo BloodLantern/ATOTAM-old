@@ -11,7 +11,7 @@ Living::Living(double x, double y, std::string facing, std::string name)
     : Entity(x, y, facing, name)
 {
     //fast constructor using the json file
-    nlohmann::json livJson = values["livings"][name];
+    nlohmann::json livJson = values["names"][name];
     health = livJson["maxHealth"];
     maxHealth = livJson["maxHealth"];
     damage = livJson["damage"];

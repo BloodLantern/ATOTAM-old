@@ -2,6 +2,7 @@ release/collisionbox.o
 release/door.o
 release/entity.o
 release/living.o
+release/monster.o
 release/projectile.o
 release/samos.o
 release/terrain.o
