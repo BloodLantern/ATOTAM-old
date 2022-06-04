@@ -1,17 +1,14 @@
 #include "projectile.h"
 
 Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name)
-    : Entity(x, y, new CollisionBox(16, 16), nullptr, "Projectile", false, facing, 0, name, true), projectileType(type)
+    : Entity(x, y, nullptr, nullptr, "Projectile", false, facing, 0, name, true), projectileType(type)
 {
     //Because animations are buggy
     setLastFrameState("None");
     setLastFrameFacing("None");
 
-    setBox(new CollisionBox(values["names"][name]["width"], values["names"][name]["width"]));
-
-    //Bombs don't move
-    if (type == "Bomb")
-        facing = "None";
+    nlohmann::json proJson = Entity::values["names"][name];
+    setBox(new CollisionBox(proJson["width"], proJson["width"]));
 
     //Setting the speed depending on the direction
     if (facing == "None") {
@@ -19,54 +16,45 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
         setVY(0);
     } else if (facing == "Up") {
         setVX(0);
-        setVY(-1000);
+        setVY(-static_cast<double>(proJson["speed"]));
     } else if (facing == "UpRight") {
-        setVX(707);
-        setVY(-707);
+        setVX(static_cast<double>(proJson["speed"]) * 0.707);
+        setVY(-static_cast<double>(proJson["speed"]) * 0.707);
     } else if (facing == "Right") {
-        setVX(1000);
+        setVX(static_cast<double>(proJson["speed"]));
         setVY(0);
     } else if (facing == "DownRight") {
-        setVX(707);
-        setVY(707);
+        setVX(static_cast<double>(proJson["speed"]) * 0.707);
+        setVY(static_cast<double>(proJson["speed"]) * 0.707);
     } else if (facing == "Down") {
         setVX(0);
-        setVY(1000);
+        setVY(static_cast<double>(proJson["speed"]) );
     } else if (facing == "DownLeft") {
-        setVX(-707);
-        setVY(707);
+        setVX(-static_cast<double>(proJson["speed"]) * 0.707);
+        setVY(static_cast<double>(proJson["speed"]) * 0.707);
     } else if (facing == "Left") {
-        setVX(-1000);
+        setVX(-static_cast<double>(proJson["speed"]) );
         setVY(0);
     } else if (facing == "UpLeft") {
-        setVX(-707);
-        setVY(-707);
+        setVX(-static_cast<double>(proJson["speed"]) * 0.707);
+        setVY(-static_cast<double>(proJson["speed"]) * 0.707);
     } else {
         throw Entity::invalidDirection;
     }
 
     //Setting the damage and adjusting the speed depending on the projectile type
+    damage = proJson["damage"];
+    lifeTime = proJson["lifeTime"];
+
     if (type == "Beam") {
-        damage = 20;
-        lifeTime = 1.5;
         setState(facing);
     } else if (type == "Missile") {
-        damage = 50;
-        lifeTime = 3;
-        setVX(getVX() / 2);
-        setVY(getVY() / 2);
         setState(facing);
     } else if (type == "Grenade") {
-        damage = 60;
-        lifeTime = 3;
-        setVX(getVX() / 2);
-        setVY(getVY() / 2);
-        setIsAffectedByGravity(true);
-        setFrictionFactor(0.2);
+        setIsAffectedByGravity(proJson["gravity"]);
+        setFrictionFactor(proJson["friction"]);
         setState(facing);
     } else if (type == "Bomb") {
-        damage = 50;
-        lifeTime = 2;
         setState("Normal");
     } else {
         throw unknownProjectileType;

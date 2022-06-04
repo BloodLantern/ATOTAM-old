@@ -228,25 +228,39 @@
 			"texture": "Beam",
 			"defaultState": "None",
 			"height": 16,
-			"width": 16
+			"width": 16,
+			"speed": 1000,
+			"lifeTime": 1.5,
+			"damage": 20
 		},
 		"Missile": {
 			"texture": "Missile",
 			"defaultState": "None",
 			"height": 30,
-			"width": 30
+			"width": 30,
+			"speed": 750,
+			"lifeTime": 2.0,
+			"damage": 50
 		},
 		"Bomb": {
 			"texture": "Bomb",
 			"defaultState": "None",
 			"height": 16,
-			"width": 16
+			"width": 16,
+			"speed": 0,
+			"lifeTime": 2,
+			"damage": 50
 		},
 		"Grenade": {
 			"texture": "Grenade",
 			"defaultState": "None",
 			"height": 16,
-			"width": 16
+			"width": 16,
+			"speed": 750,
+			"lifeTime": 3.0,
+			"damage": 60,
+			"gravity": true,
+			"friction": 0.2
 		},
 		"Wall": {
 			"texture": "Wall",

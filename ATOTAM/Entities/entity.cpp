@@ -42,15 +42,31 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
     if (obj1->isMovable && obj2->isMovable) {
         //Decide along which axis two move the entities (still smaller distance)
         if (std::abs(minX) < std::abs(minY)) {
-            obj1->x -= minX / 2;
-            obj2->x += minX / 2;
+            if ((obj1->getEntType() == "Projectile")
+                    || (obj1->getEntType() == "Samos" && obj2->getEntType() != "Projectile")
+                    || (obj1->getEntType() == "Monster" && obj2->getEntType() != "Projectile" && obj2->getEntType() != "Samos" && obj2->getEntType() != "Monster"))
+                obj1->x -= minX;
+            else if (obj2->getEntType() == "Projectile" || obj2->getEntType() == "Samos" || obj2->getEntType() == "Monster")
+                obj2->x += minX;
+            else {
+                obj1->x -= minX / 2;
+                obj2->x += minX / 2;
+            }
             if (std::signbit(obj1->getVX()) == std::signbit(minX))
                 obj1->vX = 0;
             if (std::signbit(obj2->getVX()) == std::signbit(-minX))
                 obj2->vX = 0;
         } else {
-            obj1->y -= minY / 2;
-            obj2->y += minY / 2;
+            if ((obj1->getEntType() == "Projectile")
+                    || (obj1->getEntType() == "Samos" && obj2->getEntType() != "Projectile")
+                    || (obj1->getEntType() == "Monster" && obj2->getEntType() != "Projectile" && obj2->getEntType() != "Samos" && obj2->getEntType() != "Monster"))
+                obj1->x -= minY;
+            else if (obj2->getEntType() == "Projectile" || obj2->getEntType() == "Samos" || obj2->getEntType() == "Monster")
+                obj2->x += minY;
+            else {
+                obj1->x -= minY / 2;
+                obj2->x += minY / 2;
+            }
             if (std::signbit(obj1->getVY()) == std::signbit(minY))
                 obj1->vY = 0;
             if (std::signbit(obj2->getVY()) == std::signbit(-minY))

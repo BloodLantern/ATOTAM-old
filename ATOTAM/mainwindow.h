@@ -72,6 +72,7 @@ public:
     void updateMenu();
     static nlohmann::json params;
     static nlohmann::json loadParams();
+    bool canChangeBox(Entity* e, CollisionBox* b);
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);
