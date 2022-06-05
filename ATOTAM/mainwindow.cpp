@@ -444,11 +444,12 @@ std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                 if (inputList["interact"] && inputTime["interact"] == 0.0) {
                     NPC* npc = static_cast<NPC*>(obj2);
                     if (npc->getNpcType() == "Talking") {
-                        if (npc->getJson()["dialogues"][npc->getTimesInteracted()]["talking"].is_null())
-                            currentDialogue = Dialogue(npc->getJson()["dialogues"][npc->getTimesInteracted()]["text"], npc->getName());
+                        if (stringsJson[language]["dialogues"][npc->getName()][npc->getTimesInteracted()]["talking"].is_null())
+                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][npc->getName()][npc->getTimesInteracted()]["text"],
+                                    npc->getName());
                         else
-                            currentDialogue = Dialogue(npc->getJson()["dialogues"][npc->getTimesInteracted()]["text"],
-                                    npc->getJson()["dialogues"][npc->getTimesInteracted()]["talking"]);
+                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][npc->getName()][npc->getTimesInteracted()]["text"],
+                                    stringsJson[language]["dialogues"][npc->getName()][npc->getTimesInteracted()]["talking"]);
                     }
                     npc->setTimesInteracted(npc->getTimesInteracted() + 1);
                 }
@@ -1554,7 +1555,9 @@ void MainWindow::paintEvent(QPaintEvent *)
         // In case we changed it before
         painter.setPen(QColor("black"));
 
-        painter.drawText(QRectF(QRect(200, 200, 1000, 200)), QString::fromStdString(currentDialogue.getTalking() + ": " + currentDialogue.getText()), QTextOption(Qt::AlignHCenter));
+        painter.drawText(QRectF(QRect(200, 200, 1000, 200)),
+                         QString::fromStdString(currentDialogue.getTalking() + ": " + currentDialogue.getText()[currentDialogue.getTextAdvancement()]),
+                QTextOption(Qt::AlignHCenter));
     }
 
     //Menu

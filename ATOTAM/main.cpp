@@ -157,6 +157,7 @@ void gameClock(MainWindow* w, Samos* s) {
             std::this_thread::sleep_for(std::chrono::microseconds(999));
         }
     }
+
     // Just in case but at this point 'startingCameraPos' should be a nullptr anyway
     delete startingCameraPos;
 }
@@ -174,6 +175,9 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    // Set the random instance
+    std::srand(time(NULL));
 
     Entity::values = Entity::loadValues(MainWindow::assetsPath);
     MainWindow::loadGeneral();

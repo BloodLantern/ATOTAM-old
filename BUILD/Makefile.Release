@@ -1510,7 +1510,8 @@ release/mainwindow.o: ../ATOTAM/mainwindow.cpp ../ATOTAM/mainwindow.h \
 		C:/Qt/6.2.3/mingw_64/include/QtWidgets/qstatusbar.h \
 		C:/Qt/6.2.3/mingw_64/include/QtWidgets/QWidget \
 		../ATOTAM/Entities/area.h \
-		../ATOTAM/Entities/door.h
+		../ATOTAM/Entities/door.h \
+		../ATOTAM/Entities/npc.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\ATOTAM\mainwindow.cpp
 
 release/map.o: ../ATOTAM/map.cpp ../ATOTAM/mainwindow.h \

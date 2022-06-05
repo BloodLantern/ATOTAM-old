@@ -1,5 +1,6 @@
 #include "entity.h"
 #include <QPainter>
+#include <iostream>
 
 bool Entity::checkCollision(Entity *obj1, CollisionBox *box1, Entity *obj2, CollisionBox *box2)
 {
@@ -184,8 +185,14 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     // First create the image list which will be returned
     std::vector<QImage> anim;
 
+    nlohmann::json animJson;
+
     // Getting a json object representing the animation
-    nlohmann::json animJson = values["textures"][values["names"][name]["texture"]][state];
+    if (!values["names"][name]["randomTexture"].is_null())
+        animJson = values["textures"][values["names"][name]["texture"]][values["names"][name]["randomTexture"]
+                [((double) rand() / (RAND_MAX+1)) * (values["names"][name]["randomTexture"].size() - 1 + 1) + 0]]; // Generate a random number in range [0; values["names"][name]["randomTexture"].size()]
+    else
+        animJson = values["textures"][values["names"][name]["texture"]][state];
     // Getting the full animation image which will be cropped afterwards
     QImage fullAnim = QImage(QString::fromStdString(std::string(assetsPath + "/textures/") + std::string(animJson["file"])))
             .copy(animJson["x"], animJson["y"], animJson["width"], animJson["height"]);

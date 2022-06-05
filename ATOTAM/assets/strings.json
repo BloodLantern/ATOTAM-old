@@ -5,6 +5,27 @@
 				"Missile": "Missile",
 				"Beam": "Beam"
 			}
+		},
+		"dialogues": {
+			"TalkingNPC": [
+				{
+					"text": [
+						"This text is a test!"
+					]
+				},
+				{
+					"text": [
+						"This text is the second part of this test!",
+						"And this is the third part..."
+					],
+					"talking": "HeyyyY"
+				},
+				{
+					"text": [
+						"This text is the final part of this test, it will repeat infinitely from now on."
+					]
+				}
+			]
 		}
 	},
 	"fr-FR": {
