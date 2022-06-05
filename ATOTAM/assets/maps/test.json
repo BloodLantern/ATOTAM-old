@@ -85,6 +85,16 @@
 							"to": 1
 						}
 					]
+				},
+				"NPC": {
+					"TalkingNPC": [
+						{
+							"x": 1000,
+							"y": 950,
+							"state": "Standing",
+							"facing": "Left"
+						}
+					]
 				}
 			}
 		},

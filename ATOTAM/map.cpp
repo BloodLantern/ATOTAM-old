@@ -3,6 +3,7 @@
 #include <fstream>
 #include <Entities/area.h>
 #include <Entities/door.h>
+#include <Entities/npc.h>
 #include <Entities/terrain.h>
 
 Map Map::loadMap(std::string id)
@@ -43,6 +44,10 @@ std::vector<Entity *> Map::loadRoom(int id)
                             static_cast<int>(roomJson["position"][1]) + static_cast<int>(obj["y"]), name.first);
                     e = d;
                     d->setEndingRoom(obj["to"]);
+                } else if (entity.first == "NPC") {
+                    NPC *npc = new NPC(static_cast<int>(roomJson["position"][0]) + static_cast<int>(obj["x"]),
+                            static_cast<int>(roomJson["position"][1]) + static_cast<int>(obj["y"]), obj["facing"], name.first);
+                    e = npc;
                 }
 
                 // Make sure not to use a null Entity pointer

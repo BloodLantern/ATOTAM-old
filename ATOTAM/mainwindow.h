@@ -12,6 +12,7 @@
 #include "Entities/entity.h"
 #include "Entities/living.h"
 #include "Entities/samos.h"
+#include "dialogue.h"
 #include "map.h"
 
 QT_BEGIN_NAMESPACE
@@ -61,6 +62,7 @@ public:
     static std::string doorTransition;
     static nlohmann::json params;
     static std::string language;
+    static Dialogue currentDialogue;
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);

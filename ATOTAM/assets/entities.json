@@ -327,6 +327,36 @@
 			"ranged": false,
 			"damageOnContact": true,
 			"mass": 50
+		},
+		"TalkingNPC": {
+			"texture": "TalkingNPC",
+			"type": "NPC",
+			"npcType": "Talking",
+			"offset_x": 0,
+			"offset_y": 0,
+			"width": 64,
+			"height": 64,
+			"defaultState": "Standing",
+			"gravity": false,
+			"friction": 0,
+			"movable": true,
+			"health": 150,
+			"maxHealth": 150,
+			"damage": 10,
+			"invulnerable": true,
+			"mass": -1,
+			"dialogues": [
+				{
+					"text": "This text is a test!"
+				},
+				{
+					"text": "This text is the second part of this test!",
+					"talking": "HeyyyY"
+				},
+				{
+					"text": "This text is the final part of this test, it will repeat infinitely from now on."
+				}
+			]
 		}
 	},
 	"textures": {
@@ -1719,6 +1749,46 @@
 				"y": 0,
 				"width": 10,
 				"height": 110,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1,
+				"dontReset": false
+			}
+		},
+		"TalkingNPC": {
+			"Standing": {
+				"file": "Block.png",
+				"x": 0,
+				"y": 0,
+				"width": 32,
+				"height": 32,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1,
+				"dontReset": false
+			},
+			"None": {
+				"file": "Block.png",
+				"x": 0,
+				"y": 0,
+				"width": 32,
+				"height": 32,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,

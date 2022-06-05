@@ -3,6 +3,7 @@
 
 #include <Entities/area.h>
 #include <Entities/door.h>
+#include <Entities/npc.h>
 
 bool MainWindow::running = true;
 double MainWindow::frameRate;
@@ -32,6 +33,7 @@ Map MainWindow::currentMap = Map::loadMap("test");
 double MainWindow::mapViewerCameraSpeed;
 std::string MainWindow::doorTransition = "";
 std::string MainWindow::language;
+Dialogue MainWindow::currentDialogue; // Null Dialogue
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -438,7 +440,19 @@ std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
                 Entity::calcCollisionReplacement(obj1, obj2);
 
         } else if (obj2->getEntType() == "NPC") {
-            // TODO
+            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
+                if (inputList["interact"] && inputTime["interact"] == 0.0) {
+                    NPC* npc = static_cast<NPC*>(obj2);
+                    if (npc->getNpcType() == "Talking") {
+                        if (npc->getJson()["dialogues"][npc->getTimesInteracted()]["talking"].is_null())
+                            currentDialogue = Dialogue(npc->getJson()["dialogues"][npc->getTimesInteracted()]["text"], npc->getName());
+                        else
+                            currentDialogue = Dialogue(npc->getJson()["dialogues"][npc->getTimesInteracted()]["text"],
+                                    npc->getJson()["dialogues"][npc->getTimesInteracted()]["talking"]);
+                    }
+                    npc->setTimesInteracted(npc->getTimesInteracted() + 1);
+                }
+            }
         } else if (obj2->getEntType() == "Projectile") {
             if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
                 Projectile* p = static_cast<Projectile*>(obj2);
@@ -1509,6 +1523,14 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.fillRect(QRect(380,15,80,30), QColor("white"));
         painter.drawRect(QRect(380,15,80,30));
         painter.drawText(QPoint(390, 40), QString::fromStdString("H : " + std::to_string(s->getHealth())));
+    }
+
+    // Dialogue
+    if (!currentDialogue.isNull()) {
+        // In case we changed it before
+        painter.setPen(QColor("black"));
+
+        painter.drawText(QRectF(QRect(200, 200, 1000, 200)), QString::fromStdString(currentDialogue.getTalking() + ": " + currentDialogue.getText()), QTextOption(Qt::AlignHCenter));
     }
 
     //Menu

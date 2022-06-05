@@ -11,5 +11,6 @@
 	"shoot": 68,
 	"dash": 65,
 	"menu": 27,
-	"enter": 13
+	"enter": 13,
+	"interact": 70
 }

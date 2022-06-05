@@ -14,6 +14,7 @@ SOURCES += \
     Entities/entity.cpp \
     Entities/living.cpp \
     Entities/monster.cpp \
+    Entities/npc.cpp \
     Entities/projectile.cpp \
     Entities/samos.cpp \
     Entities/terrain.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     Entities/entity.h \
     Entities/living.h \
     Entities/monster.h \
+    Entities/npc.h \
     Entities/projectile.h \
     Entities/samos.h \
     Entities/terrain.h \
