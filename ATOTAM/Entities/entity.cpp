@@ -123,6 +123,8 @@ void Entity::updateV(double framerate)
 
 void Entity::applyKnockback(Entity *e, double kBForce)
 {
+    if (mass == -1)
+        return;
     double dist_x = x + box->getX() + (box->getWidth() / 2) - e->x - e->box->getX() - (e->box->getWidth() / 2);
     double dist_y = y + box->getY() + (box->getHeight() / 2) - e->y - e->box->getY() - (e->box->getHeight() / 2);
     dist_x = (std::abs(dist_x) < 10) ? 10 : dist_x;
@@ -133,6 +135,8 @@ void Entity::applyKnockback(Entity *e, double kBForce)
 
 void Entity::forceKnockback(Entity *e, double kBForce)
 {
+    if (mass == -1)
+        return;
     double dist_x = x + box->getX() + (box->getWidth() / 2) - e->x - e->box->getX() - (e->box->getWidth() / 2);
     double dist_y = y + box->getY() + (box->getHeight() / 2) - e->y - e->box->getY() - (e->box->getHeight() / 2);
     dist_x = (std::abs(dist_x) < 10) ? 10 : dist_x;

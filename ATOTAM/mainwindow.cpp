@@ -635,22 +635,33 @@ void MainWindow::updateSamos(Samos *s)
 
     nlohmann::json samosJson = Entity::values["names"]["Samos"];
 
+    if (s->getOnGround() || !s->getIsAffectedByGravity()) {
+        if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
+                || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+            if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
+                        static_cast<double>(samosJson["fallingHitbox_height"]) + static_cast<int>(samosJson["fallingHitbox_offset_y"]));
+            } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
+                s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
+                        static_cast<double>(samosJson["spinJumpHitbox_height"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"]));
+            }
+        }
+    }
 
-
-    CollisionBox spinBox = CollisionBox(samosJson["spinJumpHitbox_offset_x"], samosJson["spinJumpHitbox_offset_y"],
+    CollisionBox* spinBox = new CollisionBox(samosJson["spinJumpHitbox_offset_x"], samosJson["spinJumpHitbox_offset_y"],
                   samosJson["spinJumpHitbox_width"], samosJson["spinJumpHitbox_height"]);
-    bool canSpin = canChangeBox(s, &spinBox);
-    CollisionBox morphBox = CollisionBox(samosJson["morphBallHitbox_offset_x"], samosJson["morphBallHitbox_offset_y"],
+    bool canSpin = canChangeBox(s, spinBox);
+    CollisionBox* morphBox = new CollisionBox(samosJson["morphBallHitbox_offset_x"], samosJson["morphBallHitbox_offset_y"],
                   samosJson["morphBallHitbox_width"], samosJson["morphBallHitbox_height"]);
-    bool canMorph = canChangeBox(s, &morphBox);
-    CollisionBox fallBox = CollisionBox(samosJson["fallingHitbox_offset_x"], samosJson["fallingHitbox_offset_y"],
+    bool canMorph = canChangeBox(s, morphBox);
+    CollisionBox* fallBox = new CollisionBox(samosJson["fallingHitbox_offset_x"], samosJson["fallingHitbox_offset_y"],
                 samosJson["fallingHitbox_width"], samosJson["fallingHitbox_height"]);
-    bool canFall = canChangeBox(s, &fallBox);
-    CollisionBox crouchBox = CollisionBox(samosJson["crouchHitbox_offset_x"], samosJson["crouchHitbox_offset_y"],
+    bool canFall = canChangeBox(s, fallBox);
+    CollisionBox* crouchBox = new CollisionBox(samosJson["crouchHitbox_offset_x"], samosJson["crouchHitbox_offset_y"],
                   samosJson["crouchHitbox_width"], samosJson["crouchHitbox_height"]);
-    bool canCrouch = canChangeBox(s, &crouchBox);
-    CollisionBox standBox = CollisionBox(samosJson["offset_x"], samosJson["offset_y"], samosJson["width"], samosJson["height"]);
-    bool canStand = canChangeBox(s, &standBox);
+    bool canCrouch = canChangeBox(s, crouchBox);
+    CollisionBox* standBox = new CollisionBox(samosJson["offset_x"], samosJson["offset_y"], samosJson["width"], samosJson["height"]);
+    bool canStand = canChangeBox(s, standBox);
 
 
     if (s->getState() == "MorphBalling" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["MorphBalling"]["count"]) - 1)) {
@@ -802,13 +813,6 @@ void MainWindow::updateSamos(Samos *s)
             if (s->getOnGround() || !s->getIsAffectedByGravity()) {
                 if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
                         || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                    if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                        s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
-                                static_cast<double>(samosJson["fallingHitbox_height"]) + static_cast<int>(samosJson["fallingHitbox_offset_y"]));
-                    } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-                        s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
-                                static_cast<double>(samosJson["spinJumpHitbox_height"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"]));
-                    }
                     if (canStand)
                         s->setState("Landing");
                     else if (canCrouch)
@@ -882,13 +886,6 @@ void MainWindow::updateSamos(Samos *s)
             if (s->getOnGround() || !s->getIsAffectedByGravity()) {
                 if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
                         || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                    if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                        s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
-                                static_cast<double>(samosJson["fallingHitbox_height"]) + static_cast<int>(samosJson["fallingHitbox_offset_y"]));
-                    } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-                        s->setY(s->getY() - static_cast<double>(samosJson["height"]) - static_cast<int>(samosJson["offset_y"]) +
-                                static_cast<double>(samosJson["spinJumpHitbox_height"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"]));
-                    }
                     if (canStand)
                         s->setState("Landing");
                     else if (canCrouch)
@@ -965,23 +962,21 @@ void MainWindow::updateSamos(Samos *s)
                         if (inputList["down"] && !inputList["up"] && inputTime["down"] == 0.0 && canMorph && s->getState() == "IdleCrouch")
                             s->setState("MorphBalling");
                         else {
-                            if (canStand) {
-                                if (((!inputList["down"] && !inputList["up"]) || (inputList["down"] && inputList["up"])) && s->getState() != "IdleCrouch" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "Uncrouching" && s->getState() != "Crouching")
-                                    s->setState("Standing");
-                                else if (((s->getState() == "Crouching" && s->getFrame() == 2) || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") && !inputList["up"])
-                                    s->setState("IdleCrouch");
-                                else if (!inputList["up"] && !(s->getState() == "Uncrouching" && !inputList["down"]))
+                            if (canCrouch) {
+                                if (!inputList["up"] && inputList["down"] && inputTime["down"] == 0.0 && (s->getState() == "Standing" || s->getState() == "UnCrouching"))
                                     s->setState("Crouching");
-                                else if (((s->getState() == "Uncrouching" && s->getFrame() == 2)))
+                                else if (s->getState() == "Crouching" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["Crouching"]["count"]) - 1))
+                                    s->setState("IdleCrouch");
+                            }
+                            if (canStand) {
+                                if (inputList["up"] && !inputList["down"] && inputTime["up"] == 0.0 && (s->getState() == "IdleCrouch" || s->getState() == "Crouching") && s->getState() != "UnMorphBalling")
+                                    s->setState("UnCrouching");
+                                else if (s->getState() == "UnCrouching" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["UnCrouching"]["count"]) - 1))
                                     s->setState("Standing");
-                                else if (s->getState() == "Uncrouching" || s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag")
-                                    s->setState("Uncrouching");
-                                else
+
+                                if (s->getState() != "IdleCrouch" && s->getState() != "Crouching" && s->getState() != "UnCrouching" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "UnMorphBalling")
                                     s->setState("Standing");
-                            } else if (canCrouch)
-                                s->setState("IdleCrouch");
-                            else if (canMorph)
-                                s->setState("MorphBalling");
+                            }
                         }
                     }
                     if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
@@ -1097,30 +1092,55 @@ void MainWindow::updateSamos(Samos *s)
 
     bool changedBox = false;
     if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-        if ((*s->getBox()) != spinBox) {
-            s->setBox(&spinBox);
+        if ((*s->getBox()) != *spinBox) {
+            s->setBox(spinBox);
             changedBox = true;
-        }
+        } else
+            delete spinBox;
+        delete morphBox;
+        delete fallBox;
+        delete crouchBox;
+        delete standBox;
     } else if (s->getState() == "MorphBall" || s->getState() == "MorphBalling" || s->getState() == "UnMorphBalling") {
-        if ((*s->getBox()) != morphBox) {
-            s->setBox(&morphBox);
+        if ((*s->getBox()) != *morphBox) {
+            s->setBox(morphBox);
             changedBox = true;
-        }
+        } else
+            delete morphBox;
+        delete spinBox;
+        delete fallBox;
+        delete crouchBox;
+        delete standBox;
     } else if (s->getState() == "Falling" || s->getState() == "FallingAimUp" || s->getState() == "FallingAimUpDiag" || s->getState() == "FallingAimDownDiag" || s->getState() == "FallingAimDown") {
-        if ((*s->getBox()) != fallBox) {
-            s->setBox(&fallBox);
+        if ((*s->getBox()) != *fallBox) {
+            s->setBox(fallBox);
             changedBox = true;
-        }
+        } else
+            delete fallBox;
+        delete spinBox;
+        delete morphBox;
+        delete crouchBox;
+        delete standBox;
     } else if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "UnCrouching" || s->getState() == "Crouching") {
-        if ((*s->getBox()) != crouchBox) {
-            s->setBox(&crouchBox);
+        if ((*s->getBox()) != *crouchBox) {
+            s->setBox(crouchBox);
             changedBox = true;
-        }
+        } else
+            delete crouchBox;
+        delete spinBox;
+        delete morphBox;
+        delete fallBox;
+        delete standBox;
     } else {
-        if ((*s->getBox()) != standBox) {
-            s->setBox(&standBox);
+        if ((*s->getBox()) != *standBox) {
+            s->setBox(standBox);
             changedBox = true;
-        }
+        } else
+            delete standBox;
+        delete spinBox;
+        delete morphBox;
+        delete fallBox;
+        delete crouchBox;
     }
     if (changedBox) {
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
@@ -1172,7 +1192,7 @@ void MainWindow::updateSamos(Samos *s)
         }
     }
 
-    if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "Crouching") {
+    if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") {
         if (inputList["left"] && !inputList["right"]) {
             s->setFacing("Left");
             if (inputList["up"] && !inputList["down"]) {
@@ -1203,7 +1223,7 @@ void MainWindow::updateSamos(Samos *s)
                     s->setCanonDirection("Right");
             }
         }
-    } else if (s->getState() == "Standing" || s->getState() == "StandingAimUpDiag" || s->getState() == "StandingAimDownDiag" || s->getState() == "StandingAimUp" || s->getState() == "Uncrouching") {
+    } else if (s->getState() == "Standing" || s->getState() == "StandingAimUpDiag" || s->getState() == "StandingAimDownDiag" || s->getState() == "StandingAimUp") {
         if (inputList["left"] && !inputList["right"]) {
             s->setFacing("Left");
             if (inputList["up"] && !inputList["down"]) {
@@ -1460,23 +1480,27 @@ void MainWindow::paintEvent(QPaintEvent *)
                 painter.setPen(QColor("gray"));
             else if ((*ent)->getEntType() == "Samos")
                 painter.setPen(QColor("orange"));
-            painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
-                             (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
+            if ((*ent)->getBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
+                                 (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
 
             //Ground boxes
             if ((*ent)->getEntType() == "Samos" || (*ent)->getEntType() == "Monster" || (*ent)->getEntType() == "NPC" || (*ent)->getEntType() == "DynamicObj") {
                 Living* liv = static_cast<Living*>((*ent));
                 painter.setPen(QColor("green"));
-                painter.drawRect(liv->getX() + liv->getGroundBox()->getX() - camera.x(), liv->getY() + liv->getGroundBox()->getY() - camera.y(),
-                                 liv->getGroundBox()->getWidth(), liv->getGroundBox()->getHeight());
+                if (liv->getGroundBox() != nullptr)
+                    painter.drawRect(liv->getX() + liv->getGroundBox()->getX() - camera.x(), liv->getY() + liv->getGroundBox()->getY() - camera.y(),
+                                    liv->getGroundBox()->getWidth(), liv->getGroundBox()->getHeight());
 
                 //Wall boxes
                 if ((*ent)->getEntType() == "Samos") {
                     Samos* s = static_cast<Samos*>(liv);
-                    painter.drawRect(s->getX() + s->getWallBoxL()->getX() - camera.x(), s->getY() + s->getWallBoxL()->getY() - camera.y(),
-                                     s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
-                    painter.drawRect(s->getX() + s->getWallBoxR()->getX() - camera.x(), s->getY() + s->getWallBoxR()->getY() - camera.y(),
-                                     s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
+                    if (s->getWallBoxL() != nullptr)
+                        painter.drawRect(s->getX() + s->getWallBoxL()->getX() - camera.x(), s->getY() + s->getWallBoxL()->getY() - camera.y(),
+                                        s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
+                    if (s->getWallBoxR() != nullptr)
+                        painter.drawRect(s->getX() + s->getWallBoxR()->getX() - camera.x(), s->getY() + s->getWallBoxR()->getY() - camera.y(),
+                                        s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
                 }
             }
         }
@@ -1711,6 +1735,7 @@ void MainWindow::updatePhysics()
         for (std::vector<Entity*>::iterator j = solidList.begin(); j!= solidList.end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
+                (*i)->setVY(0);
                 break;
             }
         }
