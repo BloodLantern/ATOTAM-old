@@ -75,6 +75,8 @@ public:
     void getInputs();
     bool updateProjectile(Projectile* p);
     void updateMenu();
+    static nlohmann::json params;
+    bool canChangeBox(Entity* e, CollisionBox* b);
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);

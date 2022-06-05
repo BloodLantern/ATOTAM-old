@@ -49,3 +49,7 @@ void CollisionBox::setX(int newX)
 {
     x = newX;
 }
+
+bool operator!=(CollisionBox a, CollisionBox b) {
+    return (a.getX() != b.getX() || a.getY() != b.getY() || a.getHeight() != b.getHeight() || a.getWidth() != b.getWidth());
+}

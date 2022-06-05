@@ -27,4 +27,6 @@ private:
     int height; //in px
 };
 
+bool operator!=(CollisionBox a, CollisionBox b);
+
 #endif // COLLISIONBOX_H
