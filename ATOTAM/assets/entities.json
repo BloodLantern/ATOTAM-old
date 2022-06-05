@@ -464,7 +464,7 @@
 				"refreshRate": 3,
 				"dontReset": false
 			},
-			"Uncrouching": {
+			"UnCrouching": {
 				"file": "samos.png",
 				"x": 187,
 				"y": 304,

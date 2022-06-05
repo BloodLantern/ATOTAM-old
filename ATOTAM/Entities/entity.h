@@ -85,7 +85,7 @@ public:
     void setMass(double newMass);
 
 private:
-    CollisionBox* box;
+    CollisionBox* box = nullptr;
     QImage* texture = nullptr; // Image to be rendered now
     double x; //in px
     double y; //in px
