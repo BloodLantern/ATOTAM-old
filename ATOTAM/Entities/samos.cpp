@@ -4,8 +4,8 @@
 Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount)
     : Living(x, y, "Right", "Samos"),
       isInAltForm(false), grenadeCount(maxGrenadeCount), maxGrenadeCount(maxGrenadeCount), missileCount(maxMissileCount), maxMissileCount(maxMissileCount),
-      wallBoxR(new CollisionBox(getBox()->getX() + getBox()->getWidth(), getBox()->getY(), 2, getBox()->getHeight())),
-      wallBoxL(new CollisionBox(getBox()->getX() - 2, getBox()->getY(), 2, getBox()->getHeight()))
+      wallBoxR(new CollisionBox(getBox()->getX() + getBox()->getWidth(), getBox()->getY(), 1, getBox()->getHeight())),
+      wallBoxL(new CollisionBox(getBox()->getX() - 1, getBox()->getY(), 1, getBox()->getHeight()))
 {
     setMaxHealth(maxHealth);
     setState("Standing");
@@ -15,8 +15,8 @@ Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMiss
     : Living(x, y, box, texture, entityType, health, maxHealth, isAffectedByGravity, facing, frictionFactor, name, isMovable),
       maxGrenadeCount(maxGrenadeCount),
       maxMissileCount(maxMissileCount),
-      wallBoxR(new CollisionBox(box->getX() + box->getWidth(), box->getY(), 2, box->getHeight())),
-      wallBoxL(new CollisionBox(box->getX() - 2, box->getY(), 2, box->getHeight()))
+      wallBoxR(new CollisionBox(box->getX() + box->getWidth(), box->getY(), 1, box->getHeight())),
+      wallBoxL(new CollisionBox(box->getX() - 1, box->getY(), 1, box->getHeight()))
 {
     setState("Standing");
 }

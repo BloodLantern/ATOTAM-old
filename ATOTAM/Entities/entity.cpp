@@ -61,12 +61,12 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
             if ((obj1->getEntType() == "Projectile")
                     || (obj1->getEntType() == "Samos" && obj2->getEntType() != "Projectile")
                     || (obj1->getEntType() == "Monster" && obj2->getEntType() != "Projectile" && obj2->getEntType() != "Samos" && obj2->getEntType() != "Monster"))
-                obj1->x -= minY;
+                obj1->y -= minY;
             else if (obj2->getEntType() == "Projectile" || obj2->getEntType() == "Samos" || obj2->getEntType() == "Monster")
-                obj2->x += minY;
+                obj2->y += minY;
             else {
-                obj1->x -= minY / 2;
-                obj2->x += minY / 2;
+                obj1->y -= minY / 2;
+                obj2->y += minY / 2;
             }
             if (std::signbit(obj1->getVY()) == std::signbit(minY))
                 obj1->vY = 0;
@@ -126,24 +126,18 @@ void Entity::applyKnockback(Entity *e, double kBForce)
 {
     if (mass == -1)
         return;
-    double dist_x = x + box->getX() + (box->getWidth() / 2) - e->x - e->box->getX() - (e->box->getWidth() / 2);
-    double dist_y = y + box->getY() + (box->getHeight() / 2) - e->y - e->box->getY() - (e->box->getHeight() / 2);
-    dist_x = (std::abs(dist_x) < 10) ? 10 : dist_x;
-    dist_y = (std::abs(dist_y) < 10) ? 10 : dist_y;
-    vX += 1000 * kBForce / (mass * dist_x);
-    vY += 1000 * kBForce / (mass * dist_y);
+    if (std::abs((x + box->getX() + (box->getWidth() / 2)) - (e->x + e->box->getX() + (e->box->getWidth() / 2))) >= 5)
+        vX += (((x + box->getX() + (box->getWidth() / 2)) < (e->x + e->box->getX() + (e->box->getWidth() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
+    vY += (((y + box->getY() + (box->getHeight() / 2)) < (e->y + e->box->getY() + (e->box->getHeight() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
 }
 
 void Entity::forceKnockback(Entity *e, double kBForce)
 {
     if (mass == -1)
         return;
-    double dist_x = x + box->getX() + (box->getWidth() / 2) - e->x - e->box->getX() - (e->box->getWidth() / 2);
-    double dist_y = y + box->getY() + (box->getHeight() / 2) - e->y - e->box->getY() - (e->box->getHeight() / 2);
-    dist_x = (std::abs(dist_x) < 10) ? 10 : dist_x;
-    dist_y = (std::abs(dist_y) < 10) ? 10 : dist_y;
-    vX = 1000 * kBForce / (mass * dist_x);
-    vY = 1000 * kBForce / (mass * dist_y);
+    if (std::abs((x + box->getX() + (box->getWidth() / 2)) - (e->x + e->box->getX() + (e->box->getWidth() / 2))) >= 5)
+        vX = (((x + box->getX() + (box->getWidth() / 2)) < (e->x + e->box->getX() + (e->box->getWidth() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
+    vY = (((y + box->getY() + (box->getHeight() / 2)) < (e->y + e->box->getY() + (e->box->getHeight() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
 }
 
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)

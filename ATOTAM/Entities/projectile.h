@@ -23,8 +23,12 @@ public:
     const std::string &getProjectileType() const;
     void setProjectileType(const std::string &newProjectileType);
 
+    double getKb() const;
+    void setKb(double newKb);
+
 private:
     int damage;
+    double kb;
     double lifeTime; // in s, starts with a positive value, destroys the object when null or negative
     std::string projectileType;
 };

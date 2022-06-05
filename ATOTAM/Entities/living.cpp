@@ -14,9 +14,8 @@ Living::Living(double x, double y, std::string facing, std::string name)
     nlohmann::json livJson = values["names"][name];
     health = livJson["maxHealth"];
     maxHealth = livJson["maxHealth"];
-    damage = livJson["damage"];
     invulnerable = livJson["invulnerable"];
-    groundBox = new CollisionBox(this->getBox()->getX(), this->getBox()->getY() + this->getBox()->getHeight(), this->getBox()->getWidth(), 2);
+    groundBox = new CollisionBox(getBox()->getX(), getBox()->getY() + getBox()->getHeight(), getBox()->getWidth(), 1);
 }
 
 Living::~Living()
@@ -25,9 +24,15 @@ Living::~Living()
         delete groundBox;
 }
 
-void Living::hit()
+void Living::hit(int damage, Entity *origin, double kb, bool forced)
 {
-
+    health -= damage;
+    if (origin != nullptr && kb != 0.0) {
+        if (forced)
+            forceKnockback(origin, kb);
+        else
+            applyKnockback(origin, kb);
+    }
 }
 
 int Living::getHealth() const
@@ -82,12 +87,12 @@ void Living::setInvulnerable(bool newInvulnerable)
     invulnerable = newInvulnerable;
 }
 
-int Living::getDamage() const
+double Living::getITime() const
 {
-    return damage;
+    return iTime;
 }
 
-void Living::setDamage(int newDamage)
+void Living::setITime(double newITime)
 {
-    damage = newDamage;
+    iTime = newITime;
 }

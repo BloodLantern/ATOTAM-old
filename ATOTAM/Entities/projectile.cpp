@@ -45,6 +45,7 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
     //Setting the damage and adjusting the speed depending on the projectile type
     damage = proJson["damage"];
     lifeTime = proJson["lifeTime"];
+    kb = proJson["knockback"];
 
     if (type == "Beam") {
         setState(facing);
@@ -63,40 +64,28 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
 
 void Projectile::hitting(Entity* ent)
 {
-    if (projectileType == "Beam") {
-        setVX(0);
-        setVY(0);
-        setState("Hit");
-        if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
-            Living* liv = static_cast<Living*>(ent);
-            liv->hit();
+    if (getState() != "Hit") {
+        if (getProjectileType() != "Bomb") {
+            setLifeTime(0.0);
+            setVX(0.0);
+            setVY(0.0);
         }
-    } else if (projectileType == "Missile") {
-        setVX(0);
-        setVY(0);
-        setState("Hit");
-        if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
-            Living* liv = static_cast<Living*>(ent);
-            liv->hit();
-        }
+    } else if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
+        Living* liv = static_cast<Living*>(ent);
+        if (getProjectileType() != "Bomb" || ent->getEntType() != "Samos")
+            liv->hit(damage, this, kb);
+        else
+            liv->hit(0, this, 10*kb);
     }
 }
 
 void Projectile::timeOut()
 {
-    if (projectileType == "Beam") {
-        setVX(0);
-        setVY(0);
-        setState("Hit");
-    } else if (projectileType == "Missile") {
-        setVX(0);
-        setVY(0);
-        setState("Hit");
-    } else if (projectileType == "Bomb") {
-        setVX(0);
-        setVY(0);
-        setState("Hit");
-    }
+    setVX(0);
+    setVY(0);
+    setState("Hit");
+    nlohmann::json pj = Entity::values["names"][getName()];
+    setBox(new CollisionBox(pj["hit_offset_x"], pj["hit_offset_y"], pj["hit_width"], pj["hit_height"]));
 }
 
 int Projectile::getDamage() const
@@ -127,4 +116,14 @@ const std::string &Projectile::getProjectileType() const
 void Projectile::setProjectileType(const std::string &newProjectileType)
 {
     projectileType = newProjectileType;
+}
+
+double Projectile::getKb() const
+{
+    return kb;
+}
+
+void Projectile::setKb(double newKb)
+{
+    kb = newKb;
 }

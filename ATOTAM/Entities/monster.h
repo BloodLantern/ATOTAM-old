@@ -23,9 +23,13 @@ public:
     bool getRanged() const;
     void setRanged(bool newRanged);
 
+    bool getDamageOnContact() const;
+    void setDamageOnContact(bool newDamageOnContact);
+
 private:
     std::string behavior; // Behavior of the Monster
     int damage; // Damage per attack
+    bool damageOnContact;
     float attackSpeed; // Number of attack per seconds
     double attackCooldown = 0; // Current cooldown left
     bool ranged; // Whether this Monster uses ranged attacks

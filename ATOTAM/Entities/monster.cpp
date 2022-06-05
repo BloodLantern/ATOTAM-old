@@ -7,6 +7,7 @@ Monster::Monster(double x, double y, std::string facing, std::string name)
     nlohmann::json monsterJson = values["names"][name];
     behavior = monsterJson["behavior"];
     damage = monsterJson["damage"];
+    damageOnContact = monsterJson["damageOnContact"];
     attackSpeed = monsterJson["attackSpeed"];
     ranged = monsterJson["ranged"];
 }
@@ -59,4 +60,14 @@ bool Monster::getRanged() const
 void Monster::setRanged(bool newRanged)
 {
     ranged = newRanged;
+}
+
+bool Monster::getDamageOnContact() const
+{
+    return damageOnContact;
+}
+
+void Monster::setDamageOnContact(bool newDamageOnContact)
+{
+    damageOnContact = newDamageOnContact;
 }

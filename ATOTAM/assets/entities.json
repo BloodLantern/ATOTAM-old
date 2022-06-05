@@ -68,9 +68,10 @@
 			"shootTime": 0.5,
 			"maxHealth": 99,
 			"invulnerable": false,
-			"damage": 0,
 			"damageOnContact": false,
 			"mass": 100,
+			"iTime": 0.5,
+			"contactKB": 10.0,
 			"shootOffset": {
 				"Right": {
 					"Standing": {
@@ -144,7 +145,7 @@
 					"Morph": {
 						"Right": {
 							"x": 36,
-							"y": 92
+							"y": 94
 						}
 					}
 				},
@@ -220,7 +221,7 @@
 					"Morph": {
 						"Left": {
 							"x": 36,
-							"y": 92
+							"y": 94
 						}
 					}
 				}
@@ -231,42 +232,62 @@
 			"defaultState": "None",
 			"height": 16,
 			"width": 16,
+			"hit_height": 16,
+			"hit_width": 16,
+			"hit_offset_x": 0,
+			"hit_offset_y": 0,
 			"speed": 1000,
 			"lifeTime": 1.5,
 			"damage": 20,
-			"mass": 1
+			"mass": 1,
+			"knockback": 0.0
 		},
 		"Missile": {
 			"texture": "Missile",
 			"defaultState": "None",
 			"height": 30,
 			"width": 30,
+			"hit_height": 50,
+			"hit_width": 50,
+			"hit_offset_x": -10,
+			"hit_offset_y": -10,
 			"speed": 750,
 			"lifeTime": 2.0,
 			"damage": 50,
-			"mass": 10
+			"mass": 10,
+			"knockback": 10.0
 		},
 		"Bomb": {
 			"texture": "Bomb",
 			"defaultState": "None",
 			"height": 16,
 			"width": 16,
+			"hit_height": 48,
+			"hit_width": 48,
+			"hit_offset_x": -16,
+			"hit_offset_y": -16,
 			"speed": 0,
-			"lifeTime": 2,
+			"lifeTime": 1,
 			"damage": 50,
-			"mass": 10
+			"mass": 10,
+			"knockback": 2.0
 		},
 		"Grenade": {
 			"texture": "Grenade",
 			"defaultState": "None",
 			"height": 16,
 			"width": 16,
+			"hit_height": 48,
+			"hit_width": 48,
+			"hit_offset_x": -16,
+			"hit_offset_y": -16,
 			"speed": 750,
 			"lifeTime": 3.0,
 			"damage": 60,
 			"gravity": true,
 			"friction": 0.2,
-			"mass": 10
+			"mass": 10,
+			"knockback": 10.0
 		},
 		"Wall": {
 			"texture": "Wall",
@@ -349,12 +370,25 @@
 			"mass": -1
 		},
 		"Test": {
+			"texture": "Test",
+			"offset_x": 0,
+			"offset_y": 0,
+			"width": 60,
+			"height": 60,
+			"type": "Monster",
+			"defaultState": "None",
+			"gravity":  true,
+			"friction": 1,
+			"movable": true,
 			"behavior": "Static",
 			"damage": 20,
 			"attackSpeed": -1,
 			"ranged": false,
 			"damageOnContact": true,
-			"mass": 50
+			"mass": 50,
+			"maxHealth": 100,
+			"invulnerable": false,
+			"iTime": 0.5
 		},
 		"TalkingNPC": {
 			"texture": "TalkingNPC",
@@ -2037,6 +2071,46 @@
 				"y": 0,
 				"width": 1,
 				"height": 1,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1,
+				"dontReset": false
+			}
+		},
+		"Test": {
+			"Standing": {
+				"file": "Image2.png",
+				"x": 0,
+				"y": 0,
+				"width": 30,
+				"height": 30,
+				"count": 1,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 1,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1,
+				"dontReset": false
+			},
+			"None": {
+				"file": "Image2.png",
+				"x": 0,
+				"y": 0,
+				"width": 30,
+				"height": 30,
 				"count": 1,
 				"emptyFrames": 0,
 				"emptyFramesReversed": false,

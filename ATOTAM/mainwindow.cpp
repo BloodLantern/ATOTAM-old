@@ -137,10 +137,15 @@ void MainWindow::getInputs()
 
 bool MainWindow::updateProjectile(Projectile *p)
 {
-    p->setLifeTime(p->getLifeTime() - (1 / frameRate));
-    if (p->getLifeTime() <= 0.0) {
-        p->timeOut();
+    if (p->getState() == "Hit")
+        p->setBox(nullptr);
+    else {
+        p->setLifeTime(p->getLifeTime() - (1 / frameRate));
+        if (p->getLifeTime() <= 0.0) {
+            p->timeOut();
+        }
     }
+
     if (p->getState() == "Hit" && p->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"][p->getName()]["texture"]]["Hit"]["count"]) - 1))
         return true;
     else
@@ -1144,9 +1149,9 @@ void MainWindow::updateSamos(Samos *s)
         delete crouchBox;
     }
     if (changedBox) {
-        s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 2));
-        s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 2, s->getBox()->getHeight()));
-        s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 2, s->getBox()->getY(), 2, s->getBox()->getHeight()));
+        s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 1));
+        s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 1, s->getBox()->getHeight()));
+        s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 1, s->getBox()->getY(), 1, s->getBox()->getHeight()));
         for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
             if ((*i)->getEntType() == "Terrain" || (*i)->getEntType() == "DynamicObj") {
                 if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
@@ -1374,6 +1379,7 @@ void MainWindow::updateSamos(Samos *s)
         if (p != nullptr) {
             p->setX(p->getX() + s->getVX() / frameRate);
             p->setY(p->getY() + s->getVY() / frameRate);
+
             addRenderable(p);
             s->setShootTime(static_cast<double>(samosJson["shootTime"]));
         }
@@ -1438,6 +1444,7 @@ void MainWindow::updateMapViewer()
 void MainWindow::closeEvent(QCloseEvent *)
 {
     running = false;
+    clearRendering();
 }
 
 void MainWindow::paintEvent(QPaintEvent *)
@@ -1701,7 +1708,7 @@ void MainWindow::updatePhysics()
             for (Entity* ent : handleCollision(*i,*j))
                 toAdd.push_back(ent);
         }
-        if ((*i)->getIsMovable()) {
+        if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
             if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
                 (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
                 if ((*i)->getEntType() == "Projectile") {
@@ -1738,7 +1745,6 @@ void MainWindow::updatePhysics()
         for (std::vector<Entity*>::iterator j = solidList.begin(); j!= solidList.end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
-                (*i)->setVY(0);
                 break;
             }
         }

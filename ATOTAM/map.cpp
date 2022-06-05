@@ -1,3 +1,4 @@
+#include "Entities/monster.h"
 #include "mainwindow.h"
 #include "map.h"
 #include <fstream>
@@ -48,6 +49,10 @@ std::vector<Entity *> Map::loadRoom(int id)
                     NPC *npc = new NPC(static_cast<int>(roomJson["position"][0]) + static_cast<int>(obj["x"]),
                             static_cast<int>(roomJson["position"][1]) + static_cast<int>(obj["y"]), obj["facing"], name.first);
                     e = npc;
+                } else if (entity.first == "Monster") {
+                    Monster *m = new Monster(static_cast<int>(roomJson["position"][0]) + static_cast<int>(obj["x"]),
+                            static_cast<int>(roomJson["position"][1]) + static_cast<int>(obj["y"]), obj["facing"], name.first);
+                    e = m;
                 }
 
                 // Make sure not to use a null Entity pointer

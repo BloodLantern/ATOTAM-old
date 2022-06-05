@@ -545,8 +545,8 @@
 						}
 					]
 				},
-				"NPC": {
-					"TalkingNPC": [
+				"Monster": {
+					"Test": [
 						{
 							"x": 1000,
 							"y": 950,

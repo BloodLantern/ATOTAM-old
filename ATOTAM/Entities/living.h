@@ -12,7 +12,7 @@ public:
     Living(double x, double y, std::string facing, std::string name);
     ~Living();
 
-    void hit();
+    void hit(int damage, Entity *origin = nullptr, double kb = 0, bool forced = false);
 
     int getHealth() const;
     void setHealth(int newHealth);
@@ -29,14 +29,14 @@ public:
     bool getInvulnerable() const;
     void setInvulnerable(bool newInvulnerable);
 
-    int getDamage() const;
-    void setDamage(int newDamage);
+    double getITime() const;
+    void setITime(double newITime);
 
 private:
     int health;
     int maxHealth;
-    int damage;
     bool invulnerable;
+    double iTime = 0.0;
 
     CollisionBox *groundBox;
     bool onGround;
