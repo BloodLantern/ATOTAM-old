@@ -131,6 +131,16 @@ void Entity::applyKnockback(Entity *e, double kBForce)
     vY += 1000 * kBForce / (mass * dist_y);
 }
 
+void Entity::forceKnockback(Entity *e, double kBForce)
+{
+    double dist_x = x + box->getX() + (box->getWidth() / 2) - e->x - e->box->getX() - (e->box->getWidth() / 2);
+    double dist_y = y + box->getY() + (box->getHeight() / 2) - e->y - e->box->getY() - (e->box->getHeight() / 2);
+    dist_x = (std::abs(dist_x) < 10) ? 10 : dist_x;
+    dist_y = (std::abs(dist_y) < 10) ? 10 : dist_y;
+    vX = 1000 * kBForce / (mass * dist_x);
+    vY = 1000 * kBForce / (mass * dist_y);
+}
+
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
     : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), frictionFactor(frictionFactor), isMovable(isMovable), name(name)
 {

@@ -28,6 +28,7 @@ public:
     std::vector<QImage> updateAnimation(std::string state);
     void updateV(double framerate);
     void applyKnockback(Entity *e, double kBForce);
+    void forceKnockback(Entity *e, double kBForce);
 
     CollisionBox *getBox() const;
     void setBox(CollisionBox *newBox);

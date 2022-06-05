@@ -652,7 +652,7 @@ void MainWindow::updateSamos(Samos *s)
     }
 
     if (s->getIsInAltForm()) {
-        if (inputList["morph"] && inputTime["morph"] == 0.0 && canCrouch) {
+        if (((inputList["morph"] && inputTime["morph"] == 0.0) || (inputList["up"] && inputTime["up"] == 0.0)) && canCrouch) {
             s->setState("UnMorphBalling");
             s->setIsInAltForm(false);
         } else {
@@ -950,24 +950,25 @@ void MainWindow::updateSamos(Samos *s)
                     } else if (s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling") {
                         if (inputList["down"] && !inputList["up"] && inputTime["down"] == 0.0 && canMorph && s->getState() == "IdleCrouch")
                             s->setState("MorphBalling");
-
-                        if (canStand) {
-                            if (((!inputList["down"] && !inputList["up"]) || (inputList["down"] && inputList["up"])) && s->getState() != "IdleCrouch" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "Uncrouching" && s->getState() != "Crouching")
-                                s->setState("Standing");
-                            else if (((s->getState() == "Crouching" && s->getFrame() == 2) || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") && !inputList["up"])
+                        else {
+                            if (canStand) {
+                                if (((!inputList["down"] && !inputList["up"]) || (inputList["down"] && inputList["up"])) && s->getState() != "IdleCrouch" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "Uncrouching" && s->getState() != "Crouching")
+                                    s->setState("Standing");
+                                else if (((s->getState() == "Crouching" && s->getFrame() == 2) || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") && !inputList["up"])
+                                    s->setState("IdleCrouch");
+                                else if (!inputList["up"] && !(s->getState() == "Uncrouching" && !inputList["down"]))
+                                    s->setState("Crouching");
+                                else if (((s->getState() == "Uncrouching" && s->getFrame() == 2)))
+                                    s->setState("Standing");
+                                else if (s->getState() == "Uncrouching" || s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag")
+                                    s->setState("Uncrouching");
+                                else
+                                    s->setState("Standing");
+                            } else if (canCrouch)
                                 s->setState("IdleCrouch");
-                            else if (!inputList["up"] && !(s->getState() == "Uncrouching" && !inputList["down"]))
-                                s->setState("Crouching");
-                            else if (((s->getState() == "Uncrouching" && s->getFrame() == 2)))
-                                s->setState("Standing");
-                            else if (s->getState() == "Uncrouching" || s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag")
-                                s->setState("Uncrouching");
-                            else
-                                s->setState("Standing");
-                        } else if (canCrouch)
-                            s->setState("IdleCrouch");
-                        else if (canMorph)
-                            s->setState("MorphBalling");
+                            else if (canMorph)
+                                s->setState("MorphBalling");
+                        }
                     }
                     if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
                         s->setVX(0);
