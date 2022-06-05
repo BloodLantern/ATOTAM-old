@@ -61,8 +61,7 @@ nlohmann::json MainWindow::stringsJson = loadJson("strings");
 
 bool MainWindow::canChangeBox(Entity *e, CollisionBox *b)
 {
-    Entity ne = Entity(*e);
-    ne.setBox(new CollisionBox(*b));
+    Entity ne = Entity(e->getX(), e->getY(), new CollisionBox(*b), nullptr, e->getEntType(), e->getIsAffectedByGravity(), e->getFacing(), e->getFrictionFactor(), e->getName(), e->getIsMovable());
     for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
         if ((*i)->getEntType() == "Terrain" || (*i)->getEntType() == "DynamicObj") {
             if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {

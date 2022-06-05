@@ -69,6 +69,8 @@
 			"maxHealth": 99,
 			"invulnerable": false,
 			"damage": 0,
+			"damageOnContact": false,
+			"mass": 100,
 			"shootOffset": {
 				"Right": {
 					"Standing": {
@@ -231,7 +233,8 @@
 			"width": 16,
 			"speed": 1000,
 			"lifeTime": 1.5,
-			"damage": 20
+			"damage": 20,
+			"mass": 1
 		},
 		"Missile": {
 			"texture": "Missile",
@@ -240,7 +243,8 @@
 			"width": 30,
 			"speed": 750,
 			"lifeTime": 2.0,
-			"damage": 50
+			"damage": 50,
+			"mass": 10
 		},
 		"Bomb": {
 			"texture": "Bomb",
@@ -249,7 +253,8 @@
 			"width": 16,
 			"speed": 0,
 			"lifeTime": 2,
-			"damage": 50
+			"damage": 50,
+			"mass": 10
 		},
 		"Grenade": {
 			"texture": "Grenade",
@@ -260,7 +265,8 @@
 			"lifeTime": 3.0,
 			"damage": 60,
 			"gravity": true,
-			"friction": 0.2
+			"friction": 0.2,
+			"mass": 10
 		},
 		"Wall": {
 			"texture": "Wall",
@@ -272,7 +278,8 @@
 			"defaultState": "Normal",
 			"gravity":  false,
 			"friction": 0,
-			"movable": false
+			"movable": false,
+			"mass": -1
 		},
 		"Ground": {
 			"texture": "Ground",
@@ -284,7 +291,8 @@
 			"defaultState": "Normal",
 			"gravity":  false,
 			"friction": 0,
-			"movable": false
+			"movable": false,
+			"mass": -1
 		},
 		"VerticalDoor": {
 			"texture": "Door",
@@ -296,7 +304,8 @@
 			"defaultState": "None",
 			"gravity":  false,
 			"friction": 0,
-			"movable": false
+			"movable": false,
+			"mass": -1
 		},
 		"HorizontalDoor": {
 			"texture": "Door",
@@ -308,13 +317,16 @@
 			"defaultState": "None",
 			"gravity":  false,
 			"friction": 0,
-			"movable": false
+			"movable": false,
+			"mass": -1
 		},
 		"Test": {
 			"behavior": "Static",
 			"damage": 20,
-			"attackSpeed": 1.0,
-			"ranged": false
+			"attackSpeed": -1,
+			"ranged": false,
+			"damageOnContact": true,
+			"mass": 50
 		}
 	},
 	"textures": {

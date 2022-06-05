@@ -27,6 +27,7 @@ public:
     void updateTexture();
     std::vector<QImage> updateAnimation(std::string state);
     void updateV(double framerate);
+    void applyKnockback(Entity *e, double kBForce);
 
     CollisionBox *getBox() const;
     void setBox(CollisionBox *newBox);
@@ -79,6 +80,9 @@ public:
     const std::string &getLastFrameFacing() const;
     void setLastFrameFacing(const std::string &newLastFrameFacing);
 
+    double getMass() const;
+    void setMass(double newMass);
+
 private:
     CollisionBox* box;
     QImage* texture = nullptr; // Image to be rendered now
@@ -93,6 +97,7 @@ private:
     double frictionFactor;
     bool isMovable;
     std::string name;
+    double mass = 100;
 
     // Rendering
     unsigned int frame = 0;

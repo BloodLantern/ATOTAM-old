@@ -121,6 +121,16 @@ void Entity::updateV(double framerate)
         if (std::abs(vX) < static_cast<double>(values["general"]["slowcap"])) vX = 0;
 }
 
+void Entity::applyKnockback(Entity *e, double kBForce)
+{
+    double dist_x = x + box->getX() + (box->getWidth() / 2) - e->x - e->box->getX() - (e->box->getWidth() / 2);
+    double dist_y = y + box->getY() + (box->getHeight() / 2) - e->y - e->box->getY() - (e->box->getHeight() / 2);
+    dist_x = (std::abs(dist_x) < 10) ? 10 : dist_x;
+    dist_y = (std::abs(dist_y) < 10) ? 10 : dist_y;
+    vX += 1000 * kBForce / (mass * dist_x);
+    vY += 1000 * kBForce / (mass * dist_y);
+}
+
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
     : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), frictionFactor(frictionFactor), isMovable(isMovable), name(name)
 {
@@ -139,6 +149,7 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     isAffectedByGravity = entJson["gravity"];
     frictionFactor = entJson["friction"];
     isMovable = entJson["movable"];
+    mass = entJson["mass"];
     box = new CollisionBox(entJson["offset_x"], entJson["offset_y"], entJson["width"], entJson["height"]);
 }
 
@@ -400,6 +411,16 @@ const std::string &Entity::getLastFrameFacing() const
 void Entity::setLastFrameFacing(const std::string &newLastFrameFacing)
 {
     lastFrameFacing = newLastFrameFacing;
+}
+
+double Entity::getMass() const
+{
+    return mass;
+}
+
+void Entity::setMass(double newMass)
+{
+    mass = newMass;
 }
 
 
