@@ -83,7 +83,7 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
 
 std::string assetsPath;
 
-nlohmann::json Entity::loadNames(std::string assetsPath_)
+nlohmann::json Entity::loadValues(std::string assetsPath_)
 {
     assetsPath = assetsPath_;
     //loading the json with the info about mobs

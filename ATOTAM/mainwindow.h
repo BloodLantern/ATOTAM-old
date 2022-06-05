@@ -40,8 +40,11 @@ public:
     static double gravity; //p.s^-2
     static nlohmann::json keyCodes;
     static Map currentMap;
-    static nlohmann::json loadKeyCodes();
+    static nlohmann::json loadJson(std::string fileName); // Loads the given file name's json starting in the assets folder and returns it
     static void loadGeneral();
+    template<typename ...StdStrings>
+    static QString translate(std::string text, StdStrings... subCategories);
+    static nlohmann::json stringsJson;
     static std::map<std::string, bool> inputList;
     static std::map<std::string, double> inputTime;
     static std::chrono::system_clock::time_point lastFpsShown; // Time of the last frame in which the shown fps were updated
@@ -56,6 +59,8 @@ public:
     static double mapViewerCameraSpeed;
     static const std::string assetsPath;
     static std::string doorTransition;
+    static nlohmann::json params;
+    static std::string language;
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);
@@ -70,8 +75,6 @@ public:
     void getInputs();
     bool updateProjectile(Projectile* p);
     void updateMenu();
-    static nlohmann::json params;
-    static nlohmann::json loadParams();
 
     const std::vector<Entity *> &getRendering() const;
     void setRendering(const std::vector<Entity *> &newRendering);

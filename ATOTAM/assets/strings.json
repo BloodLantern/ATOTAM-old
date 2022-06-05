@@ -1,0 +1,18 @@
+{
+	"en-US": {
+		"ui": {
+			"selectedWeapon": {
+				"Missile": "Missile",
+				"Beam": "Beam"
+			}
+		}
+	},
+	"fr-FR": {
+		"ui": {
+			"selectedWeapon": {
+				"Missile": "Missile",
+				"Beam": "Rayon"
+			}
+		}
+	}
+}

@@ -31,6 +31,7 @@ std::pair<int,int> MainWindow::resolution = {1920,1080};
 Map MainWindow::currentMap = Map::loadMap("test");
 double MainWindow::mapViewerCameraSpeed;
 std::string MainWindow::doorTransition = "";
+std::string MainWindow::language;
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -46,25 +47,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-nlohmann::json MainWindow::loadKeyCodes()
+nlohmann::json MainWindow::loadJson(std::string fileName)
 {
-    //Loading keybinds
-    std::ifstream keys_file(assetsPath + "/inputs.json");
+    std::ifstream keys_file(assetsPath + "/" + fileName + ".json");
     nlohmann::json temp;
     keys_file >> temp;
     return temp;
 }
 
-nlohmann::json MainWindow::loadParams()
-{
-    //loading the json with the info about mobs
-    std::ifstream names_file(assetsPath + "/params.json");
-    nlohmann::json temp;
-    names_file >> temp;
-    return temp;
-}
-
-nlohmann::json MainWindow::params = MainWindow::loadParams();
+nlohmann::json MainWindow::params = loadJson("params");
+nlohmann::json MainWindow::keyCodes = loadJson("inputs");
+nlohmann::json MainWindow::stringsJson = loadJson("strings");
 
 void MainWindow::loadGeneral()
 {
@@ -84,9 +77,18 @@ void MainWindow::loadGeneral()
     fullscreen = params["fullscreen"];
     resolution.first = params["resolution_x"];
     resolution.second = params["resolution_y"];
+    language = params["language"];
 }
 
-nlohmann::json MainWindow::keyCodes = MainWindow::loadKeyCodes();
+template<typename ...StdStrings>
+QString MainWindow::translate(std::string text, StdStrings... subCategories)
+{
+    nlohmann::json json = stringsJson[language];
+    for (std::string category : {subCategories...})
+        json = json[category];
+    return QString::fromStdString(json[text]);
+}
+
 
 void MainWindow::getInputs()
 {
@@ -285,7 +287,7 @@ void MainWindow::updateMenu()
                      }
                  }
             else if (menuOptions[selectedOption] == "Reload entities.json") {
-                Entity::values = Entity::loadNames(assetsPath);
+                Entity::values = Entity::loadValues(assetsPath);
                 loadGeneral();
             } else if (menuOptions[selectedOption] == "Reload room") {
                 clearRendering("Samos");
@@ -1400,7 +1402,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         //Selected weapon
         painter.fillRect(QRect(70,15,100,30), QColor("white"));
         painter.drawRect(QRect(70,15,100,30));
-        painter.drawText(QPoint(80, 40), QString::fromStdString(s->getSelectedWeapon()));
+        painter.drawText(QPoint(80, 40), translate(s->getSelectedWeapon(), "ui", "selectedWeapon"));
 
         //Missile count
         painter.fillRect(QRect(200,15,70,30), QColor("white"));

@@ -29,6 +29,7 @@ SOURCES += \
     Easing/Quart.cpp \
     Easing/Quint.cpp \
     Easing/Sine.cpp \
+    dialogue.cpp \
     main.cpp \
     mainwindow.cpp \
     map.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     Easing/Quart.h \
     Easing/Quint.h \
     Easing/Sine.h \
+    dialogue.h \
     mainwindow.h \
     map.h \
     nlohmann/json.hpp \
@@ -63,8 +65,6 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-TRANSLATIONS += \
-    ATOTAM_fr_FR.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 

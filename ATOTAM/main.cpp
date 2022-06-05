@@ -168,14 +168,14 @@ int main(int argc, char *argv[])
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
-        const QString baseName = "Maitrohide_" + QLocale(locale).name();
+        const QString baseName = "ATOTAM_" + QLocale(locale).name();
         if (translator.load(":/i18n/" + baseName)) {
             a.installTranslator(&translator);
             break;
         }
     }
 
-    Entity::values = Entity::loadNames(MainWindow::assetsPath);
+    Entity::values = Entity::loadValues(MainWindow::assetsPath);
     MainWindow::loadGeneral();
     MainWindow w(&a);
     if (MainWindow::fullscreen)
