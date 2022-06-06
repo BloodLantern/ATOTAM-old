@@ -63,6 +63,7 @@ public:
     static nlohmann::json params;
     static std::string language;
     static Dialogue currentDialogue;
+    static QPoint cameraBeforeMapViewer;
 
     void closeEvent(QCloseEvent *event);
     virtual void paintEvent(QPaintEvent*);

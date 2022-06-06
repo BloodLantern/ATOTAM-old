@@ -34,6 +34,7 @@ double MainWindow::mapViewerCameraSpeed;
 std::string MainWindow::doorTransition = "";
 std::string MainWindow::language;
 Dialogue MainWindow::currentDialogue; // Null Dialogue
+QPoint MainWindow::cameraBeforeMapViewer;
 
 MainWindow::MainWindow(QApplication *app)
     : ui(new Ui::MainWindow)
@@ -324,11 +325,13 @@ void MainWindow::updateMenu()
                 int mapId = currentMap.getCurrentRoomId();
                 currentMap = Map::loadMap(currentMap.getName());
                 currentMap.setCurrentRoomId(mapId);
-            } else if (menuOptions[selectedOption] == "Map viewer mode : ON")
+            } else if (menuOptions[selectedOption] == "Map viewer mode : ON") {
                 mapViewer = false;
-            else if (menuOptions[selectedOption] == "Map viewer mode : OFF")
+                camera = cameraBeforeMapViewer;
+            } else if (menuOptions[selectedOption] == "Map viewer mode : OFF") {
                 mapViewer = true;
-            else if (menuOptions[selectedOption] == "Fullscreen : ON") {
+                cameraBeforeMapViewer = camera;
+            } else if (menuOptions[selectedOption] == "Fullscreen : ON") {
                 fullscreen = false;
                 params["fullscreen"] = false;
                 std::ofstream paramsfile(assetsPath + "/params.json");
