@@ -1464,7 +1464,15 @@ void MainWindow::paintEvent(QPaintEvent *)
             (*ent)->setTexture(&emptyTexture);
         }
 
-        //Try to draw the textrue, if it fails, set it to the error texture and try again
+        // Make sure not to draw the Entities that aren't visible
+        if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * renderingMultiplier < camera.x() // If too much on the left
+                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + resolution.first // If too much on the right
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * renderingMultiplier < camera.y() // If too high
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + resolution.second) { // If too low
+            continue;
+        }
+
+        //Try to draw the texture: if it fails, set it to the error texture and try again
         try {
             painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
                                     (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
