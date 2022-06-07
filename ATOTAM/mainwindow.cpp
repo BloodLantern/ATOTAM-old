@@ -927,24 +927,39 @@ void MainWindow::updateSamos()
 
     if (!s->getOnGround() && !inputList["aim"] && !inputList["shoot"] && s->getShootTime() <= 0 && !s->getIsInAltForm() && s->getState() != "MorphBalling" && canSpin) {
         std::string wallJump = "";
+        bool wallJumpL = false;
+        bool wallJumpR = false;
         for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
             if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
-                wallJump = "Left";
+                wallJumpL = true;
             } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
-                wallJump = "Right";
+                wallJumpR= true;
             }
-            if (wallJump != "")
+            if (wallJumpL && wallJumpR)
                 break;
         }
         for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
             if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
-                wallJump = "Left";
+                wallJumpL = true;
             } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
-                wallJump = "Right";
+                wallJumpR= true;
             }
-            if (wallJump != "")
+            if (wallJumpL && wallJumpR)
                 break;
         }
+
+        if (wallJumpL && !wallJumpR)
+            wallJump = "Left";
+        else if (!wallJumpL && wallJumpR)
+            wallJump = "Right";
+        else if (wallJumpL && wallJumpR) {
+            if (inputList["right"])
+                wallJump = "Right";
+            else
+                wallJump = "Left";
+
+        }
+
 
         if (wallJump == "Right" && (inputList["right"] || s->getState() == "WallJump" || s->getState() == "SpinJump")) {
             s->setFacing("Left");
@@ -1950,10 +1965,6 @@ void MainWindow::updatePhysics()
 
             if (std::abs((*p)->getVX()) < speedcap) {
                 if (std::abs((*p)->getVX()) > slowcap) {
-                    if ((*p)->getVX() > 0)
-                        (*p)->setVX(1 / ((1 / (*p)->getVX()) + (airFriction * (*p)->getFrictionFactor() / frameRate)));
-                    else if ((*p)->getVX() < 0)
-                        (*p)->setVX(1 / ((1 / (*p)->getVX()) - (airFriction * (*p)->getFrictionFactor() / frameRate)));
                 //Slowcap
                 } else
                     (*p)->setVX(0);
