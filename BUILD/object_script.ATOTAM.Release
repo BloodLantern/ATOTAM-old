@@ -20,6 +20,7 @@ release/Quart.o
 release/Quint.o
 release/Sine.o
 release/dialogue.o
+release/dynamicobj.o
 release/main.o
 release/mainwindow.o
 release/map.o

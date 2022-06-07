@@ -25,7 +25,7 @@ std::map<std::string, double> MainWindow::inputTime;
 const std::string MainWindow::assetsPath = "../ATOTAM/assets";
 QImage MainWindow::errorTexture(QString::fromStdString(assetsPath + "/textures/error.png"));
 QImage MainWindow::emptyTexture(QString::fromStdString(assetsPath + "/textures/empty.png"));
-bool MainWindow::showUI = true;
+bool MainWindow::showHUD = true;
 bool MainWindow::isPaused = false;
 bool MainWindow::fullscreen = false;
 std::pair<int,int> MainWindow::resolution = {1920,1080};
@@ -65,18 +65,25 @@ nlohmann::json MainWindow::stringsJson = loadJson("strings");
 bool MainWindow::canChangeBox(Entity *e, CollisionBox *b)
 {
     Entity ne = Entity(e->getX(), e->getY(), new CollisionBox(*b), nullptr, e->getEntType(), e->getIsAffectedByGravity(), e->getFacing(), e->getFrictionFactor(), e->getName(), e->getIsMovable());
-    for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
-        if ((*i)->getEntType() == "Terrain" || (*i)->getEntType() == "DynamicObj") {
-            if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
-                Entity::calcCollisionReplacement(&ne, *i);
-            }
+    for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+        if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
+            Entity::calcCollisionReplacement(&ne, *i);
         }
     }
-    for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
-        if ((*i)->getEntType() == "Terrain" || (*i)->getEntType() == "DynamicObj") {
-            if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
-                return false;
-            }
+    for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+        if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
+            Entity::calcCollisionReplacement(&ne, *i);
+        }
+    }
+
+    for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+        if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
+            return false;
+        }
+    }
+    for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+        if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
+            return false;
         }
     }
 
@@ -295,26 +302,11 @@ void MainWindow::updateMenu()
             else if (menuOptions[selectedOption] == "Show hitboxes : OFF")
                  renderHitboxes = true;
             else if (menuOptions[selectedOption] == "Max missiles")
-                 for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
-                     if ((*i)->getEntType() == "Samos") {
-                         Samos* s = static_cast<Samos*>(*i);
-                         s->setMissileCount(s->getMaxMissileCount());
-                     }
-                 }
+                 s->setMissileCount(s->getMaxMissileCount());
             else if (menuOptions[selectedOption] == "Max grenades")
-                 for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
-                     if ((*i)->getEntType() == "Samos") {
-                         Samos* s = static_cast<Samos*>(*i);
-                         s->setGrenadeCount(s->getMaxGrenadeCount());
-                     }
-                 }
+                 s->setGrenadeCount(s->getMaxGrenadeCount());
             else if (menuOptions[selectedOption] == "Max health")
-                 for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
-                     if ((*i)->getEntType() == "Samos") {
-                         Samos* s = static_cast<Samos*>(*i);
-                         s->setHealth(s->getMaxHealth());
-                     }
-                 }
+                 s->setHealth(s->getMaxHealth());
             else if (menuOptions[selectedOption] == "Reload entities.json") {
                 Entity::values = Entity::loadValues(assetsPath);
                 loadGeneral();
@@ -383,261 +375,7 @@ void MainWindow::updateMenu()
         }
 }
 
-std::vector<Entity*> MainWindow::handleCollision(Entity *obj1, Entity *obj2)
-{//{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
-
-    //Long if else to decide what to do between two entities after a collision
-    if (obj1->getEntType() == "Terrain") {
-        if (obj2->getEntType() == "Samos") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Monster") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Area") {
-            // TODO
-
-        } else if (obj2->getEntType() == "DynamicObj") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "NPC") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Projectile") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Projectile* p = static_cast<Projectile*>(obj2);
-                p->hitting(obj1);
-            }
-        }
-
-    } else if (obj1->getEntType() == "Samos") {
-        if (obj2->getEntType() == "Terrain") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Monster") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-            // TODO hit
-        } else if (obj2->getEntType() == "Area") {
-            // TODO
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Area* a = static_cast<Area*>(obj2);
-                if (a->getAreaType() == "Door") {
-                    Door* d = static_cast<Door*>(a);
-                    currentMap.setCurrentRoomId(d->getEndingRoom());
-                    std::vector<Entity*> nextRen = currentMap.loadRoom();
-                    if (d->getState().find("Right") != std::string::npos)
-                        doorTransition = "Right";
-                    else if (d->getState().find("Left") != std::string::npos)
-                        doorTransition = "Left";
-                    else if (d->getState().find("Up") != std::string::npos)
-                        doorTransition = "Up";
-                    else if (d->getState().find("Down") != std::string::npos)
-                        doorTransition = "Down";
-                    return nextRen;
-                }
-            }
-        } else if (obj2->getEntType() == "DynamicObj") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "NPC") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                if (inputList["interact"] && inputTime["interact"] == 0.0) {
-                    NPC* npc = static_cast<NPC*>(obj2);
-                    if (npc->getNpcType() == "Talking") {
-                        if (stringsJson[language]["dialogues"][npc->getName()][npc->getTimesInteracted()]["talking"].is_null())
-                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][npc->getName()][npc->getTimesInteracted()]["text"],
-                                    npc->getName());
-                        else
-                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][npc->getName()][npc->getTimesInteracted()]["text"],
-                                    stringsJson[language]["dialogues"][npc->getName()][npc->getTimesInteracted()]["talking"]);
-                    }
-                    npc->setTimesInteracted(npc->getTimesInteracted() + 1);
-                }
-            }
-        } else if (obj2->getEntType() == "Projectile") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Projectile* p = static_cast<Projectile*>(obj2);
-                p->hitting(obj1);
-            }
-        }
-
-    } else if (obj1->getEntType() == "Monster") {
-        if (obj2->getEntType() == "Terrain") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Samos") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-            // TODO hit
-        } else if (obj2->getEntType() == "Monster") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Area") {
-            // TODO
-
-        } else if (obj2->getEntType() == "DynamicObj") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "NPC") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Projectile") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Projectile* p = static_cast<Projectile*>(obj2);
-                p->hitting(obj1);
-            }
-        }
-
-    } else if (obj1->getEntType() == "Area") {
-        if (obj2->getEntType() == "Terrain") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Samos") {
-            // TODO
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Area* a = static_cast<Area*>(obj1);
-                if (a->getAreaType() == "Door") {
-                    Door* d = static_cast<Door*>(a);
-                    currentMap.setCurrentRoomId(d->getEndingRoom());
-                    std::vector<Entity*> nextRen = currentMap.loadRoom();
-                    if (d->getState().find("Right") != std::string::npos)
-                        doorTransition = "Right";
-                    else if (d->getState().find("Left") != std::string::npos)
-                        doorTransition = "Left";
-                    else if (d->getState().find("Up") != std::string::npos)
-                        doorTransition = "Up";
-                    else if (d->getState().find("Down") != std::string::npos)
-                        doorTransition = "Down";
-                    return nextRen;
-                }
-            }
-        } else if (obj2->getEntType() == "Monster") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Area") {
-            // TODO
-
-        } else if (obj2->getEntType() == "DynamicObj") {
-            // TODO
-
-        } else if (obj2->getEntType() == "NPC") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Projectile") {
-            // TODO
-        }
-
-    } else if (obj1->getEntType() == "DynamicObj") {
-        if (obj2->getEntType() == "Terrain") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Samos") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Monster") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Area") {
-            // TODO
-
-        } else if (obj2->getEntType() == "DynamicObj") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "NPC") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Projectile") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Projectile* p = static_cast<Projectile*>(obj2);
-                p->hitting(obj1);
-            }
-        }
-
-    } else if (obj1->getEntType() == "NPC") {
-        if (obj2->getEntType() == "Terrain") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox()))
-                Entity::calcCollisionReplacement(obj1, obj2);
-
-        } else if (obj2->getEntType() == "Samos") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Monster") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Area") {
-            // TODO
-
-        } else if (obj2->getEntType() == "DynamicObj") {
-            // TODO
-
-        } else if (obj2->getEntType() == "NPC") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Projectile") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Projectile* p = static_cast<Projectile*>(obj2);
-                p->hitting(obj1);
-            }
-        }
-
-    } else if (obj1->getEntType() == "Projectile") {
-        if (obj2->getEntType() == "Terrain") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Entity::calcCollisionReplacement(obj1, obj2);
-                Projectile* p = static_cast<Projectile*>(obj1);
-                p->hitting(obj2);
-            }
-        } else if (obj2->getEntType() == "Samos") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Entity::calcCollisionReplacement(obj1, obj2);
-                Projectile* p = static_cast<Projectile*>(obj1);
-                p->hitting(obj2);
-            }
-        } else if (obj2->getEntType() == "Monster") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Entity::calcCollisionReplacement(obj1, obj2);
-                Projectile* p = static_cast<Projectile*>(obj1);
-                p->hitting(obj2);
-            }
-        } else if (obj2->getEntType() == "Area") {
-            // TODO
-
-        } else if (obj2->getEntType() == "DynamicObj") {
-            if (Entity::checkCollision(obj1, obj1->getBox(), obj2, obj2->getBox())) {
-                Entity::calcCollisionReplacement(obj1, obj2);
-                Projectile* p = static_cast<Projectile*>(obj1);
-                p->hitting(obj2);
-            }
-        } else if (obj2->getEntType() == "NPC") {
-            // TODO
-
-        } else if (obj2->getEntType() == "Projectile") {
-            // TODO
-        }
-
-    } else
-        //If getEntType() has been given a wrong value
-        throw Entity::unknownEntityType;
-
-    return {};
-}
-
-void MainWindow::updateSamos(Samos *s)
+void MainWindow::updateSamos()
 {
     if (s->getState() == "MorphBallStop" || s->getState() == "MorphBallSlow" || s->getState() == "MorphBallSuperSlow")
         s->setState("MorphBall");
@@ -692,15 +430,25 @@ void MainWindow::updateSamos(Samos *s)
         } else {
             bool wallL = false;
             bool wallR = false;
-            for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
-                if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
-                    if (Entity::checkCollision(s ,s->getWallBoxL(), *j, (*j)->getBox())) {
-                        wallL = true;
-                    }
-                    if (Entity::checkCollision(s, s->getWallBoxR(), *j, (*j)->getBox())) {
-                        wallR = true;
-                    }
+            for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+                if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+                    wallL = true;
                 }
+                if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+                    wallR = true;
+                }
+                if (wallL && wallR)
+                    break;
+            }
+            for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+                if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+                    wallL = true;
+                }
+                if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+                    wallR = true;
+                }
+                if (wallL && wallR)
+                    break;
             }
             if (s->getOnGround() || !s->getIsAffectedByGravity()) {
                 if (inputList["left"] && !inputList["right"]) {
@@ -882,15 +630,25 @@ void MainWindow::updateSamos(Samos *s)
         } else {
             bool wallL = false;
             bool wallR = false;
-            for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
-                if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
-                    if (Entity::checkCollision(s , s->getWallBoxL(), *j, (*j)->getBox())) {
-                        wallL = true;
-                    }
-                    if (Entity::checkCollision(s, s->getWallBoxR(), *j, (*j)->getBox())) {
-                        wallR = true;
-                    }
+            for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+                if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+                    wallL = true;
                 }
+                if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+                    wallR = true;
+                }
+                if (wallL && wallR)
+                    break;
+            }
+            for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+                if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+                    wallL = true;
+                }
+                if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+                    wallR = true;
+                }
+                if (wallL && wallR)
+                    break;
             }
             if (s->getOnGround() || !s->getIsAffectedByGravity()) {
                 if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
@@ -1155,25 +913,37 @@ void MainWindow::updateSamos(Samos *s)
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 1));
         s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 1, s->getBox()->getHeight()));
         s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 1, s->getBox()->getY(), 1, s->getBox()->getHeight()));
-        for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
-            if ((*i)->getEntType() == "Terrain" || (*i)->getEntType() == "DynamicObj") {
-                if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
-                    Entity::calcCollisionReplacement(s, *i);
-                }
+        for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+            if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
+                Entity::calcCollisionReplacement(s, *i);
+            }
+        }
+        for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+            if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
+                Entity::calcCollisionReplacement(s, *i);
             }
         }
     }
 
     if (!s->getOnGround() && !inputList["aim"] && !inputList["shoot"] && s->getShootTime() <= 0 && !s->getIsInAltForm() && s->getState() != "MorphBalling" && canSpin) {
-        std::string wallJump;
-        for (std::vector<Entity*>::iterator j = rendering.begin(); j!= rendering.end(); j++) {
-            if ((*j)->getEntType() == "Terrain" || (*j)->getEntType() == "DynamicObj") {
-                if (Entity::checkCollision(s, s->getWallBoxL(), *j, (*j)->getBox())) {
-                    wallJump = "Left";
-                } else if (Entity::checkCollision(s, s->getWallBoxR(), *j, (*j)->getBox())) {
-                    wallJump = "Right";
-                }
+        std::string wallJump = "";
+        for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+            if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+                wallJump = "Left";
+            } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+                wallJump = "Right";
             }
+            if (wallJump != "")
+                break;
+        }
+        for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+            if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+                wallJump = "Left";
+            } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+                wallJump = "Right";
+            }
+            if (wallJump != "")
+                break;
         }
 
         if (wallJump == "Right" && (inputList["right"] || s->getState() == "WallJump" || s->getState() == "SpinJump")) {
@@ -1373,7 +1143,7 @@ void MainWindow::updateSamos(Samos *s)
     } else
         s->setSwitchDelay(0.0);
 
-    if (s->getShootTime() <= 0.0 && inputList["shoot"]) {
+    if (s->getShootTime() <= 0.0 && inputList["shoot"] && inputTime["shoot"] == 0.0) {
         Projectile* p = nullptr;
         if (s->getIsInAltForm())
             p = s->shoot("Bomb");
@@ -1454,75 +1224,325 @@ void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    Samos* s = nullptr;
-
-    //Draw every entity in the rendering list
-    for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
-
-        //If the texture is null, set it to the error texture
+    for (std::vector<NPC*>::iterator ent = NPCs.begin(); ent != NPCs.end(); ent++) {
+        //If the texture is null, set it to the empty texture
         if ((*ent)->getTexture() == nullptr) {
             (*ent)->setTexture(&emptyTexture);
         }
 
         // Make sure not to draw the Entities that aren't visible
         if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * renderingMultiplier < camera.x() // If too much on the left
-                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + resolution.first // If too much on the right
+                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + 1920 // If too much on the right
                 || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * renderingMultiplier < camera.y() // If too high
-                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + resolution.second) { // If too low
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + 1080) { // If too low
+            continue;
+        }
+
+        //Try to draw the texture: if it fails, set it to the error texture and try again
+        try {
+            if ((*ent)->getITime() > 0.0 && (updateCount % 20 < 10)) {
+                QColor base_color(200,200,200,200);
+
+                QImage new_image = *(*ent)->getTexture();
+                QPainter pa(&new_image);
+                pa.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+                pa.fillRect(new_image.rect(), base_color);
+                pa.end();
+                painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    new_image);
+            } else {
+                painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    *(*ent)->getTexture());
+            }
+        } catch (...) {
+            (*ent)->setTexture(&errorTexture);
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    *(*ent)->getTexture());
+        }
+    }
+
+    if (s != nullptr) {
+        //If the texture is null, set it to the empty texture
+        if (s->getTexture() == nullptr) {
+            s->setTexture(&emptyTexture);
+        }
+
+        //Try to draw the texture: if it fails, set it to the error texture and try again
+        try {
+            if (s->getITime() > 0.0 && (updateCount % 20 < 10)) {
+                QColor base_color(200,200,200,200);
+
+                QImage new_image = *s->getTexture();
+                QPainter pa(&new_image);
+                pa.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+                pa.fillRect(new_image.rect(), base_color);
+                pa.end();
+                painter.drawImage(QRect(s->getX() + s->getTexture()->offset().x() - camera.x(), s->getY() + s->getTexture()->offset().y() - camera.y(),
+                                    s->getTexture()->width() * renderingMultiplier, s->getTexture()->height() * renderingMultiplier),
+                                    new_image);
+            } else {
+                painter.drawImage(QRect(s->getX() + s->getTexture()->offset().x() - camera.x(), s->getY() + s->getTexture()->offset().y() - camera.y(),
+                                    s->getTexture()->width() * renderingMultiplier, s->getTexture()->height() * renderingMultiplier),
+                                    *s->getTexture());
+            }
+        } catch (...) {
+            s->setTexture(&errorTexture);
+            painter.drawImage(QRect(s->getX() + s->getTexture()->offset().x() - camera.x(), s->getY() + s->getTexture()->offset().y() - camera.y(),
+                                    s->getTexture()->width() * renderingMultiplier, s->getTexture()->height() * renderingMultiplier),
+                                    *s->getTexture());
+        }
+    }
+
+    for (std::vector<Monster*>::iterator ent = monsters.begin(); ent != monsters.end(); ent++) {
+        //If the texture is null, set it to the empty texture
+        if ((*ent)->getTexture() == nullptr) {
+            (*ent)->setTexture(&emptyTexture);
+        }
+
+        // Make sure not to draw the Entities that aren't visible
+        if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * renderingMultiplier < camera.x() // If too much on the left
+                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + 1920 // If too much on the right
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * renderingMultiplier < camera.y() // If too high
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + 1080) { // If too low
+            continue;
+        }
+
+        //Try to draw the texture: if it fails, set it to the error texture and try again
+        try {
+            if ((*ent)->getITime() > 0.0 && (updateCount % 20 < 10)) {
+                QColor base_color(200,200,200,200);
+
+                QImage new_image = *(*ent)->getTexture();
+                QPainter pa(&new_image);
+                pa.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+                pa.fillRect(new_image.rect(), base_color);
+                pa.end();
+                painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    new_image);
+            } else {
+                painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    *(*ent)->getTexture());
+            }
+        } catch (...) {
+            (*ent)->setTexture(&errorTexture);
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    *(*ent)->getTexture());
+        }
+    }
+
+    for (std::vector<DynamicObj*>::iterator ent = dynamicObjs.begin(); ent != dynamicObjs.end(); ent++) {
+        //If the texture is null, set it to the empty texture
+        if ((*ent)->getTexture() == nullptr) {
+            (*ent)->setTexture(&emptyTexture);
+        }
+
+        // Make sure not to draw the Entities that aren't visible
+        if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * renderingMultiplier < camera.x() // If too much on the left
+                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + 1920 // If too much on the right
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * renderingMultiplier < camera.y() // If too high
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + 1080) { // If too low
+            continue;
+        }
+
+        //Try to draw the texture: if it fails, set it to the error texture and try again
+        try {
+            if ((*ent)->getITime() > 0.0 && (updateCount % 20 < 10)) {
+                QColor base_color(200,200,200,200);
+
+                QImage new_image = *(*ent)->getTexture();
+                QPainter pa(&new_image);
+                pa.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+                pa.fillRect(new_image.rect(), base_color);
+                pa.end();
+                painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    new_image);
+            } else {
+                painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    *(*ent)->getTexture());
+            }
+        } catch (...) {
+            (*ent)->setTexture(&errorTexture);
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    *(*ent)->getTexture());
+        }
+    }
+
+    for (std::vector<Terrain*>::iterator ent = terrains.begin(); ent != terrains.end(); ent++) {
+        //If the texture is null, set it to the empty texture
+        if ((*ent)->getTexture() == nullptr) {
+            (*ent)->setTexture(&emptyTexture);
+        }
+
+        // Make sure not to draw the Entities that aren't visible
+        if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * renderingMultiplier < camera.x() // If too much on the left
+                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + 1920 // If too much on the right
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * renderingMultiplier < camera.y() // If too high
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + 1080) { // If too low
             continue;
         }
 
         //Try to draw the texture: if it fails, set it to the error texture and try again
         try {
             painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
-                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
-                              *(*ent)->getTexture());
+                                (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                *(*ent)->getTexture());
         } catch (...) {
             (*ent)->setTexture(&errorTexture);
             painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
                                     (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
-                              *(*ent)->getTexture());
+                                    *(*ent)->getTexture());
+        }
+    }
+
+    for (std::vector<Projectile*>::iterator ent = projectiles.begin(); ent != projectiles.end(); ent++) {
+        //If the texture is null, set it to the empty texture
+        if ((*ent)->getTexture() == nullptr) {
+            (*ent)->setTexture(&emptyTexture);
         }
 
-        if ((*ent)->getEntType() == "Samos")
-            s = static_cast<Samos*>((*ent));
+        // Make sure not to draw the Entities that aren't visible
+        if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * renderingMultiplier < camera.x() // If too much on the left
+                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + 1920 // If too much on the right
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * renderingMultiplier < camera.y() // If too high
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + 1080) { // If too low
+            continue;
+        }
+
+        //Try to draw the texture: if it fails, set it to the error texture and try again
+        try {
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                *(*ent)->getTexture());
+        } catch (...) {
+            (*ent)->setTexture(&errorTexture);
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    *(*ent)->getTexture());
+        }
     }
+
+    for (std::vector<Area*>::iterator ent = areas.begin(); ent != areas.end(); ent++) {
+        //If the texture is null, set it to the empty texture
+        if ((*ent)->getTexture() == nullptr) {
+            (*ent)->setTexture(&emptyTexture);
+        }
+
+        // Make sure not to draw the Entities that aren't visible
+        if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * renderingMultiplier < camera.x() // If too much on the left
+                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + 1920 // If too much on the right
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * renderingMultiplier < camera.y() // If too high
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + 1080) { // If too low
+            continue;
+        }
+
+        //Try to draw the texture: if it fails, set it to the error texture and try again
+        try {
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                *(*ent)->getTexture());
+        } catch (...) {
+            (*ent)->setTexture(&errorTexture);
+            painter.drawImage(QRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x(), (*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y(),
+                                    (*ent)->getTexture()->width() * renderingMultiplier, (*ent)->getTexture()->height() * renderingMultiplier),
+                                    *(*ent)->getTexture());
+        }
+    }
+
+
 
     //Draw hitboxes if necessary
     if (renderHitboxes) {
-        for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
+
+        for (std::vector<NPC*>::iterator ent = NPCs.begin(); ent != NPCs.end(); ent++) {
             painter.setPen(QColor("blue"));
-            // Select another color for specific entity types
-            if ((*ent)->getEntType() == "Monster")
-                painter.setPen(QColor("red"));
-            else if ((*ent)->getEntType() == "Area")
-                painter.setPen(QColor("gray"));
-            else if ((*ent)->getEntType() == "Samos")
-                painter.setPen(QColor("orange"));
             if ((*ent)->getBox() != nullptr)
                 painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
                                  (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
 
-            //Ground boxes
-            if ((*ent)->getEntType() == "Samos" || (*ent)->getEntType() == "Monster" || (*ent)->getEntType() == "NPC" || (*ent)->getEntType() == "DynamicObj") {
-                Living* liv = static_cast<Living*>((*ent));
-                painter.setPen(QColor("green"));
-                if (liv->getGroundBox() != nullptr)
-                    painter.drawRect(liv->getX() + liv->getGroundBox()->getX() - camera.x(), liv->getY() + liv->getGroundBox()->getY() - camera.y(),
-                                    liv->getGroundBox()->getWidth(), liv->getGroundBox()->getHeight());
-
-                //Wall boxes
-                if ((*ent)->getEntType() == "Samos") {
-                    Samos* s = static_cast<Samos*>(liv);
-                    if (s->getWallBoxL() != nullptr)
-                        painter.drawRect(s->getX() + s->getWallBoxL()->getX() - camera.x(), s->getY() + s->getWallBoxL()->getY() - camera.y(),
-                                        s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
-                    if (s->getWallBoxR() != nullptr)
-                        painter.drawRect(s->getX() + s->getWallBoxR()->getX() - camera.x(), s->getY() + s->getWallBoxR()->getY() - camera.y(),
-                                        s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
-                }
-            }
+            //Ground boxes);
+            painter.setPen(QColor("green"));
+            if ((*ent)->getGroundBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getGroundBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getGroundBox()->getY() - camera.y(),
+                                (*ent)->getGroundBox()->getWidth(), (*ent)->getGroundBox()->getHeight());
         }
+
+        if (s != nullptr) {
+            painter.setPen(QColor("orange"));
+            if (s->getBox() != nullptr)
+                painter.drawRect(s->getX() + s->getBox()->getX() - camera.x(), s->getY() + s->getBox()->getY() - camera.y(),
+                                 s->getBox()->getWidth(), s->getBox()->getHeight());
+
+            //Ground boxes
+            painter.setPen(QColor("green"));
+            if (s->getGroundBox() != nullptr)
+                painter.drawRect(s->getX() + s->getGroundBox()->getX() - camera.x(), s->getY() + s->getGroundBox()->getY() - camera.y(),
+                                s->getGroundBox()->getWidth(), s->getGroundBox()->getHeight());
+
+            //Wall boxes
+            if (s->getWallBoxL() != nullptr)
+                painter.drawRect(s->getX() + s->getWallBoxL()->getX() - camera.x(), s->getY() + s->getWallBoxL()->getY() - camera.y(),
+                                s->getWallBoxL()->getWidth(), s->getWallBoxL()->getHeight());
+            if (s->getWallBoxR() != nullptr)
+                painter.drawRect(s->getX() + s->getWallBoxR()->getX() - camera.x(), s->getY() + s->getWallBoxR()->getY() - camera.y(),
+                                s->getWallBoxR()->getWidth(), s->getWallBoxR()->getHeight());
+        }
+
+        for (std::vector<Monster*>::iterator ent = monsters.begin(); ent != monsters.end(); ent++) {
+            painter.setPen(QColor("red"));
+            if ((*ent)->getBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
+                                 (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
+
+            //Ground boxes);
+            painter.setPen(QColor("green"));
+            if ((*ent)->getGroundBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getGroundBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getGroundBox()->getY() - camera.y(),
+                                (*ent)->getGroundBox()->getWidth(), (*ent)->getGroundBox()->getHeight());
+        }
+
+        for (std::vector<DynamicObj*>::iterator ent = dynamicObjs.begin(); ent != dynamicObjs.end(); ent++) {
+            painter.setPen(QColor("blue"));
+            if ((*ent)->getBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
+                                 (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
+
+            //Ground boxes);
+            painter.setPen(QColor("green"));
+            if ((*ent)->getGroundBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getGroundBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getGroundBox()->getY() - camera.y(),
+                                (*ent)->getGroundBox()->getWidth(), (*ent)->getGroundBox()->getHeight());
+        }
+
+        for (std::vector<Terrain*>::iterator ent = terrains.begin(); ent != terrains.end(); ent++) {
+            painter.setPen(QColor("blue"));
+            if ((*ent)->getBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
+                                 (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
+        }
+
+        for (std::vector<Projectile*>::iterator ent = projectiles.begin(); ent != projectiles.end(); ent++) {
+            painter.setPen(QColor("blue"));
+            if ((*ent)->getBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
+                                 (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
+        }
+
+        for (std::vector<Area*>::iterator ent = areas.begin(); ent != areas.end(); ent++) {
+            painter.setPen(QColor("gray"));
+            if ((*ent)->getBox() != nullptr)
+                painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX() - camera.x(), (*ent)->getY() + (*ent)->getBox()->getY() - camera.y(),
+                                 (*ent)->getBox()->getWidth(), (*ent)->getBox()->getHeight());
+        }
+
         nlohmann::json mapJson = currentMap.getJson()["rooms"][std::to_string(currentMap.getCurrentRoomId())];
 
         painter.setPen(QColor("magenta"));
@@ -1542,8 +1562,8 @@ void MainWindow::paintEvent(QPaintEvent *)
     f.setPointSize(f.pointSize() * 2);
     painter.setFont(f);
 
-    //UI
-    if (s != nullptr && showUI) {
+    //HUD
+    if (s != nullptr && showHUD) {
 
         painter.setPen(QColor("black"));
 
@@ -1596,12 +1616,55 @@ void MainWindow::paintEvent(QPaintEvent *)
 void MainWindow::addRenderable(Entity *entity)
 {
     rendering.push_back(entity);
+    if (entity->getEntType() == "Terrain") {
+        Terrain* t = static_cast<Terrain*>(entity);
+        terrains.push_back(t);
+    } else if (entity->getEntType() == "Projectile") {
+        Projectile* p = static_cast<Projectile*>(entity);
+        projectiles.push_back(p);
+    } else if (entity->getEntType() == "DynamicObj") {
+        DynamicObj* d = static_cast<DynamicObj*>(entity);
+        dynamicObjs.push_back(d);
+    } else if (entity->getEntType() == "Monster") {
+        Monster* m = static_cast<Monster*>(entity);
+        monsters.push_back(m);
+    } else if (entity->getEntType() == "Area") {
+        Area* a = static_cast<Area*>(entity);
+        areas.push_back(a);
+    } else if (entity->getEntType() == "NPC") {
+        NPC* n = static_cast<NPC*>(entity);
+        NPCs.push_back(n);
+    } else if (entity->getEntType() == "Samos") {
+        s = static_cast<Samos*>(entity);
+    }
 }
 
 void MainWindow::addRenderable(std::vector<Entity*> entities)
 {
-    for (std::vector<Entity*>::iterator entity = entities.begin(); entity != entities.end(); entity++)
+    for (std::vector<Entity*>::iterator entity = entities.begin(); entity != entities.end(); entity++) {
         rendering.push_back(*entity);
+        if ((*entity)->getEntType() == "Terrain") {
+            Terrain* t = static_cast<Terrain*>(*entity);
+            terrains.push_back(t);
+        } else if ((*entity)->getEntType() == "Projectile") {
+            Projectile* p = static_cast<Projectile*>(*entity);
+            projectiles.push_back(p);
+        } else if ((*entity)->getEntType() == "DynamicObj") {
+            DynamicObj* d = static_cast<DynamicObj*>(*entity);
+            dynamicObjs.push_back(d);
+        } else if ((*entity)->getEntType() == "Monster") {
+            Monster* m = static_cast<Monster*>(*entity);
+            monsters.push_back(m);
+        } else if ((*entity)->getEntType() == "Area") {
+            Area* a = static_cast<Area*>(*entity);
+            areas.push_back(a);
+        } else if ((*entity)->getEntType() == "NPC") {
+            NPC* n = static_cast<NPC*>(*entity);
+            NPCs.push_back(n);
+        } else if ((*entity)->getEntType() == "Samos") {
+            s = static_cast<Samos*>(*entity);
+        }
+    }
 }
 
 void MainWindow::clearRendering(std::string excludedType)
@@ -1612,7 +1675,15 @@ void MainWindow::clearRendering(std::string excludedType)
             delete *ent;
         else
             nextRen.push_back(*ent);
-    rendering = nextRen;
+
+    terrains = {};
+    monsters = {};
+    NPCs = {};
+    projectiles = {};
+    areas = {};
+    dynamicObjs = {};
+    rendering = {};
+    addRenderable(nextRen);
 }
 
 void MainWindow::updatePhysics()
@@ -1620,10 +1691,7 @@ void MainWindow::updatePhysics()
     //Physics settings
     nlohmann::json paramJson = Entity::values["general"];
     double speedcap = static_cast<double>(paramJson["speedcap"]);
-    //Ground objects list
-    std::vector<Entity*> solidList;
-    //Living objects list
-    std::vector<Living*> livingList;
+    double slowcap = static_cast<double>(paramJson["slowcap"]);
     //Deletion list
     std::vector<Entity*> toDel;
 
@@ -1636,114 +1704,462 @@ void MainWindow::updatePhysics()
     roomE_x += roomS_x;
     roomE_y += roomS_y;
 
-    for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++) {
+    double groundFriction = paramJson["groundFriction"];
+    double airFriction = paramJson["airFriction"];
 
-        if ((*ent)->getEntType() == "Samos" || (*ent)->getEntType() == "Monster" || (*ent)->getEntType() == "NPC" || (*ent)->getEntType() == "DynamicObj") {
-            Living* liv = static_cast<Living*>((*ent));
-            livingList.push_back(liv);
+
+    // SAMOS
+
+    if (s != nullptr) {
+        //I-frames
+        if (s->getITime() > 0.0)
+            s->setITime(s->getITime() - 1 / frameRate);
+
+        if (s->getIsMovable()) {
             //Calc earth's attraction's acceleration if the (*ent)ity is affected
-            if (liv->getIsAffectedByGravity() && !liv->getOnGround() && liv->getIsMovable()) {
-                liv->setVY(liv->getVY() + gravity / frameRate);
+            if (s->getIsAffectedByGravity() && !s->getOnGround()) {
+                s->setVY(s->getVY() + gravity / frameRate);
             }
             //Calc frictions
-            if (liv->getOnGround() && liv->getIsMovable()) {
+            if (s->getOnGround()) {
                 //Grounded frictions
-                if (std::abs(liv->getVX()) < speedcap) {
-                    if (liv->getVX() > 0)
-                        liv->setVX(1 / ((1 / liv->getVX()) + (static_cast<double>(paramJson["groundFriction"]) * liv->getFrictionFactor() / frameRate)));
-                    else if (liv->getVX() < 0)
-                        liv->setVX(1 / ((1 / liv->getVX()) - (static_cast<double>(paramJson["groundFriction"]) * liv->getFrictionFactor() / frameRate)));
-                //Speedcap
-                } else {
-                    if (liv->getVX() > 0)
-                        liv->setVX(speedcap);
-                    else
-                        liv->setVX(-speedcap);
+                if (std::abs(s->getVX()) < speedcap) {
+                    if (s->getVX() > 0)
+                        s->setVX(1 / ((1 / s->getVX()) + (groundFriction * s->getFrictionFactor() / frameRate)));
+                    else if (s->getVX() < 0)
+                        s->setVX(1 / ((1 / s->getVX()) - (groundFriction * s->getFrictionFactor() / frameRate)));
                 }
-            } else if (liv->getIsMovable()) {
+
+            } else {
                 //Air friction
-                if (std::abs(liv->getVX()) < speedcap) {
-                    if (liv->getVX() > 0)
-                        liv->setVX(1 / ((1 / liv->getVX()) + (static_cast<double>(paramJson["airFriction"]) * liv->getFrictionFactor() / frameRate)));
-                    else if (liv->getVX() < 0)
-                        liv->setVX(1 / ((1 / liv->getVX()) - (static_cast<double>(paramJson["airFriction"]) * liv->getFrictionFactor() / frameRate)));
+                if (std::abs(s->getVX()) < speedcap) {
+                    if (s->getVX() > 0)
+                        s->setVX(1 / ((1 / s->getVX()) + (airFriction * s->getFrictionFactor() / frameRate)));
+                    else if (s->getVX() < 0)
+                        s->setVX(1 / ((1 / s->getVX()) - (airFriction * s->getFrictionFactor() / frameRate)));
                 }
             }
-        } else {
+            //Speedcap
+            if (std::abs(s->getVY()) > speedcap) {
+                if (s->getVY() > 0)
+                    s->setVY(speedcap);
+                else
+                    s->setVY(-speedcap);
+            }
+            //Move entities
+            s->updateV(frameRate);
+        }
+    }
+
+    // MONSTER
+
+    for (std::vector<Monster*>::iterator m = monsters.begin(); m != monsters.end(); m++) {
+
+        //I-frames
+        if ((*m)->getITime() > 0.0)
+            (*m)->setITime((*m)->getITime() - 1 / frameRate);
+
+        if ((*m)->getIsMovable()) {
+            //Calc earth's attraction's acceleration if the (*ent)ity is affected
+            if ((*m)->getIsAffectedByGravity() && !(*m)->getOnGround()) {
+                (*m)->setVY((*m)->getVY() + gravity / frameRate);
+            }
+            //Calc frictions
+            if ((*m)->getOnGround()) {
+                //Grounded frictions
+                if (std::abs((*m)->getVX()) < speedcap) {
+                    if (std::abs((*m)->getVX()) > slowcap) {
+                        if ((*m)->getVX() > 0)
+                            (*m)->setVX(1 / ((1 / (*m)->getVX()) + (groundFriction * (*m)->getFrictionFactor() / frameRate)));
+                        else if ((*m)->getVX() < 0)
+                            (*m)->setVX(1 / ((1 / (*m)->getVX()) - (groundFriction * (*m)->getFrictionFactor() / frameRate)));
+                    //Slowcap
+                    } else
+                        (*m)->setVX(0);
+                }
+            } else {
+                //Air friction
+                if (std::abs((*m)->getVX()) < speedcap) {
+                    if (std::abs((*m)->getVX()) > slowcap) {
+                        if ((*m)->getVX() > 0)
+                            (*m)->setVX(1 / ((1 / (*m)->getVX()) + (airFriction * (*m)->getFrictionFactor() / frameRate)));
+                        else if ((*m)->getVX() < 0)
+                            (*m)->setVX(1 / ((1 / (*m)->getVX()) - (airFriction * (*m)->getFrictionFactor() / frameRate)));
+                    //Slowcap
+                    } else
+                        (*m)->setVX(0);
+                }
+            }
+
+            //Speedcap
+            if (std::abs((*m)->getVY()) > speedcap) {
+                if ((*m)->getVY() > 0)
+                    (*m)->setVY(speedcap);
+                else
+                    (*m)->setVY(-speedcap);
+            }
+            //Move entities
+            (*m)->updateV(frameRate);
+        }
+    }
+
+    // NPC
+
+    for (std::vector<NPC*>::iterator n = NPCs.begin(); n != NPCs.end(); n++) {
+
+        //I-frames
+        if ((*n)->getITime() > 0.0)
+            (*n)->setITime((*n)->getITime() - 1 / frameRate);
+
+        if ((*n)->getIsMovable()) {
+            //Calc earth's attraction's acceleration if the (*ent)ity is affected
+            if ((*n)->getIsAffectedByGravity() && !(*n)->getOnGround()) {
+                (*n)->setVY((*n)->getVY() + gravity / frameRate);
+            }
+            //Calc frictions
+            if ((*n)->getOnGround()) {
+                //Grounded frictions
+                if (std::abs((*n)->getVX()) < speedcap) {
+                    if (std::abs((*n)->getVX()) > slowcap) {
+                        if ((*n)->getVX() > 0)
+                            (*n)->setVX(1 / ((1 / (*n)->getVX()) + (groundFriction * (*n)->getFrictionFactor() / frameRate)));
+                        else if ((*n)->getVX() < 0)
+                            (*n)->setVX(1 / ((1 / (*n)->getVX()) - (groundFriction * (*n)->getFrictionFactor() / frameRate)));
+                    //Slowcap
+                    } else
+                        (*n)->setVX(0);
+                }
+            } else {
+                //Air friction
+                if (std::abs((*n)->getVX()) < speedcap) {
+                    if (std::abs((*n)->getVX()) > slowcap) {
+                        if ((*n)->getVX() > 0)
+                            (*n)->setVX(1 / ((1 / (*n)->getVX()) + (airFriction * (*n)->getFrictionFactor() / frameRate)));
+                        else if ((*n)->getVX() < 0)
+                            (*n)->setVX(1 / ((1 / (*n)->getVX()) - (airFriction * (*n)->getFrictionFactor() / frameRate)));
+                    //Slowcap
+                    } else
+                        (*n)->setVX(0);
+                }
+            }
+
+            //Speedcap
+            if (std::abs((*n)->getVY()) > speedcap) {
+                if ((*n)->getVY() > 0)
+                    (*n)->setVY(speedcap);
+                else
+                    (*n)->setVY(-speedcap);
+            }
+            //Move entities
+            (*n)->updateV(frameRate);
+        }
+    }
+
+    // DYNAMICOBJ
+
+    for (std::vector<DynamicObj*>::iterator d = dynamicObjs.begin(); d != dynamicObjs.end(); d++) {
+
+        //I-frames
+        if ((*d)->getITime() > 0.0)
+            (*d)->setITime((*d)->getITime() - 1 / frameRate);
+
+        if ((*d)->getIsMovable()) {
+            //Calc earth's attraction's acceleration if the (*ent)ity is affected
+            if ((*d)->getIsAffectedByGravity() && !(*d)->getOnGround()) {
+                (*d)->setVY((*d)->getVY() + gravity / frameRate);
+            }
+            //Calc frictions
+            if ((*d)->getOnGround()) {
+                //Grounded frictions
+                if (std::abs((*d)->getVX()) < speedcap) {
+                    if (std::abs((*d)->getVX()) > slowcap) {
+                        if ((*d)->getVX() > 0)
+                            (*d)->setVX(1 / ((1 / (*d)->getVX()) + (groundFriction * (*d)->getFrictionFactor() / frameRate)));
+                        else if ((*d)->getVX() < 0)
+                            (*d)->setVX(1 / ((1 / (*d)->getVX()) - (groundFriction * (*d)->getFrictionFactor() / frameRate)));
+                    //Slowcap
+                    } else
+                    (*d)->setVX(0);
+                }
+            } else {
+                //Air friction
+                if (std::abs((*d)->getVX()) < speedcap) {
+                    if (std::abs((*d)->getVX()) > slowcap) {
+                        if ((*d)->getVX() > 0)
+                            (*d)->setVX(1 / ((1 / (*d)->getVX()) + (airFriction * (*d)->getFrictionFactor() / frameRate)));
+                        else if ((*d)->getVX() < 0)
+                            (*d)->setVX(1 / ((1 / (*d)->getVX()) - (airFriction * (*d)->getFrictionFactor() / frameRate)));
+                    //Slowcap
+                    } else
+                        (*d)->setVX(0);
+                }
+            }
+
+            //Speedcap
+            if (std::abs((*d)->getVY()) > speedcap) {
+                if ((*d)->getVY() > 0)
+                    (*d)->setVY(speedcap);
+                else
+                    (*d)->setVY(-speedcap);
+            }
+            //Move entities
+            (*d)->updateV(frameRate);
+        }
+    }
+
+    // AREA
+
+    for (std::vector<Area*>::iterator a = areas.begin(); a != areas.end(); a++) {
+
+        if ((*a)->getIsMovable()) {
             //Non-living objects can't be grounded
-            if ((*ent)->getIsAffectedByGravity() && (*ent)->getIsMovable())
-                (*ent)->setVY((*ent)->getVY() + gravity / frameRate);
-            if ((*ent)->getIsMovable()) {
-                if (std::abs((*ent)->getVX()) < speedcap) {
-                    if ((*ent)->getVX() > 0)
-                        (*ent)->setVX(1 / ((1 / (*ent)->getVX()) + (static_cast<double>(paramJson["airFriction"]) * (*ent)->getFrictionFactor() / frameRate)));
-                    else if ((*ent)->getVX() < 0)
-                        (*ent)->setVX(1 / ((1 / (*ent)->getVX()) - (static_cast<double>(paramJson["airFriction"]) * (*ent)->getFrictionFactor() / frameRate)));
-                //Speedcap
-                } else {
-                    if ((*ent)->getVX() > 0)
-                        (*ent)->setVX(speedcap);
-                    else
-                        (*ent)->setVX(-speedcap);
-                }
+            if ((*a)->getIsAffectedByGravity())
+                (*a)->setVY((*a)->getVY() + gravity / frameRate);
+
+            if (std::abs((*a)->getVX()) < speedcap) {
+                if (std::abs((*a)->getVX()) > slowcap) {
+                    if ((*a)->getVX() > 0)
+                        (*a)->setVX(1 / ((1 / (*a)->getVX()) + (airFriction * (*a)->getFrictionFactor() / frameRate)));
+                    else if ((*a)->getVX() < 0)
+                        (*a)->setVX(1 / ((1 / (*a)->getVX()) - (airFriction * (*a)->getFrictionFactor() / frameRate)));
+                //Slowcap
+                } else
+                    (*a)->setVX(0);
             }
+
+            //Speedcap
+            if (std::abs((*a)->getVY()) > speedcap) {
+                if ((*a)->getVY() > 0)
+                    (*a)->setVY(speedcap);
+                else
+                    (*a)->setVY(-speedcap);
+            }
+            //Move entities
+            (*a)->updateV(frameRate);
         }
-        //Livings can only stand on terrain or dynamic objects
-        if ((*ent)->getEntType() == "Terrain" || (*ent)->getEntType() == "DynamicObj") {
-            solidList.push_back((*ent));
+    }
+
+    // PROJECTILES
+
+    for (std::vector<Projectile*>::iterator p = projectiles.begin(); p != projectiles.end(); p++) {
+
+        if ((*p)->getIsMovable()) {
+            //Non-living objects can't be grounded
+            if ((*p)->getIsAffectedByGravity())
+                (*p)->setVY((*p)->getVY() + gravity / frameRate);
+
+            if (std::abs((*p)->getVX()) < speedcap) {
+                if (std::abs((*p)->getVX()) > slowcap) {
+                    if ((*p)->getVX() > 0)
+                        (*p)->setVX(1 / ((1 / (*p)->getVX()) + (airFriction * (*p)->getFrictionFactor() / frameRate)));
+                    else if ((*p)->getVX() < 0)
+                        (*p)->setVX(1 / ((1 / (*p)->getVX()) - (airFriction * (*p)->getFrictionFactor() / frameRate)));
+                //Slowcap
+                } else
+                    (*p)->setVX(0);
+            }
+
+            //Speedcap
+            if (std::abs((*p)->getVY()) > speedcap) {
+                if ((*p)->getVY() > 0)
+                    (*p)->setVY(speedcap);
+                else
+                    (*p)->setVY(-speedcap);
+            }
+            //Move entities
+            if ((*p)->getLifeTime() != Entity::values["names"][(*p)->getName()]["lifeTime"])
+                (*p)->updateV(frameRate);
+
+            if (updateProjectile(*p))
+                toDel.push_back(*p);
         }
-        //Speedcap
-        if (std::abs((*ent)->getVY()) > speedcap) {
-            if ((*ent)->getVY() > 0)
-                (*ent)->setVY(speedcap);
-            else
-                (*ent)->setVY(-speedcap);
-        }
-        //Move entities
-        if ((*ent)->getIsMovable()) {
-            if ((*ent)->getEntType() == "Projectile") {
-                Projectile* p = static_cast<Projectile*>((*ent));
-                if (p->getLifeTime() != Entity::values["names"][p->getName()]["lifeTime"])
-                    (*ent)->updateV(frameRate);
-                if (updateProjectile(p))
-                    toDel.push_back((*ent));
-            } else
-                (*ent)->updateV(frameRate);
-        }
-    } //{Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
+    }
 
     std::vector<Entity*> toAdd;
-    //Check for collisions and handle them
-    for (std::vector<Entity*>::iterator i = rendering.begin(); i != rendering.end(); i++) {
-        for (std::vector<Entity*>::iterator j = i+1; j!= rendering.end(); j++) {
-            for (Entity* ent : handleCollision(*i,*j))
-                toAdd.push_back(ent);
+
+     // SAMOS
+
+    if (s != nullptr) {
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+            if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(s, *j);
+            }
         }
+        for (std::vector<Monster*>::iterator j = monsters.begin(); j != monsters.end(); j++) {
+            if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(s, *j);
+            }
+        }
+        for (std::vector<DynamicObj*>::iterator j = dynamicObjs.begin(); j != dynamicObjs.end(); j++) {
+            if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(s, *j);
+            }
+        }
+        for (std::vector<Area*>::iterator j = areas.begin(); j != areas.end(); j++) {
+            if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                if ((*j)->getAreaType() == "Door") {
+                    Door* d = static_cast<Door*>(*j);
+                    currentMap.setCurrentRoomId(d->getEndingRoom());
+                    if (d->getState().find("Right") != std::string::npos)
+                        doorTransition = "Right";
+                    else if (d->getState().find("Left") != std::string::npos)
+                        doorTransition = "Left";
+                    else if (d->getState().find("Up") != std::string::npos)
+                        doorTransition = "Up";
+                    else if (d->getState().find("Down") != std::string::npos)
+                        doorTransition = "Down";
+                    for (Entity* ent : currentMap.loadRoom())
+                        toAdd.push_back(ent);
+                }
+            }
+        }
+        for (std::vector<NPC*>::iterator j = NPCs.begin(); j != NPCs.end(); j++) {
+            if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                if (inputList["interact"] && inputTime["interact"] == 0.0) {
+                    if ((*j)->getNpcType() == "Talking") {
+                        if (stringsJson[language]["dialogues"][(*j)->getName()][(*j)->getTimesInteracted()]["talking"].is_null())
+                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][(*j)->getTimesInteracted()]["text"],
+                                    (*j)->getName());
+                        else
+                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][(*j)->getTimesInteracted()]["text"],
+                                    stringsJson[language]["dialogues"][(*j)->getName()][(*j)->getTimesInteracted()]["talking"]);
+                    }
+                    (*j)->setTimesInteracted((*j)->getTimesInteracted() + 1);
+                }
+            }
+        }
+        for (std::vector<Projectile*>::iterator j = projectiles.begin(); j != projectiles.end(); j++) {
+            if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                (*j)->hitting(s);
+            }
+        }
+
+        if (s->getIsMovable() && s->getBox() != nullptr) {
+            if (s->getX() + s->getBox()->getX() + s->getBox()->getWidth() > roomE_x) {
+                s->setX(roomE_x - s->getBox()->getX() - s->getBox()->getWidth());
+            } else if (s->getX() + s->getBox()->getX() < roomS_x) {
+                s->setX(roomS_x - s->getBox()->getX());
+            } if (s->getY() + s->getBox()->getY() + s->getBox()->getHeight() > roomE_y) {
+                s->setY(roomE_y - s->getBox()->getY() - s->getBox()->getHeight());
+            } else if (s->getY() + s->getBox()->getY() < roomS_y) {
+                s->setY(roomS_y - s->getBox()->getY());
+            }
+        }
+    }
+
+    // MONSTER
+
+    for (std::vector<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++) {
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(*i, *j);
+            }
+        }
+        for (std::vector<DynamicObj*>::iterator j = dynamicObjs.begin(); j != dynamicObjs.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(*i, *j);
+            }
+        }
+        for (std::vector<Projectile*>::iterator j = projectiles.begin(); j != projectiles.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                (*j)->hitting(*i);
+            }
+        }
+
         if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
             if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
                 (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
-                if ((*i)->getEntType() == "Projectile") {
-                    Projectile* p = static_cast<Projectile*>(*i);
-                    p->timeOut();
-                }
             } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
                 (*i)->setX(roomS_x - (*i)->getBox()->getX());
-                if ((*i)->getEntType() == "Projectile") {
-                    Projectile* p = static_cast<Projectile*>(*i);
-                    p->timeOut();
-                }
             } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
                 (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
-                if ((*i)->getEntType() == "Projectile") {
-                    Projectile* p = static_cast<Projectile*>(*i);
-                    p->timeOut();
-                }
             } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
                 (*i)->setY(roomS_y - (*i)->getBox()->getY());
-                if ((*i)->getEntType() == "Projectile") {
-                    Projectile* p = static_cast<Projectile*>(*i);
-                    p->timeOut();
-                }
+            }
+        }
+    }
+
+    // DYNAMICOBJ
+
+    for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(*i, *j);
+            }
+        }
+        for (std::vector<DynamicObj*>::iterator j = i + 1; j != dynamicObjs.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(*i, *j);
+            }
+        }
+        for (std::vector<NPC*>::iterator j = NPCs.begin(); j != NPCs.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(*i, *j);
+            }
+        }
+        for (std::vector<Projectile*>::iterator j = projectiles.begin(); j != projectiles.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                (*j)->hitting(*i);
+            }
+        }
+
+        if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
+            if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
+                (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
+            } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
+                (*i)->setX(roomS_x - (*i)->getBox()->getX());
+            } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
+                (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
+            } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
+                (*i)->setY(roomS_y - (*i)->getBox()->getY());
+            }
+        }
+    }
+
+    // NPC
+
+    for (std::vector<NPC*>::iterator i = NPCs.begin(); i != NPCs.end(); i++) {
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                Entity::calcCollisionReplacement(*i, *j);
+            }
+        }
+
+        if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
+            if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
+                (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
+            } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
+                (*i)->setX(roomS_x - (*i)->getBox()->getX());
+            } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
+                (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
+            } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
+                (*i)->setY(roomS_y - (*i)->getBox()->getY());
+            }
+        }
+    }
+
+    //PROJECTILES
+
+    for (std::vector<Projectile*>::iterator i = projectiles.begin(); i != projectiles.end(); i++) {
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                (*i)->hitting(*j);
+            }
+        }
+
+        if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
+            if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
+                (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
+                (*i)->timeOut();
+            } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
+                (*i)->setX(roomS_x - (*i)->getBox()->getX());
+                (*i)->timeOut();
+            } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
+                (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
+                (*i)->timeOut();
+            } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
+                (*i)->setY(roomS_y - (*i)->getBox()->getY());
+                (*i)->timeOut();
             }
         }
     }
@@ -1751,9 +2167,33 @@ void MainWindow::updatePhysics()
     addRenderable(toAdd);
 
     //Update the grounded state of livings
-    for (std::vector<Living*>::iterator i = livingList.begin(); i != livingList.end(); i++) {
+    if (s != nullptr) {
+        s->setOnGround(false);
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+            if (Entity::checkCollision(s, s->getGroundBox(), *j, (*j)->getBox())) {
+                s->setOnGround(true);
+                break;
+            }
+        }
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+            if (Entity::checkCollision(s, s->getGroundBox(), *j, (*j)->getBox())) {
+                s->setOnGround(true);
+                break;
+            }
+        }
+        if (s->getY() + s->getGroundBox()->getY() + s->getGroundBox()->getHeight() > roomE_y)
+            s->setOnGround(true);
+    }
+
+    for (std::vector<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++) {
         (*i)->setOnGround(false);
-        for (std::vector<Entity*>::iterator j = solidList.begin(); j!= solidList.end(); j++) {
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setOnGround(true);
+                break;
+            }
+        }
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
                 break;
@@ -1763,14 +2203,65 @@ void MainWindow::updatePhysics()
             (*i)->setOnGround(true);
     }
 
-    for (std::vector<Entity*>::iterator i = toDel.begin(); i != toDel.end(); i++) {
+    for (std::vector<NPC*>::iterator i = NPCs.begin(); i != NPCs.end(); i++) {
+        (*i)->setOnGround(false);
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setOnGround(true);
+                break;
+            }
+        }
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setOnGround(true);
+                break;
+            }
+        }
+        if ((*i)->getY() + (*i)->getGroundBox()->getY() + (*i)->getGroundBox()->getHeight() > roomE_y)
+            (*i)->setOnGround(true);
+    }
+
+    for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+        (*i)->setOnGround(false);
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setOnGround(true);
+                break;
+            }
+        }
+        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+            if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setOnGround(true);
+                break;
+            }
+        }
+        if ((*i)->getY() + (*i)->getGroundBox()->getY() + (*i)->getGroundBox()->getHeight() > roomE_y)
+            (*i)->setOnGround(true);
+    }
+
+    if (toDel.size() > 0) {
         std::vector<Entity*> newRen;
         for (std::vector<Entity*>::iterator j = rendering.begin(); j != rendering.end(); j++) {
-            if (*j != *i)
+            bool td = false;
+            for (std::vector<Entity*>::iterator i = toDel.begin(); i != toDel.end(); i++) {
+                if (*j == *i)
+                    td = true;
+            }
+            if (!td)
                 newRen.push_back(*j);
         }
-        rendering = newRen;
-        delete *i;
+
+        monsters = {};
+        terrains = {};
+        s = nullptr;
+        dynamicObjs = {};
+        areas = {};
+        projectiles = {};
+        NPCs = {};
+        rendering = {};
+        addRenderable(newRen);
+        for (std::vector<Entity*>::iterator i = toDel.begin(); i != toDel.end(); i++)
+            delete *i;
     }
 }
 

@@ -117,9 +117,6 @@ void Entity::updateV(double framerate)
     //moving the entity
     x += vX/framerate;
     y += vY/framerate;
-    //if the entity is moving very slowly, it just stops
-    if (entType != "Samos")
-        if (std::abs(vX) < static_cast<double>(values["general"]["slowcap"])) vX = 0;
 }
 
 void Entity::applyKnockback(Entity *e, double kBForce)
@@ -137,6 +134,8 @@ void Entity::forceKnockback(Entity *e, double kBForce)
         return;
     if (std::abs((x + box->getX() + (box->getWidth() / 2)) - (e->x + e->box->getX() + (e->box->getWidth() / 2))) >= 5)
         vX = (((x + box->getX() + (box->getWidth() / 2)) < (e->x + e->box->getX() + (e->box->getWidth() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
+    else
+        vX =0;
     vY = (((y + box->getY() + (box->getHeight() / 2)) < (e->y + e->box->getY() + (e->box->getHeight() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
 }
 

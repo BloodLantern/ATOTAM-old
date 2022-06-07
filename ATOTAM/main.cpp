@@ -45,7 +45,7 @@ void gameClock(MainWindow* w, Samos* s) {
                 if (!MainWindow::mapViewer) {
                     // Update physics
                     if (s != nullptr)
-                        w->updateSamos(s);
+                        w->updateSamos();
                     w->updatePhysics();
                 } else {
                     w->updateMapViewer();

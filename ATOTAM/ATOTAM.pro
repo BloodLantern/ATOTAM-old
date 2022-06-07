@@ -31,6 +31,7 @@ SOURCES += \
     Easing/Quint.cpp \
     Easing/Sine.cpp \
     dialogue.cpp \
+    Entities/dynamicobj.cpp \
     main.cpp \
     mainwindow.cpp \
     map.cpp \
@@ -39,6 +40,7 @@ SOURCES += \
 HEADERS += \
     Entities/collisionbox.h \
     Entities/door.h \
+    Entities/dynamicobj.h \
     Entities/entity.h \
     Entities/living.h \
     Entities/monster.h \

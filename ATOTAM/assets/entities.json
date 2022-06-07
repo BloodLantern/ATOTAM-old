@@ -15,7 +15,8 @@
 		"menuCoolDown": 0.1,
 		"mapViewerCameraSpeed": 2000.0,
 		"camera_rx": -936,
-		"camera_ry": -594
+		"camera_ry": -594,
+		"iTime": 0.5
 	},
 	"names": {
 		"Samos": {
@@ -65,12 +66,11 @@
 			"wallFriction": 0.02,
 			"slowcap": 25,
 			"switchDelay": 0.3,
-			"shootTime": 0.5,
+			"shootTime": 0.3,
 			"maxHealth": 99,
 			"invulnerable": false,
 			"damageOnContact": false,
 			"mass": 100,
-			"iTime": 0.5,
 			"contactKB": 10.0,
 			"shootOffset": {
 				"Right": {

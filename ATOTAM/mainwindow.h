@@ -9,9 +9,14 @@
 #include <windows.h>
 #include <chrono>
 
+#include "Entities/area.h"
+#include "Entities/dynamicobj.h"
 #include "Entities/entity.h"
 #include "Entities/living.h"
+#include "Entities/monster.h"
+#include "Entities/npc.h"
 #include "Entities/samos.h"
+#include "Entities/terrain.h"
 #include "dialogue.h"
 #include "map.h"
 
@@ -53,7 +58,7 @@ public:
     static unsigned int fps; // Fps count when 'lastFpsShown' was updated
     static bool showFps; // Whether to show fps in-game
     static unsigned int showFpsUpdateRate; // Time (in ns) between each fps update
-    static bool showUI;
+    static bool showHUD;
     static bool isPaused;
     static bool fullscreen;
     static std::pair<int,int> resolution;
@@ -73,7 +78,7 @@ public:
     void updatePhysics();
     std::vector<Entity*> handleCollision(Entity* obj1, Entity* obj2);
     void updateAnimations();
-    void updateSamos(Samos* s);
+    void updateSamos();
     void updateMapViewer();
     void getInputs();
     bool updateProjectile(Projectile* p);
@@ -98,6 +103,13 @@ private:
     Ui::MainWindow *ui;
     QApplication *m_qApp;
     std::vector<Entity*> rendering;
+    std::vector<Terrain*> terrains;
+    std::vector<Monster*> monsters;
+    std::vector<NPC*> NPCs;
+    std::vector<Projectile*> projectiles;
+    std::vector<Area*> areas;
+    std::vector<DynamicObj*> dynamicObjs;
+    Samos* s;
     int selectedOption = 0;
     std::string menu;
     std::vector<std::string> menuOptions;

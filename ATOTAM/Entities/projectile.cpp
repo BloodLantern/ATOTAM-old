@@ -72,9 +72,10 @@ void Projectile::hitting(Entity* ent)
         }
     } else if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
         Living* liv = static_cast<Living*>(ent);
-        if (getProjectileType() != "Bomb" || ent->getEntType() != "Samos")
-            liv->hit(damage, this, kb);
-        else
+        if (getProjectileType() != "Bomb" || ent->getEntType() != "Samos") {
+            if (liv->getITime() <= 0.0 && !liv->getInvulnerable())
+                liv->hit(damage, this, kb);
+        } else
             liv->hit(0, this, 10*kb);
     }
 }
