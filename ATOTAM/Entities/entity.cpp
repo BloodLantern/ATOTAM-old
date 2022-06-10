@@ -181,10 +181,11 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     nlohmann::json animJson;
 
     // Getting a json object representing the animation
-    if (!values["names"][name]["randomTexture"].is_null())
-        animJson = values["textures"][values["names"][name]["texture"]][values["names"][name]["randomTexture"]
-                [((double) rand() / (RAND_MAX+1)) * (values["names"][name]["randomTexture"].size() - 1 + 1) + 0]]; // Generate a random number in range [0; values["names"][name]["randomTexture"].size()]
-    else
+    if (!values["names"][name]["randomTexture"].is_null() && state == "None") {
+        std::string newState = values["names"][name]["randomTexture"][((double) rand() / (RAND_MAX+1)) * (values["names"][name]["randomTexture"].size() - 1 + 1) + 0];
+        animJson = values["textures"][values["names"][name]["texture"]][newState]; // Generate a random number in range [0; values["names"][name]["randomTexture"].size()]
+        setState(newState);
+    } else
         animJson = values["textures"][values["names"][name]["texture"]][state];
     // Getting the full animation image which will be cropped afterwards
     QImage fullAnim = QImage(QString::fromStdString(std::string(assetsPath + "/textures/") + std::string(animJson["file"])))
@@ -435,6 +436,16 @@ double Entity::getMass() const
 void Entity::setMass(double newMass)
 {
     mass = newMass;
+}
+
+int Entity::getRoomId() const
+{
+    return roomId;
+}
+
+void Entity::setRoomId(int newRoomId)
+{
+    roomId = newRoomId;
 }
 
 

@@ -138,11 +138,10 @@ void gameClock(MainWindow* w, Samos* s) {
                     delete startingCameraPos;
                     startingCameraPos = nullptr;
                     MainWindow::doorTransition = "";
+                    s->setRoomId(MainWindow::currentMap.getCurrentRoomId());
 
-                    // Set it to delete everything
-                    w->clearRendering("Samos");
-
-                    w->addRenderable(MainWindow::currentMap.loadRoom());
+                    // Unload the last room
+                    w->removeOtherRoomsRendering();
 
                     w->updateAnimations();
                 }
@@ -166,17 +165,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = "ATOTAM_" + QLocale(locale).name();
-        if (translator.load(":/i18n/" + baseName)) {
-            a.installTranslator(&translator);
-            break;
-        }
-    }
-
-    // Set the random instance
+    // Set the random seed
     std::srand(time(NULL));
 
     Entity::values = Entity::loadValues(MainWindow::assetsPath);

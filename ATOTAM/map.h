@@ -24,11 +24,15 @@ public:
     int getCurrentRoomId() const;
     void setCurrentRoomId(int newCurrentRoomId);
 
+    int getLastRoomId() const;
+    void setLastRoomId(int newLastRoomId);
+
 private:
     Map(nlohmann::json json);
     std::string name;
     nlohmann::json json;
     int currentRoomId;
+    int lastRoomId;
 };
 
 #endif // MAP_H

@@ -84,6 +84,9 @@ public:
     double getMass() const;
     void setMass(double newMass);
 
+    int getRoomId() const;
+    void setRoomId(int newRoomId);
+
 private:
     CollisionBox* box = nullptr;
     QImage* texture = nullptr; // Image to be rendered now
@@ -105,6 +108,7 @@ private:
     std::vector<QImage> currentAnimation; // Full current animation
     std::string state = "None"; // Which animation should be rendered
     std::string lastFrameState = "None"; // Which animation was rendered in the last frame
+    int roomId; // ID of the room in which this Entity is
 };
 
 #endif // ENTITY_H

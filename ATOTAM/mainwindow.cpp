@@ -1240,7 +1240,11 @@ void MainWindow::paintEvent(QPaintEvent *)
     QPainter painter(this);
 
     for (std::vector<NPC*>::iterator ent = NPCs.begin(); ent != NPCs.end(); ent++) {
-        //If the texture is null, set it to the empty texture
+        // Make sure not to use a null pointer in case there is one
+        if (*ent == nullptr)
+            continue;
+
+        // If the texture is null, set it to the empty texture
         if ((*ent)->getTexture() == nullptr) {
             (*ent)->setTexture(&emptyTexture);
         }
@@ -1682,13 +1686,14 @@ void MainWindow::addRenderable(std::vector<Entity*> entities)
     }
 }
 
-void MainWindow::clearRendering(std::string excludedType)
+void MainWindow::clearRendering(std::string excludedType, bool deleteEntities)
 {
     std::vector<Entity*> nextRen;
     for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent ++)
-        if ((*ent)->getEntType() != excludedType)
-            delete *ent;
-        else
+        if ((*ent)->getEntType() != excludedType) {
+            if (deleteEntities)
+                delete *ent;
+        } else
             nextRen.push_back(*ent);
 
     terrains = {};
@@ -1699,6 +1704,21 @@ void MainWindow::clearRendering(std::string excludedType)
     dynamicObjs = {};
     rendering = {};
     addRenderable(nextRen);
+}
+
+void MainWindow::removeOtherRoomsRendering()
+{
+    std::vector<Entity*> newRendering;
+    std::vector<Entity*> toDelete;
+    for (std::vector<Entity*>::iterator ent = rendering.begin(); ent != rendering.end(); ent++)
+        if ((*ent)->getRoomId() == currentMap.getCurrentRoomId())
+            newRendering.push_back(*ent);
+        else
+            toDelete.push_back(*ent);
+    clearRendering("", false);
+    addRenderable(newRendering);
+    for (std::vector<Entity*>::iterator ent = toDelete.begin(); ent != toDelete.end(); ent++)
+        delete *ent;
 }
 
 void MainWindow::updatePhysics()

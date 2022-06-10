@@ -21,6 +21,16 @@ Map::Map(nlohmann::json json)
 
 }
 
+int Map::getLastRoomId() const
+{
+    return lastRoomId;
+}
+
+void Map::setLastRoomId(int newLastRoomId)
+{
+    lastRoomId = newLastRoomId;
+}
+
 std::vector<Entity *> Map::loadRoom(int id)
 {
     // Result
@@ -75,6 +85,7 @@ std::vector<Entity *> Map::loadRoom(int id)
                     else
                         e->setState(obj["state"]);
 
+                    e->setRoomId(id);
                     e->setCurrentAnimation(e->updateAnimation(e->getState()));
                     e->setFrame(0);
                     e->updateTexture();
@@ -96,6 +107,7 @@ int Map::getCurrentRoomId() const
 
 void Map::setCurrentRoomId(int newCurrentRoomId)
 {
+    setLastRoomId(currentRoomId);
     currentRoomId = newCurrentRoomId;
 }
 
