@@ -15,8 +15,7 @@
 		"menuCoolDown": 0.1,
 		"mapViewerCameraSpeed": 2000.0,
 		"camera_rx": -936,
-		"camera_ry": -594,
-		"iTime": 0.5
+		"camera_ry": -594
 	},
 	"names": {
 		"Samos": {
@@ -71,7 +70,8 @@
 			"invulnerable": false,
 			"damageOnContact": false,
 			"mass": 100,
-			"contactKB": 10.0,
+			"contactKB": 15.0,
+			"lagTime": 0.5,
 			"shootOffset": {
 				"Right": {
 					"Standing": {
@@ -240,7 +240,8 @@
 			"lifeTime": 1.5,
 			"damage": 20,
 			"mass": 1,
-			"knockback": 0.0
+			"knockback": 0.0,
+			"iTime": 0.3
 		},
 		"Missile": {
 			"texture": "Missile",
@@ -255,7 +256,8 @@
 			"lifeTime": 2.0,
 			"damage": 50,
 			"mass": 10,
-			"knockback": 10.0
+			"knockback": 10.0,
+			"iTime": 0.5
 		},
 		"Bomb": {
 			"texture": "Bomb",
@@ -270,7 +272,8 @@
 			"lifeTime": 1,
 			"damage": 50,
 			"mass": 10,
-			"knockback": 2.0
+			"knockback": 2.0,
+			"iTime": 0.5
 		},
 		"Grenade": {
 			"texture": "Grenade",
@@ -287,7 +290,8 @@
 			"gravity": true,
 			"friction": 0.2,
 			"mass": 10,
-			"knockback": 10.0
+			"knockback": 10.0,
+			"iTime": 0.5
 		},
 		"Wall": {
 			"texture": "Wall",

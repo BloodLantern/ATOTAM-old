@@ -50,6 +50,9 @@ public:
     double getSwitchDelay() const;
     void setSwitchDelay(double newSwitchDelay);
 
+    double getLagTime() const;
+    void setLagTime(double newLagTime);
+
 private:
     bool isInAltForm;
     int grenadeCount;
@@ -59,6 +62,7 @@ private:
     double jumpTime = 0.3;
     double shootTime = 0.0;
     double switchDelay = 0.0;
+    double lagTime = 0.0;
     std::string canonDirection = "Right";
     std::string selectedWeapon = "Beam";
     CollisionBox* wallBoxR;

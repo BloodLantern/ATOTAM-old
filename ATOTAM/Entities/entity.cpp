@@ -132,10 +132,7 @@ void Entity::forceKnockback(Entity *e, double kBForce)
 {
     if (mass == -1)
         return;
-    if (std::abs((x + box->getX() + (box->getWidth() / 2)) - (e->x + e->box->getX() + (e->box->getWidth() / 2))) >= 5)
-        vX = (((x + box->getX() + (box->getWidth() / 2)) < (e->x + e->box->getX() + (e->box->getWidth() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
-    else
-        vX =0;
+    vX = (((x + box->getX() + (box->getWidth() / 2)) < (e->x + e->box->getX() + (e->box->getWidth() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
     vY = (((y + box->getY() + (box->getHeight() / 2)) < (e->y + e->box->getY() + (e->box->getHeight() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
 }
 

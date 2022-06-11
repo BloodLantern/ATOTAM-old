@@ -27,7 +27,7 @@ Living::~Living()
 void Living::hit(int damage, Entity *origin, double kb, bool forced)
 {
     if (damage != 0)
-        iTime = Entity::values["general"]["iTime"];
+        iTime = Entity::values["names"][origin->getName()]["iTime"];
     health -= damage;
     if (origin != nullptr && kb != 0.0) {
         if (forced)

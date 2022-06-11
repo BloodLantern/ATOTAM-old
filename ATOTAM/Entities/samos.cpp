@@ -233,3 +233,13 @@ void Samos::setSwitchDelay(double newSwitchDelay)
 {
     switchDelay = newSwitchDelay;
 }
+
+double Samos::getLagTime() const
+{
+    return lagTime;
+}
+
+void Samos::setLagTime(double newLagTime)
+{
+    lagTime = newLagTime;
+}
