@@ -173,117 +173,155 @@ void Entity::updateTexture()
 std::vector<QImage> Entity::updateAnimation(std::string state)
 {
     // First create the image list which will be returned
-    std::vector<QImage> anim;
+    // The first list is the animation
+    // The next ones are the repetitions
+    std::vector<std::vector<QImage>> anim;
 
     nlohmann::json animJson;
+    for (unsigned int repeat = 0;
+         repeat < (values["names"][name]["repeat"].is_null() ? 1 : static_cast<unsigned int>(values["names"][name]["repeat"]));
+         repeat++) {
+        // Make sure to create the current vector
+        anim.push_back({});
 
-    // Getting a json object representing the animation
-    if (!values["names"][name]["randomTexture"].is_null() && state == "None") {
-        std::string newState = values["names"][name]["randomTexture"][((double) rand() / (RAND_MAX+1)) * (values["names"][name]["randomTexture"].size() - 1 + 1) + 0];
-        animJson = values["textures"][values["names"][name]["texture"]][newState]; // Generate a random number in range [0; values["names"][name]["randomTexture"].size()]
-        setState(newState);
-    } else
-        animJson = values["textures"][values["names"][name]["texture"]][state];
+        // Getting a json object representing the animation
+        if (!values["names"][name]["randomTexture"].is_null() && state == "None") {
+            std::string newState = values["names"][name]["randomTexture"]
+                    [((double) rand() / (RAND_MAX+1)) * (values["names"][name]["randomTexture"].size() - 1 + 1) + 0]; // Generates a random number in range [0; values["names"][name]["randomTexture"].size()]
+            animJson = values["textures"][values["names"][name]["texture"]][newState];
+        } else
+            animJson = values["textures"][values["names"][name]["texture"]][state];
 
-    // Setting default Json values
-    nlohmann::json defaultValues = values["general"]["defaultAnimationValues"];
-    for (std::pair<std::string, nlohmann::json> value : defaultValues.get<nlohmann::json::object_t>())
-        if (animJson[value.first].is_null())
-            animJson[value.first] = value.second;
+        // Setting default Json values
+        for (const std::pair<std::string, nlohmann::json> value
+             : values["general"]["defaultAnimationValues"].get<nlohmann::json::object_t>())
+            if (animJson[value.first].is_null())
+                animJson[value.first] = value.second;
 
-    // Getting the full animation image which will be cropped afterwards
-    QImage fullAnim = QImage(QString::fromStdString(std::string(assetsPath + "/textures/") + std::string(animJson["file"])))
-            .copy(animJson["x"], animJson["y"], animJson["width"], animJson["height"]);
-    // If the animation is multi-directional the program shouldn't keep the irrelevant part
-    if (animJson["multi-directional"]) {
-        if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft") {
-            fullAnim = fullAnim.copy(0, 0, static_cast<int>(animJson["width"]) / 2, static_cast<int>(animJson["height"]));
-        } else if (facing == "Right" || facing == "UpRight" || facing == "DownRight") {
-            fullAnim = fullAnim.copy(static_cast<int>(animJson["width"]) / 2, 0,
-                    static_cast<int>(animJson["width"]), static_cast<int>(animJson["height"]));
+        // Getting the full animation image which will be cropped afterwards
+        QImage fullAnim = QImage(QString::fromStdString(std::string(assetsPath + "/textures/") + std::string(animJson["file"])))
+                .copy(animJson["x"], animJson["y"], animJson["width"], animJson["height"]);
+        // If the animation is multi-directional the program shouldn't keep the irrelevant part
+        if (animJson["multi-directional"]) {
+            if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft") {
+                fullAnim = fullAnim.copy(0, 0, static_cast<int>(animJson["width"]) / 2, static_cast<int>(animJson["height"]));
+            } else if (facing == "Right" || facing == "UpRight" || facing == "DownRight") {
+                fullAnim = fullAnim.copy(static_cast<int>(animJson["width"]) / 2, 0,
+                        static_cast<int>(animJson["width"]), static_cast<int>(animJson["height"]));
+            }
+        }
+
+        int imagesPerLine = (static_cast<int>(animJson["count"]) + static_cast<int>(animJson["emptyFrames"])) / static_cast<int>(animJson["lines"]);
+        int width = static_cast<int>(animJson["width"]) / imagesPerLine;
+        // Make sure not to get two images at a time
+        if (animJson["multi-directional"])
+            width /= 2;
+        int height = static_cast<int>(animJson["height"]) / static_cast<int>(animJson["lines"]);
+        // For each line
+        for (int i = (animJson["reversed"] ? static_cast<int>(animJson["lines"]) - 1 : 0);
+             (animJson["reversed"] ? i > -1 : i < animJson["lines"]);
+             (animJson["reversed"] ? i-- : i++)) {
+            // For each sprite
+            if (facing == "Right" || facing == "UpRight" || facing == "DownRight" || facing == "None" || facing == "Down" || facing == "Up")
+                for (int ii = 0;
+                     ii < (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ animJson["emptyFramesReversed"] ?
+                           imagesPerLine : imagesPerLine - static_cast<int>(animJson["emptyFrames"]) : imagesPerLine); ii++) {
+
+                    if (animJson["emptyFramesReversed"] && i + 1 == animJson["lines"] && ii == 0)
+                        ii += static_cast<int>(animJson["emptyFrames"]);
+
+                    anim[repeat].push_back(fullAnim.copy(ii * width, i * height, width, height));
+                }
+            else if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
+                for (int ii = imagesPerLine - 1;
+                     ii > (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ animJson["emptyFramesReversed"] ?
+                           -1 : static_cast<int>(animJson["emptyFrames"]) - 1 : -1); ii--) {
+
+                    if (animJson["emptyFramesReversed"] && i + 1 == animJson["lines"] && ii == imagesPerLine - 1)
+                        ii -= static_cast<int>(animJson["emptyFrames"]);
+
+                    anim[repeat].push_back(fullAnim.copy(ii * width, i * height, width, height));
+                }
         }
     }
 
-    int imagesPerLine = (static_cast<int>(animJson["count"]) + static_cast<int>(animJson["emptyFrames"])) / static_cast<int>(animJson["lines"]);
-    int width = static_cast<int>(animJson["width"]) / imagesPerLine;
-    // Make sure not to get two images at a time
-    if (animJson["multi-directional"])
-        width /= 2;
-    int height = static_cast<int>(animJson["height"]) / static_cast<int>(animJson["lines"]);
-    // For each line
-    for (int i = (animJson["reversed"] ? static_cast<int>(animJson["lines"]) - 1 : 0);
-         (animJson["reversed"] ? i > -1 : i < animJson["lines"]);
-         (animJson["reversed"] ? i-- : i++)) {
-        // For each sprite
-        if (facing == "Right" || facing == "UpRight" || facing == "DownRight" || facing == "None" || facing == "Down" || facing == "Up")
-            for (int ii = 0;
-                 ii < (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ animJson["emptyFramesReversed"] ?
-                       imagesPerLine : imagesPerLine - static_cast<int>(animJson["emptyFrames"]) : imagesPerLine); ii++) {
+    // Repeating the frame
+    if (!values["names"][name]["repeat"].is_null()) {
+        for (unsigned int i = 0; i < anim[0].size(); i++) {
+            const QImage frame = anim[0][i];
 
-                if (animJson["emptyFramesReversed"] && i + 1 == animJson["lines"] && ii == 0)
-                    ii += static_cast<int>(animJson["emptyFrames"]);
+            // Getting direction
+            int* direction;
+            if (!values["names"][name]["repeatDirection"].is_null()) {
+                if (values["names"][name]["repeatDirection"] == "horizontal")
+                   direction = new int(0);
+                else if (values["names"][name]["repeatDirection"] == "vertical")
+                   direction = new int(1);
+                else // Both vertical and horizontal
+                   direction = new int(2);
+            } else // Default is both vertical and horizontal
+                direction = new int(2);
 
-                QImage frame = fullAnim.copy(ii * width, i * height, width, height);
-                if (!values["names"][name]["repeat"].is_null()) {
-                    // Repeating the frame
-                    QImage* temp = new QImage(frame.width() * static_cast<int>(values["names"][name]["repeat"]), frame.height(), frame.format());
-                    QPainter* painter = new QPainter(temp);
-                    for (unsigned int i = 0; i < values["names"][name]["repeat"]; i++) {
-                        painter->drawImage(i * static_cast<int>(animJson["width"]), 0, frame);
-                    }
-                    delete painter;
-                    frame = *temp;
-                    delete temp;
-                }
-                anim.push_back(frame);
-            }
-        else if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
-            for (int ii = imagesPerLine - 1;
-                 ii > (i + 1 == animJson["lines"] ? /*Remove empty frames from the last line*/ animJson["emptyFramesReversed"] ?
-                       -1 : static_cast<int>(animJson["emptyFrames"]) - 1 : -1); ii--) {
+            // Creating the final frame
+            QImage* temp;
+            if (*direction == 0) // Horizontal
+               temp = new QImage(frame.width() * static_cast<int>(values["names"][name]["repeat"]),
+                       frame.height(), frame.format());
+            else if (*direction == 1) // Vertical
+               temp = new QImage(frame.width(),
+                       frame.height() * static_cast<int>(values["names"][name]["repeat"]), frame.format());
+            else // Both vertical and horizontal
+               temp = new QImage(frame.width() * static_cast<int>(values["names"][name]["repeat"]),
+                       frame.height() * static_cast<int>(values["names"][name]["repeat"]), frame.format());
 
-                if (animJson["emptyFramesReversed"] && i + 1 == animJson["lines"] && ii == imagesPerLine - 1)
-                    ii -= static_cast<int>(animJson["emptyFrames"]);
+            // Modifying the final frame using the current one
+            QPainter* painter = new QPainter(temp);
+            if (*direction == 0) // Horizontal
+                for (unsigned int x = 0; x < values["names"][name]["repeat"]; x++)
+                    painter->drawImage(x * static_cast<int>(animJson["width"]), 0, anim[x][i]);
+            else if (*direction == 1) // Vertical
+                for (unsigned int y = 0; y < values["names"][name]["repeat"]; y++)
+                    painter->drawImage(0, y * static_cast<int>(animJson["height"]), anim[y][i]);
+            else // Both vertical and horizontal
+                for (unsigned int x = 0; x < values["names"][name]["repeat"]; x++)
+                    for (unsigned int y = 0; y < values["names"][name]["repeat"]; y++)
+                        painter->drawImage(x * static_cast<int>(animJson["width"]), y * static_cast<int>(animJson["height"]), anim[x][i]);
 
-                QImage frame = fullAnim.copy(ii * width, i * height, width, height);
-                if (!values["names"][name]["repeat"].is_null()) {
-                    // Repeating the frame
-                    QImage* temp = new QImage(frame.width() * static_cast<int>(values["names"][name]["repeat"]), frame.height(), frame.format());
-                    QPainter* painter = new QPainter(temp);
-                    for (unsigned int i = 0; i < values["names"][name]["repeat"]; i++) {
-                        painter->drawImage(i * static_cast<int>(animJson["width"]), 0, frame);
-                    }
-                    delete painter;
-                    frame = *temp;
-                    delete temp;
-                }
-                anim.push_back(frame);
-            }
+            // Deleting variables and setting the final frame value
+            delete painter;
+            delete direction;
+            anim[0][i] = *temp;
+            delete temp;
+        }
+        for (unsigned int i = 1; i < anim.size(); i++)
+            anim[i].clear();
     }
+
+    // At this point, anim[0] is the animation
 
     // Place the overlay on top of the current animation
     for (nlohmann::json ovrly : animJson["overlay"]) {
         std::vector<QImage> overlay = updateAnimation(ovrly);
-        for (unsigned int i = 0; i < anim.size(); i++) {
-            QImage result(std::max(overlay[i].width(), anim[i].width()), std::max(overlay[i].height(), anim[i].height()), anim[i].format());
+        for (unsigned int i = 0; i < anim[0].size(); i++) {
+            QImage result(std::max(overlay[i].width(), anim[0][i].width()), std::max(overlay[i].height(), anim[0][i].height()), anim[0][i].format());
             QPainter merger(&result);
-            merger.drawImage(0, 0, anim[i]);
+            merger.drawImage(0, 0, anim[0][i]);
             merger.drawImage(0, 0, overlay[i]);
-            anim[i] = result;
+            anim[0][i] = result;
         }
     }
 
     // Remove the empty pixels on the top-left
-    for (unsigned int i = 0; i < anim.size(); i++) {
-        QImage img = anim[i];
+    for (unsigned int i = 0; i < anim[0].size(); i++) {
+        QImage img = anim[0][i];
         if (facing == "Left" || facing == "UpLeft" || facing == "DownLeft")
             img.setOffset(QPoint(static_cast<int>(animJson["xOffset"][0]), static_cast<int>(animJson["yOffset"][0])));
         else if (facing == "Right" || facing == "UpRight" || facing == "DownRight" || facing == "None" || facing == "Down" || facing == "Up")
             img.setOffset(QPoint(static_cast<int>(animJson["xOffset"][1]), static_cast<int>(animJson["yOffset"][1])));
-        anim[i] = img;
+        anim[0][i] = img;
     }
 
-    return anim;
+    return anim[0];
 }
 
 CollisionBox *Entity::getBox() const

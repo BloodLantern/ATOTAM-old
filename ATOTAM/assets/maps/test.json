@@ -7,17 +7,44 @@
 			"size": [1920, 1080],
 			"content": {
 				"Terrain": {
-					"MossyStone": [
+					"MossyStoneLarge": [
 						{
 							"x": 64,
-							"y": 1024,
-							"times": 29,
+							"y": 384,
+							"times": 3,
 							"vertical": false
 						},
 						{
 							"x": 64,
-							"y": 384,
+							"y": 1024,
 							"times": 9,
+							"vertical": false
+						},
+						{
+							"x": 384,
+							"y": 640,
+							"times": 3,
+							"vertical": false
+						},
+						{
+							"x": 192,
+							"y": 832,
+							"times": 3,
+							"vertical": false
+						},
+						{
+							"x": 1088,
+							"y": 320,
+							"times": 3,
+							"vertical": false
+						}
+
+					],
+					"MossyStone": [
+						{
+							"x": 1792,
+							"y": 1024,
+							"times": 2,
 							"vertical": false
 						},
 						{
@@ -25,26 +52,7 @@
 							"y": 448,
 							"times": 1,
 							"vertical": false
-						},
-						{
-							"x": 384,
-							"y": 640,
-							"times": 9,
-							"vertical": false
-						},
-						{
-							"x": 192,
-							"y": 832,
-							"times": 9,
-							"vertical": false
-						},
-						{
-							"x": 1088,
-							"y": 320,
-							"times": 9,
-							"vertical": false
-						}
-					],
+						}					],
 					"Stone": [
 						{
 							"x": 0,

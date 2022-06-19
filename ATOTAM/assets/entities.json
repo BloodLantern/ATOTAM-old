@@ -356,6 +356,7 @@
 			"texture": "MossyStone",
 			"randomTexture": ["0", "1", "2", "3", "4"],
 			"repeat": 3,
+			"repeatDirection": "horizontal",
 			"offset_x": 0,
 			"offset_y": 0,
 			"width": 192,
