@@ -49,10 +49,40 @@ std::vector<Entity *> Map::loadRoom(int id)
 
                     int x = static_cast<int>(roomJson["position"][0]) + static_cast<int>(obj["x"]);
                     int y = static_cast<int>(roomJson["position"][1]) + static_cast<int>(obj["y"]);
-                    std::string n = name.first; // Name
+                    std::string n; // Name
+                    std::vector<std::string> np; // Name parameters
+                    std::string fullName = name.first; // Temporary
+
+                    // Only get name parameters if they exist
+                    for (std::string::iterator c = fullName.begin(); c != fullName.end(); c++)
+                        if ((*c) == '_') {
+                            // Name initialization
+                            for (std::string::iterator character = fullName.begin(); character < c; character++)
+                                n += *character;
+
+                            // Name parameters initialization
+                            std::string* params = new std::string;
+                            for (std::string::iterator character = c + 1; character != fullName.end(); character++)
+                                (*params) += *character;
+                            np.push_back("");
+                            unsigned int* currentParam = new unsigned int(0);
+                            for (std::string::iterator character = params->begin(); character != params->end(); character++)
+                                if ((*character) == '-') {
+                                    np.push_back("");
+                                    (*currentParam)++;
+                                } else
+                                    np[*currentParam] += *character;
+                            delete currentParam;
+                            delete params;
+
+                            break;
+                        }
+                    // If the full name doesn't contain name paramters
+                    if (n == "")
+                        n = fullName;
 
                     if (!obj["times"].is_null())
-                        if (!obj["vertical"].is_null()) { // Should always be true
+                        if (!obj["vertical"].is_null()) { // Should always be true at this point
                             if (obj["vertical"])
                                 y += i * static_cast<int>(Entity::values["names"][n]["height"]);
                             else
@@ -85,10 +115,38 @@ std::vector<Entity *> Map::loadRoom(int id)
                     else
                         e->setState(obj["state"]);
 
+                    // If the entity has a repetition, extend its collision box
+                    std::string* repeatDirection = new std::string;
+                    unsigned int* repeatParam = new unsigned int;
+                    if (!np.empty()) {
+                        for (std::vector<std::string>::iterator param = np.begin(); param != np.end(); param++)
+                            if (*param == "H")
+                                *repeatDirection = "horizontal";
+                            else if (*param == "V")
+                                *repeatDirection = "vertical";
+                            else if (*param == "B")
+                                *repeatDirection = "both";
+                            else if ((*param)[0] == 'x')
+                                *repeatParam = std::stoul((*param).substr(1, (*param).size() - 1));
+                    }
+                    // If the entity has these parameters
+                    if (*repeatDirection != "" && *repeatParam != 0) {
+                        CollisionBox* box = e->getBox();
+                        if (*repeatDirection != "horizontal")
+                            box->setHeight(box->getHeight() * (*repeatParam));
+                        if (*repeatDirection != "vertical")
+                            box->setWidth(box->getWidth() * (*repeatParam));
+                    }
+                    delete repeatDirection;
+                    delete repeatParam;
+                    e->setNameParameters(np);
                     e->setRoomId(id);
+
+                    // Rendering (should be the last function calls)
                     e->setCurrentAnimation(e->updateAnimation(e->getState()));
                     e->setFrame(0);
                     e->updateTexture();
+
                     entities.push_back(e);
                 }
             }

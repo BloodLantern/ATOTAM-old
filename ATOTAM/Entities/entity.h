@@ -87,6 +87,9 @@ public:
     int getRoomId() const;
     void setRoomId(int newRoomId);
 
+    const std::vector<std::string> &getNameParameters() const;
+    void setNameParameters(const std::vector<std::string> &newNameParameters);
+
 private:
     CollisionBox* box = nullptr;
     QImage* texture = nullptr; // Image to be rendered now
@@ -101,6 +104,7 @@ private:
     double frictionFactor;
     bool isMovable;
     std::string name;
+    std::vector<std::string> nameParameters;
     double mass = 100;
 
     // Rendering

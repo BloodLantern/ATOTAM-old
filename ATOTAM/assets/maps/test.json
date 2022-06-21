@@ -15,7 +15,7 @@
 							"vertical": false
 						}
 					],
-					"MossyStone_x9H": [
+					"MossyStone_x9-H": [
 						{
 							"x": 64,
 							"y": 384
@@ -33,7 +33,7 @@
 							"y": 320
 						}
 					],
-					"MossyStone_x29H": [
+					"MossyStone_x29-H": [
 						{
 							"x": 64,
 							"y": 1024
@@ -45,25 +45,25 @@
 							"y": 448
 						}
 					],
-					"Stone_x6V": [
+					"Stone_x6-V": [
 						{
 							"x": 1600,
 							"y": 384
 						}
 					],
-					"Stone_x11V": [
+					"Stone_x11-V": [
 						{
 							"y": 64,
 							"x": 1856
 						}
 					],
-					"Stone_x16V": [
+					"Stone_x16-V": [
 						{
 							"y": 64,
 							"x": 0
 						}
 					],
-					"Stone_x30H": [
+					"Stone_x30-H": [
 						{
 							"x": 0,
 							"y": 0
@@ -107,19 +107,19 @@
 			"size": [3072, 2496],
 			"content": {
 				"Terrain": {
-					"MossyStone_x3H": [
+					"MossyStone_x3-H": [
 						{
 							"x": 1216,
 							"y": 1792
 						}
 					],
-					"MossyStone_x9H": [
+					"MossyStone_x9-H": [
 						{
 							"x": 640,
 							"y": 1856
 						}
 					],
-					"MossyStone_x10H": [
+					"MossyStone_x10-H": [
 						{
 							"x": 0,
 							"y": 1024
@@ -145,19 +145,19 @@
 							"y": 2240
 						}
 					],
-					"MossyStone_x12H": [
+					"MossyStone_x12-H": [
 						{
 							"x": 2240,
 							"y": 1664
 						}
 					],
-					"MossyStone_x30H": [
+					"MossyStone_x30-H": [
 						{
 							"x": 896,
 							"y": 832
 						}
 					],
-					"MossyStone_x42H": [
+					"MossyStone_x42-H": [
 						{
 							"x": 320,
 							"y": 2432
@@ -169,43 +169,43 @@
 							"y": 1856
 						}
 					],
-					"Stone_x9V": [
+					"Stone_x9-V": [
 						{
 							"x": 2240,
 							"y": 1728
 						}
 					],
-					"Stone_x10V": [
+					"Stone_x10-V": [
 						{
 							"x": 2752,
 							"y": 896
 						}
 					],
-					"Stone_x11V": [
+					"Stone_x11-V": [
 						{
 							"x": 1984,
 							"y": 1536
 						}
 					],
-					"Stone_x12V": [
+					"Stone_x12-V": [
 						{
 							"x": 0,
 							"y": 0
 						}
 					],
-					"Stone_x22V": [
+					"Stone_x22-V": [
 						{
 							"x": 0,
 							"y": 1088
 						}
 					],
-					"Stone_x39V": [
+					"Stone_x39-V": [
 						{
 							"x": 3008,
 							"y": 0
 						}
 					],
-					"Stone_x46H": [
+					"Stone_x46-H": [
 						{
 							"x": 64,
 							"y": 0
@@ -237,7 +237,7 @@
 			"size": [2496, 1088],
 			"content": {
 				"Terrain": {
-					"Stone_x8V": [
+					"Stone_x8-V": [
 						{
 							"x": 672,
 							"y": 480
@@ -247,19 +247,19 @@
 							"y": 480
 						}
 					],
-					"Stone_x16V": [
+					"Stone_x16-V": [
 						{
 							"x": 0,
 							"y": 64
 						}
 					],
-					"Stone_x17V": [
+					"Stone_x17-V": [
 						{
 							"x": 2432,
 							"y": 0
 						}
 					],
-					"Stone_x34H": [
+					"Stone_x34-H": [
 						{
 							"x": 0,
 							"y": 0
@@ -271,7 +271,7 @@
 							"y": 416
 						}
 					],
-					"MossyStone_x9H": [
+					"MossyStone_x9-H": [
 						{
 							"x": 1856,
 							"y": 192
@@ -301,7 +301,7 @@
 							"y": 544
 						}
 					],
-					"MossyStone_x37H": [
+					"MossyStone_x37-H": [
 						{
 							"x": 64,
 							"y": 1024
