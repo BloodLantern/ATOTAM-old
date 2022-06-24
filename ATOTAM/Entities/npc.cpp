@@ -36,3 +36,13 @@ void NPC::setTimesInteracted(unsigned int newTimesInteracted)
 {
     timesInteracted = newTimesInteracted;
 }
+
+unsigned int NPC::getMaxInteractions() const
+{
+    return maxInteractions;
+}
+
+void NPC::setMaxInteractions(unsigned int newMaxInteractions)
+{
+    maxInteractions = newMaxInteractions;
+}

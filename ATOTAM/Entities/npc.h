@@ -17,10 +17,14 @@ public:
     unsigned int getTimesInteracted() const;
     void setTimesInteracted(unsigned int newTimesInteracted);
 
+    unsigned int getMaxInteractions() const;
+    void setMaxInteractions(unsigned int newMaxInteractions);
+
 private:
     nlohmann::json json;
     std::string npcType;
-    unsigned int timesInteracted;
+    unsigned int timesInteracted = 0;
+    unsigned int maxInteractions = 0;
 };
 
 #endif // NPC_H

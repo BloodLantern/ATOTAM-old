@@ -1632,7 +1632,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.setPen(QColor("black"));
 
         painter.drawText(QRectF(QRect(200, 200, 1000, 200)),
-                         QString::fromStdString(currentDialogue.getTalking() + ": " + currentDialogue.getText()[currentDialogue.getTextAdvancement()]),
+                         QString::fromStdString(currentDialogue.getTalkingName() + ": " + currentDialogue.getText()[currentDialogue.getTextAdvancement()]),
                 QTextOption(Qt::AlignHCenter));
     }
 
@@ -2070,16 +2070,25 @@ void MainWindow::updatePhysics()
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
                 if (inputList["interact"] && inputTime["interact"] == 0.0) {
                     if ((*j)->getNpcType() == "Talking") {
-                        if (stringsJson[language]["dialogues"][(*j)->getName()][(*j)->getTimesInteracted()]["talking"].is_null())
-                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][(*j)->getTimesInteracted()]["text"],
-                                    (*j)->getName());
+                        // Set maxInteractions here because npc.cpp cannot include mainwindow.h
+                        if ((*j)->getMaxInteractions() == 0)
+                            (*j)->setMaxInteractions(stringsJson[language]["dialogues"][(*j)->getName()].size());
+
+                        // Set new Dialogue
+                        if (stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["talking"].is_null())
+                          currentDialogue = Dialogue(
+                              stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["text"], *j);
                         else
-                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][(*j)->getTimesInteracted()]["text"],
-                                    stringsJson[language]["dialogues"][(*j)->getName()][(*j)->getTimesInteracted()]["talking"]);
+                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["text"],
+                                    *j, stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["talking"]);
                     }
+                    // Don't forget to increment the Dialogue advancement
                     (*j)->setTimesInteracted((*j)->getTimesInteracted() + 1);
                 }
-            }
+            } else if (currentDialogue.getTalking() != nullptr)
+                if (!Entity::checkCollision(s, s->getBox(), currentDialogue.getTalking(), currentDialogue.getTalking()->getBox()))
+                    // Reset Dialogue if the player went too far away
+                    currentDialogue = Dialogue();
         }
         for (std::vector<Projectile*>::iterator j = projectiles.begin(); j != projectiles.end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
