@@ -2074,13 +2074,21 @@ void MainWindow::updatePhysics()
                         if ((*j)->getMaxInteractions() == 0)
                             (*j)->setMaxInteractions(stringsJson[language]["dialogues"][(*j)->getName()].size());
 
-                        // Set new Dialogue
-                        if (stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["talking"].is_null())
-                          currentDialogue = Dialogue(
-                              stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["text"], *j);
-                        else
-                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["text"],
-                                    *j, stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["talking"]);
+                        bool increased = false;
+                        if (!currentDialogue.isNull())
+                            if (currentDialogue.getText().size() - 1 > currentDialogue.getTextAdvancement()) {
+                                currentDialogue.setTextAdvancement(currentDialogue.getTextAdvancement() + 1);
+                                increased = true;
+                            }
+                        if (!increased) {
+                            // Set new Dialogue
+                            if (stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["talking"].is_null())
+                              currentDialogue = Dialogue(
+                                  stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["text"], *j);
+                            else
+                                currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["text"],
+                                        *j, stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["talking"]);
+                        }
                     }
                     // Don't forget to increment the Dialogue advancement
                     (*j)->setTimesInteracted((*j)->getTimesInteracted() + 1);

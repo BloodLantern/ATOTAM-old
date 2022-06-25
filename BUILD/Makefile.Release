@@ -1166,7 +1166,81 @@ release/Sine.o: ../ATOTAM/Easing/Sine.cpp ../ATOTAM/Easing/Sine.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\Sine.o ..\ATOTAM\Easing\Sine.cpp
 
 release/dialogue.o: ../ATOTAM/dialogue.cpp ../ATOTAM/dialogue.h \
-		../ATOTAM/nlohmann/json.hpp
+		../ATOTAM/nlohmann/json.hpp \
+		../ATOTAM/Entities/entity.h \
+		../ATOTAM/Entities/collisionbox.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/QImage \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qimage.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qtguiglobal.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qglobal.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qconfig-bootstrapped.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qconfig.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qtcore-config.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qsystemdetection.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qprocessordetection.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qtypeinfo.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qsysinfo.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qlogging.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qflags.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qatomic.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qbasicatomic.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qatomic_bootstrap.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qgenericatomic.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qglobalstatic.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qnumeric.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qversiontagging.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qtgui-config.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qcolor.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qrgb.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qnamespace.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qtmetamacros.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qstringlist.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qlist.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qarraydataops.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qarraydata.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qpair.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qhashfunctions.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qstring.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qchar.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qstringview.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qbytearray.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qrefcount.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qbytearrayview.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qstringliteral.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qanystringview.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qutf8stringview.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qstringbuilder.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qiterator.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qbytearraylist.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qalgorithms.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qstringmatcher.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qrgba64.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qpaintdevice.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qobjectdefs.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qrect.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qmargins.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qsize.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qpoint.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qpixelformat.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qtransform.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qpolygon.h \
+		C:/Qt/6.2.3/mingw_64/include/QtGui/qregion.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qdatastream.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qscopedpointer.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qiodevicebase.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/qline.h \
+		C:/Qt/6.2.3/mingw_64/include/QtCore/QString
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\dialogue.o ..\ATOTAM\dialogue.cpp
 
 release/dynamicobj.o: ../ATOTAM/Entities/dynamicobj.cpp ../ATOTAM/Entities/dynamicobj.h \
@@ -1579,34 +1653,6 @@ release/mainwindow.o: ../ATOTAM/mainwindow.cpp ../ATOTAM/mainwindow.h \
 		../ATOTAM/dialogue.h \
 		../ATOTAM/map.h \
 		ui_mainwindow.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/QVariant \
-		C:/Qt/6.2.3/mingw_64/include/QtWidgets/QApplication \
-		C:/Qt/6.2.3/mingw_64/include/QtWidgets/qapplication.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qcoreapplication.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qeventloop.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qfuture.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qfutureinterface.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qmutex.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qresultstore.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qfuture_impl.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qthreadpool.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qthread.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qdeadlinetimer.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qelapsedtimer.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qrunnable.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qexception.h \
-		C:/Qt/6.2.3/mingw_64/include/QtGui/qguiapplication.h \
-		C:/Qt/6.2.3/mingw_64/include/QtGui/qinputmethod.h \
-		C:/Qt/6.2.3/mingw_64/include/QtCore/qlocale.h \
-		C:/Qt/6.2.3/mingw_64/include/QtGui/qguiapplication_platform.h \
-		C:/Qt/6.2.3/mingw_64/include/QtWidgets/QMenuBar \
-		C:/Qt/6.2.3/mingw_64/include/QtWidgets/qmenubar.h \
-		C:/Qt/6.2.3/mingw_64/include/QtWidgets/qmenu.h \
-		C:/Qt/6.2.3/mingw_64/include/QtGui/qaction.h \
-		C:/Qt/6.2.3/mingw_64/include/QtWidgets/QStatusBar \
-		C:/Qt/6.2.3/mingw_64/include/QtWidgets/qstatusbar.h \
-		C:/Qt/6.2.3/mingw_64/include/QtWidgets/QWidget \
 		../ATOTAM/Entities/door.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\ATOTAM\mainwindow.cpp
 
