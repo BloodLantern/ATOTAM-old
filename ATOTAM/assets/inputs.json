@@ -12,5 +12,6 @@
 	"dash": 65,
 	"menu": 27,
 	"enter": 13,
-	"interact": 70
+	"interact": 70,
+	"map": 9
 }
