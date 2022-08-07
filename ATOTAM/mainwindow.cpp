@@ -207,7 +207,7 @@ void MainWindow::updateMenu()
                         frameRate--;
                         params["frameRate"] = frameRate;
                         std::ofstream paramsfile(assetsPath + "/params.json");
-                        paramsfile << params;
+                        paramsfile << params.dump(4);
                         paramsfile.close();
                     }
                 } else if (menuOptions[selectedOption].substr(0,15) == "< Game speed : ") {
@@ -221,7 +221,7 @@ void MainWindow::updateMenu()
                         frameRate--;
                         params["frameRate"] = frameRate;
                         std::ofstream paramsfile(assetsPath + "/params.json");
-                        paramsfile << params;
+                        paramsfile << params.dump(4);
                         paramsfile.close();
                     }
                 } else if (menuOptions[selectedOption].substr(0,15) == "< Game speed : ") {
@@ -241,7 +241,7 @@ void MainWindow::updateMenu()
                         frameRate++;
                         params["frameRate"] = frameRate;
                         std::ofstream paramsfile(assetsPath + "/params.json");
-                        paramsfile << params;
+                        paramsfile << params.dump(4);
                         paramsfile.close();
                     }
                 } else if (menuOptions[selectedOption].substr(0,15) == "< Game speed : ") {
@@ -255,7 +255,7 @@ void MainWindow::updateMenu()
                         frameRate++;
                         params["frameRate"] = frameRate;
                         std::ofstream paramsfile(assetsPath + "/params.json");
-                        paramsfile << params;
+                        paramsfile << params.dump(4);
                         paramsfile.close();
                     }
                 } else if (menuOptions[selectedOption].substr(0,15) == "< Game speed : ") {
@@ -289,13 +289,13 @@ void MainWindow::updateMenu()
                 showFps = false;
                 params["showFps"] = showFps;
                 std::ofstream paramsfile(assetsPath + "/params.json");
-                paramsfile << params;
+                paramsfile << params.dump(4);
                 paramsfile.close();
             } else if (menuOptions[selectedOption] == "Show FPS : OFF") {
                 showFps = true;
                 params["showFps"] = showFps;
                 std::ofstream paramsfile(assetsPath + "/params.json");
-                paramsfile << params;
+                paramsfile << params.dump(4);
                 paramsfile.close();
             } else if (menuOptions[selectedOption] == "Show hitboxes : ON")
                 renderHitboxes = false;
@@ -327,14 +327,14 @@ void MainWindow::updateMenu()
                 fullscreen = false;
                 params["fullscreen"] = false;
                 std::ofstream paramsfile(assetsPath + "/params.json");
-                paramsfile << params;
+                paramsfile << params.dump(4);
                 paramsfile.close();
                 showNormal();
             } else if (menuOptions[selectedOption] == "Fullscreen : OFF") {
                 fullscreen = true;
                 params["fullscreen"] = true;
                 std::ofstream paramsfile(assetsPath + "/params.json");
-                paramsfile << params;
+                paramsfile << params.dump(4);
                 paramsfile.close();
                 showFullScreen();
             }

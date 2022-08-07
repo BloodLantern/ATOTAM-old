@@ -1,1 +1,8 @@
-{"frameRate":60.0,"fullscreen":true,"language":"en-US","resolution_x":1920,"resolution_y":1080,"showFps":true}
+{
+    "frameRate": 60.0,
+    "fullscreen": true,
+    "language": "en-US",
+    "resolution_x": 1920,
+    "resolution_y": 1080,
+    "showFps": true
+}
