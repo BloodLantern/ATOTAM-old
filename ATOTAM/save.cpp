@@ -30,7 +30,7 @@ void Save::save(std::ofstream file)
     json["deaths"] = deaths;
     json["damageDone"] = damageDone;
     json["damageReceived"] = damageReceived;
-    file << json;
+    file << json.dump(4);
 }
 
 int Save::getSamosHealth() const
