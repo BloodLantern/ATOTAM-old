@@ -37,6 +37,11 @@ void Living::hit(int damage, Entity *origin, double kb, bool forced)
     }
 }
 
+void Living::kill()
+{
+
+}
+
 int Living::getHealth() const
 {
     return health;

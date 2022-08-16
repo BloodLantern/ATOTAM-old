@@ -31,38 +31,50 @@ void gameClock(MainWindow* w, Samos* s) {
 
     Game* g = w->getGame();
     while (g->getRunning()) {
-        waitTime = 1000000.0/(MainWindow::frameRate * MainWindow::gameSpeed);
+        waitTime = 1000000.0/(Physics::frameRate * g->getGameSpeed());
         auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
         // Update FPS if it has to
-        if ((std::chrono::high_resolution_clock::now() - MainWindow::lastFpsShown).count() > MainWindow::showFpsUpdateRate)
-            MainWindow::fps = 1000000000 / (std::chrono::high_resolution_clock::now() - MainWindow::lastFrameTime).count();
+        if ((std::chrono::high_resolution_clock::now() - g->getLastFpsShown()).count() > g->getShowFpsUpdateRate())
+            g->setFps(1000000000 / (std::chrono::high_resolution_clock::now() - g->getLastFrameTime()).count());
         // And update the last frame time
-        MainWindow::lastFrameTime = std::chrono::high_resolution_clock::now();
+        g->getLastFrameTime() = std::chrono::high_resolution_clock::now();
 
-        if (MainWindow::doorTransition == "") {
+        if (g->getDoorTransition() == "") {
             w->getInputs();
 
-            if (!MainWindow::isPaused) {
-                if (!MainWindow::mapViewer) {
+            if (!g->getIsPaused()) {
+                if (!g->getMapViewer()) {
                     // Update physics
-                    if (s != nullptr)
-                        w->updateSamos();
-                    w->updatePhysics();
+                    if (s != nullptr) {
+                        Physics::updateSamos(s, g->getTerrains(), g->getDynamicObjs(), *g->getInputList(), *g->getInputTime());
+                        Physics::updateCamera(s, g->getCamera(), g->getCurrentMap());
+                    }
+                    std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>> physicsOutput = Physics::updatePhysics(s,
+                                                                                                                               g->getTerrains(),
+                                                                                                                               g->getDynamicObjs(),
+                                                                                                                               g->getMonsters(),
+                                                                                                                               g->getAreas(),
+                                                                                                                               g->getNPCs(),
+                                                                                                                               g->getProjectiles(),
+                                                                                                                               g->getCurrentMap());
+                    g->setDoorTransition(std::get<0>(physicsOutput));
+                    g->addEntities(std::get<1>(physicsOutput));
+                    g->removeEntities(std::get<2>(physicsOutput));
                 } else {
-                    w->updateMapViewer();
+                    g->updateMapViewer();
                 }
 
 
 
-                prevCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
-                MainWindow::frameCount++;
-                MainWindow::updateCount = std::round(MainWindow::frameCount * 60.0 / MainWindow::frameRate);
-                if (prevCount != MainWindow::updateCount)
-                    w->updateAnimations();
+                prevCount = std::round(g->getFrameCount() * 60.0 / Physics::frameRate);
+                g->setFrameCount(g->getFrameCount() + 1);
+                g->setUpdateCount(std::round(g->getFrameCount() * 60.0 / Physics::frameRate));
+                if (prevCount != g->getUpdateCount())
+                    g->updateAnimations();
             }
 
-            w->updateMenu();
+            g->updateMenu();
 
             // Fullscreen update
             if (w->isFullScreen()) {
@@ -75,9 +87,9 @@ void gameClock(MainWindow* w, Samos* s) {
         } else {
             if (s != nullptr) {
                 // Make sure we can't pause while changing room
-                MainWindow::isPaused = false;
+                g->setIsPaused(false);
 
-                nlohmann::json mapJson = MainWindow::currentMap.getJson()["rooms"][std::to_string(MainWindow::currentMap.getCurrentRoomId())];
+                nlohmann::json mapJson = g->getCurrentMap().getJson()["rooms"][std::to_string(g->getCurrentMap().getCurrentRoomId())];
 
                 int roomS_x = mapJson["position"][0];
                 int roomS_y = mapJson["position"][1];
@@ -89,19 +101,19 @@ void gameClock(MainWindow* w, Samos* s) {
                 // Set starting values
 
                 if (startingCameraPos == nullptr) {
-                    startingCameraPos = new QPoint(w->getCamera());
+                    startingCameraPos = new QPoint(g->getCamera());
                     startingSamosPos = QPoint(s->getX(), s->getY());
                     timeLeftCameraMove = cameraMoveTime;
-                    if (MainWindow::doorTransition == "Right") {
+                    if (g->getDoorTransition() == "Right") {
                         cameraDist.setX(roomS_x);
                         cameraDist.setY(s->getY() + static_cast<int>(Entity::values["general"]["camera_ry"]));
-                    } else if (MainWindow::doorTransition == "Left") {
+                    } else if (g->getDoorTransition() == "Left") {
                         cameraDist.setX(roomE_x - 1920);
                         cameraDist.setY(s->getY() + static_cast<int>(Entity::values["general"]["camera_ry"]));
-                    } else if (MainWindow::doorTransition == "Up") {
+                    } else if (g->getDoorTransition() == "Up") {
                         cameraDist.setX(s->getX() + static_cast<int>(Entity::values["general"]["camera_rx"]));
                         cameraDist.setY(roomE_y - 1080);
-                    } else if (MainWindow::doorTransition == "Down") {
+                    } else if (g->getDoorTransition() == "Down") {
                         cameraDist.setX(s->getX() + static_cast<int>(Entity::values["general"]["camera_rx"]));
                         cameraDist.setY(roomS_y);
                     }
@@ -118,28 +130,28 @@ void gameClock(MainWindow* w, Samos* s) {
                     cameraDist.setY(cameraDist.y() - startingCameraPos->y());
                 } else
                     // Set time left
-                    timeLeftCameraMove -= 1 / MainWindow::frameRate;
+                    timeLeftCameraMove -= 1 / Physics::frameRate;
 
                 // Set camera position
-                QPoint camera = w->getCamera();
+                QPoint camera = g->getCamera();
 
                 camera.setX(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->x(), cameraDist.x(), cameraMoveTime));
                 camera.setY(Cubic::easeInOut(cameraMoveTime - timeLeftCameraMove, startingCameraPos->y(), cameraDist.y(), cameraMoveTime));
 
-                w->setCamera(camera);
+                g->setCamera(camera);
 
                 // Set Samos position
                 int samosPos = 0;
-                if (MainWindow::doorTransition == "Right") {
+                if (g->getDoorTransition() == "Right") {
                     samosPos = Cubic::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), samosDoorMove, cameraMoveTime);
                     s->setX(samosPos);
-                } else if (MainWindow::doorTransition == "Left") {
+                } else if (g->getDoorTransition() == "Left") {
                     samosPos = Cubic::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.x(), -samosDoorMove, cameraMoveTime);
                     s->setX(samosPos);
-                } else if (MainWindow::doorTransition == "Up") {
+                } else if (g->getDoorTransition() == "Up") {
                     samosPos = Cubic::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), -1.5*samosDoorMove, cameraMoveTime);
                     s->setY(samosPos);
-                } else if (MainWindow::doorTransition == "Down") {
+                } else if (g->getDoorTransition() == "Down") {
                     samosPos = Cubic::easeOut(cameraMoveTime - timeLeftCameraMove, startingSamosPos.y(), 1.25*samosDoorMove, cameraMoveTime);
                     s->setY(samosPos);
                 }
@@ -148,13 +160,13 @@ void gameClock(MainWindow* w, Samos* s) {
                 if (timeLeftCameraMove <= 0) {
                     delete startingCameraPos;
                     startingCameraPos = nullptr;
-                    MainWindow::doorTransition = "";
-                    s->setRoomId(MainWindow::currentMap.getCurrentRoomId());
+                    g->setDoorTransition("");
+                    s->setRoomId(g->getCurrentMap().getCurrentRoomId());
 
                     // Unload the last room
-                    w->removeOtherRoomsEntities();
+                    g->removeOtherRoomsEntities();
 
-                    w->updateAnimations();
+                    g->updateAnimations();
                 }
             }
         }
@@ -181,25 +193,24 @@ int main(int argc, char *argv[])
 
     // Set the random seed
     std::srand(time(NULL));
-
-    Entity::values = Entity::loadValues(MainWindow::assetsPath);
-    MainWindow::loadGeneral();
-    MainWindow w(&a);
-    if (MainWindow::fullscreen)
+    std::string assetsPath = "../ATOTAM/assets";
+    Entity::values = Entity::loadValues(assetsPath);
+    MainWindow w(&a, assetsPath);
+    if (w.getGame()->getFullscreen())
         w.showFullScreen();
     else
         w.show();
 
     // Only instantiate samos if not in map viewer mode
     Samos* sp = nullptr;
-    if (!MainWindow::mapViewer) {
+    if (!w.getGame()->getMapViewer()) {
         sp = new Samos(500, 300, 99, 5, 5);
-        w.addEntity(sp);
+        w.getGame()->addEntity(sp);
     }
 
     // Load map
-    for (Entity* entity : MainWindow::currentMap.loadRoom())
-        w.addEntity(entity);
+    for (Entity* entity : w.getGame()->getCurrentMap().loadRoom())
+        w.getGame()->addEntity(entity);
 
     // Start the game update clock
     std::future<void> game = std::async(gameClock, &w, sp);

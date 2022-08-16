@@ -20,15 +20,17 @@
 class Game
 {
 public:
-    Game();
+    Game(std::string assetsPath);
 
     void addEntity(Entity *entity);
-    void addEntities(std::vector<Entity*> entities);
+    void addEntities(std::vector<Entity*> es);
     void clearEntities(std::string excludeType = "", bool deleteEntities = true);
     void removeOtherRoomsEntities();
+    void removeEntities(std::vector<Entity*> es);
     void updateAnimations();
     void updateMapViewer();
     void updateMenu();
+    void updateDialogue();
     nlohmann::json loadJson(std::string fileName); // Loads the given file name's json starting in the assets folder and returns it
     template<typename ...StdStrings>
     QString translate(std::string text, StdStrings... subCategories);
@@ -42,7 +44,7 @@ public:
     void setMenu(const std::string &newMenu);
     const std::vector<std::string> &getMenuOptions() const;
     void setMenuOptions(const std::vector<std::string> &newMenuOptions);
-    QPoint getCamera() const;
+    QPoint getCamera();
     void setCamera(QPoint newCamera);
     std::vector<Terrain *> *getTerrains();
     void setTerrains(const std::vector<Terrain *> &newTerrains);
@@ -72,7 +74,7 @@ public:
     void setUpdateCount(unsigned long long newUpdateCount);
     nlohmann::json &getKeyCodes();
     void setKeyCodes(const nlohmann::json &newKeyCodes);
-    const Map &getCurrentMap() const;
+    Map &getCurrentMap();
     void setCurrentMap(const Map &newCurrentMap);
     const nlohmann::json &getStringsJson() const;
     void setStringsJson(const nlohmann::json &newStringsJson);
@@ -115,6 +117,8 @@ public:
     void setFullscreen(bool newFullscreen);
 
 private:
+    std::string assetsPath;
+
     std::vector<Entity*> entities;
     std::vector<Terrain*> terrains;
     std::vector<Monster*> monsters;
@@ -146,7 +150,6 @@ private:
     bool isPaused;
     std::pair<int,int> resolution;
     double mapViewerCameraSpeed;
-    const std::string assetsPath = "../ATOTAM/assets";
     std::string doorTransition;
     nlohmann::json params;
     std::string language;

@@ -5,10 +5,10 @@
 #include <Entities/door.h>
 #include <Entities/npc.h>
 
-MainWindow::MainWindow(QApplication *app)
+MainWindow::MainWindow(QApplication *app, std::string assetsPath)
     : ui(new Ui::MainWindow)
     , m_qApp(app)
-    , game(new Game)
+    , game(new Game(assetsPath))
     , errorTexture(QString::fromStdString(game->getAssetsPath() + "/textures/error.png"))
     , emptyTexture(QString::fromStdString(game->getAssetsPath() + "/textures/empty.png"))
     , showHUD(true)
@@ -407,7 +407,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         //Selected weapon
         painter.fillRect(QRect(70,15,100,30), QColor("white"));
         painter.drawRect(QRect(70,15,100,30));
-        painter.drawText(QPoint(80, 40), game->translate(game->getS()->getSelectedWeapon(), "ui", "selectedWeapon"));
+        painter.drawText(QPoint(80, 40), /*game->translate(*/QString::fromStdString(game->getS()->getSelectedWeapon())/*, "ui", "selectedWeapon")*/);
 
         //Missile count
         painter.fillRect(QRect(200,15,70,30), QColor("white"));

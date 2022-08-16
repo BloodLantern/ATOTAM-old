@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QApplication *app);
+    MainWindow(QApplication *app, std::string assetsPath);
     ~MainWindow();
 
     void paintEvent(QPaintEvent*);

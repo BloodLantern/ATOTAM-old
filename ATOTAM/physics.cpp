@@ -3,26 +3,26 @@
 double Physics::frameRate;
 double Physics::gravity;
 
-bool Physics::canChangeBox(Entity *e, CollisionBox *b)
+bool Physics::canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds)
 {
     Entity ne = Entity(e->getX(), e->getY(), new CollisionBox(*b), nullptr, e->getEntType(), e->getIsAffectedByGravity(), e->getFacing(), e->getFrictionFactor(), e->getName(), e->getIsMovable());
-    for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+    for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
         if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
             Entity::calcCollisionReplacement(&ne, *i);
         }
     }
-    for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+    for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
         if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
             Entity::calcCollisionReplacement(&ne, *i);
         }
     }
 
-    for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+    for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
         if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
             return false;
         }
     }
-    for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+    for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
         if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
             return false;
         }
@@ -48,8 +48,9 @@ bool Physics::updateProjectile(Projectile *p)
         return false;
 }
 
-void Physics::updateSamos()
+std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::map<std::string, bool> inputList, std::map<std::string, double> inputTime)
 {
+    std::vector<Entity*> toAdd;
     if (s->getState() == "MorphBallStop" || s->getState() == "MorphBallSlow" || s->getState() == "MorphBallSuperSlow")
         s->setState("MorphBall");
 
@@ -73,18 +74,18 @@ void Physics::updateSamos()
 
     CollisionBox* spinBox = new CollisionBox(samosJson["spinJumpHitbox_offset_x"], samosJson["spinJumpHitbox_offset_y"],
                   samosJson["spinJumpHitbox_width"], samosJson["spinJumpHitbox_height"]);
-    bool canSpin = canChangeBox(s, spinBox);
+    bool canSpin = canChangeBox(s, spinBox, ts, ds);
     CollisionBox* morphBox = new CollisionBox(samosJson["morphBallHitbox_offset_x"], samosJson["morphBallHitbox_offset_y"],
                   samosJson["morphBallHitbox_width"], samosJson["morphBallHitbox_height"]);
-    bool canMorph = canChangeBox(s, morphBox);
+    bool canMorph = canChangeBox(s, morphBox, ts, ds);
     CollisionBox* fallBox = new CollisionBox(samosJson["fallingHitbox_offset_x"], samosJson["fallingHitbox_offset_y"],
                 samosJson["fallingHitbox_width"], samosJson["fallingHitbox_height"]);
-    bool canFall = canChangeBox(s, fallBox);
+    bool canFall = canChangeBox(s, fallBox, ts, ds);
     CollisionBox* crouchBox = new CollisionBox(samosJson["crouchHitbox_offset_x"], samosJson["crouchHitbox_offset_y"],
                   samosJson["crouchHitbox_width"], samosJson["crouchHitbox_height"]);
-    bool canCrouch = canChangeBox(s, crouchBox);
+    bool canCrouch = canChangeBox(s, crouchBox, ts, ds);
     CollisionBox* standBox = new CollisionBox(samosJson["offset_x"], samosJson["offset_y"], samosJson["width"], samosJson["height"]);
-    bool canStand = canChangeBox(s, standBox);
+    bool canStand = canChangeBox(s, standBox, ts, ds);
 
 
     if (s->getState() == "MorphBalling" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["MorphBalling"]["count"]) - 1)) {
@@ -106,7 +107,7 @@ void Physics::updateSamos()
         } else {
             bool wallL = false;
             bool wallR = false;
-            for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+            for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
                 if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
                     wallL = true;
                 }
@@ -116,7 +117,7 @@ void Physics::updateSamos()
                 if (wallL && wallR)
                     break;
             }
-            for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+            for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
                 if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
                     wallL = true;
                 }
@@ -314,7 +315,7 @@ void Physics::updateSamos()
         } else {
             bool wallL = false;
             bool wallR = false;
-            for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+            for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
                 if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
                     wallL = true;
                 }
@@ -324,7 +325,7 @@ void Physics::updateSamos()
                 if (wallL && wallR)
                     break;
             }
-            for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+            for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
                 if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
                     wallL = true;
                 }
@@ -605,12 +606,12 @@ void Physics::updateSamos()
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 1));
         s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 1, s->getBox()->getHeight()));
         s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 1, s->getBox()->getY(), 1, s->getBox()->getHeight()));
-        for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+        for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
             if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
                 Entity::calcCollisionReplacement(s, *i);
             }
         }
-        for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+        for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
             if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
                 Entity::calcCollisionReplacement(s, *i);
             }
@@ -621,7 +622,7 @@ void Physics::updateSamos()
         std::string wallJump = "";
         bool wallJumpL = false;
         bool wallJumpR = false;
-        for (std::vector<Terrain*>::iterator i = terrains.begin(); i != terrains.end(); i++) {
+        for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
             if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
                 wallJumpL = true;
             } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
@@ -630,7 +631,7 @@ void Physics::updateSamos()
             if (wallJumpL && wallJumpR)
                 break;
         }
-        for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+        for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
             if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
                 wallJumpL = true;
             } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
@@ -860,7 +861,7 @@ void Physics::updateSamos()
             p->setX(p->getX() + s->getVX() / frameRate);
             p->setY(p->getY() + s->getVY() / frameRate);
 
-            addEntity(p);
+            toAdd.push_back(p);
             s->setShootTime(static_cast<double>(samosJson["shootTime"]));
         }
     }
@@ -873,8 +874,11 @@ void Physics::updateSamos()
         else if (std::abs(s->getVX()) < 200)
             s->setState("MorphBallSlow");
     }
+    return toAdd;
+}
 
-    // Camera
+void Physics::updateCamera(Samos *s, QPoint camera, Map currentMap)
+{
     nlohmann::json mapJson = currentMap.getJson()["rooms"][std::to_string(currentMap.getCurrentRoomId())];
 
     int roomS_x = mapJson["position"][0];
@@ -898,8 +902,10 @@ void Physics::updateSamos()
         camera.setY(roomE_y - 1080);
 }
 
-void Physics::updatePhysics()
+std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>> Physics::updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap)
 {
+    std::string doorTransition = "";
+
     //Physics settings
     nlohmann::json paramJson = Entity::values["general"];
     double speedcap = static_cast<double>(paramJson["speedcap"]);
@@ -965,7 +971,7 @@ void Physics::updatePhysics()
 
     // MONSTER
 
-    for (std::vector<Monster*>::iterator m = monsters.begin(); m != monsters.end(); m++) {
+    for (std::vector<Monster*>::iterator m = ms->begin(); m != ms->end(); m++) {
 
         //I-frames
         if ((*m)->getITime() > 0.0)
@@ -1017,7 +1023,7 @@ void Physics::updatePhysics()
 
     // NPC
 
-    for (std::vector<NPC*>::iterator n = NPCs.begin(); n != NPCs.end(); n++) {
+    for (std::vector<NPC*>::iterator n = ns->begin(); n != ns->end(); n++) {
 
         //I-frames
         if ((*n)->getITime() > 0.0)
@@ -1069,7 +1075,7 @@ void Physics::updatePhysics()
 
     // DYNAMICOBJ
 
-    for (std::vector<DynamicObj*>::iterator d = dynamicObjs.begin(); d != dynamicObjs.end(); d++) {
+    for (std::vector<DynamicObj*>::iterator d = ds->begin(); d != ds->end(); d++) {
 
         //I-frames
         if ((*d)->getITime() > 0.0)
@@ -1121,7 +1127,7 @@ void Physics::updatePhysics()
 
     // AREA
 
-    for (std::vector<Area*>::iterator a = areas.begin(); a != areas.end(); a++) {
+    for (std::vector<Area*>::iterator a = as->begin(); a != as->end(); a++) {
 
         if ((*a)->getIsMovable()) {
             //Non-living objects can't be grounded
@@ -1153,7 +1159,7 @@ void Physics::updatePhysics()
 
     // PROJECTILES
 
-    for (std::vector<Projectile*>::iterator p = projectiles.begin(); p != projectiles.end(); p++) {
+    for (std::vector<Projectile*>::iterator p = ps->begin(); p != ps->end(); p++) {
 
         if ((*p)->getIsMovable()) {
             //Non-living objects can't be grounded
@@ -1188,12 +1194,12 @@ void Physics::updatePhysics()
      // SAMOS
 
     if (s != nullptr) {
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j != ts->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(s, *j);
             }
         }
-        for (std::vector<Monster*>::iterator j = monsters.begin(); j != monsters.end(); j++) {
+        for (std::vector<Monster*>::iterator j = ms->begin(); j != ms->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(s, *j);
                 s->hit(Entity::values["names"][(*j)->getName()]["damage"], *j, Entity::values["names"][s->getName()]["contactKB"], true);
@@ -1201,12 +1207,12 @@ void Physics::updatePhysics()
                     s->setLagTime(Entity::values["names"][s->getName()]["lagTime"]);
             }
         }
-        for (std::vector<DynamicObj*>::iterator j = dynamicObjs.begin(); j != dynamicObjs.end(); j++) {
+        for (std::vector<DynamicObj*>::iterator j = ds->begin(); j != ds->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(s, *j);
             }
         }
-        for (std::vector<Area*>::iterator j = areas.begin(); j != areas.end(); j++) {
+        for (std::vector<Area*>::iterator j = as->begin(); j != as->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
                 if ((*j)->getAreaType() == "Door") {
                     Door* d = static_cast<Door*>(*j);
@@ -1224,39 +1230,7 @@ void Physics::updatePhysics()
                 }
             }
         }
-        for (std::vector<NPC*>::iterator j = NPCs.begin(); j != NPCs.end(); j++) {
-            if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
-                if (inputList["interact"] && inputTime["interact"] == 0.0) {
-                    if ((*j)->getNpcType() == "Talking") {
-                        // Set maxInteractions here because npc.cpp cannot include Physics.h
-                        if ((*j)->getMaxInteractions() == 0)
-                            (*j)->setMaxInteractions(stringsJson[language]["dialogues"][(*j)->getName()].size());
-
-                        bool increased = false;
-                        if (!currentDialogue.isNull())
-                            if (currentDialogue.getText().size() - 1 > currentDialogue.getTextAdvancement()) {
-                                currentDialogue.setTextAdvancement(currentDialogue.getTextAdvancement() + 1);
-                                increased = true;
-                            }
-                        if (!increased) {
-                            // Set new Dialogue
-                            if (stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["talking"].is_null())
-                              currentDialogue = Dialogue(
-                                  stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["text"], *j);
-                            else
-                                currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["text"],
-                                        *j, stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["talking"]);
-                        }
-                    }
-                    // Don't forget to increment the Dialogue advancement
-                    (*j)->setTimesInteracted((*j)->getTimesInteracted() + 1);
-                }
-            } else if (currentDialogue.getTalking() != nullptr)
-                if (!Entity::checkCollision(s, s->getBox(), currentDialogue.getTalking(), currentDialogue.getTalking()->getBox()))
-                    // Reset Dialogue if the player went too far away
-                    currentDialogue = Dialogue();
-        }
-        for (std::vector<Projectile*>::iterator j = projectiles.begin(); j != projectiles.end(); j++) {
+        for (std::vector<Projectile*>::iterator j = ps->begin(); j != ps->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
                 (*j)->hitting(s);
             }
@@ -1277,18 +1251,18 @@ void Physics::updatePhysics()
 
     // MONSTER
 
-    for (std::vector<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++) {
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+    for (std::vector<Monster*>::iterator i = ms->begin(); i != ms->end(); i++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j != ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(*i, *j);
             }
         }
-        for (std::vector<DynamicObj*>::iterator j = dynamicObjs.begin(); j != dynamicObjs.end(); j++) {
+        for (std::vector<DynamicObj*>::iterator j = ds->begin(); j != ds->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(*i, *j);
             }
         }
-        for (std::vector<Projectile*>::iterator j = projectiles.begin(); j != projectiles.end(); j++) {
+        for (std::vector<Projectile*>::iterator j = ps->begin(); j != ps->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
                 (*j)->hitting(*i);
             }
@@ -1309,23 +1283,18 @@ void Physics::updatePhysics()
 
     // DYNAMICOBJ
 
-    for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+    for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j != ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(*i, *j);
             }
         }
-        for (std::vector<DynamicObj*>::iterator j = i + 1; j != dynamicObjs.end(); j++) {
+        for (std::vector<DynamicObj*>::iterator j = i + 1; j != ds->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(*i, *j);
             }
         }
-        for (std::vector<NPC*>::iterator j = NPCs.begin(); j != NPCs.end(); j++) {
-            if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
-                Entity::calcCollisionReplacement(*i, *j);
-            }
-        }
-        for (std::vector<Projectile*>::iterator j = projectiles.begin(); j != projectiles.end(); j++) {
+        for (std::vector<Projectile*>::iterator j = ps->begin(); j != ps->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
                 (*j)->hitting(*i);
             }
@@ -1346,8 +1315,8 @@ void Physics::updatePhysics()
 
     // NPC
 
-    for (std::vector<NPC*>::iterator i = NPCs.begin(); i != NPCs.end(); i++) {
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+    for (std::vector<NPC*>::iterator i = ns->begin(); i != ns->end(); i++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j != ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(*i, *j);
             }
@@ -1368,8 +1337,8 @@ void Physics::updatePhysics()
 
     //PROJECTILES
 
-    for (std::vector<Projectile*>::iterator i = projectiles.begin(); i != projectiles.end(); i++) {
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j != terrains.end(); j++) {
+    for (std::vector<Projectile*>::iterator i = ps->begin(); i != ps->end(); i++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j != ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
                 (*i)->hitting(*j);
             }
@@ -1392,18 +1361,16 @@ void Physics::updatePhysics()
         }
     }
 
-    addEntities(toAdd);
-
     //Update the grounded state of livings
     if (s != nullptr) {
         s->setOnGround(false);
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(s, s->getGroundBox(), *j, (*j)->getBox())) {
                 s->setOnGround(true);
                 break;
             }
         }
-        for (std::vector<DynamicObj*>::iterator j = dynamicObjs.begin(); j!= dynamicObjs.end(); j++) {
+        for (std::vector<DynamicObj*>::iterator j = ds->begin(); j!= ds->end(); j++) {
             if (Entity::checkCollision(s, s->getGroundBox(), *j, (*j)->getBox())) {
                 s->setOnGround(true);
                 break;
@@ -1413,15 +1380,15 @@ void Physics::updatePhysics()
             s->setOnGround(true);
     }
 
-    for (std::vector<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++) {
+    for (std::vector<Monster*>::iterator i = ms->begin(); i != ms->end(); i++) {
         (*i)->setOnGround(false);
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
                 break;
             }
         }
-        for (std::vector<DynamicObj*>::iterator j = dynamicObjs.begin(); j!= dynamicObjs.end(); j++) {
+        for (std::vector<DynamicObj*>::iterator j = ds->begin(); j!= ds->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
                 break;
@@ -1431,15 +1398,15 @@ void Physics::updatePhysics()
             (*i)->setOnGround(true);
     }
 
-    for (std::vector<NPC*>::iterator i = NPCs.begin(); i != NPCs.end(); i++) {
+    for (std::vector<NPC*>::iterator i = ns->begin(); i != ns->end(); i++) {
         (*i)->setOnGround(false);
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
                 break;
             }
         }
-        for (std::vector<DynamicObj*>::iterator j = dynamicObjs.begin(); j!= dynamicObjs.end(); j++) {
+        for (std::vector<DynamicObj*>::iterator j = ds->begin(); j!= ds->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
                 break;
@@ -1449,15 +1416,15 @@ void Physics::updatePhysics()
             (*i)->setOnGround(true);
     }
 
-    for (std::vector<DynamicObj*>::iterator i = dynamicObjs.begin(); i != dynamicObjs.end(); i++) {
+    for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
         (*i)->setOnGround(false);
-        for (std::vector<Terrain*>::iterator j = terrains.begin(); j!= terrains.end(); j++) {
+        for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
                 break;
             }
         }
-        for (std::vector<DynamicObj*>::iterator j = dynamicObjs.begin(); j!= dynamicObjs.end(); j++) {
+        for (std::vector<DynamicObj*>::iterator j = ds->begin(); j!= ds->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
                 (*i)->setOnGround(true);
                 break;
@@ -1467,30 +1434,5 @@ void Physics::updatePhysics()
             (*i)->setOnGround(true);
     }
 
-    if (toDel.size() > 0) {
-        std::vector<Entity*> newRen;
-        for (std::vector<Entity*>::iterator j = rendering.begin(); j != rendering.end(); j++) {
-            bool td = false;
-            for (std::vector<Entity*>::iterator i = toDel.begin(); i != toDel.end(); i++) {
-                if (*j == *i) {
-                    td = true;
-                    break;
-                }
-            }
-            if (!td)
-                newRen.push_back(*j);
-        }
-
-        monsters = {};
-        terrains = {};
-        s = nullptr;
-        dynamicObjs = {};
-        areas = {};
-        projectiles = {};
-        NPCs = {};
-        rendering = {};
-        addEntities(newRen);
-        for (std::vector<Entity*>::iterator i = toDel.begin(); i != toDel.end(); i++)
-            delete *i;
-    }
+    return std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>>(doorTransition, toAdd, toDel);
 }
