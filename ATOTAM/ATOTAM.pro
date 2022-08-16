@@ -32,6 +32,7 @@ SOURCES += \
     Easing/Sine.cpp \
     dialogue.cpp \
     Entities/dynamicobj.cpp \
+    editorpreview.cpp \
     game.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -63,6 +64,7 @@ HEADERS += \
     Easing/Quint.h \
     Easing/Sine.h \
     dialogue.h \
+    editorpreview.h \
     game.h \
     mainwindow.h \
     map.h \
@@ -70,8 +72,7 @@ HEADERS += \
     physics.h \
     save.h
 
-FORMS += \
-    mainwindow.ui
+FORMS +=
 
 CONFIG += lrelease
 CONFIG += embed_translations
