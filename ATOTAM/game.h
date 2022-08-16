@@ -31,6 +31,7 @@ public:
     void updateMapViewer();
     void updateMenu();
     void updateDialogue();
+    void updateCamera();
     nlohmann::json loadJson(std::string fileName); // Loads the given file name's json starting in the assets folder and returns it
     template<typename ...StdStrings>
     QString translate(std::string text, StdStrings... subCategories);

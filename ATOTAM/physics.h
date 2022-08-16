@@ -26,7 +26,6 @@ public:
     static bool updateProjectile(Projectile* p);
     static bool canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds);
     static std::vector<Entity*> updateSamos(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::map<std::string, bool> inputList, std::map<std::string, double> inputTime);
-    static void updateCamera(Samos *s, QPoint camera, Map currentMap);
 };
 
 #endif // PHYSICS_H

@@ -7,6 +7,7 @@ class Monster : public Living
 {
 public:
     Monster(double x, double y, std::string facing, std::string name);
+    ~Monster();
 
     const std::string &getBehavior() const;
     void setBehavior(const std::string &newBehavior);

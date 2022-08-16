@@ -49,7 +49,7 @@ void gameClock(MainWindow* w, Samos* s) {
                     if (s != nullptr) {
                         g->addEntities(Physics::updateSamos(s, g->getTerrains(), g->getDynamicObjs(), *g->getInputList(), *g->getInputTime()));
                         g->updateDialogue();
-                        Physics::updateCamera(s, g->getCamera(), g->getCurrentMap());
+                        g->updateCamera();
                     }
                     std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> physicsOutput = Physics::updatePhysics(s,
                                                                                                                                g->getTerrains(),

@@ -307,6 +307,31 @@ void Game::updateDialogue()
     }
 }
 
+void Game::updateCamera()
+{
+    nlohmann::json mapJson = currentMap.getJson()["rooms"][std::to_string(currentMap.getCurrentRoomId())];
+
+    int roomS_x = mapJson["position"][0];
+    int roomS_y = mapJson["position"][1];
+    int roomE_x = mapJson["size"][0];
+    int roomE_y = mapJson["size"][1];
+    roomE_x += roomS_x;
+    roomE_y += roomS_y;
+
+    int cam_dist_x = s->getX() + static_cast<int>(Entity::values["general"]["camera_rx"]) - camera.x();
+    int cam_dist_y = s->getY() + static_cast<int>(Entity::values["general"]["camera_ry"]) - camera.y();
+    camera.setX(camera.x() + cam_dist_x);
+    camera.setY(camera.y() + cam_dist_y);
+    if (camera.x() < roomS_x)
+        camera.setX(roomS_x);
+    else if (camera.x() + 1920 > roomE_x)
+        camera.setX(roomE_x - 1920);
+    if (camera.y() < roomS_y)
+        camera.setY(roomS_y);
+    else if (camera.y() + 1080 > roomE_y)
+        camera.setY(roomE_y - 1080);
+}
+
 void Game::updateMapViewer()
 {
     if (inputList["enter"] && inputTime["enter"] == 0.0) {

@@ -12,6 +12,11 @@ Monster::Monster(double x, double y, std::string facing, std::string name)
     ranged = monsterJson["ranged"];
 }
 
+Monster::~Monster()
+{
+
+}
+
 const std::string &Monster::getBehavior() const
 {
     return behavior;
