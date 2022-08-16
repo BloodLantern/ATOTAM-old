@@ -21,6 +21,7 @@ release/Quint.o
 release/Sine.o
 release/dialogue.o
 release/dynamicobj.o
+release/editorpreview.o
 release/game.o
 release/main.o
 release/mainwindow.o
@@ -28,4 +29,5 @@ release/map.o
 release/physics.o
 release/save.o
 release/qrc_qmake_qmake_qm_files.o
+release/moc_editorpreview.o
 release/moc_mainwindow.o

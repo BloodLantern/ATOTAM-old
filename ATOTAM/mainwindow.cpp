@@ -401,7 +401,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     // Draw fps if necessary
     if (game->getShowFps()) {
         if ((std::chrono::high_resolution_clock::now() - game->getLastFpsShown()).count() > game->getShowFpsUpdateRate()) {
-            game->getLastFpsShown() = std::chrono::high_resolution_clock::now();
+            game->setLastFpsShown(std::chrono::high_resolution_clock::now());
         }
         painter.setPen(QColor("black"));
         painter.drawText(QPoint(2, 12), QString::fromStdString(std::to_string(game->getFps()) + " FPS"));

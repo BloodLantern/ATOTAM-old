@@ -21,7 +21,7 @@ public:
     static double gravity; //p.s^-2
     static double frameRate; //fps
 
-    static std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>> updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap);
+    static std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap);
     static std::vector<Entity*> handleCollision(Entity* obj1, Entity* obj2);
     static bool updateProjectile(Projectile* p);
     static bool canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds);

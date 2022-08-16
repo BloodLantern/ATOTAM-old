@@ -902,7 +902,7 @@ void Physics::updateCamera(Samos *s, QPoint camera, Map currentMap)
         camera.setY(roomE_y - 1080);
 }
 
-std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>> Physics::updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap)
+std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics::updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap)
 {
     std::string doorTransition = "";
 
@@ -1434,5 +1434,5 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>> Physics::upd
             (*i)->setOnGround(true);
     }
 
-    return std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>>(doorTransition, toAdd, toDel);
+    return std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map>(doorTransition, toAdd, toDel, currentMap);
 }

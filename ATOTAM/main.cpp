@@ -51,7 +51,7 @@ void gameClock(MainWindow* w, Samos* s) {
                         g->updateDialogue();
                         Physics::updateCamera(s, g->getCamera(), g->getCurrentMap());
                     }
-                    std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>> physicsOutput = Physics::updatePhysics(s,
+                    std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> physicsOutput = Physics::updatePhysics(s,
                                                                                                                                g->getTerrains(),
                                                                                                                                g->getDynamicObjs(),
                                                                                                                                g->getMonsters(),
@@ -62,6 +62,7 @@ void gameClock(MainWindow* w, Samos* s) {
                     g->setDoorTransition(std::get<0>(physicsOutput));
                     g->addEntities(std::get<1>(physicsOutput));
                     g->removeEntities(std::get<2>(physicsOutput));
+                    g->setCurrentMap(std::get<3>(physicsOutput));
                 } else {
                     g->updateMapViewer();
                 }
@@ -87,7 +88,6 @@ void gameClock(MainWindow* w, Samos* s) {
             }
         } else {
             if (s != nullptr) {
-                std::cout << g->getDoorTransition() << std::endl;
                 // Make sure we can't pause while changing room
                 g->setIsPaused(false);
 
