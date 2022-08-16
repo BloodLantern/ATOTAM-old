@@ -13,7 +13,7 @@ public:
     ~Living();
 
     void hit(int damage, Entity *origin = nullptr, double kb = 0, bool forced = false);
-    virtual void kill();
+    void kill();
 
     int getHealth() const;
     void setHealth(int newHealth);

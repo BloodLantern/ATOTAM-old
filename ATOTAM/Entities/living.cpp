@@ -36,7 +36,6 @@ void Living::hit(int damage, Entity *origin, double kb, bool forced)
             applyKnockback(origin, kb);
     }
 }
-
 void Living::kill()
 {
 
