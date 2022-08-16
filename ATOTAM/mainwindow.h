@@ -36,7 +36,6 @@ public:
     void setGame(Game *newGame);
 
 private:
-    Ui::MainWindow *ui;
     QApplication *m_qApp;
 
     Game* game;

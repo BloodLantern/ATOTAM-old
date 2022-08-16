@@ -1,3 +1,4 @@
+#include "editorpreview.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -6,22 +7,22 @@
 #include <Entities/npc.h>
 
 MainWindow::MainWindow(QApplication *app)
-    : ui(new Ui::MainWindow)
-    , m_qApp(app)
+    : m_qApp(app)
     , game(new Game)
     , errorTexture(QString::fromStdString(game->getAssetsPath() + "/textures/error.png"))
     , emptyTexture(QString::fromStdString(game->getAssetsPath() + "/textures/empty.png"))
     , showHUD(true)
 {
-    ui->setupUi(this);
     setFixedSize(game->getResolution().first, game->getResolution().second);
 
     renderingMultiplier = Entity::values["general"]["entitiesMultiplier"];
+
+    if (Entity::values["general"]["mapEditor"])
+        setupEditorWindow();
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
     delete game;
 }
 
@@ -45,6 +46,18 @@ void MainWindow::getInputs()
         for (nlohmann::json::iterator i = game->getKeyCodes().begin(); i != game->getKeyCodes().end(); i++) {
             (*game->getInputList())[i.key()] = 0;
         }
+}
+
+void MainWindow::setupEditorWindow()
+{
+    // Window
+    QWidget editorWindow;
+    editorWindow.setWindowTitle("ATOTAM Map Editor");
+
+    // Widgets inside the window
+    EditorPreview preview(&editorWindow, game->getEntities(), &errorTexture, &emptyTexture, &renderingMultiplier);
+
+    editorWindow.show();
 }
 
 void MainWindow::closeEvent(QCloseEvent *)
