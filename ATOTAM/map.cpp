@@ -7,9 +7,9 @@
 #include <Entities/npc.h>
 #include <Entities/terrain.h>
 
-Map Map::loadMap(std::string id)
+Map Map::loadMap(std::string id, std::string assetsPath)
 {
-    std::ifstream file(MainWindow::assetsPath + "/maps/" + id + ".json");
+    std::ifstream file(assetsPath + "/maps/" + id + ".json");
     nlohmann::json json;
     file >> json;
     return Map(json);

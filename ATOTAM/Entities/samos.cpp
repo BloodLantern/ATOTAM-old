@@ -104,6 +104,11 @@ Projectile* Samos::shoot(std::string type)
     return projectile;
 }
 
+void Samos::kill()
+{
+
+}
+
 bool Samos::getIsInAltForm() const
 {
     return isInAltForm;

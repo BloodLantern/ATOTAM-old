@@ -8,7 +8,7 @@
 class Map
 {
 public:
-    static Map loadMap(std::string id); // Loads a map via its ID and returns it
+    static Map loadMap(std::string id, std::string assetsPath); // Loads a map via its ID and returns it
     std::vector<Entity*> loadRoom(int id); // Loads the selected room id and returns the array of entities it contains
     std::vector<Entity*> loadRoom(); // Loads the current room id and returns the array of entities it contains
 

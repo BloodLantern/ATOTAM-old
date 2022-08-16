@@ -17,7 +17,7 @@ void Game::loadGeneral()
     showFpsUpdateRate = Entity::values["general"]["showFpsUpdateRate"];
     Physics::gravity = Entity::values["general"]["gravity"];
     mapViewer = Entity::values["general"]["mapViewer"];
-    currentMap = Map::loadMap(Entity::values["general"]["map"]);
+    currentMap = Map::loadMap(Entity::values["general"]["map"], assetsPath);
     mapViewerCameraSpeed = Entity::values["general"]["mapViewerCameraSpeed"];
     Physics::frameRate = params["Physics::frameRate"];
     resolution.first = params["resolution_x"];
@@ -28,10 +28,11 @@ void Game::loadGeneral()
     fullscreen = params["fullscreen"];
 }
 
-Game::Game()
-    : running(true)
+Game::Game(std::string assetsPath)
+    : assetsPath(assetsPath)
+    , running(true)
     , keyCodes(loadJson("inputs"))
-    , currentMap(Map::loadMap("test"))
+    , currentMap(Map::loadMap("test", assetsPath))
     , stringsJson(loadJson("strings"))
     , isPaused(false)
     , resolution({1920,1080})
@@ -207,7 +208,7 @@ void Game::updateMenu()
                 addEntities(currentMap.loadRoom());
             } else if (menuOptions[selectedOption] == "Reload map") {
                 int mapId = currentMap.getCurrentRoomId();
-                currentMap = Map::loadMap(currentMap.getName());
+                currentMap = Map::loadMap(currentMap.getName(), assetsPath);
                 currentMap.setCurrentRoomId(mapId);
             } else if (menuOptions[selectedOption] == "Map viewer mode : ON") {
                 mapViewer = false;
@@ -265,11 +266,47 @@ void Game::updateMenu()
         }
 }
 
+void Game::updateDialogue()
+{
+    for (std::vector<NPC*>::iterator j = NPCs.begin(); j != NPCs.end(); j++) {
+        if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+            if (inputList["interact"] && inputTime["interact"] == 0.0) {
+                if ((*j)->getNpcType() == "Talking") {
+                    // Set maxInteractions here because npc.cpp cannot include Physics.h
+                    if ((*j)->getMaxInteractions() == 0)
+                        (*j)->setMaxInteractions(stringsJson[language]["dialogues"][(*j)->getName()].size());
+
+                    bool increased = false;
+                    if (!currentDialogue.isNull())
+                        if (currentDialogue.getText().size() - 1 > currentDialogue.getTextAdvancement()) {
+                            currentDialogue.setTextAdvancement(currentDialogue.getTextAdvancement() + 1);
+                            increased = true;
+                        }
+                    if (!increased) {
+                        // Set new Dialogue
+                        if (stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["talking"].is_null())
+                          currentDialogue = Dialogue(
+                              stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(), (*j)->getMaxInteractions() - 1)]["text"], *j);
+                        else
+                            currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["text"],
+                                    *j, stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["talking"]);
+                    }
+                }
+                // Don't forget to increment the Dialogue advancement
+                (*j)->setTimesInteracted((*j)->getTimesInteracted() + 1);
+            }
+        } else if (currentDialogue.getTalking() != nullptr)
+            if (!Entity::checkCollision(s, s->getBox(), currentDialogue.getTalking(), currentDialogue.getTalking()->getBox()))
+                // Reset Dialogue if the player went too far away
+                currentDialogue = Dialogue();
+    }
+}
+
 void Game::updateMapViewer()
 {
     if (inputList["enter"] && inputTime["enter"] == 0.0) {
         int mapId = currentMap.getCurrentRoomId();
-        currentMap = Map::loadMap(currentMap.getName());
+        currentMap = Map::loadMap(currentMap.getName(), assetsPath);
         currentMap.setCurrentRoomId(mapId);
         clearEntities("Samos");
         addEntities(currentMap.loadRoom());
@@ -314,9 +351,9 @@ void Game::addEntity(Entity *entity)
     }
 }
 
-void Game::addEntities(std::vector<Entity*> entities)
+void Game::addEntities(std::vector<Entity*> es)
 {
-    for (std::vector<Entity*>::iterator entity = entities.begin(); entity != entities.end(); entity++) {
+    for (std::vector<Entity*>::iterator entity = es.begin(); entity != es.end(); entity++) {
         entities.push_back(*entity);
         if ((*entity)->getEntType() == "Terrain") {
             Terrain* t = static_cast<Terrain*>(*entity);
@@ -375,6 +412,34 @@ void Game::removeOtherRoomsEntities()
     addEntities(newentities);
     for (std::vector<Entity*>::iterator ent = toDelete.begin(); ent != toDelete.end(); ent++)
         delete *ent;
+}
+
+void Game::removeEntities(std::vector<Entity *> es)
+{
+    std::vector<Entity*> newRen;
+    for (std::vector<Entity*>::iterator j = entities.begin(); j != entities.end(); j++) {
+        bool td = false;
+        for (std::vector<Entity*>::iterator i = es.begin(); i != es.end(); i++) {
+            if (*j == *i) {
+                td = true;
+                break;
+            }
+        }
+        if (!td)
+            newRen.push_back(*j);
+    }
+
+    monsters = {};
+    terrains = {};
+    s = nullptr;
+    dynamicObjs = {};
+    areas = {};
+    projectiles = {};
+    NPCs = {};
+    entities = {};
+    addEntities(newRen);
+    for (std::vector<Entity*>::iterator i = es.begin(); i != es.end(); i++)
+        delete *i;
 }
 
 void Game::updateAnimations()
@@ -443,6 +508,46 @@ std::vector<Entity *> *Game::getEntities()
 void Game::setEntities(const std::vector<Entity *> &newRendering)
 {
     entities = newRendering;
+}
+
+int Game::getSelectedOption() const
+{
+    return selectedOption;
+}
+
+void Game::setSelectedOption(int newSelectedOption)
+{
+    selectedOption = newSelectedOption;
+}
+
+const std::string &Game::getMenu() const
+{
+    return menu;
+}
+
+void Game::setMenu(const std::string &newMenu)
+{
+    menu = newMenu;
+}
+
+const std::vector<std::string> &Game::getMenuOptions() const
+{
+    return menuOptions;
+}
+
+void Game::setMenuOptions(const std::vector<std::string> &newMenuOptions)
+{
+    menuOptions = newMenuOptions;
+}
+
+QPoint Game::getCamera()
+{
+    return camera;
+}
+
+void Game::setCamera(QPoint newCamera)
+{
+    camera = newCamera;
 }
 
 std::vector<Terrain *>* Game::getTerrains()
@@ -585,7 +690,7 @@ void Game::setKeyCodes(const nlohmann::json &newKeyCodes)
     keyCodes = newKeyCodes;
 }
 
-const Map &Game::getCurrentMap() const
+Map &Game::getCurrentMap()
 {
     return currentMap;
 }
