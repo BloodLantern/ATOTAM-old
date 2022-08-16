@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-
+#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "nlohmann/json.hpp"
 
 #include "dialogue.h"

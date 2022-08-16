@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QString>
 #include <string>
+#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "nlohmann/json.hpp"
 #include <fstream>
 #include <cmath>

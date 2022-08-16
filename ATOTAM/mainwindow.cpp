@@ -1,6 +1,5 @@
 #include "editorpreview.h"
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 #include <Entities/area.h>
 #include <Entities/door.h>
@@ -15,7 +14,7 @@ MainWindow::MainWindow(QApplication *app, std::string assetsPath)
 {
     setFixedSize(game->getResolution().first, game->getResolution().second);
 
-    renderingMultiplier = Entity::values["general"]["entitiesMultiplier"];
+    renderingMultiplier = Entity::values["general"]["renderingMultiplier"];
 
     if (Entity::values["general"]["mapEditor"])
         setupEditorWindow();

@@ -19,11 +19,11 @@ void Game::loadGeneral()
     mapViewer = Entity::values["general"]["mapViewer"];
     currentMap = Map::loadMap(Entity::values["general"]["map"], assetsPath);
     mapViewerCameraSpeed = Entity::values["general"]["mapViewerCameraSpeed"];
-    Physics::frameRate = params["Physics::frameRate"];
+    Physics::frameRate = params["frameRate"];
     resolution.first = params["resolution_x"];
     resolution.second = params["resolution_y"];
     language = params["language"];
-    renderHitboxes = Entity::values["general"]["game->getRenderHitboxes()"];
+    renderHitboxes = Entity::values["general"]["renderHitboxes"];
     showFps = params["showFps"];
     fullscreen = params["fullscreen"];
 }
