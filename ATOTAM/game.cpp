@@ -570,7 +570,7 @@ void Game::setUpdateCount(unsigned long long newUpdateCount)
     updateCount = newUpdateCount;
 }
 
-const nlohmann::json &Game::getKeyCodes() const
+nlohmann::json &Game::getKeyCodes()
 {
     return keyCodes;
 }

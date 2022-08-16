@@ -69,7 +69,7 @@ public:
     void setFrameCount(unsigned long long newFrameCount);
     unsigned long long getUpdateCount() const;
     void setUpdateCount(unsigned long long newUpdateCount);
-    const nlohmann::json &getKeyCodes() const;
+    nlohmann::json &getKeyCodes();
     void setKeyCodes(const nlohmann::json &newKeyCodes);
     const Map &getCurrentMap() const;
     void setCurrentMap(const Map &newCurrentMap);
