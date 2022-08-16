@@ -32,6 +32,7 @@ public:
     nlohmann::json loadJson(std::string fileName); // Loads the given file name's json starting in the assets folder and returns it
     template<typename ...StdStrings>
     QString translate(std::string text, StdStrings... subCategories);
+    void loadGeneral();
 
     std::vector<Entity *> *getEntities();
     void setEntities(const std::vector<Entity *> &newRendering);

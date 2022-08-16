@@ -9,18 +9,8 @@ nlohmann::json Game::loadJson(std::string fileName)
     return temp;
 }
 
-Game::Game()
-    : running(true)
-    , keyCodes(loadJson("inputs"))
-    , currentMap(Map::loadMap("test"))
-    , stringsJson(loadJson("strings"))
-    , isPaused(false)
-    , resolution({1920,1080})
-    , doorTransition("")
-    , params(loadJson("params"))
-    , fullscreen(false)
+void Game::loadGeneral()
 {
-
     //Loading the general settings of the game
     gameSpeed = Entity::values["general"]["gameSpeed"];
     updateRate = Entity::values["general"]["updateRate"];
@@ -36,6 +26,21 @@ Game::Game()
     renderHitboxes = Entity::values["general"]["game->getRenderHitboxes()"];
     showFps = params["showFps"];
     fullscreen = params["fullscreen"];
+}
+
+Game::Game()
+    : running(true)
+    , keyCodes(loadJson("inputs"))
+    , currentMap(Map::loadMap("test"))
+    , stringsJson(loadJson("strings"))
+    , isPaused(false)
+    , resolution({1920,1080})
+    , doorTransition("")
+    , params(loadJson("params"))
+    , fullscreen(false)
+{
+
+    loadGeneral();
 }
 
 template<typename ...StdStrings>
