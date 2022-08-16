@@ -2,7 +2,7 @@
 	"general": {
 		"gameSpeed": 1.0,
 		"updateRate": 60.0,
-		"showFpsUpdateRate": 1000000000,
+		"showFpsUpdateRate": 500000000,
 		"gravity": 700.0,
 		"renderingMultiplier": 2,
 		"renderHitboxes": true,

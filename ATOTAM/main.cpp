@@ -38,7 +38,7 @@ void gameClock(MainWindow* w, Samos* s) {
         if ((std::chrono::high_resolution_clock::now() - g->getLastFpsShown()).count() > g->getShowFpsUpdateRate())
             g->setFps(1000000000 / (std::chrono::high_resolution_clock::now() - g->getLastFrameTime()).count());
         // And update the last frame time
-        g->getLastFrameTime() = std::chrono::high_resolution_clock::now();
+        g->setLastFrameTime(std::chrono::high_resolution_clock::now());
 
         if (g->getDoorTransition() == "") {
             w->getInputs();
