@@ -45,11 +45,10 @@ Game::Game(std::string assetsPath)
     loadGeneral();
 }
 
-template<typename ...StdStrings>
-QString Game::translate(std::string text, StdStrings... subCategories)
+QString Game::translate(std::string text, std::vector<std::string> subCategories)
 {
     nlohmann::json json = stringsJson[language];
-    for (std::string category : {subCategories...})
+    for (const std::string &category : subCategories)
         json = json[category];
     return QString::fromStdString(json[text]);
 }

@@ -419,7 +419,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         //Selected weapon
         painter.fillRect(QRect(70,15,100,30), QColor("white"));
         painter.drawRect(QRect(70,15,100,30));
-        painter.drawText(QPoint(80, 40), /*game->translate(*/QString::fromStdString(game->getS()->getSelectedWeapon())/*, "ui", "selectedWeapon")*/);
+        painter.drawText(QPoint(80, 40), game->translate(game->getS()->getSelectedWeapon(), std::vector<std::string>({"ui", "selectedWeapon"})));
 
         //Missile count
         painter.fillRect(QRect(200,15,70,30), QColor("white"));
