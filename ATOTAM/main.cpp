@@ -28,7 +28,9 @@ void gameClock(MainWindow* w, Samos* s) {
     QPoint cameraDist;
     const double cameraMoveTime = 0.75;
     const int samosDoorMove = 100;
-    while (MainWindow::running) {
+
+    Game* g = w->getGame();
+    while (g->getRunning()) {
         waitTime = 1000000.0/(MainWindow::frameRate * MainWindow::gameSpeed);
         auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
@@ -61,6 +63,15 @@ void gameClock(MainWindow* w, Samos* s) {
             }
 
             w->updateMenu();
+
+            // Fullscreen update
+            if (w->isFullScreen()) {
+                if (!g->getFullscreen())
+                    w->showNormal();
+            } else {
+                if (g->getFullscreen())
+                    w->showFullScreen();
+            }
         } else {
             if (s != nullptr) {
                 // Make sure we can't pause while changing room
@@ -141,7 +152,7 @@ void gameClock(MainWindow* w, Samos* s) {
                     s->setRoomId(MainWindow::currentMap.getCurrentRoomId());
 
                     // Unload the last room
-                    w->removeOtherRoomsRendering();
+                    w->removeOtherRoomsEntities();
 
                     w->updateAnimations();
                 }
@@ -156,6 +167,9 @@ void gameClock(MainWindow* w, Samos* s) {
             std::this_thread::sleep_for(std::chrono::microseconds(999));
         }
     }
+
+    // Close the window
+    w->close();
 
     // Just in case but at this point 'startingCameraPos' should be a nullptr anyway
     delete startingCameraPos;
@@ -180,12 +194,12 @@ int main(int argc, char *argv[])
     Samos* sp = nullptr;
     if (!MainWindow::mapViewer) {
         sp = new Samos(500, 300, 99, 5, 5);
-        w.addRenderable(sp);
+        w.addEntity(sp);
     }
 
     // Load map
     for (Entity* entity : MainWindow::currentMap.loadRoom())
-        w.addRenderable(entity);
+        w.addEntity(entity);
 
     // Start the game update clock
     std::future<void> game = std::async(gameClock, &w, sp);

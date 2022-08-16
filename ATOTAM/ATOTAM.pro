@@ -32,9 +32,11 @@ SOURCES += \
     Easing/Sine.cpp \
     dialogue.cpp \
     Entities/dynamicobj.cpp \
+    game.cpp \
     main.cpp \
     mainwindow.cpp \
     map.cpp \
+    physics.cpp \
     save.cpp
 
 HEADERS += \
@@ -61,9 +63,11 @@ HEADERS += \
     Easing/Quint.h \
     Easing/Sine.h \
     dialogue.h \
+    game.h \
     mainwindow.h \
     map.h \
     nlohmann/json.hpp \
+    physics.h \
     save.h
 
 FORMS += \
