@@ -137,8 +137,8 @@ private:
     bool running;
     double updateRate; // How many game updates in one second
     double gameSpeed;
-    unsigned long long frameCount;
-    unsigned long long updateCount;
+    unsigned long long frameCount = 0;
+    unsigned long long updateCount = 0;
     nlohmann::json keyCodes;
     Map currentMap;
     nlohmann::json stringsJson;
