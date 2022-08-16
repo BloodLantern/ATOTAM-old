@@ -6,7 +6,7 @@
 #include <Entities/door.h>
 #include <Entities/npc.h>
 
-MainWindow::MainWindow(QApplication *app)
+MainWindow::MainWindow(QApplication *app, std::string assetsPath)
     : m_qApp(app)
     , game(new Game(assetsPath))
     , errorTexture(QString::fromStdString(game->getAssetsPath() + "/textures/error.png"))
