@@ -148,7 +148,7 @@ private:
     unsigned int fps = 0; // Fps count when 'lastFpsShown' was updated
     unsigned int showFpsUpdateRate = true; // Time (in ns) between each fps update
     bool isPaused = false;
-    std::pair<int,int> resolution = {1980, 1080};
+    std::pair<int,int> resolution = {1920, 1080};
     double mapViewerCameraSpeed = 100;
     std::string doorTransition = "";
     nlohmann::json params;
