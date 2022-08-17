@@ -41,6 +41,8 @@ public:
 
 private:
     QApplication *m_qApp;
+    Ui::MainWindow *ui;
+    bool eventFilter(QObject *object, QEvent *event);
 
     Game* game = nullptr;
     int renderingMultiplier = 1; // Textures are rendered with their size being multiplied by this value
