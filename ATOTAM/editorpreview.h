@@ -15,14 +15,26 @@ public:
                            int* renderingMultiplier);
 
     void paintEvent(QPaintEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
+    void mouseMoveEvent(QMouseEvent*);
 
 private:
-    std::vector<Entity*>* entities;
-    QImage* errorTexture;
-    QImage* emptyTexture;
-    QPoint camera;
+    // paintEvent fields
+    std::vector<Entity*>* entities = nullptr;
+    QImage* errorTexture = nullptr;
+    QImage* emptyTexture = nullptr;
+    QPoint camera = QPoint();
     int zoomFactor = 1;
-    int* renderingMultiplier;
+    int* renderingMultiplier = nullptr;
+
+    // Camera movement
+    QPoint cameraStart = QPoint();
+    QPoint clickStart = QPoint();
+    bool dragging = false;
+
+    // Selection
+    Entity* selected = nullptr;
 };
 
 #endif // EDITORPREVIEW_H

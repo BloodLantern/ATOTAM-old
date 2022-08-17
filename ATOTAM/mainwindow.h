@@ -35,10 +35,13 @@ public:
     void setShowHUD(bool newShowHUD);
     Game *getGame() const;
     void setGame(Game *newGame);
+    QMainWindow *getEditorWindow() const;
+    void setEditorWindow(QMainWindow *newEditorWindow);
 
 private:
     QApplication *m_qApp;
 
+    QMainWindow* editorWindow;
     Game* game = nullptr;
     int renderingMultiplier = 1; // Textures are rendered with their size being multiplied by this value
     QImage errorTexture;

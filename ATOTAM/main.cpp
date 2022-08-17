@@ -199,10 +199,6 @@ int main(int argc, char *argv[])
     std::string assetsPath = "../ATOTAM/assets";
     Entity::values = Entity::loadValues(assetsPath);
     MainWindow w(&a, assetsPath);
-    if (w.getGame()->getFullscreen())
-        w.showFullScreen();
-    else
-        w.show();
 
     // Only instantiate samos if not in map viewer mode
     Samos* sp = nullptr;

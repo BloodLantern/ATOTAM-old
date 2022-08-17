@@ -1,9 +1,13 @@
 #include "editorpreview.h"
 #include "mainwindow.h"
+#include "qapplication.h"
 
+#include <QScreen>
 #include <Entities/area.h>
 #include <Entities/door.h>
 #include <Entities/npc.h>
+#include <QSplitter>
+#include <iostream>
 
 MainWindow::MainWindow(QApplication *app, std::string assetsPath)
     : m_qApp(app)
@@ -16,6 +20,11 @@ MainWindow::MainWindow(QApplication *app, std::string assetsPath)
 
     renderingMultiplier = Entity::values["general"]["renderingMultiplier"];
 
+    if (game->getFullscreen())
+        showFullScreen();
+    else
+        show();
+
     if (Entity::values["general"]["mapEditor"])
         setupEditorWindow();
 }
@@ -23,6 +32,8 @@ MainWindow::MainWindow(QApplication *app, std::string assetsPath)
 MainWindow::~MainWindow()
 {
     delete game;
+    editorWindow->close();
+    delete editorWindow;
 }
 
 void MainWindow::getInputs()
@@ -50,13 +61,25 @@ void MainWindow::getInputs()
 void MainWindow::setupEditorWindow()
 {
     // Window
-    QWidget editorWindow;
-    editorWindow.setWindowTitle("ATOTAM Map Editor");
+    editorWindow = new QMainWindow;
+    editorWindow->setWindowTitle("ATOTAM Map Editor");
+    editorWindow->setMinimumSize(QSize(800, 600));
+    // Set window screen
+    QList<QScreen*> screens = m_qApp->screens();
+    if (screens.size() > 1) {
+        editorWindow->setScreen(screens[1]);
+        editorWindow->setGeometry(screens[1]->geometry().center().x() - 800/2, screens[1]->geometry().center().y() - 600/2, 800, 600);
+    }
 
     // Widgets inside the window
-    EditorPreview preview(&editorWindow, game->getEntities(), &errorTexture, &emptyTexture, &renderingMultiplier);
+    EditorPreview* preview = new EditorPreview(nullptr, game->getEntities(), &errorTexture, &emptyTexture, &renderingMultiplier);
 
-    editorWindow.show();
+    // Align widgets
+    QSplitter* splitter = new QSplitter;
+    splitter->addWidget(preview);
+
+    editorWindow->setCentralWidget(splitter);
+    editorWindow->show();
 }
 
 void MainWindow::closeEvent(QCloseEvent *)
@@ -510,4 +533,14 @@ Game *MainWindow::getGame() const
 void MainWindow::setGame(Game *newGame)
 {
     game = newGame;
+}
+
+QMainWindow *MainWindow::getEditorWindow() const
+{
+    return editorWindow;
+}
+
+void MainWindow::setEditorWindow(QMainWindow *newEditorWindow)
+{
+    editorWindow = newEditorWindow;
 }
