@@ -174,7 +174,9 @@ void gameClock(MainWindow* w, Samos* s) {
         }
 
         // Eventually render the game
-        w->update();
+        w->setRender(true);
+        w->repaint();
+        w->setRender(false);
 
 
         while (std::chrono::high_resolution_clock::now() < end) {

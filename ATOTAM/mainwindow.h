@@ -38,6 +38,9 @@ public:
     QMainWindow *getEditorWindow() const;
     void setEditorWindow(QMainWindow *newEditorWindow);
 
+    bool getRender() const;
+    void setRender(bool newRender);
+
 private:
     QApplication *m_qApp;
 
@@ -47,5 +50,6 @@ private:
     QImage errorTexture;
     QImage emptyTexture;
     bool showHUD = true;
+    bool render = false;
 };
 #endif // MAINWINDOW_H
