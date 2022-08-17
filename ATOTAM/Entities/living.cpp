@@ -41,7 +41,7 @@ void Living::kill()
 
 }
 
-int Living::getHealth() const
+int Living::getHealth()
 {
     return health;
 }

@@ -17,6 +17,7 @@ SOURCES += \
     Entities/npc.cpp \
     Entities/projectile.cpp \
     Entities/samos.cpp \
+    Entities/savepoint.cpp \
     Entities/terrain.cpp \
     Entities/area.cpp \
     Easing/Back.cpp \
@@ -50,6 +51,7 @@ HEADERS += \
     Entities/npc.h \
     Entities/projectile.h \
     Entities/samos.h \
+    Entities/savepoint.h \
     Entities/terrain.h \
     Entities/area.h \
     Easing/Back.h \

@@ -6,6 +6,7 @@ release/monster.o
 release/npc.o
 release/projectile.o
 release/samos.o
+release/savepoint.o
 release/terrain.o
 release/area.o
 release/Back.o

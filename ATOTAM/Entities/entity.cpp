@@ -334,7 +334,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     return animation;
 }
 
-CollisionBox *Entity::getBox() const
+CollisionBox *Entity::getBox()
 {
     return box;
 }

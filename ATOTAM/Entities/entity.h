@@ -31,7 +31,7 @@ public:
     void applyKnockback(Entity *e, double kBForce);
     void forceKnockback(Entity *e, double kBForce);
 
-    CollisionBox *getBox() const;
+    CollisionBox *getBox();
     void setBox(CollisionBox *newBox);
 
     double getX() const;

@@ -635,7 +635,7 @@ void Game::setDynamicObjs(const std::vector<DynamicObj *> &newDynamicObjs)
     dynamicObjs = newDynamicObjs;
 }
 
-Samos *Game::getS() const
+Samos *Game::getS()
 {
     return s;
 }
