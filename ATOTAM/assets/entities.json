@@ -127,6 +127,10 @@
 						"Right": {
 							"x": 60,
 							"y": 78
+						},
+						"DownRight": {
+							"x": 62,
+							"y": 90
 						}
 					},
 					"Falling": {
@@ -203,6 +207,10 @@
 						"UpLeft": {
 							"x": 0,
 							"y": 36
+						},
+						"DownLeft": {
+							"x": 8,
+							"y": 90
 						}
 					},
 					"Falling": {
@@ -652,7 +660,7 @@
 				"emptyFramesReversed": false,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-16, -10],
+				"xOffset": [-16, -9],
 				"yOffset": [44, 44],
 				"reversed": false,
 				"overlay": [],
@@ -671,7 +679,7 @@
 				"emptyFramesReversed": true,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-2, -26],
+				"xOffset": [-2, -25],
 				"yOffset": [14, 14],
 				"reversed": false,
 				"overlay": [],
@@ -690,8 +698,27 @@
 				"emptyFramesReversed": true,
 				"lines": 1,
 				"multi-directional": true,
-				"xOffset": [-12, -16],
+				"xOffset": [-12, -15],
 				"yOffset": [14, 14],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": -1,
+				"dontReset": false
+			},
+			"CrouchAimDownDiag": {
+				"file": "samos.png",
+				"x": 154,
+				"y": 368,
+				"width": 168,
+				"height": 36,
+				"count": 1,
+				"emptyFrames": 1,
+				"emptyFramesReversed": true,
+				"lines": 1,
+				"multi-directional": true,
+				"xOffset": [4, -16],
+				"yOffset": [44, 44],
 				"reversed": false,
 				"overlay": [],
 				"loop": false,

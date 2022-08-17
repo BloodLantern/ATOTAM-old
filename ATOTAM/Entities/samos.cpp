@@ -49,7 +49,7 @@ Projectile* Samos::shoot(std::string type)
     if (getState() == "Falling" || getState() == "FallingAimUpDiag" || getState() == "FallingAimDownDiag" || getState() == "FallingAimUp" || getState() == "FallingAimDown"
             || getState() == "SpinJump" || getState() == "WallJump" || getState() == "Jumping" || getState() == "JumpEnd")
         shootState = "Falling";
-    else if (getState() == "IdleCrouch" || getState() == "CrouchAimUp" || getState() == "CrouchAimUpDiag" || getState() == "Crouching")
+    else if (getState() == "IdleCrouch" || getState() == "CrouchAimUp" || getState() == "CrouchAimUpDiag" || getState() == "CrouchAimDownDiag" || getState() == "Crouching")
         shootState = "Crouching";
     else if (getState() == "Walking" || getState() == "WalkingAimForward" || getState() == "WalkingAimDown" || getState() == "WalkingAimUp")
         shootState = "Walking";
