@@ -38,7 +38,7 @@ MainWindow::~MainWindow()
     delete editorWindow;
 }
 
-bool MainWindow::eventFilter(QObject* object, QEvent* event) {
+bool MainWindow::eventFilter(QObject*, QEvent* event) {
     return event->type() == QEvent::Paint && !render;
 }
 
@@ -487,9 +487,10 @@ void MainWindow::paintEvent(QPaintEvent *)
             painter.drawText(0, size().height() / 2 - 15 * game->getMenuOptions().size() + 30 * i, size().width(), 50, Qt::AlignHCenter, QString::fromStdString(game->getMenuOptions()[i]));
         }
     }
-
     f.setPointSize(f.pointSize() / 2);
     painter.setFont(f);
+
+    painter.end();
 }
 
 int MainWindow::getRenderingMultiplier() const

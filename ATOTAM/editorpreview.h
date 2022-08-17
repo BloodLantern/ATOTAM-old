@@ -14,10 +14,11 @@ public:
                            QImage* emptyTexture,
                            int* renderingMultiplier);
 
-    void paintEvent(QPaintEvent*);
-    void mousePressEvent(QMouseEvent*);
-    void mouseReleaseEvent(QMouseEvent*);
-    void mouseMoveEvent(QMouseEvent*);
+    void paintEvent(QPaintEvent*) override;
+    void mousePressEvent(QMouseEvent*) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
+    void mouseMoveEvent(QMouseEvent*) override;
+    void wheelEvent(QWheelEvent*) override;
 
 private:
     // paintEvent fields
@@ -25,7 +26,7 @@ private:
     QImage* errorTexture = nullptr;
     QImage* emptyTexture = nullptr;
     QPoint camera = QPoint();
-    int zoomFactor = 1;
+    double zoomFactor = 1;
     int* renderingMultiplier = nullptr;
 
     // Camera movement
@@ -35,6 +36,8 @@ private:
 
     // Selection
     Entity* selected = nullptr;
+
+    // QWidget interface
 };
 
 #endif // EDITORPREVIEW_H

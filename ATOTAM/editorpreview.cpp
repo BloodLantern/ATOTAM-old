@@ -1,6 +1,8 @@
 #include "editorpreview.h"
 #include "qpainter.h"
+#include <QMainWindow>
 #include <QMouseEvent>
+#include <QWheelEvent>
 #include <iostream>
 
 EditorPreview::EditorPreview(QWidget *parent, std::vector<Entity*>* entities, QImage* errorTexture, QImage* emptyTexture, int* renderingMultiplier)
@@ -35,10 +37,10 @@ void EditorPreview::paintEvent(QPaintEvent *)
         }
 
         // Make sure not to draw the Entities that aren't visible
-        if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() < camera.x() // If too much on the left
-                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + 1920 // If too much on the right
-                || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() < camera.y() // If too high
-                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + 1080) { // If too low
+        if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * (*renderingMultiplier) < camera.x() // If too much on the left
+                || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + width() / zoomFactor // If too much on the right
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * (*renderingMultiplier) < camera.y() // If too high
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + height() / zoomFactor) { // If too low
             continue;
         }
 
@@ -58,6 +60,10 @@ void EditorPreview::paintEvent(QPaintEvent *)
                                     *(*ent)->getTexture());
         }
     }
+
+    painter.fillRect(50, 50, 50, 50, QColor("red"));
+
+    painter.end();
 }
 
 void EditorPreview::mousePressEvent(QMouseEvent *event)
@@ -84,9 +90,25 @@ void EditorPreview::mouseMoveEvent(QMouseEvent *event)
         QPoint pos = event->pos();
         // If the mouse was moved far enough
         if (std::abs(pos.x() - clickStart.x()) > 10 || std::abs(pos.y() - clickStart.y()) > 10) {
-            camera.setX(cameraStart.x() - pos.x() + clickStart.x());
-            camera.setY(cameraStart.y() - pos.y() + clickStart.y());
-            update();
+            camera.setX(cameraStart.x() + (clickStart.x() - pos.x()) / zoomFactor);
+            camera.setY(cameraStart.y() + (clickStart.y() - pos.y()) / zoomFactor);
         }
+    }
+}
+
+void EditorPreview::wheelEvent(QWheelEvent *event)
+{
+    if (event->angleDelta().y() > 0) {
+        // Zoom in
+        zoomFactor *= 1.25;
+    } else if (event->angleDelta().y() < 0) {
+        // Zoom out
+        zoomFactor /= 1.25;
+    } else
+        event->ignore();
+
+    if (event->angleDelta().y() != 0) {
+        // Zoom was modified
+        event->accept();
     }
 }

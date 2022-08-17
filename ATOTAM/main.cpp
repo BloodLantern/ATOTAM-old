@@ -175,12 +175,16 @@ void gameClock(MainWindow* w, Samos* s) {
 
         // Eventually render the game
         w->setRender(true);
+        // And the editor if necessary
+        if (Entity::values["general"]["mapEditor"])
+            w->getEditorWindow()->update();
         w->update();
 
         while (std::chrono::high_resolution_clock::now() < end) {
             std::this_thread::sleep_for(std::chrono::microseconds(999));
         }
     }
+    w->setRender(true);
 
     // Close the window
     if (w != nullptr)
