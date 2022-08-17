@@ -278,7 +278,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                     s->setJumpTime(0);
                     s->setState("Jumping");
                 } else if ((s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag"
-                           || s->getState() == "UnMorphBalling") && canCrouch) {
+                           || s->getState() == "CrouchAimDownDiag" || s->getState() == "UnMorphBalling") && canCrouch) {
                     s->setState("IdleCrouch");
                 } else {
                     if (canStand)
@@ -440,7 +440,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                                 else if (s->getState() == "UnCrouching" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["UnCrouching"]["count"]) - 1))
                                     s->setState("Standing");
 
-                                if (s->getState() != "IdleCrouch" && s->getState() != "Crouching" && s->getState() != "UnCrouching" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "UnMorphBalling")
+                                if (s->getState() != "IdleCrouch" && s->getState() != "Crouching" && s->getState() != "UnCrouching" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "CrouchAimDownDiag"&& s->getState() != "UnMorphBalling")
                                     s->setState("Standing");
                             }
                         }
@@ -599,7 +599,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         delete morphBox;
         delete crouchBox;
         delete standBox;
-    } else if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "UnCrouching" || s->getState() == "Crouching") {
+    } else if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "CrouchAimDownDiag" || s->getState() == "UnCrouching" || s->getState() == "Crouching") {
         if ((*s->getBox()) != *crouchBox) {
             s->setBox(crouchBox);
             changedBox = true;
@@ -697,13 +697,16 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         }
     }
 
-    if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag") {
+    if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "CrouchAimDownDiag") {
         if (inputList["left"] && !inputList["right"]) {
             s->setFacing("Left");
             if (inputList["up"] && !inputList["down"]) {
                 s->setState("CrouchAimUpDiag");
                 s->setCanonDirection("UpLeft");
-            } else {
+            } else if (!inputList["up"] && inputList["down"]) {
+                s->setState("CrouchAimDownDiag");
+                s->setCanonDirection("DownLeft");
+            } else{
                 s->setState("IdleCrouch");
                 s->setCanonDirection("Left");
             }
@@ -712,6 +715,9 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             if (inputList["up"] && !inputList["down"]) {
                 s->setState("CrouchAimUpDiag");
                 s->setCanonDirection("UpRight");
+            } else if (!inputList["up"] && inputList["down"]) {
+                s->setState("CrouchAimDownDiag");
+                s->setCanonDirection("DownRight");
             } else {
                 s->setState("IdleCrouch");
                 s->setCanonDirection("Right");
