@@ -204,12 +204,8 @@ void Game::updateMenu()
                 Entity::values = Entity::loadValues(assetsPath);
                 loadGeneral();
             } else if (menuOptions[selectedOption] == "Reload room") {
-
-                std::cout << "a" << std::endl;
                 clearEntities("Samos");
-                std::cout << "b" << std::endl;
                 addEntities(currentMap.loadRoom());
-                std::cout << "c" << std::endl;
             } else if (menuOptions[selectedOption] == "Reload map") {
                 int mapId = currentMap.getCurrentRoomId();
                 currentMap = Map::loadMap(currentMap.getName(), assetsPath);

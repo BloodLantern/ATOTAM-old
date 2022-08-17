@@ -132,10 +132,10 @@ private:
     std::vector<std::string> menuOptions;
     QPoint camera = QPoint(0,0);
 
-    bool mapViewer; // Whether the game the game was launched as a map viewer
-    bool running;
-    double updateRate; // How many game updates in one second
-    double gameSpeed;
+    bool mapViewer = false; // Whether the game the game was launched as a map viewer
+    bool running = true;
+    double updateRate = 60.0; // How many game updates in one second
+    double gameSpeed = 1.0;
     unsigned long long frameCount = 0;
     unsigned long long updateCount = 0;
     nlohmann::json keyCodes;
@@ -145,20 +145,20 @@ private:
     std::map<std::string, double> inputTime;
     std::chrono::system_clock::time_point lastFpsShown; // Time of the last frame in which the shown fps were updated
     std::chrono::system_clock::time_point lastFrameTime; // Time of the last frame in which the shown fps were updated
-    unsigned int fps; // Fps count when 'lastFpsShown' was updated
-    unsigned int showFpsUpdateRate; // Time (in ns) between each fps update
-    bool isPaused;
-    std::pair<int,int> resolution;
-    double mapViewerCameraSpeed;
-    std::string doorTransition;
+    unsigned int fps = 0; // Fps count when 'lastFpsShown' was updated
+    unsigned int showFpsUpdateRate = true; // Time (in ns) between each fps update
+    bool isPaused = false;
+    std::pair<int,int> resolution = {1980, 1080};
+    double mapViewerCameraSpeed = 100;
+    std::string doorTransition = "";
     nlohmann::json params;
     std::string language;
     Dialogue currentDialogue;
     QPoint cameraBeforeMapViewer;
-    double menuArrowsTime;
-    bool renderHitboxes; // Render hitboxes as rectangles
-    bool showFps; // Whether to show fps in-game
-    bool fullscreen;
+    double menuArrowsTime = 0.0;
+    bool renderHitboxes = false; // Render hitboxes as rectangles
+    bool showFps = true; // Whether to show fps in-game
+    bool fullscreen = true;
 };
 
 #endif // GAME_H

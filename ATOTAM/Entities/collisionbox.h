@@ -21,10 +21,10 @@ public:
     void setX(int newX);
 
 private:
-    int x; //offset in px
-    int y; //offset in px
-    int width; //in px
-    int height; //in px
+    int x = 0; //offset in px
+    int y = 0; //offset in px
+    int width = 0; //in px
+    int height = 0; //in px
 };
 
 bool operator!=(CollisionBox a, CollisionBox b);

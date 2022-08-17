@@ -28,12 +28,12 @@ public:
     void setDamageOnContact(bool newDamageOnContact);
 
 private:
-    std::string behavior; // Behavior of the Monster
-    int damage; // Damage per attack
-    bool damageOnContact;
-    float attackSpeed; // Number of attack per seconds
+    std::string behavior = ""; // Behavior of the Monster
+    int damage = 0; // Damage per attack
+    bool damageOnContact = 0;
+    float attackSpeed = 1; // Number of attack per seconds
     double attackCooldown = 0; // Current cooldown left
-    bool ranged; // Whether this Monster uses ranged attacks
+    bool ranged = false; // Whether this Monster uses ranged attacks
 };
 
 #endif // MONSTER_H

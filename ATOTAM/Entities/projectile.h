@@ -27,10 +27,10 @@ public:
     void setKb(double newKb);
 
 private:
-    int damage;
-    double kb;
-    double lifeTime; // in s, starts with a positive value, destroys the object when null or negative
-    std::string projectileType;
+    int damage = 0;
+    double kb = 0;
+    double lifeTime = 1; // in s, starts with a positive value, destroys the object when null or negative
+    std::string projectileType = "";
 };
 
 #endif // PROJECTILE_H

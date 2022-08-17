@@ -56,19 +56,19 @@ public:
     void setLagTime(double newLagTime);
 
 private:
-    bool isInAltForm;
-    int grenadeCount;
-    int maxGrenadeCount;
-    int missileCount;
-    int maxMissileCount;
+    bool isInAltForm = false;
+    int grenadeCount = 0;
+    int maxGrenadeCount = 1;
+    int missileCount = 0;
+    int maxMissileCount = 1;
     double jumpTime = 0.3;
     double shootTime = 0.0;
     double switchDelay = 0.0;
     double lagTime = 0.0;
     std::string canonDirection = "Right";
     std::string selectedWeapon = "Beam";
-    CollisionBox* wallBoxR;
-    CollisionBox* wallBoxL;
+    CollisionBox* wallBoxR = nullptr;
+    CollisionBox* wallBoxL = nullptr;
 };
 
 #endif // SAMOS_H

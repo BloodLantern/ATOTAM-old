@@ -39,10 +39,10 @@ public:
 private:
     QApplication *m_qApp;
 
-    Game* game;
-    int renderingMultiplier; // Textures are rendered with their size being multiplied by this value
+    Game* game = nullptr;
+    int renderingMultiplier = 1; // Textures are rendered with their size being multiplied by this value
     QImage errorTexture;
     QImage emptyTexture;
-    bool showHUD;
+    bool showHUD = true;
 };
 #endif // MAINWINDOW_H

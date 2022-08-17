@@ -30,7 +30,7 @@ public:
 private:
     std::vector<std::string> text; // The text of the dialogue box
     Entity* talking; // Who is currently talking
-    std::string talkingName;
+    std::string talkingName = "";
     unsigned int textAdvancement = 0;
 };
 

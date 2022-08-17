@@ -34,13 +34,13 @@ public:
     void setITime(double newITime);
 
 private:
-    int health;
-    int maxHealth;
-    bool invulnerable;
+    int health = 0;
+    int maxHealth = 1;
+    bool invulnerable = false;
     double iTime = 0.0;
 
-    CollisionBox *groundBox;
-    bool onGround;
+    CollisionBox *groundBox = nullptr;
+    bool onGround = false;
 };
 
 #endif // LIVING_H

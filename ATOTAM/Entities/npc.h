@@ -22,7 +22,7 @@ public:
 
 private:
     nlohmann::json json;
-    std::string npcType;
+    std::string npcType = "";
     unsigned int timesInteracted = 0;
     unsigned int maxInteractions = 0;
 };

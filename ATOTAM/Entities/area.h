@@ -14,7 +14,7 @@ public:
     void setAreaType(const std::string &newAreaType);
 
 private:
-    std::string areaType;
+    std::string areaType = "";
 };
 
 #endif // AREA_H

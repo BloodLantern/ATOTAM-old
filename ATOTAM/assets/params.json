@@ -1,5 +1,5 @@
 {
-    "Physics::frameRate": 60.0,
+    "Physics::frameRate": 144.0,
     "frameRate": 60.0,
     "fullscreen": true,
     "language": "en-US",

@@ -29,10 +29,10 @@ public:
 
 private:
     Map(nlohmann::json json);
-    std::string name;
+    std::string name = "";
     nlohmann::json json;
-    int currentRoomId;
-    int lastRoomId;
+    int currentRoomId = 0;
+    int lastRoomId = 0;
 };
 
 #endif // MAP_H

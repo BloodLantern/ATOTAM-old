@@ -13,7 +13,7 @@ public:
     void setEndingRoom(int newEndingRoom);
 
 private:
-    int endingRoom;
+    int endingRoom = 0;
 };
 
 #endif // DOOR_H

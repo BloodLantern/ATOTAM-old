@@ -94,17 +94,17 @@ public:
 private:
     CollisionBox* box = nullptr;
     QImage* texture = nullptr; // Image to be rendered now
-    double x; //in px
-    double y; //in px
+    double x = 0; //in px
+    double y = 0; //in px
     double vX = 0; //in px/s
     double vY = 0; //in px/s
-    std::string entType;
-    bool isAffectedByGravity;
-    std::string facing;
-    std::string lastFrameFacing;
-    double frictionFactor;
-    bool isMovable;
-    std::string name;
+    std::string entType = "";
+    bool isAffectedByGravity = true;
+    std::string facing = "Right";
+    std::string lastFrameFacing = "Right";
+    double frictionFactor = 1;
+    bool isMovable = true;
+    std::string name = "";
     std::vector<std::string> nameParameters;
     double mass = 100;
 
@@ -113,7 +113,7 @@ private:
     std::vector<QImage> currentAnimation; // Full current animation
     std::string state = "None"; // Which animation should be rendered
     std::string lastFrameState = "None"; // Which animation was rendered in the last frame
-    int roomId; // ID of the room in which this Entity is
+    int roomId = 0; // ID of the room in which this Entity is
 };
 
 #endif // ENTITY_H
