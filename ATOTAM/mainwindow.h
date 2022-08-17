@@ -43,6 +43,8 @@ public:
 
 private:
     QApplication *m_qApp;
+    Ui::MainWindow *ui;
+    bool eventFilter(QObject *object, QEvent *event);
 
     QMainWindow* editorWindow;
     Game* game = nullptr;
