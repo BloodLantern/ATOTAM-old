@@ -10,7 +10,7 @@ CollisionBox::CollisionBox(int width, int height) : x(0), y(0), width(width), he
 
 }
 
-int CollisionBox::getHeight() const
+int CollisionBox::getHeight()
 {
     return height;
 }
@@ -20,7 +20,7 @@ void CollisionBox::setHeight(int newHeight)
     height = newHeight;
 }
 
-int CollisionBox::getWidth() const
+int CollisionBox::getWidth()
 {
     return width;
 }
@@ -30,7 +30,7 @@ void CollisionBox::setWidth(int newWidth)
     width = newWidth;
 }
 
-int CollisionBox::getY() const
+int CollisionBox::getY()
 {
     return y;
 }
@@ -40,7 +40,7 @@ void CollisionBox::setY(int newY)
     y = newY;
 }
 
-int CollisionBox::getX() const
+int CollisionBox::getX()
 {
     return x;
 }

@@ -15,7 +15,7 @@ public:
     void hit(int damage, Entity *origin = nullptr, double kb = 0, bool forced = false);
     void kill();
 
-    int getHealth() const;
+    int getHealth();
     void setHealth(int newHealth);
 
     int getMaxHealth() const;

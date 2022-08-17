@@ -8,16 +8,16 @@ public:
     CollisionBox(int x, int y, int width, int height);
     CollisionBox(int width, int height);
 
-    int getHeight() const;
+    int getHeight();
     void setHeight(int newHeight);
 
-    int getWidth() const;
+    int getWidth();
     void setWidth(int newWidth);
 
-    int getY() const;
+    int getY();
     void setY(int newY);
 
-    int getX() const;
+    int getX();
     void setX(int newX);
 
 private:

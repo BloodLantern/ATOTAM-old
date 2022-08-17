@@ -119,7 +119,7 @@ void Samos::setIsInAltForm(bool newIsInAltForm)
     isInAltForm = newIsInAltForm;
 }
 
-int Samos::getGrenadeCount() const
+int Samos::getGrenadeCount()
 {
     return grenadeCount;
 }
@@ -139,7 +139,7 @@ void Samos::setMaxGrenadeCount(int newMaxGrenadeCount)
     maxGrenadeCount = newMaxGrenadeCount;
 }
 
-int Samos::getMissileCount() const
+int Samos::getMissileCount()
 {
     return missileCount;
 }

@@ -292,7 +292,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                     s->setJumpTime(-1);
             }
             if ((!s->getOnGround() && s->getIsAffectedByGravity()) || s->getState() == "Jumping") {
-                if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump") {
+                if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
                     if (s->getFacing() == "Left") {
                         s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
                     } else {
@@ -452,7 +452,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                     s->setJumpTime(-1);
                 }
             } else {
-                if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump") {
+                if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
                     if (s->getFacing() == "Left") {
                         s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
                     } else {

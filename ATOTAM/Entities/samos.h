@@ -18,13 +18,13 @@ public:
     bool getIsInAltForm() const;
     void setIsInAltForm(bool newIsInAltForm);
 
-    int getGrenadeCount() const;
+    int getGrenadeCount();
     void setGrenadeCount(int newGrenadeCount);
 
     int getMaxGrenadeCount() const;
     void setMaxGrenadeCount(int newMaxGrenadeCount);
 
-    int getMissileCount() const;
+    int getMissileCount();
     void setMissileCount(int newMissileCount);
 
     int getMaxMissileCount() const;

@@ -58,7 +58,7 @@ public:
     void setAreas(const std::vector<Area *> &newAreas);
     std::vector<DynamicObj *> *getDynamicObjs();
     void setDynamicObjs(const std::vector<DynamicObj *> &newDynamicObjs);
-    Samos *getS() const;
+    Samos *getS();
     void setS(Samos *newS);
     bool getMapViewer() const;
     void setMapViewer(bool newMapViewer);
