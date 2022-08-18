@@ -27,15 +27,16 @@ MainWindow::MainWindow(QApplication *app, std::string assetsPath)
     else
         show();
 
-    if (Entity::values["general"]["mapEditor"])
-        setupEditorWindow();
+    nlohmann::json editorJson = game->loadJson("map_editor");
+    if (editorJson["enabled"])
+        setupEditorWindow(editorJson);
     QCoreApplication::instance()->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete game;
-    if (Entity::values["general"]["mapEditor"]) {
+    if (editorWindow != nullptr) {
         editorWindow->close();
         delete editorWindow;
     }
@@ -67,10 +68,9 @@ void MainWindow::getInputs()
         }
 }
 
-void MainWindow::setupEditorWindow()
+void MainWindow::setupEditorWindow(nlohmann::json editorJson)
 {
     // Map preview
-    nlohmann::json editorJson = game->loadJson("map_editor");
     Map editedMap = Map::loadMap(editorJson["map"]["id"], game->getAssetsPath());
     EditorPreview* preview = new EditorPreview(editedMap.loadRooms(), &errorTexture, &emptyTexture, &renderingMultiplier);
 

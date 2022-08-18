@@ -22,7 +22,7 @@ public:
     void paintEvent(QPaintEvent*);
     void closeEvent(QCloseEvent*);
     void getInputs();
-    void setupEditorWindow();
+    void setupEditorWindow(nlohmann::json editorJson);
 
     int getRenderingMultiplier() const;
     void setRenderingMultiplier(int newRenderingMultiplier);
@@ -44,7 +44,7 @@ private:
     QApplication *m_qApp;
     bool eventFilter(QObject *object, QEvent *event);
 
-    EditorWindow* editorWindow;
+    EditorWindow* editorWindow = nullptr;
     Game* game = nullptr;
     int renderingMultiplier = 1; // Textures are rendered with their size being multiplied by this value
     QImage errorTexture;

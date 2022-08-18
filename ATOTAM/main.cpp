@@ -174,7 +174,7 @@ void gameClock(MainWindow* w, Samos* s) {
         // Eventually render the game
         w->setRender(true);
         // And the editor if necessary
-        if (Entity::values["general"]["mapEditor"])
+        if (w->getEditorWindow() != nullptr)
             w->getEditorWindow()->update();
         w->update();
 
