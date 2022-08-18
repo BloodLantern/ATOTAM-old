@@ -72,7 +72,10 @@ HEADERS += \
     map.h \
     nlohmann/json.hpp \
     physics.h \
+    precompiledheaders.h \
     save.h
+
+PRECOMPILED_HEADER = precompiledheaders.h
 
 FORMS +=
 
