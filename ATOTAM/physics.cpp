@@ -1020,6 +1020,11 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
 
     for (std::vector<Monster*>::iterator m = ms->begin(); m != ms->end(); m++) {
 
+        if ((*m)->getState() == "Death" && (*m)->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"][(*m)->getName()]["texture"]]["Death"]["count"]) - 1)) {
+            toDel.push_back(*m);
+            continue;
+        }
+
         //I-frames
         if ((*m)->getITime() > 0.0)
             (*m)->setITime((*m)->getITime() - 1 / frameRate);
@@ -1072,6 +1077,10 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
 
     for (std::vector<NPC*>::iterator n = ns->begin(); n != ns->end(); n++) {
 
+        if ((*n)->getState() == "Death" && (*n)->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"][(*n)->getName()]["texture"]]["Death"]["count"]) - 1)) {
+            toDel.push_back(*n);
+            continue;
+        }
         //I-frames
         if ((*n)->getITime() > 0.0)
             (*n)->setITime((*n)->getITime() - 1 / frameRate);
@@ -1123,6 +1132,11 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
     // DYNAMICOBJ
 
     for (std::vector<DynamicObj*>::iterator d = ds->begin(); d != ds->end(); d++) {
+
+        if ((*d)->getState() == "Death" && (*d)->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"][(*d)->getName()]["texture"]]["Death"]["count"]) - 1)) {
+            toDel.push_back(*d);
+            continue;
+        }
 
         //I-frames
         if ((*d)->getITime() > 0.0)
@@ -1249,7 +1263,8 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         for (std::vector<Monster*>::iterator j = ms->begin(); j != ms->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(s, *j);
-                s->hit(Entity::values["names"][(*j)->getName()]["damage"], *j, Entity::values["names"][s->getName()]["contactKB"], true);
+                if (s->getITime() <= 0.0)
+                    s->hit(Entity::values["names"][(*j)->getName()]["damage"], *j, Entity::values["names"][s->getName()]["contactKB"], true);
                 if (s->getLagTime() <= 0.0)
                     s->setLagTime(Entity::values["names"][s->getName()]["lagTime"]);
             }
@@ -1311,7 +1326,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         }
         for (std::vector<Projectile*>::iterator j = ps->begin(); j != ps->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
-                (*j)->hitting(*i);
+                if ((*j)->hitting(*i)) {
+                    (*i)->setBox(nullptr);
+                    (*i)->setState("Death");
+                    (*i)->setIsMovable(false);
+                    break;
+                }
             }
         }
 
@@ -1343,7 +1363,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         }
         for (std::vector<Projectile*>::iterator j = ps->begin(); j != ps->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
-                (*j)->hitting(*i);
+                if ((*j)->hitting(*i)) {
+                    (*i)->setBox(nullptr);
+                    (*i)->setState("Death");
+                    (*i)->setIsMovable(false);
+                    break;
+                }
             }
         }
 

@@ -24,7 +24,7 @@ Living::~Living()
         delete groundBox;
 }
 
-void Living::hit(int damage, Entity *origin, double kb, bool forced)
+bool Living::hit(int damage, Entity *origin, double kb, bool forced)
 {
     if (damage != 0)
         iTime = Entity::values["names"][origin->getName()]["iTime"];
@@ -35,6 +35,7 @@ void Living::hit(int damage, Entity *origin, double kb, bool forced)
         else
             applyKnockback(origin, kb);
     }
+    return health <= 0;
 }
 void Living::kill()
 {

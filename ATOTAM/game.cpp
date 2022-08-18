@@ -261,10 +261,16 @@ void Game::updateMenu()
                 std::ofstream paramsfile(assetsPath + "/params.json");
                 paramsfile << params.dump(4);
                 paramsfile.close();
-            } else if (menuOptions[selectedOption] == "Reload last checkpoint")
+            } else if (menuOptions[selectedOption] == "Reload last checkpoint") {
                 loadSave(lastCheckpoint);
-            else if (menuOptions[selectedOption] == "Reload last save")
-                           loadSave(lastSave);
+                isPaused = false;
+            } else if (menuOptions[selectedOption] == "Reload last save") {
+                loadSave(lastSave);
+                isPaused = false;
+            } else if (menuOptions[selectedOption] == "Respawn") {
+                loadSave(lastCheckpoint);
+                isPaused = false;
+            }
         }
 
 
@@ -295,6 +301,10 @@ void Game::updateMenu()
             menuOptions.push_back(std::string("Map viewer mode : ") + (mapViewer ? "ON" : "OFF"));
             menuOptions.push_back("Reload room");
             menuOptions.push_back("Reload map");
+        } else if (menu == "death") {
+            menuOptions.clear();
+            menuOptions.push_back("Respawn");
+            menuOptions.push_back("Quit");
         }
 
     } else

@@ -300,7 +300,7 @@
 			"hit_offset_y": -16,
 			"speed": 0,
 			"lifeTime": 1,
-			"damage": 50,
+			"damage": 40,
 			"mass": 10,
 			"knockback": 2.0,
 			"iTime": 0.5
@@ -2227,6 +2227,25 @@
 				"overlay": [],
 				"loop": false,
 				"refreshRate": -1,
+				"dontReset": false
+			},
+			"Death": {
+				"file": "Image.png",
+				"x": 0,
+				"y": 0,
+				"width": 60,
+				"height": 60,
+				"count": 4,
+				"emptyFrames": 0,
+				"emptyFramesReversed": false,
+				"lines": 2,
+				"multi-directional": false,
+				"xOffset": [0, 0],
+				"yOffset": [0, 0],
+				"reversed": false,
+				"overlay": [],
+				"loop": false,
+				"refreshRate": 3,
 				"dontReset": false
 			}
 		}

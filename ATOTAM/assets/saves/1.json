@@ -2,8 +2,8 @@
     "damageDone": 0,
     "damageReceived": 0,
     "deaths": 0,
-    "playTime": 193,
-    "roomID": 1,
+    "playTime": 217,
+    "roomID": 0,
     "samos": {
         "grenades": 5,
         "health": 99,
@@ -13,5 +13,5 @@
         "missiles": 5
     },
     "saveMapName": "test",
-    "savepointID": 1
+    "savepointID": 0
 }

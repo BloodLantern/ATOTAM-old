@@ -61,6 +61,13 @@ void gameClock(MainWindow* w) {
                     g->addEntities(std::get<1>(physicsOutput));
                     g->removeEntities(std::get<2>(physicsOutput));
                     g->setCurrentMap(std::get<3>(physicsOutput));
+                    if (g->getS()->getHealth() <= 0) {
+                        g->getS()->setHealth(0);
+                        g->setIsPaused(true);
+                        g->setMenu("death");
+                        g->setMenuOptions({"Respawn", "Quit"});
+                        g->setSelectedOption(0);
+                    }
                 } else {
                     g->updateMapViewer();
                 }

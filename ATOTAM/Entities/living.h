@@ -12,7 +12,7 @@ public:
     Living(double x, double y, std::string facing, std::string name);
     ~Living();
 
-    void hit(int damage, Entity *origin = nullptr, double kb = 0, bool forced = false);
+    bool hit(int damage, Entity *origin = nullptr, double kb = 0, bool forced = false);
     void kill();
 
     int getHealth();

@@ -11,7 +11,7 @@ public:
     //enum ProjectileType {Beam, Missile, Grenade, Bomb};
     Projectile(double x, double y, std::string facing, std::string type, std::string name);
 
-    void hitting(Entity* ent);
+    bool hitting(Entity* ent);
     void timeOut();
 
     int getDamage() const;
