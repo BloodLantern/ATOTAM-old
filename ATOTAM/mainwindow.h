@@ -22,7 +22,7 @@ public:
     void paintEvent(QPaintEvent*);
     void closeEvent(QCloseEvent*);
     void getInputs();
-    void setupEditorWindow(nlohmann::json editorJson);
+    void setupEditorWindow();
 
     int getRenderingMultiplier() const;
     void setRenderingMultiplier(int newRenderingMultiplier);

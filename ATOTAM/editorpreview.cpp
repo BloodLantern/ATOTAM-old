@@ -64,7 +64,7 @@ void EditorPreview::paintEvent(QPaintEvent *)
         }
 
         if (selected == *ent)
-            painter.fillRect(((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x()) * zoomFactor,
+            painter.fillRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x() * zoomFactor,
                             ((*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y()) * zoomFactor,
                             (*ent)->getTexture()->width() * zoomFactor * (*renderingMultiplier),
                             (*ent)->getTexture()->height() * zoomFactor * (*renderingMultiplier),
