@@ -2,14 +2,13 @@
 #define EDITORPREVIEW_H
 
 #include "Entities/entity.h"
+#include "map.h"
 #include <QWidget>
 
 class EditorPreview : public QWidget
 {
-    Q_OBJECT
 public:
-    explicit EditorPreview(QWidget *parent,
-                           std::vector<Entity*>* entities,
+    EditorPreview(std::vector<Entity*> entities,
                            QImage* errorTexture,
                            QImage* emptyTexture,
                            int* renderingMultiplier);
@@ -21,8 +20,12 @@ public:
     void wheelEvent(QWheelEvent*) override;
 
 private:
+    Map currentMap = Map();
+    int roomId = 0;
+
     // paintEvent fields
-    std::vector<Entity*>* entities = nullptr;
+    std::vector<Entity*> entities = std::vector<Entity*>();
+    std::vector<Entity*> visibleEntities = std::vector<Entity*>();
     QImage* errorTexture = nullptr;
     QImage* emptyTexture = nullptr;
     QPoint camera = QPoint();

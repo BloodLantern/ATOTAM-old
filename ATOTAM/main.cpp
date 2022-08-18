@@ -1,10 +1,8 @@
 #include "mainwindow.h"
 #include "Entities/samos.h"
-#include "Entities/terrain.h"
+#include "physics.h"
 
 #include <QApplication>
-#include <QLocale>
-#include <QTranslator>
 #include <QImage>
 #include <unistd.h>
 #include <future>

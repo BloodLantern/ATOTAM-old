@@ -1,8 +1,6 @@
 #ifndef PRECOMPILEDHEADERS_H
 #define PRECOMPILEDHEADERS_H
 
-#include <Entities/entity.h>
-
 #include <Easing/Back.h>
 #include <Easing/Bounce.h>
 #include <Easing/Circ.h>

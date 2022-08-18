@@ -1,8 +1,9 @@
 #include "editorpreview.h"
 #include "mainwindow.h"
-#include "qapplication.h"
 #include "qcoreevent.h"
+#include "physics.h"
 
+#include <QApplication>
 #include <QScreen>
 #include <Entities/area.h>
 #include <Entities/door.h>
@@ -34,8 +35,10 @@ MainWindow::MainWindow(QApplication *app, std::string assetsPath)
 MainWindow::~MainWindow()
 {
     delete game;
-    editorWindow->close();
-    delete editorWindow;
+    if (Entity::values["general"]["mapEditor"]) {
+        editorWindow->close();
+        delete editorWindow;
+    }
 }
 
 bool MainWindow::eventFilter(QObject*, QEvent* event) {
@@ -66,8 +69,13 @@ void MainWindow::getInputs()
 
 void MainWindow::setupEditorWindow()
 {
+    // Map preview
+    nlohmann::json editorJson = game->loadJson("map_editor");
+    Map editedMap = Map::loadMap(editorJson["map"]["id"], game->getAssetsPath());
+    EditorPreview* preview = new EditorPreview(editedMap.loadRooms(), &errorTexture, &emptyTexture, &renderingMultiplier);
+
     // Window
-    editorWindow = new QMainWindow;
+    editorWindow = new EditorWindow(preview);
     editorWindow->setWindowTitle("ATOTAM Map Editor");
     editorWindow->setMinimumSize(QSize(800, 600));
     // Set window screen
@@ -78,7 +86,6 @@ void MainWindow::setupEditorWindow()
     }
 
     // Widgets inside the window
-    EditorPreview* preview = new EditorPreview(nullptr, game->getEntities(), &errorTexture, &emptyTexture, &renderingMultiplier);
 
     // Align widgets
     QSplitter* splitter = new QSplitter;
@@ -677,12 +684,12 @@ void MainWindow::setGame(Game *newGame)
     game = newGame;
 }
 
-QMainWindow *MainWindow::getEditorWindow() const
+EditorWindow *MainWindow::getEditorWindow() const
 {
     return editorWindow;
 }
 
-void MainWindow::setEditorWindow(QMainWindow *newEditorWindow)
+void MainWindow::setEditorWindow(EditorWindow *newEditorWindow)
 {
     editorWindow = newEditorWindow;
 }

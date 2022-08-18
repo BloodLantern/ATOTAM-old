@@ -6,11 +6,9 @@
 
 #include "dialogue.h"
 #include "map.h"
-#include "physics.h"
 #include "Entities/area.h"
 #include "Entities/dynamicobj.h"
 #include "Entities/entity.h"
-#include "Entities/living.h"
 #include "Entities/monster.h"
 #include "Entities/npc.h"
 #include "Entities/samos.h"

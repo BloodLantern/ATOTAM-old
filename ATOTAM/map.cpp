@@ -1,11 +1,15 @@
 #include "Entities/monster.h"
-#include "mainwindow.h"
 #include "map.h"
 #include <fstream>
 #include <Entities/area.h>
 #include <Entities/door.h>
 #include <Entities/npc.h>
 #include <Entities/terrain.h>
+
+Map::Map()
+{
+
+}
 
 Map Map::loadMap(std::string id, std::string assetsPath)
 {
@@ -156,6 +160,20 @@ std::vector<Entity *> Map::loadRoom(int id)
 std::vector<Entity *> Map::loadRoom()
 {
     return loadRoom(currentRoomId);
+}
+
+std::vector<Entity *> Map::loadRooms()
+{
+    std::vector<Entity*> result;
+    for (std::pair<std::string, nlohmann::json> room : json["rooms"].get<nlohmann::json::object_t>()) {
+        // Load room content
+        std::vector<Entity*> roomContent = loadRoom(std::stoi(room.first));
+        // Preallocate memory
+        result.reserve(roomContent.size());
+        // Merge vectors
+        result.insert(result.end(), roomContent.begin(), roomContent.end());
+    }
+    return result;
 }
 
 int Map::getCurrentRoomId() const

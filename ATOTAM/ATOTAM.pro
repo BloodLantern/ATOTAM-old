@@ -34,6 +34,7 @@ SOURCES += \
     dialogue.cpp \
     Entities/dynamicobj.cpp \
     editorpreview.cpp \
+    editorwindow.cpp \
     game.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
     Easing/Sine.h \
     dialogue.h \
     editorpreview.h \
+    editorwindow.h \
     game.h \
     mainwindow.h \
     map.h \

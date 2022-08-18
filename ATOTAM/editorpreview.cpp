@@ -5,9 +5,8 @@
 #include <QWheelEvent>
 #include <iostream>
 
-EditorPreview::EditorPreview(QWidget *parent, std::vector<Entity*>* entities, QImage* errorTexture, QImage* emptyTexture, int* renderingMultiplier)
-    : QWidget{parent}
-    , entities(entities)
+EditorPreview::EditorPreview(std::vector<Entity*> entities, QImage* errorTexture, QImage* emptyTexture, int* renderingMultiplier)
+    : entities(entities)
     , errorTexture(errorTexture)
     , emptyTexture(emptyTexture)
     , renderingMultiplier(renderingMultiplier)
@@ -18,18 +17,20 @@ EditorPreview::EditorPreview(QWidget *parent, std::vector<Entity*>* entities, QI
 void EditorPreview::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
+    visibleEntities.clear();
 
-    for (std::vector<Entity*>::iterator ent = entities->begin(); ent != entities->end(); ent++) {
+    for (std::vector<Entity*>::iterator ent = entities.begin(); ent != entities.end(); ent++) {
         // Make sure not to use a null pointer in case there is one
         if (*ent == nullptr)
             continue;
 
         // If the texture is null, set it to the empty texture
-        if ((*ent)->getTexture() == nullptr) {
+        if ((*ent)->getTexture() == nullptr)
             (*ent)->setTexture(emptyTexture);
 
+        if ((*ent)->getTexture() == emptyTexture) {
             // Draw the outline of the entity to make sure it is visible anyway
-            painter.setPen(QColor(0, 255, 0, 150));
+            painter.setPen(QColor(0, 255, 0, 100));
             painter.drawRect((*ent)->getX() + (*ent)->getBox()->getX(),
                              (*ent)->getY() + (*ent)->getBox()->getY(),
                              (*ent)->getBox()->getWidth(),
@@ -40,11 +41,13 @@ void EditorPreview::paintEvent(QPaintEvent *)
         if ((*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() * (*renderingMultiplier) < camera.x() // If too much on the left
                 || (*ent)->getX() + (*ent)->getTexture()->offset().x() > camera.x() + width() / zoomFactor // If too much on the right
                 || (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() * (*renderingMultiplier) < camera.y() // If too high
-                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + height() / zoomFactor) { // If too low
+                || (*ent)->getY() + (*ent)->getTexture()->offset().y() > camera.y() + height() / zoomFactor) // If too low
             continue;
-        }
 
-        //Try to draw the texture: if it fails, set it to the error texture and try again
+        // This Entity is visible so add it to the visible Entities vector
+        visibleEntities.push_back(*ent);
+
+        // Try to draw the texture: if it fails, set it to the error texture and try again
         try {
             painter.drawImage(QRect(((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x()) * zoomFactor,
                                     ((*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y()) * zoomFactor,
@@ -59,9 +62,14 @@ void EditorPreview::paintEvent(QPaintEvent *)
                                     (*ent)->getTexture()->height() * zoomFactor * (*renderingMultiplier)),
                                     *(*ent)->getTexture());
         }
-    }
 
-    painter.fillRect(50, 50, 50, 50, QColor("red"));
+        if (selected == *ent)
+            painter.fillRect((*ent)->getX() + (*ent)->getTexture()->offset().x() - camera.x() * zoomFactor,
+                            ((*ent)->getY() + (*ent)->getTexture()->offset().y() - camera.y()) * zoomFactor,
+                            (*ent)->getTexture()->width() * zoomFactor * (*renderingMultiplier),
+                            (*ent)->getTexture()->height() * zoomFactor * (*renderingMultiplier),
+                            QColor(0, 0, 255, 100));
+    }
 
     painter.end();
 }
@@ -73,6 +81,27 @@ void EditorPreview::mousePressEvent(QMouseEvent *event)
         clickStart = event->pos();
         cameraStart = camera;
         event->accept();
+    } else if (event->button() == Qt::LeftButton) {
+        if (selected == nullptr) {
+            // If nothing is selected, try to select the entity at the mouse position
+            for (std::vector<Entity*>::iterator ent = visibleEntities.begin(); ent != visibleEntities.end(); ent++)
+                if (event->pos().x() < (*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() // If on the left of the right edge of the entity's texture
+                        && event->pos().x() > (*ent)->getX() + (*ent)->getTexture()->offset().x() // If on the right of the left edge of the entity's texture
+                        && event->pos().y() < (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() // If under the top edge of the entity's texture
+                        && event->pos().y() > (*ent)->getY() + (*ent)->getTexture()->offset().y()) // If over the bottom edge of the entity's texture
+                    selected = *ent;
+        } else {
+            // If nothing is under the cursor, deselect the entity
+            bool found = false;
+            for (std::vector<Entity*>::iterator ent = visibleEntities.begin(); ent != visibleEntities.end(); ent++)
+                if (event->pos().x() < (*ent)->getX() + (*ent)->getTexture()->offset().x() + (*ent)->getTexture()->width() // If on the left of the right edge of the entity's texture
+                        && event->pos().x() > (*ent)->getX() + (*ent)->getTexture()->offset().x() // If on the right of the left edge of the entity's texture
+                        && event->pos().y() < (*ent)->getY() + (*ent)->getTexture()->offset().y() + (*ent)->getTexture()->height() // If under the top edge of the entity's texture
+                        && event->pos().y() > (*ent)->getY() + (*ent)->getTexture()->offset().y()) // If over the bottom edge of the entity's texture
+                    found = true;
+            if (!found)
+                selected = nullptr;
+        }
     } else
         event->ignore();
 }
@@ -99,9 +128,15 @@ void EditorPreview::mouseMoveEvent(QMouseEvent *event)
 void EditorPreview::wheelEvent(QWheelEvent *event)
 {
     if (event->angleDelta().y() > 0) {
+        // Camera offset after zoom
+        //camera.setX(camera.x() + event->position().x() / 2);
+        //camera.setY(camera.y() + event->position().y() / 2);
         // Zoom in
         zoomFactor *= 1.25;
     } else if (event->angleDelta().y() < 0) {
+        // Camera offset after zoom
+        //camera.setX(camera.x() - event->position().x() / 2);
+        //camera.setY(camera.y() - event->position().y() / 2);
         // Zoom out
         zoomFactor /= 1.25;
     } else
