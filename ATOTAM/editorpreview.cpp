@@ -129,14 +129,14 @@ void EditorPreview::wheelEvent(QWheelEvent *event)
 {
     if (event->angleDelta().y() > 0) {
         // Camera offset after zoom
-        //camera.setX(camera.x() + event->position().x() / 2);
-        //camera.setY(camera.y() + event->position().y() / 2);
+        camera.setX(camera.x() + event->position().x() * 0.2 / zoomFactor);
+        camera.setY(camera.y() + event->position().y() * 0.2 / zoomFactor);
         // Zoom in
         zoomFactor *= 1.25;
     } else if (event->angleDelta().y() < 0) {
         // Camera offset after zoom
-        //camera.setX(camera.x() - event->position().x() / 2);
-        //camera.setY(camera.y() - event->position().y() / 2);
+        camera.setX(camera.x() - event->position().x() * 0.25 / zoomFactor);
+        camera.setY(camera.y() - event->position().y() * 0.25 / zoomFactor);
         // Zoom out
         zoomFactor /= 1.25;
     } else
