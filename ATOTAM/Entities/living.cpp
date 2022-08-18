@@ -73,6 +73,11 @@ void Living::setGroundBox(CollisionBox *newGroundBox)
     groundBox = newGroundBox;
 }
 
+void Living::setGroundBoxNoDel(CollisionBox *newGroundBox)
+{
+    groundBox = newGroundBox;
+}
+
 bool Living::getOnGround() const
 {
     return onGround;

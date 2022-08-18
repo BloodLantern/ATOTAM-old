@@ -34,6 +34,7 @@ public:
 
     CollisionBox *getBox();
     void setBox(CollisionBox *newBox);
+    void setBoxNoDel(CollisionBox *newBox);
 
     double getX() const;
     void setX(double newX);

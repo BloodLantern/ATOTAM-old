@@ -35,9 +35,11 @@ public:
 
     CollisionBox *getWallBoxR() const;
     void setWallBoxR(CollisionBox *newWallBoxR);
+    void setWallBoxRNoDel(CollisionBox *newWallBoxR);
 
     CollisionBox *getWallBoxL() const;
     void setWallBoxL(CollisionBox *newWallBoxL);
+    void setWallBoxLNoDel(CollisionBox *newWallBoxL);
 
     const std::string &getCanonDirection() const;
     void setCanonDirection(const std::string &newCanonDirection);

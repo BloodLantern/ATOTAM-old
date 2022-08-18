@@ -23,6 +23,7 @@ public:
 
     CollisionBox *getGroundBox() const;
     void setGroundBox(CollisionBox *newGroundBox);
+    void setGroundBoxNoDel(CollisionBox *newGroundBox);
 
     bool getOnGround() const;
     void setOnGround(bool newOnGround);

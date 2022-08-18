@@ -180,6 +180,11 @@ void Samos::setWallBoxR(CollisionBox *newWallBoxR)
     wallBoxR = newWallBoxR;
 }
 
+void Samos::setWallBoxRNoDel(CollisionBox *newWallBoxR)
+{
+    wallBoxR = newWallBoxR;
+}
+
 CollisionBox *Samos::getWallBoxL() const
 {
     return wallBoxL;
@@ -188,6 +193,11 @@ CollisionBox *Samos::getWallBoxL() const
 void Samos::setWallBoxL(CollisionBox *newWallBoxL)
 {
     delete wallBoxL;
+    wallBoxL = newWallBoxL;
+}
+
+void Samos::setWallBoxLNoDel(CollisionBox *newWallBoxL)
+{
     wallBoxL = newWallBoxL;
 }
 

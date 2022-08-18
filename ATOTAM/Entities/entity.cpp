@@ -429,6 +429,11 @@ void Entity::setBox(CollisionBox *newBox)
     box = newBox;
 }
 
+void Entity::setBoxNoDel(CollisionBox *newBox)
+{
+    box = newBox;
+}
+
 double Entity::getX() const
 {
     return x;
