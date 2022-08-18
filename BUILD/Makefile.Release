@@ -1194,7 +1194,8 @@ release/samos.o: ../ATOTAM/Entities/samos.cpp ../ATOTAM/Entities/samos.h \
 	$(CXX) -c -include release\precompiledheaders.h $(CXXFLAGS) $(INCPATH) -o release\samos.o ..\ATOTAM\Entities\samos.cpp
 
 release/savepoint.o: ../ATOTAM/Entities/savepoint.cpp ../ATOTAM/Entities/savepoint.h \
-		../ATOTAM/Entities/area.h \
+		../ATOTAM/Entities/npc.h \
+		../ATOTAM/Entities/living.h \
 		../ATOTAM/Entities/entity.h \
 		../ATOTAM/Entities/collisionbox.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/QImage \
@@ -1921,6 +1922,7 @@ release/editorwindow.o: ../ATOTAM/editorwindow.cpp ../ATOTAM/editorwindow.h \
 	$(CXX) -c -include release\precompiledheaders.h $(CXXFLAGS) $(INCPATH) -o release\editorwindow.o ..\ATOTAM\editorwindow.cpp
 
 release/game.o: ../ATOTAM/game.cpp ../ATOTAM/game.h \
+		../ATOTAM/save.h \
 		../ATOTAM/nlohmann/json.hpp \
 		../ATOTAM/dialogue.h \
 		../ATOTAM/Entities/entity.h \
@@ -2006,6 +2008,7 @@ release/game.o: ../ATOTAM/game.cpp ../ATOTAM/game.h \
 		../ATOTAM/Entities/samos.h \
 		../ATOTAM/Entities/projectile.h \
 		../ATOTAM/Entities/terrain.h \
+		../ATOTAM/Entities/savepoint.h \
 		../ATOTAM/physics.h \
 		../ATOTAM/Entities/door.h \
 		release/precompiledheaders.h.gch/c++
@@ -2158,6 +2161,7 @@ release/main.o: ../ATOTAM/main.cpp ../ATOTAM/mainwindow.h \
 		../ATOTAM/map.h \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QWidget \
 		../ATOTAM/game.h \
+		../ATOTAM/save.h \
 		../ATOTAM/dialogue.h \
 		../ATOTAM/Entities/area.h \
 		../ATOTAM/Entities/dynamicobj.h \
@@ -2167,6 +2171,7 @@ release/main.o: ../ATOTAM/main.cpp ../ATOTAM/mainwindow.h \
 		../ATOTAM/Entities/samos.h \
 		../ATOTAM/Entities/projectile.h \
 		../ATOTAM/Entities/terrain.h \
+		../ATOTAM/Entities/savepoint.h \
 		../ATOTAM/physics.h \
 		../ATOTAM/Entities/door.h \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QApplication \
@@ -2340,6 +2345,7 @@ release/mainwindow.o: ../ATOTAM/mainwindow.cpp ../ATOTAM/editorpreview.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpen.h \
 		../ATOTAM/editorwindow.h \
 		../ATOTAM/game.h \
+		../ATOTAM/save.h \
 		../ATOTAM/dialogue.h \
 		../ATOTAM/Entities/area.h \
 		../ATOTAM/Entities/dynamicobj.h \
@@ -2349,6 +2355,7 @@ release/mainwindow.o: ../ATOTAM/mainwindow.cpp ../ATOTAM/editorpreview.h \
 		../ATOTAM/Entities/samos.h \
 		../ATOTAM/Entities/projectile.h \
 		../ATOTAM/Entities/terrain.h \
+		../ATOTAM/Entities/savepoint.h \
 		../ATOTAM/physics.h \
 		../ATOTAM/Entities/door.h \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QApplication \
@@ -2455,10 +2462,11 @@ release/map.o: ../ATOTAM/map.cpp ../ATOTAM/Entities/monster.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qline.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/QString \
 		../ATOTAM/nlohmann/json.hpp \
+		../ATOTAM/Entities/savepoint.h \
+		../ATOTAM/Entities/npc.h \
 		../ATOTAM/map.h \
 		../ATOTAM/Entities/area.h \
 		../ATOTAM/Entities/door.h \
-		../ATOTAM/Entities/npc.h \
 		../ATOTAM/Entities/terrain.h \
 		release/precompiledheaders.h.gch/c++
 	$(CXX) -c -include release\precompiledheaders.h $(CXXFLAGS) $(INCPATH) -o release\map.o ..\ATOTAM\map.cpp

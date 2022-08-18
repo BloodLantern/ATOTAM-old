@@ -13,7 +13,7 @@
 
 MainWindow::MainWindow(QApplication *app, std::string assetsPath)
     : m_qApp(app)
-    , game(new Game(assetsPath))
+    , game(new Game(assetsPath, "1"))
     , errorTexture(QString::fromStdString(game->getAssetsPath() + "/textures/error.png"))
     , emptyTexture(QString::fromStdString(game->getAssetsPath() + "/textures/empty.png"))
     , showHUD(true)
@@ -42,8 +42,8 @@ MainWindow::~MainWindow()
     }
 }
 
-bool MainWindow::eventFilter(QObject*, QEvent* event) {
-    return event->type() == QEvent::Paint && !render;
+bool MainWindow::eventFilter(QObject* object, QEvent* event) {
+    return event->type() == QEvent::Paint && !render && object == this;
 }
 
 void MainWindow::getInputs()

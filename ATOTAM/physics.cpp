@@ -110,7 +110,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     }
     CollisionBox* morphBox = new CollisionBox(samosJson["morphBallHitbox_offset_x"], samosJson["morphBallHitbox_offset_y"],
                   samosJson["morphBallHitbox_width"], samosJson["morphBallHitbox_height"]);
-    bool canMorph = canChangeBoxAxis(s, morphBox, ts, ds, true) && inputList["morph"];
+    bool canMorph = canChangeBoxAxis(s, morphBox, ts, ds, true);
     bool freeCanMorph = false;
     if (!canMorph) {
         canMorph = canChangeBox(s, morphBox, ts, ds);

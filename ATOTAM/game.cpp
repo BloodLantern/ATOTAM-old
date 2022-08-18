@@ -30,20 +30,52 @@ void Game::loadGeneral()
     fullscreen = params["fullscreen"];
 }
 
-Game::Game(std::string assetsPath)
+void Game::loadSave(Save save)
+{
+    currentProgress = save;
+
+    clearEntities();
+
+    // Load map
+    currentMap = Map::loadMap(save.getSaveMapName(), assetsPath);
+    currentMap.setCurrentRoomId(save.getRoomID());
+    addEntities(currentMap.loadRoom());
+
+    std::pair<int, int> coords = loadRespawnPosition(save, currentMap);
+
+    addEntity(new Samos(coords.first, coords.second, save.getSamosHealth(), save.getSamosMaxHealth(),
+                  save.getSamosGrenades(), save.getSamosMaxGrenades(),
+                  save.getSamosMissiles(), save.getSamosMaxMissiles()));
+}
+
+Game::Game(std::string assetsPath, std::string saveNumber)
     : assetsPath(assetsPath)
     , running(true)
     , keyCodes(loadJson("inputs"))
-    , currentMap(Map::loadMap("test", assetsPath))
     , stringsJson(loadJson("strings"))
     , isPaused(false)
     , resolution({1920,1080})
     , doorTransition("")
     , params(loadJson("params"))
     , fullscreen(false)
+    , currentProgress(Save::load(assetsPath + "/saves/" + saveNumber + ".json"))
+    , lastSave(Save::load(assetsPath + "/saves/" + saveNumber + ".json"))
+    , lastCheckpoint(Save::load(assetsPath + "/saves/" + saveNumber + ".json"))
+    , saveFile(saveNumber)
+    , timeAtLaunch(currentProgress.getPlayTime())
+    , currentMap(Map::loadMap(currentProgress.getSaveMapName(), assetsPath))
 {
-
     loadGeneral();
+
+    // Load map
+    currentMap.setCurrentRoomId(currentProgress.getRoomID());
+    addEntities(currentMap.loadRoom());
+
+    std::pair<int, int> coords = loadRespawnPosition(currentProgress, currentMap);
+
+    addEntity(new Samos(coords.first, coords.second, currentProgress.getSamosHealth(), currentProgress.getSamosMaxHealth(),
+                  currentProgress.getSamosGrenades(), currentProgress.getSamosMaxGrenades(),
+                  currentProgress.getSamosMissiles(), currentProgress.getSamosMaxMissiles()));
 }
 
 QString Game::translate(std::string text, std::vector<std::string> subCategories)
@@ -229,7 +261,10 @@ void Game::updateMenu()
                 std::ofstream paramsfile(assetsPath + "/params.json");
                 paramsfile << params.dump(4);
                 paramsfile.close();
-            }
+            } else if (menuOptions[selectedOption] == "Reload last checkpoint")
+                loadSave(lastCheckpoint);
+            else if (menuOptions[selectedOption] == "Reload last save")
+                           loadSave(lastSave);
         }
 
 
@@ -237,6 +272,9 @@ void Game::updateMenu()
             menuOptions.clear();
             menuOptions.push_back("Resume");
             menuOptions.push_back("Options");
+            menuOptions.push_back("Debug");
+            menuOptions.push_back("Reload last checkpoint");
+            menuOptions.push_back("Reload last save");
             menuOptions.push_back("Debug");
             menuOptions.push_back("Quit");
         } else if (menu == "options") {
@@ -267,7 +305,7 @@ void Game::updateMenu()
         }
 }
 
-void Game::updateDialogue()
+void Game::updateNPCs()
 {
     for (std::vector<NPC*>::iterator j = NPCs.begin(); j != NPCs.end(); j++) {
         if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
@@ -292,6 +330,16 @@ void Game::updateDialogue()
                             currentDialogue = Dialogue(stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["text"],
                                     *j, stringsJson[language]["dialogues"][(*j)->getName()][std::min((*j)->getTimesInteracted(),(*j)->getMaxInteractions())]["talking"]);
                     }
+                } else if ((*j)->getNpcType() == "Savepoint") {
+                    updateProgress();
+                    Savepoint* sp = static_cast<Savepoint*>(*j);
+                    currentProgress.setSavepointID(sp->getSavepointID());
+                    currentProgress.setRoomID(sp->getRoomId());
+                    currentProgress.setSaveMapName(currentMap.getName());
+                    lastCheckpoint = currentProgress;
+                    lastSave = currentProgress;
+                    currentProgress.save(assetsPath + "/saves/" + saveFile + ".json");
+                    currentDialogue = Dialogue(stringsJson[language]["ui"]["savepoint"]["Saved"], *j);
                 }
                 // Don't forget to increment the Dialogue advancement
                 (*j)->setTimesInteracted((*j)->getTimesInteracted() + 1);
@@ -326,6 +374,37 @@ void Game::updateCamera()
         camera.setY(roomS_y);
     else if (camera.y() + 1080 > roomE_y)
         camera.setY(roomE_y - 1080);
+}
+
+void Game::updateProgress()
+{
+    currentProgress.setSamosHealth(s->getHealth());
+    currentProgress.setSamosMaxHealth(s->getMaxHealth());
+    currentProgress.setSamosGrenades(s->getGrenadeCount());
+    currentProgress.setSamosMaxGrenades(s->getMaxGrenadeCount());
+    currentProgress.setSamosMissiles(s->getMissileCount());
+    currentProgress.setSamosMaxMissiles(s->getMaxMissileCount());
+    currentProgress.setPlayTime(timeAtLaunch + updateCount / updateRate);
+}
+
+std::pair<int, int> Game::loadRespawnPosition(Save respawnSave, Map respawnMap)
+{
+    nlohmann::json mapJson = respawnMap.getJson()["rooms"][std::to_string(respawnSave.getRoomID())];
+    nlohmann::json sJson = Entity::values["names"]["Samos"];
+    nlohmann::json spJson = Entity::values["names"]["Savepoint"];
+
+    int x = static_cast<int>(mapJson["position"][0]) + static_cast<int>(spJson["offset_x"]) + static_cast<int>(spJson["width"]) / 2 - static_cast<int>(sJson["offset_x"]) - static_cast<int>(sJson["width"]) / 2;
+    int y = static_cast<int>(mapJson["position"][1]) + static_cast<int>(spJson["offset_y"]) + static_cast<int>(spJson["height"]) - static_cast<int>(sJson["offset_y"]) - static_cast<int>(sJson["height"]);
+
+    for (nlohmann::json sp : mapJson["content"]["Savepoint"]["savepoint"]) {
+        if (static_cast<int>(sp["spID"]) == respawnSave.getSavepointID()) {
+            x += static_cast<int>(sp["x"]);
+            y += static_cast<int>(sp["y"]);
+            break;
+        }
+    }
+
+    return std::pair<int, int>(x, y);
 }
 
 void Game::updateMapViewer()
@@ -919,4 +998,34 @@ bool Game::getFullscreen() const
 void Game::setFullscreen(bool newFullscreen)
 {
     fullscreen = newFullscreen;
+}
+
+const Save &Game::getCurrentProgress() const
+{
+    return currentProgress;
+}
+
+void Game::setCurrentProgress(const Save &newCurrentProgress)
+{
+    currentProgress = newCurrentProgress;
+}
+
+const Save &Game::getLastSave() const
+{
+    return lastSave;
+}
+
+void Game::setLastSave(const Save &newLastSave)
+{
+    lastSave = newLastSave;
+}
+
+const Save &Game::getLastCheckpoint() const
+{
+    return lastCheckpoint;
+}
+
+void Game::setLastCheckpoint(const Save &newLastCheckpoint)
+{
+    lastCheckpoint = newLastCheckpoint;
 }

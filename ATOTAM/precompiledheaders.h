@@ -13,6 +13,7 @@
 #include <Easing/Quint.h>
 #include <Easing/Sine.h>
 
+#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include <nlohmann/json.hpp>
 
 #include <QApplication>

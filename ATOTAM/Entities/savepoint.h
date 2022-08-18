@@ -1,9 +1,9 @@
 #ifndef SAVEPOINT_H
 #define SAVEPOINT_H
 
-#include "area.h"
+#include "npc.h"
 
-class Savepoint : public Area
+class Savepoint : public NPC
 {
 public:
     Savepoint(double x, double y, int spID, std::string mapName);

@@ -1,4 +1,5 @@
 #include "Entities/monster.h"
+#include "Entities/savepoint.h"
 #include "map.h"
 #include <fstream>
 #include <Entities/area.h>
@@ -101,6 +102,9 @@ std::vector<Entity *> Map::loadRoom(int id)
                         Door *d = new Door(x, y, n);
                         e = d;
                         d->setEndingRoom(obj["to"]);
+                    } else if (entity.first == "Savepoint") {
+                        Savepoint *s = new Savepoint(x, y, obj["spID"], this->name);
+                        e = s;
                     } else if (entity.first == "NPC") {
                         NPC *npc = new NPC(x, y, obj["facing"], n);
                         e = npc;
