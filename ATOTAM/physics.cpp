@@ -31,6 +31,34 @@ bool Physics::canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts
     return true;
 }
 
+bool Physics::canChangeBoxAxis(Entity *e, CollisionBox *b, std::vector<Terrain *> *ts, std::vector<DynamicObj *> *ds, bool alongY)
+{
+    Entity ne = Entity(e->getX(), e->getY(), new CollisionBox(*b), nullptr, e->getEntType(), e->getIsAffectedByGravity(), e->getFacing(), e->getFrictionFactor(), e->getName(), e->getIsMovable());
+    for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
+        if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
+            Entity::calcCollisionReplacementAxis(&ne, *i, alongY);
+        }
+    }
+    for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
+        if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
+            Entity::calcCollisionReplacementAxis(&ne, *i, alongY);
+        }
+    }
+
+    for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
+        if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
+            return false;
+        }
+    }
+    for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
+        if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool Physics::updateProjectile(Projectile *p)
 {
     if (p->getState() == "Hit")
@@ -74,19 +102,66 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
 
     CollisionBox* spinBox = new CollisionBox(samosJson["spinJumpHitbox_offset_x"], samosJson["spinJumpHitbox_offset_y"],
                   samosJson["spinJumpHitbox_width"], samosJson["spinJumpHitbox_height"]);
-    bool canSpin = canChangeBox(s, spinBox, ts, ds);
+    bool canSpin = canChangeBoxAxis(s, spinBox, ts, ds, true);
+    bool freeCanSpin = false;
+    if (!canSpin) {
+        canSpin = canChangeBox(s, spinBox, ts, ds);
+        freeCanSpin = true;
+    }
     CollisionBox* morphBox = new CollisionBox(samosJson["morphBallHitbox_offset_x"], samosJson["morphBallHitbox_offset_y"],
                   samosJson["morphBallHitbox_width"], samosJson["morphBallHitbox_height"]);
-    bool canMorph = canChangeBox(s, morphBox, ts, ds);
+    bool canMorph = canChangeBoxAxis(s, morphBox, ts, ds, true) && inputList["morph"];
+    bool freeCanMorph = false;
+    if (!canMorph) {
+        canMorph = canChangeBox(s, morphBox, ts, ds);
+        freeCanMorph = true;
+    }
     CollisionBox* fallBox = new CollisionBox(samosJson["fallingHitbox_offset_x"], samosJson["fallingHitbox_offset_y"],
                 samosJson["fallingHitbox_width"], samosJson["fallingHitbox_height"]);
-    bool canFall = canChangeBox(s, fallBox, ts, ds);
+    bool canFall = canChangeBoxAxis(s, fallBox, ts, ds, true);
+    bool freeCanFall = false;
+    if (!canFall) {
+        canFall = canChangeBox(s, fallBox, ts, ds);
+        freeCanFall = true;
+    }
     CollisionBox* crouchBox = new CollisionBox(samosJson["crouchHitbox_offset_x"], samosJson["crouchHitbox_offset_y"],
                   samosJson["crouchHitbox_width"], samosJson["crouchHitbox_height"]);
-    bool canCrouch = canChangeBox(s, crouchBox, ts, ds);
+    bool canCrouch = canChangeBoxAxis(s, crouchBox, ts, ds, true);
+    bool freeCanCrouch = false;
+    if (!canCrouch) {
+        canCrouch = canChangeBox(s, crouchBox, ts, ds);
+        freeCanCrouch = true;
+    }
     CollisionBox* standBox = new CollisionBox(samosJson["offset_x"], samosJson["offset_y"], samosJson["width"], samosJson["height"]);
-    bool canStand = canChangeBox(s, standBox, ts, ds);
+    bool canStand = canChangeBoxAxis(s, standBox, ts, ds, true);
+    bool freeCanStand = false;
+    if (!canStand) {
+        canStand = canChangeBox(s, standBox, ts, ds);
+        freeCanStand = true;
+    }
 
+    bool wallL = false;
+    bool wallR = false;
+    for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
+        if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+            wallL = true;
+        }
+        if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+            wallR = true;
+        }
+        if (wallL && wallR)
+            break;
+    }
+    for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
+        if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+            wallL = true;
+        }
+        if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+            wallR = true;
+        }
+        if (wallL && wallR)
+            break;
+    }
 
     if (s->getState() == "MorphBalling" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["MorphBalling"]["count"]) - 1)) {
         s->setIsInAltForm(true);
@@ -105,28 +180,6 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             s->setState("UnMorphBalling");
             s->setIsInAltForm(false);
         } else {
-            bool wallL = false;
-            bool wallR = false;
-            for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
-                if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
-                    wallL = true;
-                }
-                if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
-                    wallR = true;
-                }
-                if (wallL && wallR)
-                    break;
-            }
-            for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
-                if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
-                    wallL = true;
-                }
-                if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
-                    wallR = true;
-                }
-                if (wallL && wallR)
-                    break;
-            }
             if (s->getOnGround() || !s->getIsAffectedByGravity()) {
                 if (inputList["left"] && !inputList["right"]) {
                     if (!wallL && s->getLagTime() <= 0.0) {
@@ -294,9 +347,11 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             if ((!s->getOnGround() && s->getIsAffectedByGravity()) || s->getState() == "Jumping") {
                 if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
                     if (s->getFacing() == "Left") {
-                        s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+                        if (!wallL)
+                            s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
                     } else {
-                        s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
+                        if (!wallR)
+                            s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
                     }
                     s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
                     s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
@@ -325,28 +380,6 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                 s->setVX(0);
             s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
         } else {
-            bool wallL = false;
-            bool wallR = false;
-            for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
-                if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
-                    wallL = true;
-                }
-                if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
-                    wallR = true;
-                }
-                if (wallL && wallR)
-                    break;
-            }
-            for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
-                if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
-                    wallL = true;
-                }
-                if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
-                    wallR = true;
-                }
-                if (wallL && wallR)
-                    break;
-            }
             if (s->getOnGround() || !s->getIsAffectedByGravity()) {
                 if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
                         || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
@@ -454,9 +487,11 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             } else {
                 if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
                     if (s->getFacing() == "Left") {
-                        s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+                        if (!wallL)
+                            s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
                     } else {
-                        s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
+                        if (!wallR)
+                            s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
                     }
                     s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
                     s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
@@ -568,11 +603,11 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     if (s->getShootTime() > 0 && (s->getState() == "Walking" || s->getState() == "WalkingAimForward"))
         s->setState("WalkingAimForward");
 
-    bool changedBox = false;
+    std::string changedBox = "";
     if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
         if ((*s->getBox()) != *spinBox) {
             s->setBox(spinBox);
-            changedBox = true;
+            changedBox = "spin";
         } else
             delete spinBox;
         delete morphBox;
@@ -582,7 +617,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     } else if (s->getState() == "MorphBall" || s->getState() == "MorphBalling" || s->getState() == "UnMorphBalling") {
         if ((*s->getBox()) != *morphBox) {
             s->setBox(morphBox);
-            changedBox = true;
+            changedBox = "morph";
         } else
             delete morphBox;
         delete spinBox;
@@ -592,7 +627,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     } else if (s->getState() == "Falling" || s->getState() == "FallingAimUp" || s->getState() == "FallingAimUpDiag" || s->getState() == "FallingAimDownDiag" || s->getState() == "FallingAimDown") {
         if ((*s->getBox()) != *fallBox) {
             s->setBox(fallBox);
-            changedBox = true;
+            changedBox = "fall";
         } else
             delete fallBox;
         delete spinBox;
@@ -602,7 +637,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     } else if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "CrouchAimDownDiag" || s->getState() == "UnCrouching" || s->getState() == "Crouching") {
         if ((*s->getBox()) != *crouchBox) {
             s->setBox(crouchBox);
-            changedBox = true;
+            changedBox = "crouch";
         } else
             delete crouchBox;
         delete spinBox;
@@ -612,7 +647,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     } else {
         if ((*s->getBox()) != *standBox) {
             s->setBox(standBox);
-            changedBox = true;
+            changedBox = "stand";
         } else
             delete standBox;
         delete spinBox;
@@ -620,18 +655,31 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         delete fallBox;
         delete crouchBox;
     }
-    if (changedBox) {
+    if (changedBox != "") {
         s->setGroundBox(new CollisionBox(s->getBox()->getX(), s->getBox()->getY() + s->getBox()->getHeight(), s->getBox()->getWidth(), 1));
         s->setWallBoxR(new CollisionBox(s->getBox()->getX() + s->getBox()->getWidth(), s->getBox()->getY(), 1, s->getBox()->getHeight()));
         s->setWallBoxL(new CollisionBox(s->getBox()->getX() - 1, s->getBox()->getY(), 1, s->getBox()->getHeight()));
-        for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
-            if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
-                Entity::calcCollisionReplacement(s, *i);
+        if ((freeCanSpin && changedBox == "spin") || (freeCanMorph && changedBox == "morph") || (freeCanFall && changedBox == "fall") || (freeCanCrouch && changedBox == "crouch") || (freeCanStand && changedBox == "stand")) {
+            for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
+                if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
+                    Entity::calcCollisionReplacement(s, *i);
+                }
             }
-        }
-        for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
-            if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
-                Entity::calcCollisionReplacement(s, *i);
+            for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
+                if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
+                    Entity::calcCollisionReplacement(s, *i);
+                }
+            }
+        } else {
+            for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
+                if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
+                    Entity::calcCollisionReplacementAxis(s, *i, true);
+                }
+            }
+            for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
+                if (Entity::checkCollision(s, s->getBox(), *i, (*i)->getBox())) {
+                    Entity::calcCollisionReplacementAxis(s, *i, true);
+                }
             }
         }
     }

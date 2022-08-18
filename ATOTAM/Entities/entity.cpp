@@ -98,6 +98,89 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
     }
 }
 
+void Entity::calcCollisionReplacementAxis(Entity *obj1, Entity *obj2, bool alongY)
+{
+    if (alongY) {
+        double minY1 = obj1->y + obj1->box->getHeight() + obj1->getBox()->getY() - obj2->y - obj2->getBox()->getY();
+        double minY2 = obj2->y + obj2->box->getHeight() + obj2->getBox()->getY() - obj1->y - obj1->getBox()->getY();
+        double minY;
+
+        if (std::abs(minY1) < std::abs(minY2)) {
+            minY = minY1;
+        } else {
+            minY = minY2;
+        }
+
+        if (obj1->y + obj1->getBox()->getY() > obj2->y + obj2->getBox()->getY()) minY *= -1;
+
+        if (obj1->isMovable && obj2->isMovable) {
+            if ((obj1->getEntType() == "Projectile")
+                    || (obj1->getEntType() == "Samos" && obj2->getEntType() != "Projectile")
+                    || (obj1->getEntType() == "Monster" && obj2->getEntType() != "Projectile" && obj2->getEntType() != "Samos" && obj2->getEntType() != "Monster"))
+                obj1->y -= minY;
+            else if (obj2->getEntType() == "Projectile" || obj2->getEntType() == "Samos" || obj2->getEntType() == "Monster")
+                obj2->y += minY;
+            else {
+                obj1->y -= minY / 2;
+                obj2->y += minY / 2;
+            }
+            if (std::signbit(obj1->getVY()) == std::signbit(minY))
+                obj1->vY = 0;
+            if (std::signbit(obj2->getVY()) == std::signbit(-minY))
+                obj2->vY = 0;
+        } else if (!obj1->isMovable && obj2->isMovable) {
+            obj2->y += minY;
+            if (std::signbit(obj2->getVY()) == std::signbit(-minY))
+                obj2->vY = 0;
+        } else if (obj1->isMovable && !obj2->isMovable) {
+            obj1->y -= minY;
+            if (std::signbit(obj1->getVY()) == std::signbit(minY))
+                obj1->vY = 0;
+        }
+    } else {
+        double minX1 = obj1->x + obj1->box->getWidth() + obj1->getBox()->getX() - obj2->x - obj2->getBox()->getX();
+        double minX2 = obj2->x + obj2->box->getWidth() + obj2->getBox()->getX() - obj1->x - obj1->getBox()->getX();
+        double minX;
+
+        //Choose which direction is the optimal one (smaller distance)
+        if (std::abs(minX1) < std::abs(minX2)) {
+            minX = minX1;
+        } else {
+            minX = minX2;
+        }
+
+        //Adjust values depending on the side of the collision
+        if (obj1->x + obj1->getBox()->getX() > obj2->x + obj2->getBox()->getX()) minX *= -1;
+
+        //Decide which entity to move (depending on if one is not movable)
+        if (obj1->isMovable && obj2->isMovable) {
+            if ((obj1->getEntType() == "Projectile")
+                    || (obj1->getEntType() == "Samos" && obj2->getEntType() != "Projectile")
+                    || (obj1->getEntType() == "Monster" && obj2->getEntType() != "Projectile" && obj2->getEntType() != "Samos" && obj2->getEntType() != "Monster"))
+                obj1->x -= minX;
+            else if (obj2->getEntType() == "Projectile" || obj2->getEntType() == "Samos" || obj2->getEntType() == "Monster")
+                obj2->x += minX;
+            else {
+                obj1->x -= minX / 2;
+                obj2->x += minX / 2;
+            }
+            if (std::signbit(obj1->getVX()) == std::signbit(minX))
+                obj1->vX = 0;
+            if (std::signbit(obj2->getVX()) == std::signbit(-minX))
+                obj2->vX = 0;
+        } else if (!obj1->isMovable && obj2->isMovable) {
+            obj2->x += minX;
+            if (std::signbit(obj2->getVX()) == std::signbit(-minX))
+                obj2->vX = 0;
+        } else if (obj1->isMovable && !obj2->isMovable) {
+            obj1->x -= minX;
+            if (std::signbit(obj1->getVX()) == std::signbit(minX))
+                obj1->vX = 0;
+
+        }
+    }
+}
+
 std::string assetsPath;
 
 nlohmann::json Entity::loadValues(std::string assetsPath_)

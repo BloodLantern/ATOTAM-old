@@ -119,7 +119,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
         //Try to draw the texture: if it fails, set it to the error texture and try again
         try {
-            if ((*ent)->getITime() > 0.0 && (game->getUpdateCount() % 20 < 10)) {
+            if ((*ent)->getITime() > 0.0 && (game->getUpdateCount() % 2 == 0)) {
                 QColor base_color(200,200,200,200);
 
                 QImage new_image = *(*ent)->getTexture();
@@ -151,7 +151,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
         //Try to draw the texture: if it fails, set it to the error texture and try again
         try {
-            if (game->getS()->getITime() > 0.0 && (game->getUpdateCount() % 20 < 10)) {
+            if (game->getS()->getITime() > 0.0 && (game->getUpdateCount() % 2 == 0)) {
                 QColor base_color(200,200,200,200);
 
                 QImage new_image = *game->getS()->getTexture();
@@ -191,7 +191,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
         //Try to draw the texture: if it fails, set it to the error texture and try again
         try {
-            if ((*ent)->getITime() > 0.0 && (game->getUpdateCount() % 20 < 10)) {
+            if ((*ent)->getITime() > 0.0 && (game->getUpdateCount() % 2 == 0)) {
                 QColor base_color(200,200,200,200);
 
                 QImage new_image = *(*ent)->getTexture();
@@ -231,7 +231,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
         //Try to draw the texture: if it fails, set it to the error texture and try again
         try {
-            if ((*ent)->getITime() > 0.0 && (game->getUpdateCount() % 20 < 10)) {
+            if ((*ent)->getITime() > 0.0 && (game->getUpdateCount() % 2 == 0)) {
                 QColor base_color(200,200,200,200);
 
                 QImage new_image = *(*ent)->getTexture();

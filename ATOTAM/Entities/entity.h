@@ -15,6 +15,7 @@ class Entity
 public:
     static bool checkCollision(Entity* obj1, CollisionBox* box1, Entity* obj2, CollisionBox* box2);
     static void calcCollisionReplacement(Entity* obj1, Entity* obj2);
+    static void calcCollisionReplacementAxis(Entity* obj1, Entity* obj2, bool alongY);
     //enum EntityType {Null, Terrain, Samos, Monster, Area, DynamicObj, NPC, Projectile};
     static const int unknownEntityType = -1;
     static const int invalidDirection = -2;

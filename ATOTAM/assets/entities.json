@@ -10,7 +10,7 @@
 		"airFriction": 0.01,
 		"speedcap": 1000,
 		"slowcap": 30,
-		"mapEditor": true,
+		"mapEditor": false,
 		"mapViewer": false,
 		"map": "test",
 		"menuCoolDown": 0.1,
