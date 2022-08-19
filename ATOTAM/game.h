@@ -33,11 +33,13 @@ public:
     void updateNPCs();
     void updateCamera();
     void updateProgress();
+    void updateInventory();
     std::pair<int,int> loadRespawnPosition(Save respawnSave, Map respawnMap);
     nlohmann::json loadJson(std::string fileName); // Loads the given file name's json starting in the assets folder and returns it
     QString translate(std::string text, std::vector<std::string> subCategories);
     void loadGeneral();
     void loadSave(Save save);
+    void addRoomDiscovered(std::string mapName, int roomID);
 
     std::vector<Entity *> *getEntities();
     void setEntities(const std::vector<Entity *> &newRendering);
@@ -119,7 +121,7 @@ public:
     bool getFullscreen() const;
     void setFullscreen(bool newFullscreen);
 
-    const Save &getCurrentProgress() const;
+    Save &getCurrentProgress();
     void setCurrentProgress(const Save &newCurrentProgress);
 
     const Save &getLastSave() const;
@@ -127,6 +129,21 @@ public:
 
     const Save &getLastCheckpoint() const;
     void setLastCheckpoint(const Save &newLastCheckpoint);
+
+    bool getInInventory() const;
+    void setInInventory(bool newInInventory);
+
+    bool getInMap() const;
+    void setInMap(bool newInMap);
+
+    QPoint getMapCameraPosition() const;
+    void setMapCameraPosition(QPoint newMapCameraPosition);
+
+    double getMapCameraSpeed() const;
+    void setMapCameraSpeed(double newMapCameraSpeed);
+
+    const std::pair<int, int> &getCameraSize() const;
+    void setCameraSize(const std::pair<int, int> &newCameraSize);
 
 private:
     std::string assetsPath;
@@ -176,6 +193,11 @@ private:
     std::string saveFile;
     unsigned long long timeAtLaunch = 0;
     Map currentMap;
+    bool inInventory = false;
+    bool inMap = false;
+    QPoint mapCameraPosition = QPoint(0,0);
+    double mapCameraSpeed = 100;
+    std::pair<int, int> cameraSize = {1920, 1080};
 };
 
 #endif // GAME_H

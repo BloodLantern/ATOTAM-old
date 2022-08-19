@@ -28,6 +28,9 @@ void Game::loadGeneral()
     renderHitboxes = Entity::values["general"]["renderHitboxes"];
     showFps = params["showFps"];
     fullscreen = params["fullscreen"];
+    mapCameraSpeed = Entity::values["general"]["mapCameraSpeed"];
+    cameraSize.first = Entity::values["general"]["camera_size_x"];
+    cameraSize.second = Entity::values["general"]["camera_size_y"];
 }
 
 void Game::loadSave(Save save)
@@ -45,7 +48,14 @@ void Game::loadSave(Save save)
 
     addEntity(new Samos(coords.first, coords.second, save.getSamosHealth(), save.getSamosMaxHealth(),
                   save.getSamosGrenades(), save.getSamosMaxGrenades(),
-                  save.getSamosMissiles(), save.getSamosMaxMissiles()));
+                        save.getSamosMissiles(), save.getSamosMaxMissiles()));
+
+    currentDialogue = Dialogue();
+}
+
+void Game::addRoomDiscovered(std::string mapName, int roomID)
+{
+    currentProgress.addRoomDiscovered(mapName, roomID);
 }
 
 Game::Game(std::string assetsPath, std::string saveNumber)
@@ -197,7 +207,7 @@ void Game::updateMenu()
         } else
             menuArrowsTime = 0.0;
 
-        if (inputList["enter"] && inputTime["enter"] == 0.0) {
+        if ((inputList["enter"] && inputTime["enter"] == 0.0) || (inputList["shoot"] && inputTime["shoot"] == 0.0)) {
             if (menuOptions[selectedOption] == "Resume")
                 isPaused = false;
             else if (menuOptions[selectedOption] == "Options") {
@@ -278,7 +288,6 @@ void Game::updateMenu()
             menuOptions.clear();
             menuOptions.push_back("Resume");
             menuOptions.push_back("Options");
-            menuOptions.push_back("Debug");
             menuOptions.push_back("Reload last checkpoint");
             menuOptions.push_back("Reload last save");
             menuOptions.push_back("Debug");
@@ -378,12 +387,12 @@ void Game::updateCamera()
     camera.setY(camera.y() + cam_dist_y);
     if (camera.x() < roomS_x)
         camera.setX(roomS_x);
-    else if (camera.x() + 1920 > roomE_x)
-        camera.setX(roomE_x - 1920);
+    else if (camera.x() + cameraSize.first > roomE_x)
+        camera.setX(roomE_x - cameraSize.first);
     if (camera.y() < roomS_y)
         camera.setY(roomS_y);
-    else if (camera.y() + 1080 > roomE_y)
-        camera.setY(roomE_y - 1080);
+    else if (camera.y() + cameraSize.second > roomE_y)
+        camera.setY(roomE_y - cameraSize.second);
 }
 
 void Game::updateProgress()
@@ -397,6 +406,89 @@ void Game::updateProgress()
     currentProgress.setPlayTime(timeAtLaunch + updateCount / updateRate);
 }
 
+void Game::updateInventory()
+{
+    if (inInventory || inMap) {
+        if ((inputList["map"] && inputTime["map"] == 0.0) || (inputList["menu"] && inputTime["menu"] == 0.0)) {
+            inputTime["menu"] += 1 / Physics::frameRate;
+            inMap = false;
+            inInventory = false;
+        }
+        if (inMap) {
+            nlohmann::json mapJson = currentMap.getJson();
+            std::vector<int> tRooms = currentProgress.getRoomsDiscovered()[currentMap.getName()];
+            nlohmann::json currentRoom = mapJson["rooms"][std::to_string(currentMap.getCurrentRoomId())];
+            int mapScaleDown = Entity::values["general"]["mapScaleDown"].get<int>();
+
+            int x_min = currentRoom["position"][0].get<int>();
+            int x_max = currentRoom["position"][0].get<int>() + currentRoom["size"][0].get<int>();
+            int y_min = currentRoom["position"][1].get<int>();
+            int y_max = currentRoom["position"][1].get<int>() + currentRoom["size"][1].get<int>();
+
+            for (int i : tRooms) {
+                nlohmann::json room = mapJson["rooms"][std::to_string(i)];
+                if (room["position"][0].get<int>() + room["size"][0].get<int>() > x_max)
+                    x_max = room["position"][0].get<int>() + room["size"][0].get<int>();
+                if (room["position"][0].get<int>() < x_min)
+                    x_min = room["position"][0].get<int>();
+                if (room["position"][1].get<int>() + room["size"][1].get<int>() > y_max)
+                    y_max = room["position"][1].get<int>() + room["size"][1].get<int>();
+                if (room["position"][1].get<int>() < y_min)
+                    y_min = room["position"][0].get<int>();
+            }
+
+            x_min += cameraSize.first / 10;
+            x_max -= cameraSize.first / 10;
+            y_min += cameraSize.first / 10;
+            y_max -= cameraSize.first / 10;
+
+            if (inputList["down"] && !inputList["up"] && inputList["left"] && !inputList["right"]
+                       && (x_min < mapCameraPosition.x() + cameraSize.first * mapScaleDown) && (y_max > mapCameraPosition.y())) {
+                // Down-Left
+                mapCameraPosition.setY(mapCameraPosition.y() + 0.707 * mapCameraSpeed / Physics::frameRate);
+                mapCameraPosition.setX(mapCameraPosition.x() - 0.707 * mapCameraSpeed / Physics::frameRate);
+            } else if (!inputList["down"] && inputList["up"] && inputList["left"] && !inputList["right"]
+                       && (x_min < mapCameraPosition.x() + cameraSize.first * mapScaleDown) && (y_min < mapCameraPosition.y() + cameraSize.second * mapScaleDown)) {
+                // Up-Left
+                mapCameraPosition.setY(mapCameraPosition.y() - 0.707 * mapCameraSpeed / Physics::frameRate);
+                mapCameraPosition.setX(mapCameraPosition.x() - 0.707 * mapCameraSpeed / Physics::frameRate);
+            } else if (inputList["down"] && !inputList["up"] && !inputList["left"] && inputList["right"]
+                       && (x_max > mapCameraPosition.x()) && (y_max > mapCameraPosition.y())) {
+                // Down-Right
+                mapCameraPosition.setY(mapCameraPosition.y() + 0.707 * mapCameraSpeed / Physics::frameRate);
+                mapCameraPosition.setX(mapCameraPosition.x() + 0.707 * mapCameraSpeed / Physics::frameRate);
+            } else if (!inputList["down"] && inputList["up"] && !inputList["left"] && inputList["right"]
+                       && (x_max > mapCameraPosition.x()) && (y_min < mapCameraPosition.y() + cameraSize.second * mapScaleDown)) {
+                // Up-Right
+                mapCameraPosition.setY(mapCameraPosition.y() - 0.707 * mapCameraSpeed / Physics::frameRate);
+                mapCameraPosition.setX(mapCameraPosition.x() + 0.707 * mapCameraSpeed / Physics::frameRate);
+            } else if (inputList["down"] && !inputList["up"]
+                       && (y_max > mapCameraPosition.y())) {
+                // Down
+                mapCameraPosition.setY(mapCameraPosition.y() + mapCameraSpeed / Physics::frameRate);
+            } else if (!inputList["down"] && inputList["up"]
+                       && (y_min < mapCameraPosition.y() + cameraSize.second * mapScaleDown)) {
+                // Up
+                mapCameraPosition.setY(mapCameraPosition.y() - mapCameraSpeed / Physics::frameRate);
+            } else if (inputList["left"] && !inputList["right"]
+                       && (x_min < mapCameraPosition.x() + cameraSize.first * mapScaleDown)) {
+                // Left
+                mapCameraPosition.setX(mapCameraPosition.x() - mapCameraSpeed / Physics::frameRate);
+            } else if (!inputList["left"] && inputList["right"]
+                       && (x_max > mapCameraPosition.x())) {
+                // Right
+                mapCameraPosition.setX(mapCameraPosition.x() + mapCameraSpeed / Physics::frameRate);
+            }
+        }
+
+    } else
+        if (inputList["map"] && inputTime["map"] == 0.0) {
+            inMap = true;
+            mapCameraPosition.setX(camera.x() + cameraSize.first * (1 - static_cast<int>(Entity::values["general"]["mapScaleDown"])) / 2);
+            mapCameraPosition.setY(camera.y() + cameraSize.second * (1 - static_cast<int>(Entity::values["general"]["mapScaleDown"])) / 2);
+        }
+}
+
 std::pair<int, int> Game::loadRespawnPosition(Save respawnSave, Map respawnMap)
 {
     nlohmann::json mapJson = respawnMap.getJson()["rooms"][std::to_string(respawnSave.getRoomID())];
@@ -406,7 +498,7 @@ std::pair<int, int> Game::loadRespawnPosition(Save respawnSave, Map respawnMap)
     int x = static_cast<int>(mapJson["position"][0]) + static_cast<int>(spJson["offset_x"]) + static_cast<int>(spJson["width"]) / 2 - static_cast<int>(sJson["offset_x"]) - static_cast<int>(sJson["width"]) / 2;
     int y = static_cast<int>(mapJson["position"][1]) + static_cast<int>(spJson["offset_y"]) + static_cast<int>(spJson["height"]) - static_cast<int>(sJson["offset_y"]) - static_cast<int>(sJson["height"]);
 
-    for (nlohmann::json sp : mapJson["content"]["Savepoint"]["savepoint"]) {
+    for (nlohmann::json sp : mapJson["content"]["NPC"]["savepoint"]) {
         if (static_cast<int>(sp["spID"]) == respawnSave.getSavepointID()) {
             x += static_cast<int>(sp["x"]);
             y += static_cast<int>(sp["y"]);
@@ -1010,7 +1102,7 @@ void Game::setFullscreen(bool newFullscreen)
     fullscreen = newFullscreen;
 }
 
-const Save &Game::getCurrentProgress() const
+Save &Game::getCurrentProgress()
 {
     return currentProgress;
 }
@@ -1038,4 +1130,54 @@ const Save &Game::getLastCheckpoint() const
 void Game::setLastCheckpoint(const Save &newLastCheckpoint)
 {
     lastCheckpoint = newLastCheckpoint;
+}
+
+bool Game::getInInventory() const
+{
+    return inInventory;
+}
+
+void Game::setInInventory(bool newInInventory)
+{
+    inInventory = newInInventory;
+}
+
+bool Game::getInMap() const
+{
+    return inMap;
+}
+
+void Game::setInMap(bool newInMap)
+{
+    inMap = newInMap;
+}
+
+QPoint Game::getMapCameraPosition() const
+{
+    return mapCameraPosition;
+}
+
+void Game::setMapCameraPosition(QPoint newMapCameraPosition)
+{
+    mapCameraPosition = newMapCameraPosition;
+}
+
+double Game::getMapCameraSpeed() const
+{
+    return mapCameraSpeed;
+}
+
+void Game::setMapCameraSpeed(double newMapCameraSpeed)
+{
+    mapCameraSpeed = newMapCameraSpeed;
+}
+
+const std::pair<int, int> &Game::getCameraSize() const
+{
+    return cameraSize;
+}
+
+void Game::setCameraSize(const std::pair<int, int> &newCameraSize)
+{
+    cameraSize = newCameraSize;
 }

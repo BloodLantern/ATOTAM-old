@@ -98,16 +98,20 @@ std::vector<Entity *> Map::loadRoom(int id)
                     if (entity.first == "Terrain") {
                         Terrain *t = new Terrain(x, y, n);
                         e = t;
-                    } else if (entity.first == "Door") {
-                        Door *d = new Door(x, y, n);
-                        e = d;
-                        d->setEndingRoom(obj["to"]);
-                    } else if (entity.first == "Savepoint") {
-                        Savepoint *s = new Savepoint(x, y, obj["spID"], this->name);
-                        e = s;
+                    } else if (entity.first == "Area") {
+                        if (n == "HorizontalDoor" || n == "VerticalDoor") {
+                            Door *d = new Door(x, y, n);
+                            e = d;
+                            d->setEndingRoom(obj["to"]);
+                        }
                     } else if (entity.first == "NPC") {
-                        NPC *npc = new NPC(x, y, obj["facing"], n);
-                        e = npc;
+                        if (n == "savepoint") {
+                            Savepoint *s = new Savepoint(x, y, obj["spID"], this->name);
+                            e = s;
+                        } else {
+                            NPC *npc = new NPC(x, y, obj["facing"], n);
+                            e = npc;
+                        }
                     } else if (entity.first == "Monster") {
                         Monster *m = new Monster(x, y, obj["facing"], n);
                         e = m;

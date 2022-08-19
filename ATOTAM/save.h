@@ -50,6 +50,10 @@ public:
     int getRoomID() const;
     void setRoomID(int newRoomID);
 
+    std::map<std::string, std::vector<int> > &getRoomsDiscovered();
+    void setRoomsDiscovered(const std::map<std::string, std::vector<int>> &newRoomsDiscovered);
+    void addRoomDiscovered(std::string mapName, int roomID);
+
 private:
     int samosHealth;
     int samosMaxHealth;
@@ -61,7 +65,7 @@ private:
     int roomID;
     std::string saveMapName;
     // Items
-    // Rooms discovered (minimap) for every map
+    std::map<std::string, std::vector<int>> roomsDiscovered;
     unsigned long playTime; // In seconds
     int deaths;
     int damageDone;

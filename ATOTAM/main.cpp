@@ -42,46 +42,50 @@ void gameClock(MainWindow* w) {
             w->getInputs();
 
             if (!g->getIsPaused()) {
-                if (!g->getMapViewer()) {
-                    // Update physics
-                    if (g->getS() != nullptr) {
-                        g->addEntities(Physics::updateSamos(g->getS(), g->getTerrains(), g->getDynamicObjs(), *g->getInputList(), *g->getInputTime()));
-                        g->updateNPCs();
-                        g->updateCamera();
+                if (!g->getInInventory() && !g->getInMap()) {
+                    if (!g->getMapViewer()) {
+                        // Update physics
+                        if (g->getS() != nullptr) {
+                            g->addEntities(Physics::updateSamos(g->getS(), g->getTerrains(), g->getDynamicObjs(), *g->getInputList(), *g->getInputTime()));
+                            g->updateNPCs();
+                            g->updateCamera();
+                        }
+                        std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> physicsOutput = Physics::updatePhysics(g->getS(),
+                                                                                                                                   g->getTerrains(),
+                                                                                                                                   g->getDynamicObjs(),
+                                                                                                                                   g->getMonsters(),
+                                                                                                                                   g->getAreas(),
+                                                                                                                                   g->getNPCs(),
+                                                                                                                                   g->getProjectiles(),
+                                                                                                                                   g->getCurrentMap());
+                        g->setDoorTransition(std::get<0>(physicsOutput));
+                        g->addEntities(std::get<1>(physicsOutput));
+                        g->removeEntities(std::get<2>(physicsOutput));
+                        g->setCurrentMap(std::get<3>(physicsOutput));
+                        if (g->getS()->getHealth() <= 0) {
+                            g->getS()->setHealth(0);
+                            g->setIsPaused(true);
+                            g->setMenu("death");
+                            g->setMenuOptions({"Respawn", "Quit"});
+                            g->setSelectedOption(0);
+                        }
+                    } else {
+                        g->updateMapViewer();
                     }
-                    std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> physicsOutput = Physics::updatePhysics(g->getS(),
-                                                                                                                               g->getTerrains(),
-                                                                                                                               g->getDynamicObjs(),
-                                                                                                                               g->getMonsters(),
-                                                                                                                               g->getAreas(),
-                                                                                                                               g->getNPCs(),
-                                                                                                                               g->getProjectiles(),
-                                                                                                                               g->getCurrentMap());
-                    g->setDoorTransition(std::get<0>(physicsOutput));
-                    g->addEntities(std::get<1>(physicsOutput));
-                    g->removeEntities(std::get<2>(physicsOutput));
-                    g->setCurrentMap(std::get<3>(physicsOutput));
-                    if (g->getS()->getHealth() <= 0) {
-                        g->getS()->setHealth(0);
-                        g->setIsPaused(true);
-                        g->setMenu("death");
-                        g->setMenuOptions({"Respawn", "Quit"});
-                        g->setSelectedOption(0);
-                    }
-                } else {
-                    g->updateMapViewer();
+
+
+
+                    prevCount = std::round(g->getFrameCount() * 60.0 / Physics::frameRate);
+                    g->setFrameCount(g->getFrameCount() + 1);
+                    g->setUpdateCount(std::round(g->getFrameCount() * 60.0 / Physics::frameRate));
+                    if (prevCount != g->getUpdateCount())
+                        g->updateAnimations();
                 }
 
-
-
-                prevCount = std::round(g->getFrameCount() * 60.0 / Physics::frameRate);
-                g->setFrameCount(g->getFrameCount() + 1);
-                g->setUpdateCount(std::round(g->getFrameCount() * 60.0 / Physics::frameRate));
-                if (prevCount != g->getUpdateCount())
-                    g->updateAnimations();
+                g->updateInventory();
             }
-
-            g->updateMenu();
+            if (!g->getInInventory() && !g->getInMap())
+                g->updateMenu();
 
             // Fullscreen update
             if (w->isFullScreen()) {
@@ -94,6 +98,8 @@ void gameClock(MainWindow* w) {
         } else {
             if (g->getS() != nullptr) {
                 // Make sure we can't pause while changing room
+                g->setInInventory(false);
+                g->setInMap(false);
                 g->setIsPaused(false);
 
                 nlohmann::json mapJson = g->getCurrentMap().getJson()["rooms"][std::to_string(g->getCurrentMap().getCurrentRoomId())];
@@ -115,23 +121,23 @@ void gameClock(MainWindow* w) {
                         cameraDist.setX(roomS_x);
                         cameraDist.setY(g->getS()->getY() + static_cast<int>(Entity::values["general"]["camera_ry"]));
                     } else if (g->getDoorTransition() == "Left") {
-                        cameraDist.setX(roomE_x - 1920);
+                        cameraDist.setX(roomE_x - g->getCameraSize().first);
                         cameraDist.setY(g->getS()->getY() + static_cast<int>(Entity::values["general"]["camera_ry"]));
                     } else if (g->getDoorTransition() == "Up") {
                         cameraDist.setX(g->getS()->getX() + static_cast<int>(Entity::values["general"]["camera_rx"]));
-                        cameraDist.setY(roomE_y - 1080);
+                        cameraDist.setY(roomE_y - g->getCameraSize().second);
                     } else if (g->getDoorTransition() == "Down") {
                         cameraDist.setX(g->getS()->getX() + static_cast<int>(Entity::values["general"]["camera_rx"]));
                         cameraDist.setY(roomS_y);
                     }
                     if (cameraDist.x() < roomS_x)
                         cameraDist.setX(roomS_x);
-                    else if (cameraDist.x() + 1920 > roomE_x)
-                        cameraDist.setX(roomE_x - 1920);
+                    else if (cameraDist.x() + g->getCameraSize().first > roomE_x)
+                        cameraDist.setX(roomE_x - g->getCameraSize().first);
                     if (cameraDist.y() < roomS_y)
                         cameraDist.setY(roomS_y);
-                    else if (cameraDist.y() + 1080 > roomE_y)
-                        cameraDist.setY(roomE_y - 1080);
+                    else if (cameraDist.y() + g->getCameraSize().second > roomE_y)
+                        cameraDist.setY(roomE_y - g->getCameraSize().second);
 
                     cameraDist.setX(cameraDist.x() - startingCameraPos->x());
                     cameraDist.setY(cameraDist.y() - startingCameraPos->y());
@@ -169,6 +175,8 @@ void gameClock(MainWindow* w) {
                     startingCameraPos = nullptr;
                     g->setDoorTransition("");
                     g->getS()->setRoomId(g->getCurrentMap().getCurrentRoomId());
+
+                    g->addRoomDiscovered(g->getCurrentMap().getName(), g->getCurrentMap().getCurrentRoomId());
 
                     // Unload the last room
                     g->removeOtherRoomsEntities();

@@ -10,9 +10,11 @@ Save Save::load(std::string fileName)
 }
 
 Save::Save(nlohmann::json json)
-    : samosHealth(json["samos"]["health"]), samosMaxHealth(json["samos"]["maxHealth"]), samosMissiles(json["samos"]["missiles"]), samosMaxMissiles(json["samos"]["maxMissiles"]),
-      samosGrenades(json["samos"]["grenades"]), samosMaxGrenades(json["samos"]["maxGrenades"]), savepointID(json["savepointID"]), roomID(json["roomID"]), saveMapName(json["saveMapName"]),playTime(json["playTime"]), deaths(json["deaths"]), damageDone(json["damageDone"]),
-      damageReceived(json["damageReceived"])
+    : samosHealth(json["samos"]["health"]), samosMaxHealth(json["samos"]["maxHealth"]), samosMissiles(json["samos"]["missiles"]),
+      samosMaxMissiles(json["samos"]["maxMissiles"]), samosGrenades(json["samos"]["grenades"]), samosMaxGrenades(json["samos"]["maxGrenades"]),
+      savepointID(json["savepointID"]), roomID(json["roomID"]), saveMapName(json["saveMapName"]),
+      roomsDiscovered(json["roomsDiscovered"]), playTime(json["playTime"]), deaths(json["deaths"]),
+      damageDone(json["damageDone"]), damageReceived(json["damageReceived"])
 {
 
 }
@@ -30,6 +32,7 @@ void Save::save(std::string fileName)
     json["savepointID"] = savepointID;
     json["roomID"] = roomID;
     json["saveMapName"] = saveMapName;
+    json["roomsDiscovered"] = roomsDiscovered;
     json["playTime"] = playTime;
     json["deaths"] = deaths;
     json["damageDone"] = damageDone;
@@ -166,4 +169,27 @@ int Save::getRoomID() const
 void Save::setRoomID(int newRoomID)
 {
     roomID = newRoomID;
+}
+
+std::map<std::string, std::vector<int>> &Save::getRoomsDiscovered()
+{
+    return roomsDiscovered;
+}
+
+void Save::setRoomsDiscovered(const std::map<std::string, std::vector<int> > &newRoomsDiscovered)
+{
+    roomsDiscovered = newRoomsDiscovered;
+}
+
+void Save::addRoomDiscovered(std::string mapName, int roomID)
+{
+    bool alreadyFound = false;
+    for (std::vector<int>::iterator i = roomsDiscovered[mapName].begin(); i != roomsDiscovered[mapName].end(); i++) {
+        if (*i == roomID) {
+            alreadyFound = true;
+            break;
+        }
+    }
+    if (!alreadyFound)
+        roomsDiscovered[mapName].push_back(roomID);
 }

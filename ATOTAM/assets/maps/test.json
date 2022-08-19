@@ -70,7 +70,7 @@
 						}
 					]
 				},
-				"Door": {
+				"Area": {
 					"VerticalDoor": [
 						{
 							"x": 1900,
@@ -98,9 +98,7 @@
 							"state": "Standing",
 							"facing": "Left"
 						}
-					]
-				},
-				"Savepoint": {
+					],
 					"savepoint": [
 						{
 							"x": 1216,
@@ -222,7 +220,7 @@
 						}
 					]
 				},
-				"Door": {
+				"Area": {
 					"HorizontalDoor": [
 						{
 							"x": 64,
@@ -240,7 +238,7 @@
 						}
 					]
 				},
-				"Savepoint": {
+				"NPC": {
 					"savepoint": [
 						{
 							"x": 2540,
@@ -328,7 +326,7 @@
 						}
 					]
 				},
-				"Door": {
+				"Area": {
 					"HorizontalDoor": [
 						{
 							"x": 2176,
