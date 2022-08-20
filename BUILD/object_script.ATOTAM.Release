@@ -1,3 +1,5 @@
+release/edit.o
+release/moveedit.o
 release/collisionbox.o
 release/door.o
 release/entity.o

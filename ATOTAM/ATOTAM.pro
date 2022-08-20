@@ -9,6 +9,8 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Editor/edit.cpp \
+    Editor/moveedit.cpp \
     Entities/collisionbox.cpp \
     Entities/door.cpp \
     Entities/entity.cpp \
@@ -33,8 +35,8 @@ SOURCES += \
     Easing/Sine.cpp \
     dialogue.cpp \
     Entities/dynamicobj.cpp \
-    editorpreview.cpp \
-    editorwindow.cpp \
+    Editor/editorpreview.cpp \
+    Editor/editorwindow.cpp \
     game.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -43,6 +45,8 @@ SOURCES += \
     save.cpp
 
 HEADERS += \
+    Editor/edit.h \
+    Editor/moveedit.h \
     Entities/collisionbox.h \
     Entities/door.h \
     Entities/dynamicobj.h \
@@ -67,8 +71,8 @@ HEADERS += \
     Easing/Quint.h \
     Easing/Sine.h \
     dialogue.h \
-    editorpreview.h \
-    editorwindow.h \
+    Editor/editorpreview.h \
+    Editor/editorwindow.h \
     game.h \
     mainwindow.h \
     map.h \

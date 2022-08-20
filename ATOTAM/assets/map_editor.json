@@ -1,6 +1,35 @@
 {
-	"enabled": true,
-	"map": {
-		"id": "test"
-	}
+    "enabled": true,
+    "inputs": {
+        "disableMovingSteps": 16
+    },
+    "lastLaunch": {
+        "map": {
+            "camera": [
+                0,
+                0
+            ],
+            "id": "testEditor"
+        },
+        "window": {
+            "maximized": true,
+            "size": [
+                1280,
+                720
+            ]
+        }
+    },
+    "values": {
+        "cameraMinimumMove": 10,
+        "invisibleEntitiesHitboxOpacity": 100,
+        "minimumWindowSize": [
+            1280,
+            720
+        ],
+        "otherRoomEntityOverlayOpacity": 150,
+        "resizeMaximumCursorDistance": 4,
+        "selectedEntitiesOverlayOpacity": 100,
+        "selectedEntityMoveStep": 32,
+        "zoomMultiplier": 1.25
+    }
 }

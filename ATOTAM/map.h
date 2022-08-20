@@ -13,26 +13,21 @@ public:
     std::vector<Entity*> loadRoom(int id); // Loads the selected room id and returns the array of entities it contains
     std::vector<Entity*> loadRoom(); // Loads the current room id and returns the array of entities it contains
     std::vector<Entity*> loadRooms(); // Loads all rooms and returns the array of entity they contain
+    nlohmann::json find(Entity* entity, QPoint pos); // Finds the given entity in this map's Json and returns its path
 
     const std::string &getName() const;
     void setName(const std::string &newName);
-
-    const std::string &getFilePath() const;
-    void setFilePath(const std::string &newFilePath);
-
     const nlohmann::json &getJson() const;
     void setJson(const nlohmann::json &newJson);
-
     int getCurrentRoomId() const;
     void setCurrentRoomId(int newCurrentRoomId);
-
     int getLastRoomId() const;
     void setLastRoomId(int newLastRoomId);
 
 private:
     Map(nlohmann::json json);
-    std::string name = "";
     nlohmann::json json = nlohmann::json();
+    std::string name = "";
     int currentRoomId = 0;
     int lastRoomId = 0;
 };

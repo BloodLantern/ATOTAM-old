@@ -20,7 +20,7 @@ Map Map::loadMap(std::string id, std::string assetsPath)
 }
 
 Map::Map(nlohmann::json json)
-    : name(json["name"]), json(json), currentRoomId(json["startingRoom"])
+    : json(json), name(json["name"]), currentRoomId(json["startingRoom"])
 {
 
 }
@@ -114,35 +114,35 @@ std::vector<Entity *> Map::loadRoom(int id)
                         continue;
 
                     // Shared entity fields
+                    e->setFullName(fullName);
+
                     if (obj["state"].is_null())
                         e->setState("None");
                     else
                         e->setState(obj["state"]);
 
                     // If the entity has a repetition, extend its collision box
-                    std::string* repeatDirection = new std::string;
-                    unsigned int* repeatParam = new unsigned int;
+                    unsigned int horizontalRepeat = 1;
+                    unsigned int verticalRepeat = 1;
                     if (!np.empty()) {
                         for (std::vector<std::string>::iterator param = np.begin(); param != np.end(); param++)
-                            if (*param == "H")
-                                *repeatDirection = "horizontal";
-                            else if (*param == "V")
-                                *repeatDirection = "vertical";
-                            else if (*param == "B")
-                                *repeatDirection = "both";
-                            else if ((*param)[0] == 'x')
-                                *repeatParam = std::stoul((*param).substr(1, (*param).size() - 1));
+                            if ((*param)[0] == 'S') {
+                                unsigned int xIndex = 0;
+                                for (std::string::iterator c = param->begin(); *c != 'x'; c++)
+                                    if (*c != 'x')
+                                        xIndex++;
+                                std::string temp = (*param).substr(1, xIndex - 1);
+                                horizontalRepeat = std::stoul(temp == "" ? "1" : temp);
+                                temp = (*param).substr(xIndex + 1, (*param).size() - 1);
+                                verticalRepeat = std::stoul(temp == "" ? "1" : temp);
+                            }
                     }
                     // If the entity has these parameters
-                    if (*repeatDirection != "" && *repeatParam != 0) {
+                    if (horizontalRepeat != 1 || verticalRepeat != 1) {
                         CollisionBox* box = e->getBox();
-                        if (*repeatDirection != "horizontal")
-                            box->setHeight(box->getHeight() * (*repeatParam));
-                        if (*repeatDirection != "vertical")
-                            box->setWidth(box->getWidth() * (*repeatParam));
+                        box->setHeight(box->getHeight() * (verticalRepeat));
+                        box->setWidth(box->getWidth() * (horizontalRepeat));
                     }
-                    delete repeatDirection;
-                    delete repeatParam;
                     e->setNameParameters(np);
                     e->setRoomId(id);
 
@@ -165,7 +165,7 @@ std::vector<Entity *> Map::loadRoom()
 std::vector<Entity *> Map::loadRooms()
 {
     std::vector<Entity*> result;
-    for (std::pair<std::string, nlohmann::json> room : json["rooms"].get<nlohmann::json::object_t>()) {
+    for (const std::pair<std::string, nlohmann::json> room : json["rooms"].get<nlohmann::json::object_t>()) {
         // Load room content
         std::vector<Entity*> roomContent = loadRoom(std::stoi(room.first));
         // Preallocate memory
@@ -174,6 +174,35 @@ std::vector<Entity *> Map::loadRooms()
         result.insert(result.end(), roomContent.begin(), roomContent.end());
     }
     return result;
+}
+
+nlohmann::json Map::find(Entity *entity, QPoint pos)
+{
+    nlohmann::json j = json["rooms"][std::to_string(entity->getRoomId())];
+    // Entity isn't in any room
+    if (j.is_null())
+        throw std::invalid_argument("Map::find(Entity*) received an Entity which is in a non-existent room.");
+
+    j = j["content"][entity->getEntType()];
+    // Entity type isn't present in this room
+    if (j.is_null())
+        throw std::invalid_argument("Map::find(Entity*) received an Entity type which isn't present in this room.");
+
+    j = j[entity->getFullName()];
+    // Entity name isn't present in this room
+    if (j.is_null())
+        throw std::invalid_argument("Map::find(Entity*) received an Entity name which isn't present in this room.");
+
+    // Eventually compare the entity and the json values
+    for (const nlohmann::json &ent : j)
+        if (pos.x() == ent["x"]
+                && pos.y() == ent["y"]) {
+            j = ent;
+            return j;
+        }
+
+    // Nothing was found
+    throw std::invalid_argument("Map::find(Entity*) received an Entity that couldn't be found.");
 }
 
 int Map::getCurrentRoomId() const

@@ -38,6 +38,9 @@ void gameClock(MainWindow* w, Samos* s) {
         // And update the last frame time
         g->setLastFrameTime(std::chrono::high_resolution_clock::now());
 
+        if (w->getEditorWindow() != nullptr)
+            w->getEditorWindow()->getInputs();
+
         if (g->getDoorTransition() == "") {
             w->getInputs();
 
@@ -173,9 +176,6 @@ void gameClock(MainWindow* w, Samos* s) {
 
         // Eventually render the game
         w->setRender(true);
-        // And the editor if necessary
-        if (w->getEditorWindow() != nullptr)
-            w->getEditorWindow()->update();
         w->update();
 
         while (std::chrono::high_resolution_clock::now() < end) {

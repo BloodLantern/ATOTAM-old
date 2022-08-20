@@ -13,6 +13,7 @@
 #include <Easing/Quint.h>
 #include <Easing/Sine.h>
 
+#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include <nlohmann/json.hpp>
 
 #include <QApplication>
@@ -25,6 +26,13 @@
 #include <QImage>
 #include <qcoreevent.h>
 #include <QList>
+#include <QPoint>
+#include <QMessageBox>
+#include <QColor>
+#include <QCloseEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QPaintEvent>
 
 #include <iostream>
 #include <unistd.h>

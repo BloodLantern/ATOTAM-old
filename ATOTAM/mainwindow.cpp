@@ -1,5 +1,5 @@
-#include "editorpreview.h"
 #include "mainwindow.h"
+#include "Editor/editorpreview.h"
 #include "qcoreevent.h"
 #include "physics.h"
 
@@ -42,8 +42,8 @@ MainWindow::~MainWindow()
     }
 }
 
-bool MainWindow::eventFilter(QObject*, QEvent* event) {
-    return event->type() == QEvent::Paint && !render;
+bool MainWindow::eventFilter(QObject* object, QEvent* event) {
+    return event->type() == QEvent::Paint && !render && this == object;
 }
 
 void MainWindow::getInputs()
@@ -71,18 +71,20 @@ void MainWindow::getInputs()
 void MainWindow::setupEditorWindow(nlohmann::json editorJson)
 {
     // Map preview
-    Map editedMap = Map::loadMap(editorJson["map"]["id"], game->getAssetsPath());
-    EditorPreview* preview = new EditorPreview(editedMap.loadRooms(), &errorTexture, &emptyTexture, &renderingMultiplier);
+    Map editedMap = Map::loadMap(editorJson["lastLaunch"]["map"]["id"], game->getAssetsPath());
+    EditorPreview* preview = new EditorPreview(&editedMap, &errorTexture, &emptyTexture, &renderingMultiplier, editorJson);
+    preview->setAssetsPath(game->getAssetsPath());
 
     // Window
-    editorWindow = new EditorWindow(preview);
+    editorWindow = new EditorWindow(preview, Physics::frameRate);
     editorWindow->setWindowTitle("ATOTAM Map Editor");
-    editorWindow->setMinimumSize(QSize(800, 600));
+    editorWindow->setMinimumSize(QSize(editorJson["values"]["minimumWindowSize"][0], editorJson["values"]["minimumWindowSize"][1]));
     // Set window screen
     QList<QScreen*> screens = m_qApp->screens();
     if (screens.size() > 1) {
         editorWindow->setScreen(screens[1]);
-        editorWindow->setGeometry(screens[1]->geometry().center().x() - 800/2, screens[1]->geometry().center().y() - 600/2, 800, 600);
+        editorWindow->setGeometry(screens[1]->geometry().center().x() - static_cast<int>(editorJson["lastLaunch"]["window"]["size"][0])/2,
+                screens[1]->geometry().center().y() - static_cast<int>(editorJson["lastLaunch"]["window"]["size"][1])/2, 800, 600);
     }
 
     // Widgets inside the window
@@ -92,7 +94,10 @@ void MainWindow::setupEditorWindow(nlohmann::json editorJson)
     splitter->addWidget(preview);
 
     editorWindow->setCentralWidget(splitter);
-    editorWindow->show();
+    if (editorJson["lastLaunch"]["window"]["maximized"])
+        editorWindow->showMaximized();
+    else
+        editorWindow->show();
 }
 
 void MainWindow::closeEvent(QCloseEvent *)

@@ -5,7 +5,6 @@
 #include <QImage>
 #include <QString>
 #include <string>
-#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "nlohmann/json.hpp"
 #include <fstream>
 #include <cmath>
@@ -93,6 +92,9 @@ public:
     const std::vector<std::string> &getNameParameters() const;
     void setNameParameters(const std::vector<std::string> &newNameParameters);
 
+    const std::string &getFullName() const;
+    void setFullName(const std::string &newFullName);
+
 private:
     CollisionBox* box = nullptr;
     QImage* texture = nullptr; // Image to be rendered now
@@ -108,6 +110,7 @@ private:
     bool isMovable = true;
     std::string name = "";
     std::vector<std::string> nameParameters;
+    std::string fullName = "";
     double mass = 100;
 
     // Rendering

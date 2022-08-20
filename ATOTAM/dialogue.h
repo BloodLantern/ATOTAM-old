@@ -1,7 +1,6 @@
 #ifndef DIALOGUE_H
 #define DIALOGUE_H
 
-#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "nlohmann/json.hpp"
 #include <string>
 #include <vector>

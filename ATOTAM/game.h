@@ -1,7 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "nlohmann/json.hpp"
 
 #include "dialogue.h"
@@ -31,6 +30,7 @@ public:
     void updateDialogue();
     void updateCamera();
     nlohmann::json loadJson(std::string fileName); // Loads the given file name's json starting in the assets folder and returns it
+    void saveJson(nlohmann::json json, std::string fileName); // Saves the json to the given location starting in the assets folder
     QString translate(std::string text, std::vector<std::string> subCategories);
     void loadGeneral();
 

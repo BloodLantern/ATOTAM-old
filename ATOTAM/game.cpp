@@ -5,10 +5,16 @@
 
 nlohmann::json Game::loadJson(std::string fileName)
 {
-    std::ifstream keys_file(assetsPath + "/" + fileName + ".json");
+    std::ifstream file(assetsPath + "/" + fileName + ".json");
     nlohmann::json temp;
-    keys_file >> temp;
+    file >> temp;
     return temp;
+}
+
+void Game::saveJson(nlohmann::json json, std::string fileName)
+{
+    std::ofstream file(assetsPath + "/" + fileName + ".json");
+    file << json.dump(4);
 }
 
 void Game::loadGeneral()
@@ -42,7 +48,6 @@ Game::Game(std::string assetsPath)
     , params(loadJson("params"))
     , fullscreen(false)
 {
-
     loadGeneral();
 }
 
@@ -99,7 +104,7 @@ void Game::updateMenu()
                 if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
                     if (Physics::frameRate > 60.0) {
                         Physics::frameRate--;
-                        params["Physics::frameRate"] = Physics::frameRate;
+                        params["frameRate"] = Physics::frameRate;
                         std::ofstream paramsfile(assetsPath + "/params.json");
                         paramsfile << params.dump(4);
                         paramsfile.close();
@@ -113,7 +118,7 @@ void Game::updateMenu()
                 if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
                     if (Physics::frameRate > 60.0) {
                         Physics::frameRate--;
-                        params["Physics::frameRate"] = Physics::frameRate;
+                        params["frameRate"] = Physics::frameRate;
                         std::ofstream paramsfile(assetsPath + "/params.json");
                         paramsfile << params.dump(4);
                         paramsfile.close();
@@ -133,7 +138,7 @@ void Game::updateMenu()
                 if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
                     if (Physics::frameRate < 144.0) {
                         Physics::frameRate++;
-                        params["Physics::frameRate"] = Physics::frameRate;
+                        params["frameRate"] = Physics::frameRate;
                         std::ofstream paramsfile(assetsPath + "/params.json");
                         paramsfile << params.dump(4);
                         paramsfile.close();
@@ -147,7 +152,7 @@ void Game::updateMenu()
                 if (menuOptions[selectedOption].substr(0,8) == "< FPS : ") {
                     if (Physics::frameRate < 144.0) {
                         Physics::frameRate++;
-                        params["Physics::frameRate"] = Physics::frameRate;
+                        params["frameRate"] = Physics::frameRate;
                         std::ofstream paramsfile(assetsPath + "/params.json");
                         paramsfile << params.dump(4);
                         paramsfile.close();

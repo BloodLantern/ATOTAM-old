@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <windows.h>
 
-#include "editorwindow.h"
+#include "Editor/editorwindow.h"
 #include "game.h"
 
 QT_BEGIN_NAMESPACE
