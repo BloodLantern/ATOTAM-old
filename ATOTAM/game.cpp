@@ -518,7 +518,7 @@ std::pair<int, int> Game::loadRespawnPosition(Save respawnSave, Map respawnMap)
     int x = static_cast<int>(mapJson["position"][0]) + static_cast<int>(spJson["offset_x"]) + static_cast<int>(spJson["width"]) / 2 - static_cast<int>(sJson["offset_x"]) - static_cast<int>(sJson["width"]) / 2;
     int y = static_cast<int>(mapJson["position"][1]) + static_cast<int>(spJson["offset_y"]) + static_cast<int>(spJson["height"]) - static_cast<int>(sJson["offset_y"]) - static_cast<int>(sJson["height"]);
 
-    for (nlohmann::json sp : mapJson["content"]["NPC"]["savepoint"]) {
+    for (nlohmann::json sp : mapJson["content"]["NPC"]["Savepoint"]) {
         if (static_cast<int>(sp["spID"]) == respawnSave.getSavepointID()) {
             x += static_cast<int>(sp["x"]);
             y += static_cast<int>(sp["y"]);

@@ -20,6 +20,7 @@ public:
     static const int invalidDirection = -2;
     static nlohmann::json values;
     static nlohmann::json loadValues(std::string assetsPath);
+    static unsigned long long lastID;
 
     Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable);
     Entity(double x, double y, std::string facing, std::string name);
@@ -95,6 +96,8 @@ public:
     const std::string &getFullName() const;
     void setFullName(const std::string &newFullName);
 
+    unsigned long long getEntityID() const;
+
 private:
     CollisionBox* box = nullptr;
     QImage* texture = nullptr; // Image to be rendered now
@@ -112,6 +115,7 @@ private:
     std::vector<std::string> nameParameters;
     std::string fullName = "";
     double mass = 100;
+    unsigned long long entityID;
 
     // Rendering
     unsigned int frame = 0;
@@ -120,5 +124,7 @@ private:
     std::string lastFrameState = "None"; // Which animation was rendered in the last frame
     int roomId = 0; // ID of the room in which this Entity is
 };
+
+bool operator==(Entity a, Entity b);
 
 #endif // ENTITY_H
