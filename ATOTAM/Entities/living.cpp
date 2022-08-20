@@ -37,10 +37,6 @@ bool Living::hit(int damage, Entity *origin, double kb, bool forced)
     }
     return health <= 0;
 }
-void Living::kill()
-{
-
-}
 
 int Living::getHealth()
 {
@@ -107,4 +103,14 @@ double Living::getITime() const
 void Living::setITime(double newITime)
 {
     iTime = newITime;
+}
+
+Entity *Living::getStandingOn() const
+{
+    return standingOn;
+}
+
+void Living::setStandingOn(Entity *newStandingOn)
+{
+    standingOn = newStandingOn;
 }

@@ -64,6 +64,20 @@ void Game::addRoomDiscovered(std::string mapName, int roomID)
     currentProgress.addRoomDiscovered(mapName, roomID);
 }
 
+void Game::die()
+{
+    updateProgress();
+    currentProgress.addDeaths(1);
+    lastCheckpoint.copyStats(currentProgress);
+    lastSave.copyStats(currentProgress);
+    lastSave.save(assetsPath + "/saves/" + saveFile + ".json");
+    s->setHealth(0);
+    isPaused = true;
+    menu = "death";
+    menuOptions = {"Respawn", "Quit"};
+    selectedOption = 0;
+}
+
 Game::Game(std::string assetsPath, std::string saveNumber)
     : assetsPath(assetsPath)
     , running(true)
@@ -363,7 +377,7 @@ void Game::updateNPCs()
                     currentProgress.setSaveMapName(currentMap.getName());
                     lastCheckpoint = currentProgress;
                     lastSave = currentProgress;
-                    currentProgress.save(assetsPath + "/saves/" + saveFile + ".json");
+                    lastSave.save(assetsPath + "/saves/" + saveFile + ".json");
                     currentDialogue = Dialogue(stringsJson[language]["ui"]["savepoint"]["Saved"], *j);
                 }
                 // Don't forget to increment the Dialogue advancement

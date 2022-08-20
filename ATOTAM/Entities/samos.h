@@ -13,8 +13,6 @@ public:
 
     Projectile* shoot(std::string type);
 
-    void kill();
-
     bool getIsInAltForm() const;
     void setIsInAltForm(bool newIsInAltForm);
 

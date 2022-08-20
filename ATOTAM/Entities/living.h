@@ -13,7 +13,6 @@ public:
     ~Living();
 
     bool hit(int damage, Entity *origin = nullptr, double kb = 0, bool forced = false);
-    void kill();
 
     int getHealth();
     void setHealth(int newHealth);
@@ -34,6 +33,9 @@ public:
     double getITime() const;
     void setITime(double newITime);
 
+    Entity *getStandingOn() const;
+    void setStandingOn(Entity *newStandingOn);
+
 private:
     int health = 0;
     int maxHealth = 1;
@@ -42,6 +44,8 @@ private:
 
     CollisionBox *groundBox = nullptr;
     bool onGround = false;
+
+    Entity *standingOn = nullptr;
 };
 
 #endif // LIVING_H

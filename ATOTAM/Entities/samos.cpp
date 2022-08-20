@@ -95,7 +95,7 @@ Projectile* Samos::shoot(std::string type)
     }
 
     //Spawn the projectile at certain coordinates to match the sprite
-    projectile = new Projectile(getX() + offset_x, getY() + offset_y, canonDirection, type, type);
+    projectile = new Projectile(getX() + offset_x, getY() + offset_y, canonDirection, type, type, getEntType());
 
     if (projectile->getVX() != 0.0 && (projectile->getVX() * getVX() > 0.0))
         projectile->setVX(projectile->getVX() + getVX());
@@ -103,11 +103,6 @@ Projectile* Samos::shoot(std::string type)
         projectile->setVY(projectile->getVY() + getVY());
 
     return projectile;
-}
-
-void Samos::kill()
-{
-
 }
 
 bool Samos::getIsInAltForm() const

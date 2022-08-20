@@ -32,7 +32,7 @@
                             "y": 950
                         }
                     ],
-					"savepoint": [
+					"Savepoint": [
 						{
 							"x": 1216,
 							"y": 192,
@@ -240,7 +240,7 @@
                     ]
                 },
 				"NPC": {
-					"savepoint": [
+					"Savepoint": [
 						{
 							"x": 2540,
 							"y": 1536,

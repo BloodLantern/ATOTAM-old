@@ -16,3 +16,23 @@ Terrain::~Terrain()
 {
 
 }
+
+const std::string &Terrain::getMaterial() const
+{
+    return material;
+}
+
+void Terrain::setMaterial(const std::string &newMaterial)
+{
+    material = newMaterial;
+}
+
+const std::string &Terrain::getTerrainType() const
+{
+    return terrainType;
+}
+
+void Terrain::setTerrainType(const std::string &newTerrainType)
+{
+    terrainType = newTerrainType;
+}

@@ -41,6 +41,7 @@ public:
     void loadGeneral();
     void loadSave(Save save);
     void addRoomDiscovered(std::string mapName, int roomID);
+    void die();
 
     std::vector<Entity *> *getEntities();
     void setEntities(const std::vector<Entity *> &newRendering);

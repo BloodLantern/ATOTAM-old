@@ -105,7 +105,7 @@ std::vector<Entity *> Map::loadRoom(int id)
                             d->setEndingRoom(obj["to"]);
                         }
                     } else if (entity.first == "NPC") {
-                        if (n == "savepoint") {
+                        if (n == "Savepoint") {
                             Savepoint *s = new Savepoint(x, y, obj["spID"], this->name);
                             e = s;
                         } else {
@@ -234,7 +234,7 @@ void Map::setName(const std::string &newName)
     name = newName;
 }
 
-const nlohmann::json &Map::getJson() const
+const nlohmann::json Map::getJson() const
 {
     return json;
 }

@@ -603,6 +603,17 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     if (s->getShootTime() > 0 && (s->getState() == "Walking" || s->getState() == "WalkingAimForward"))
         s->setState("WalkingAimForward");
 
+
+    if (canMorph && !canCrouch && !canStand && s->getOnGround() && s->getState() != "MorphBalling") {
+        s->setState("MorphBall");
+        s->setIsInAltForm(true);
+    }
+
+    if (canMorph && !canCrouch && !canStand && !canSpin && !canFall && s->getState() != "MorphBalling") {
+        s->setState("MorphBall");
+        s->setIsInAltForm(true);
+    }
+
     std::string changedBox = "";
     if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
         if ((*s->getBox()) != *spinBox) {
@@ -614,7 +625,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         delete fallBox;
         delete crouchBox;
         delete standBox;
-    } else if (s->getState() == "MorphBall" || s->getState() == "MorphBalling" || s->getState() == "UnMorphBalling") {
+    } else if (s->getState() == "MorphBall" || s->getState() == "MorphBalling") {
         if ((*s->getBox()) != *morphBox) {
             s->setBox(morphBox);
             changedBox = "morph";
@@ -634,7 +645,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         delete morphBox;
         delete crouchBox;
         delete standBox;
-    } else if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "CrouchAimDownDiag" || s->getState() == "UnCrouching" || s->getState() == "Crouching") {
+    } else if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "CrouchAimDownDiag" || s->getState() == "UnCrouching" || s->getState() == "Crouching" || s->getState() == "UnMorphBalling") {
         if ((*s->getBox()) != *crouchBox) {
             s->setBox(crouchBox);
             changedBox = "crouch";
@@ -949,7 +960,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     return toAdd;
 }
 
-std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics::updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap)
+std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> Physics::updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap, Save currentProgress)
 {
     std::string doorTransition = "";
 
@@ -1263,8 +1274,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         for (std::vector<Monster*>::iterator j = ms->begin(); j != ms->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
                 Entity::calcCollisionReplacement(s, *j);
-                if (s->getITime() <= 0.0)
-                    s->hit(Entity::values["names"][(*j)->getName()]["damage"], *j, Entity::values["names"][s->getName()]["contactKB"], true);
+                if (s->getITime() <= 0.0) {
+                    int prevHp = s->getHealth();
+                    s->hit((*j)->getDamage(), *j, Entity::values["names"][s->getName()]["contactKB"], true);
+                    if (s->getHealth() != prevHp)
+                        currentProgress.addDamageReceived(prevHp - s->getHealth());
+                }
                 if (s->getLagTime() <= 0.0)
                     s->setLagTime(Entity::values["names"][s->getName()]["lagTime"]);
             }
@@ -1294,7 +1309,13 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         }
         for (std::vector<Projectile*>::iterator j = ps->begin(); j != ps->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                int prevHp = s->getHealth();
                 (*j)->hitting(s);
+                if (s->getHealth() != prevHp) {
+                    currentProgress.addDamageReceived(prevHp - s->getHealth());
+                    if ((*j)->getOwnerType() == "Samos")
+                        currentProgress.addDamageDone(prevHp - s->getHealth());
+                }
             }
         }
 
@@ -1326,11 +1347,21 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         }
         for (std::vector<Projectile*>::iterator j = ps->begin(); j != ps->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getBox(), *j, (*j)->getBox())) {
+                int prevHp = (*i)->getHealth();
                 if ((*j)->hitting(*i)) {
                     (*i)->setBox(nullptr);
                     (*i)->setState("Death");
                     (*i)->setIsMovable(false);
+                    (*i)->setHealth(0);
+                    if ((*i)->getHealth() != prevHp) {
+                        if ((*j)->getOwnerType() == "Samos")
+                            currentProgress.addDamageDone(prevHp - (*i)->getHealth());
+                    }
                     break;
+                }
+                if ((*i)->getHealth() != prevHp) {
+                    if ((*j)->getOwnerType() == "Samos")
+                        currentProgress.addDamageDone(prevHp - (*i)->getHealth());
                 }
             }
         }
@@ -1367,6 +1398,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
                     (*i)->setBox(nullptr);
                     (*i)->setState("Death");
                     (*i)->setIsMovable(false);
+                    (*i)->setHealth(0);
                     break;
                 }
             }
@@ -1438,16 +1470,20 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         s->setOnGround(false);
         for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(s, s->getGroundBox(), *j, (*j)->getBox())) {
+                s->setStandingOn(*j);
                 s->setOnGround(true);
                 break;
             }
         }
         for (std::vector<DynamicObj*>::iterator j = ds->begin(); j!= ds->end(); j++) {
             if (Entity::checkCollision(s, s->getGroundBox(), *j, (*j)->getBox())) {
+                s->setStandingOn(*j);
                 s->setOnGround(true);
                 break;
             }
         }
+        if (!s->getOnGround())
+            s->setStandingOn(nullptr);
         if (s->getY() + s->getGroundBox()->getY() + s->getGroundBox()->getHeight() > roomE_y)
             s->setOnGround(true);
     }
@@ -1456,16 +1492,20 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         (*i)->setOnGround(false);
         for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setStandingOn(*j);
                 (*i)->setOnGround(true);
                 break;
             }
         }
         for (std::vector<DynamicObj*>::iterator j = ds->begin(); j!= ds->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setStandingOn(*j);
                 (*i)->setOnGround(true);
                 break;
             }
         }
+        if (!(*i)->getOnGround())
+            (*i)->setStandingOn(nullptr);
         if ((*i)->getY() + (*i)->getGroundBox()->getY() + (*i)->getGroundBox()->getHeight() > roomE_y)
             (*i)->setOnGround(true);
     }
@@ -1474,16 +1514,20 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         (*i)->setOnGround(false);
         for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setStandingOn(*j);
                 (*i)->setOnGround(true);
                 break;
             }
         }
         for (std::vector<DynamicObj*>::iterator j = ds->begin(); j!= ds->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setStandingOn(*j);
                 (*i)->setOnGround(true);
                 break;
             }
         }
+        if (!(*i)->getOnGround())
+            (*i)->setStandingOn(nullptr);
         if ((*i)->getY() + (*i)->getGroundBox()->getY() + (*i)->getGroundBox()->getHeight() > roomE_y)
             (*i)->setOnGround(true);
     }
@@ -1492,19 +1536,23 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> Physics
         (*i)->setOnGround(false);
         for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setStandingOn(*j);
                 (*i)->setOnGround(true);
                 break;
             }
         }
         for (std::vector<DynamicObj*>::iterator j = ds->begin(); j!= ds->end(); j++) {
             if (Entity::checkCollision(*i, (*i)->getGroundBox(), *j, (*j)->getBox())) {
+                (*i)->setStandingOn(*j);
                 (*i)->setOnGround(true);
                 break;
             }
         }
+        if (!(*i)->getOnGround())
+            (*i)->setStandingOn(nullptr);
         if ((*i)->getY() + (*i)->getGroundBox()->getY() + (*i)->getGroundBox()->getHeight() > roomE_y)
             (*i)->setOnGround(true);
     }
 
-    return std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map>(doorTransition, toAdd, toDel, currentMap);
+    return std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save>(doorTransition, toAdd, toDel, currentMap, currentProgress);
 }

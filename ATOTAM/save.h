@@ -10,6 +10,7 @@ public:
     static Save load(std::string fileName); // Creates and returns a Save object corresponding to the Json file represented by the stream
     Save(nlohmann::json json); // Creates a new Save object using this Json object
     void save(std::string fileName); // Converts this Save object in Json and then serializes it
+    void copyStats(Save value);
 
     int getSamosHealth() const;
     void setSamosHealth(int newSamosHealth);
@@ -34,12 +35,15 @@ public:
 
     int getDeaths() const;
     void setDeaths(int newDeaths);
+    void addDeaths(int newDeaths);
 
     int getDamageDone() const;
     void setDamageDone(int newDamageDone);
+    void addDamageDone(int newDamageDone);
 
     int getDamageReceived() const;
     void setDamageReceived(int newDamageReceived);
+    void addDamageReceived(int newDamageReceived);
 
     int getSavepointID() const;
     void setSavepointID(int newSavepointID);

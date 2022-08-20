@@ -40,16 +40,24 @@ public:
     bool getRender() const;
     void setRender(bool newRender);
 
+    const Game &getTempG() const;
+    void setTempG(const Game &newTempG);
+
+    bool getRenderDone() const;
+    void setRenderDone(bool newRenderDone);
+
 private:
     QApplication *m_qApp;
     bool eventFilter(QObject *object, QEvent *event);
 
     EditorWindow* editorWindow = nullptr;
     Game* game = nullptr;
+    Game tempG;
     int renderingMultiplier = 1; // Textures are rendered with their size being multiplied by this value
     QImage errorTexture;
     QImage emptyTexture;
     bool showHUD = true;
     bool render = false;
+    bool renderDone = true;
 };
 #endif // MAINWINDOW_H

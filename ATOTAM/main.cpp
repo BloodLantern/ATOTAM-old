@@ -53,24 +53,23 @@ void gameClock(MainWindow* w) {
                             g->updateNPCs();
                             g->updateCamera();
                         }
-                        std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map> physicsOutput = Physics::updatePhysics(g->getS(),
-                                                                                                                                   g->getTerrains(),
-                                                                                                                                   g->getDynamicObjs(),
-                                                                                                                                   g->getMonsters(),
-                                                                                                                                   g->getAreas(),
-                                                                                                                                   g->getNPCs(),
-                                                                                                                                   g->getProjectiles(),
-                                                                                                                                   g->getCurrentMap());
+                        std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> physicsOutput = Physics::updatePhysics(g->getS(),
+                                                                                                                                              g->getTerrains(),
+                                                                                                                                              g->getDynamicObjs(),
+                                                                                                                                              g->getMonsters(),
+                                                                                                                                              g->getAreas(),
+                                                                                                                                              g->getNPCs(),
+                                                                                                                                              g->getProjectiles(),
+                                                                                                                                              g->getCurrentMap(),
+                                                                                                                                              g->getCurrentProgress());
                         g->setDoorTransition(std::get<0>(physicsOutput));
                         g->addEntities(std::get<1>(physicsOutput));
                         g->removeEntities(std::get<2>(physicsOutput));
                         g->setCurrentMap(std::get<3>(physicsOutput));
+                        g->setCurrentProgress(std::get<4>(physicsOutput));
+
                         if (g->getS()->getHealth() <= 0) {
-                            g->getS()->setHealth(0);
-                            g->setIsPaused(true);
-                            g->setMenu("death");
-                            g->setMenuOptions({"Respawn", "Quit"});
-                            g->setSelectedOption(0);
+                            g->die();
                         }
                     } else {
                         g->updateMapViewer();
@@ -190,6 +189,8 @@ void gameClock(MainWindow* w) {
         }
 
         // Eventually render the game
+        if (w->getRenderDone())
+            w->setTempG(*w->getGame());
         w->setRender(true);
         w->update();
 
@@ -200,8 +201,10 @@ void gameClock(MainWindow* w) {
     w->setRender(true);
 
     // Close the window
-    if (w != nullptr)
+    if (w != nullptr) {
+        w->getGame()->clearEntities();
         w->close();
+    }
 
     // Just in case but at this point 'startingCameraPos' should be a nullptr anyway
     delete startingCameraPos;

@@ -1,7 +1,7 @@
 #include "projectile.h"
 
-Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name)
-    : Entity(x, y, nullptr, nullptr, "Projectile", false, facing, 0, name, true), projectileType(type)
+Projectile::Projectile(double x, double y, std::string facing, std::string type, std::string name, std::string ownerType)
+    : Entity(x, y, nullptr, nullptr, "Projectile", false, facing, 0, name, true), projectileType(type), ownerType(ownerType)
 {
     //Because animations are buggy
     setLastFrameState("None");
@@ -129,4 +129,14 @@ double Projectile::getKb() const
 void Projectile::setKb(double newKb)
 {
     kb = newKb;
+}
+
+const std::string &Projectile::getOwnerType() const
+{
+    return ownerType;
+}
+
+void Projectile::setOwnerType(const std::string &newOwnerType)
+{
+    ownerType = newOwnerType;
 }

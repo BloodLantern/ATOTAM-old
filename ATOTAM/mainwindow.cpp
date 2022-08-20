@@ -15,6 +15,7 @@
 MainWindow::MainWindow(QApplication *app, std::string assetsPath)
     : m_qApp(app)
     , game(new Game(assetsPath, "1"))
+    , tempG(Game(assetsPath, "1"))
     , errorTexture(QString::fromStdString(game->getAssetsPath() + "/textures/error.png"))
     , emptyTexture(QString::fromStdString(game->getAssetsPath() + "/textures/empty.png"))
     , showHUD(true)
@@ -52,6 +53,26 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event) {
              return true;
      }
      return false;
+}
+
+bool MainWindow::getRenderDone() const
+{
+    return renderDone;
+}
+
+void MainWindow::setRenderDone(bool newRenderDone)
+{
+    renderDone = newRenderDone;
+}
+
+const Game &MainWindow::getTempG() const
+{
+    return tempG;
+}
+
+void MainWindow::setTempG(const Game &newTempG)
+{
+    tempG = newTempG;
 }
 
 void MainWindow::getInputs()
@@ -111,14 +132,13 @@ void MainWindow::setupEditorWindow(nlohmann::json editorJson)
 void MainWindow::closeEvent(QCloseEvent *)
 {
     game->setRunning(false);
-    game->clearEntities();
 }
 
 void MainWindow::paintEvent(QPaintEvent *)
 {
     render = false;
+    renderDone = false;
     QPainter painter(this);
-    Game tempG = *game;
     QPoint tempC = tempG.getCamera();
 
     if (!tempG.getInInventory() && !tempG.getInMap()) {
@@ -571,9 +591,11 @@ void MainWindow::paintEvent(QPaintEvent *)
             }
 
             nlohmann::json mapJson = tempG.getCurrentMap().getJson()["rooms"][std::to_string(tempG.getCurrentMap().getCurrentRoomId())];
+            nlohmann::json size = mapJson["size"];
+
 
             painter.setPen(QColor("magenta"));
-            painter.drawRect(static_cast<int>(mapJson["position"][0]) - tempC.x(), static_cast<int>(mapJson["position"][1]) - tempC.y(), mapJson["size"][0], mapJson["size"][1]);
+            painter.drawRect(static_cast<int>(mapJson["position"][0]) - tempC.x(), static_cast<int>(mapJson["position"][1]) - tempC.y(), size[0], size[1]);
         }
 
         // Draw fps if necessary
@@ -710,6 +732,7 @@ void MainWindow::paintEvent(QPaintEvent *)
                               minimos);
         }
     }
+    renderDone = true;
     painter.end();
 }
 

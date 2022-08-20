@@ -1,5 +1,5 @@
 {
-    "enabled": true,
+    "enabled": false,
     "inputs": {
         "disableMovingSteps": 16
     },

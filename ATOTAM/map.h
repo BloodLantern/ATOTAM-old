@@ -18,7 +18,11 @@ public:
 
     const std::string &getName() const;
     void setName(const std::string &newName);
-    const nlohmann::json &getJson() const;
+
+    const std::string &getFilePath() const;
+    void setFilePath(const std::string &newFilePath);
+
+    const nlohmann::json getJson() const;
     void setJson(const nlohmann::json &newJson);
     int getCurrentRoomId() const;
     void setCurrentRoomId(int newCurrentRoomId);

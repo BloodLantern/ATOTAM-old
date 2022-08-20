@@ -41,6 +41,14 @@ void Save::save(std::string fileName)
     file << json.dump(4);
 }
 
+void Save::copyStats(Save value)
+{
+    playTime = value.playTime;
+    deaths = value.deaths;
+    damageDone = value.damageDone;
+    damageReceived = value.damageReceived;
+}
+
 int Save::getSamosHealth() const
 {
     return samosHealth;
@@ -121,6 +129,11 @@ void Save::setDeaths(int newDeaths)
     deaths = newDeaths;
 }
 
+void Save::addDeaths(int newDeaths)
+{
+    deaths += newDeaths;
+}
+
 int Save::getDamageDone() const
 {
     return damageDone;
@@ -131,6 +144,11 @@ void Save::setDamageDone(int newDamageDone)
     damageDone = newDamageDone;
 }
 
+void Save::addDamageDone(int newDamageDone)
+{
+    damageDone += newDamageDone;
+}
+
 int Save::getDamageReceived() const
 {
     return damageReceived;
@@ -139,6 +157,11 @@ int Save::getDamageReceived() const
 void Save::setDamageReceived(int newDamageReceived)
 {
     damageReceived = newDamageReceived;
+}
+
+void Save::addDamageReceived(int newDamageReceived)
+{
+    damageReceived += newDamageReceived;
 }
 
 int Save::getSavepointID() const
