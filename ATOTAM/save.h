@@ -7,9 +7,10 @@
 class Save
 {
 public:
-    static Save load(std::ifstream file); // Creates and returns a Save object corresponding to the Json file represented by the stream
+    static Save load(std::string fileName); // Creates and returns a Save object corresponding to the Json file represented by the stream
     Save(nlohmann::json json); // Creates a new Save object using this Json object
-    void save(std::ofstream file); // Converts this Save object in Json and then serializes it
+    void save(std::string fileName); // Converts this Save object in Json and then serializes it
+
     int getSamosHealth() const;
     void setSamosHealth(int newSamosHealth);
 
@@ -40,6 +41,19 @@ public:
     int getDamageReceived() const;
     void setDamageReceived(int newDamageReceived);
 
+    int getSavepointID() const;
+    void setSavepointID(int newSavepointID);
+
+    const std::string &getSaveMapName() const;
+    void setSaveMapName(const std::string &newSaveMapName);
+
+    int getRoomID() const;
+    void setRoomID(int newRoomID);
+
+    std::map<std::string, std::vector<int> > &getRoomsDiscovered();
+    void setRoomsDiscovered(const std::map<std::string, std::vector<int>> &newRoomsDiscovered);
+    void addRoomDiscovered(std::string mapName, int roomID);
+
 private:
     int samosHealth;
     int samosMaxHealth;
@@ -47,9 +61,11 @@ private:
     int samosMaxMissiles;
     int samosGrenades;
     int samosMaxGrenades;
-    // Save point
+    int savepointID;
+    int roomID;
+    std::string saveMapName;
     // Items
-    // Rooms discovered (minimap) for every map
+    std::map<std::string, std::vector<int>> roomsDiscovered;
     unsigned long playTime; // In seconds
     int deaths;
     int damageDone;

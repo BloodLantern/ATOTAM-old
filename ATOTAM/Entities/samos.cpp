@@ -1,13 +1,14 @@
 #include "samos.h"
 #include <iostream>
 
-Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMissileCount)
+Samos::Samos(double x, double y, int health, int maxHealth, int grenadeCount, int maxGrenadeCount, int missileCount, int maxMissileCount)
     : Living(x, y, "Right", "Samos"),
-      isInAltForm(false), grenadeCount(maxGrenadeCount), maxGrenadeCount(maxGrenadeCount), missileCount(maxMissileCount), maxMissileCount(maxMissileCount),
+      isInAltForm(false), grenadeCount(grenadeCount), maxGrenadeCount(maxGrenadeCount), missileCount(missileCount), maxMissileCount(maxMissileCount),
       wallBoxR(new CollisionBox(getBox()->getX() + getBox()->getWidth(), getBox()->getY(), 1, getBox()->getHeight())),
       wallBoxL(new CollisionBox(getBox()->getX() - 1, getBox()->getY(), 1, getBox()->getHeight()))
 {
     setMaxHealth(maxHealth);
+    setHealth(health);
     setState("Standing");
 }
 

@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "save.h"
+#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "nlohmann/json.hpp"
 
 #include "dialogue.h"
@@ -12,12 +14,13 @@
 #include "Entities/npc.h"
 #include "Entities/samos.h"
 #include "Entities/terrain.h"
+#include "Entities/savepoint.h"
 
 #include <QString>
 class Game
 {
 public:
-    Game(std::string assetsPath);
+    Game(std::string assetsPath, std::string saveNumber);
 
     void addEntity(Entity *entity);
     void addEntities(std::vector<Entity*> es);
@@ -27,12 +30,17 @@ public:
     void updateAnimations();
     void updateMapViewer();
     void updateMenu();
-    void updateDialogue();
+    void updateNPCs();
     void updateCamera();
+    void updateProgress();
+    void updateInventory();
+    std::pair<int,int> loadRespawnPosition(Save respawnSave, Map respawnMap);
     nlohmann::json loadJson(std::string fileName); // Loads the given file name's json starting in the assets folder and returns it
     void saveJson(nlohmann::json json, std::string fileName); // Saves the json to the given location starting in the assets folder
     QString translate(std::string text, std::vector<std::string> subCategories);
     void loadGeneral();
+    void loadSave(Save save);
+    void addRoomDiscovered(std::string mapName, int roomID);
 
     std::vector<Entity *> *getEntities();
     void setEntities(const std::vector<Entity *> &newRendering);
@@ -114,6 +122,30 @@ public:
     bool getFullscreen() const;
     void setFullscreen(bool newFullscreen);
 
+    Save &getCurrentProgress();
+    void setCurrentProgress(const Save &newCurrentProgress);
+
+    const Save &getLastSave() const;
+    void setLastSave(const Save &newLastSave);
+
+    const Save &getLastCheckpoint() const;
+    void setLastCheckpoint(const Save &newLastCheckpoint);
+
+    bool getInInventory() const;
+    void setInInventory(bool newInInventory);
+
+    bool getInMap() const;
+    void setInMap(bool newInMap);
+
+    QPoint getMapCameraPosition() const;
+    void setMapCameraPosition(QPoint newMapCameraPosition);
+
+    double getMapCameraSpeed() const;
+    void setMapCameraSpeed(double newMapCameraSpeed);
+
+    const std::pair<int, int> &getCameraSize() const;
+    void setCameraSize(const std::pair<int, int> &newCameraSize);
+
 private:
     std::string assetsPath;
 
@@ -124,7 +156,7 @@ private:
     std::vector<Projectile*> projectiles;
     std::vector<Area*> areas;
     std::vector<DynamicObj*> dynamicObjs;
-    Samos* s;
+    Samos* s = nullptr;
     int selectedOption = 0;
     std::string menu;
     std::vector<std::string> menuOptions;
@@ -132,12 +164,11 @@ private:
 
     bool mapViewer = false; // Whether the game the game was launched as a map viewer
     bool running = true;
-    double updateRate = 60.0; // How many game updates in one second
+    double updateRate = 60.0; // How many animation updates in one second
     double gameSpeed = 1.0;
     unsigned long long frameCount = 0;
     unsigned long long updateCount = 0;
     nlohmann::json keyCodes;
-    Map currentMap;
     nlohmann::json stringsJson;
     std::map<std::string, bool> inputList;
     std::map<std::string, double> inputTime;
@@ -157,6 +188,17 @@ private:
     bool renderHitboxes = false; // Render hitboxes as rectangles
     bool showFps = true; // Whether to show fps in-game
     bool fullscreen = true;
+    Save currentProgress;
+    Save lastSave;
+    Save lastCheckpoint;
+    std::string saveFile;
+    unsigned long long timeAtLaunch = 0;
+    Map currentMap;
+    bool inInventory = false;
+    bool inMap = false;
+    QPoint mapCameraPosition = QPoint(0,0);
+    double mapCameraSpeed = 100;
+    std::pair<int, int> cameraSize = {1920, 1080};
 };
 
 #endif // GAME_H

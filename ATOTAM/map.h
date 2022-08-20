@@ -1,6 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
+#define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "nlohmann/json.hpp"
 #include <string>
 #include <Entities/entity.h>

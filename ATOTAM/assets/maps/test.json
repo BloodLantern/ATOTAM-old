@@ -3,7 +3,7 @@
     "rooms": {
         "0": {
             "content": {
-                "Door": {
+                "Area": {
                     "VerticalDoor": [
                         {
                             "state": "Right",
@@ -31,7 +31,15 @@
                             "x": 600,
                             "y": 950
                         }
-                    ]
+                    ],
+					"savepoint": [
+						{
+							"x": 1216,
+							"y": 192,
+							"state": "Normal",
+							"spID": 0
+						}
+					]
                 },
                 "Terrain": {
                     "MossyStone": [
@@ -107,7 +115,7 @@
         },
         "1": {
             "content": {
-                "Door": {
+                "Area": {
                     "HorizontalDoor": [
                         {
                             "state": "Down",
@@ -230,7 +238,17 @@
                             "y": 1728
                         }
                     ]
-                }
+                },
+				"NPC": {
+					"savepoint": [
+						{
+							"x": 2540,
+							"y": 1536,
+							"state": "Normal",
+							"spID": 1
+						}
+					]
+				}
             },
             "position": [
                 1920,
@@ -243,7 +261,7 @@
         },
         "2": {
             "content": {
-                "Door": {
+                "Area": {
                     "HorizontalDoor": [
                         {
                             "state": "Up",

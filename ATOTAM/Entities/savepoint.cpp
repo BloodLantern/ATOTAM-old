@@ -1,11 +1,11 @@
 #include "savepoint.h"
 
 Savepoint::Savepoint(double x, double y, int spID, std::string mapName)
-    : Area(x, y, "savepoint"),
+    : NPC(x, y, "Right", "Savepoint"),
       savepointID(spID),
       mapName(mapName)
 {
-    setAreaType("Savepoint");
+
 }
 
 Savepoint::~Savepoint()

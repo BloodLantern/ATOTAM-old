@@ -4,6 +4,9 @@
 			"selectedWeapon": {
 				"Missile": "Missile",
 				"Beam": "Beam"
+			},
+			"savepoint": {
+				"Saved": "Saved"
 			}
 		},
 		"dialogues": {
@@ -33,6 +36,9 @@
 			"selectedWeapon": {
 				"Missile": "Missile",
 				"Beam": "Rayon"
+			},
+			"savepoint": {
+				"Saved": "Sauvegardé"
 			}
 		}
 	}

@@ -62,7 +62,7 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
     }
 }
 
-void Projectile::hitting(Entity* ent)
+bool Projectile::hitting(Entity* ent)
 {
     if (getState() != "Hit") {
         if (getProjectileType() != "Bomb") {
@@ -73,11 +73,13 @@ void Projectile::hitting(Entity* ent)
     } else if (ent->getEntType() == "Samos" || ent->getEntType() == "Monster" || ent->getEntType() == "NPC" || ent->getEntType() == "DynamicObj") {
         Living* liv = static_cast<Living*>(ent);
         if (getProjectileType() != "Bomb" || ent->getEntType() != "Samos") {
-            if (liv->getITime() <= 0.0 && !liv->getInvulnerable())
-                liv->hit(damage, this, kb);
+            if ((liv->getITime() <= 0.0) && !liv->getInvulnerable()) {
+                return liv->hit(damage, this, kb);
+            }
         } else
-            liv->hit(0, this, 10*kb);
+            return liv->hit(0, this, 10*kb);
     }
+    return false;
 }
 
 void Projectile::timeOut()
