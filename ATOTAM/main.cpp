@@ -186,8 +186,10 @@ void gameClock(MainWindow* w) {
         }
 
         // Eventually render the game
-        if (w->getRenderDone())
-            w->setTempG(*w->getGame());
+        if (!w->getCopyingToDraw()) {
+            w->setRender(false);
+            w->setupToDraw();
+        }
         w->setRender(true);
         w->update();
 

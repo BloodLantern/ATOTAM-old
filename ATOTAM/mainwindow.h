@@ -23,6 +23,7 @@ public:
     void closeEvent(QCloseEvent*);
     void getInputs();
     void setupEditorWindow(nlohmann::json editorJson);
+    void setupToDraw();
 
     int getRenderingMultiplier() const;
     void setRenderingMultiplier(int newRenderingMultiplier);
@@ -40,11 +41,15 @@ public:
     bool getRender() const;
     void setRender(bool newRender);
 
-    const Game &getTempG() const;
-    void setTempG(const Game &newTempG);
+    const nlohmann::json &getToDraw() const;
+    void setToDraw(const nlohmann::json &newToDraw);
 
-    bool getRenderDone() const;
-    void setRenderDone(bool newRenderDone);
+    const std::map<int, QImage> &getToDrawTextures() const;
+    void setToDrawTextures(const std::map<int, QImage> &newToDrawTextures);
+
+
+    bool getCopyingToDraw() const;
+    void setCopyingToDraw(bool newCopyingToDraw);
 
 private:
     QApplication *m_qApp;
@@ -52,12 +57,13 @@ private:
 
     EditorWindow* editorWindow = nullptr;
     Game* game = nullptr;
-    Game tempG;
     int renderingMultiplier = 1; // Textures are rendered with their size being multiplied by this value
     QImage errorTexture;
     QImage emptyTexture;
     bool showHUD = true;
-    bool render = false;
-    bool renderDone = true;
+    nlohmann::json toDraw;
+    std::map<int, QImage> toDrawTextures;
+    bool copyingToDraw = false;
+    bool render;
 };
 #endif // MAINWINDOW_H

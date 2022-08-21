@@ -2,6 +2,8 @@
 #include <QPainter>
 #include <iostream>
 
+unsigned long long Entity::lastID = 0;
+
 bool Entity::checkCollision(Entity *obj1, CollisionBox *box1, Entity *obj2, CollisionBox *box2)
 {
     if (box1 == nullptr || box2 == nullptr)
@@ -220,13 +222,13 @@ void Entity::forceKnockback(Entity *e, double kBForce)
 }
 
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)
-    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), frictionFactor(frictionFactor), isMovable(isMovable), name(name)
+    : box(box), texture(texture), x(x), y(y), entType(entType), isAffectedByGravity(isAffectedByGravity), facing(facing), frictionFactor(frictionFactor), isMovable(isMovable), name(name), entityID(lastID++)
 {
 
 }
 
 Entity::Entity(double x, double y, std::string facing, std::string name)
-    : x(x), y(y), facing(facing), name(name)
+    : x(x), y(y), facing(facing), name(name), entityID(lastID++)
 {
     //fast constructor using the json file
     nlohmann::json entJson = values["names"][name];
@@ -239,6 +241,7 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     isMovable = entJson["movable"];
     mass = entJson["mass"];
     box = new CollisionBox(entJson["offset_x"], entJson["offset_y"], entJson["width"], entJson["height"]);
+    layer = entJson["layer"];
 }
 
 Entity::~Entity()
@@ -631,4 +634,23 @@ unsigned int Entity::getVerticalRepeat() const
 void Entity::setVerticalRepeat(unsigned int newVerticalRepeat)
 {
     verticalRepeat = newVerticalRepeat;
+}
+
+unsigned long long Entity::getEntityID() const
+{
+    return entityID;
+}
+
+float Entity::getLayer() const
+{
+    return layer;
+}
+
+void Entity::setLayer(float newLayer)
+{
+    layer = newLayer;
+}
+
+bool operator==(Entity a, Entity b) {
+    return a.getEntityID() == b.getEntityID();
 }

@@ -53,6 +53,7 @@
 			"friction": 1,
 			"movingFriction": 0.1,
 			"movable": true,
+			"layer": 0.0,
 			"groundAcceleration": 1800.0,
 			"groundMaxSpeed": 450.0,
 			"airAcceleration": 900.0,
@@ -276,7 +277,8 @@
 			"damage": 20,
 			"mass": 1,
 			"knockback": 0.0,
-			"iTime": 0.3
+			"iTime": 0.3,
+			"layer": 4.0
 		},
 		"Missile": {
 			"texture": "Missile",
@@ -292,7 +294,8 @@
 			"damage": 50,
 			"mass": 10,
 			"knockback": 10.0,
-			"iTime": 0.5
+			"iTime": 0.5,
+			"layer": 4.0
 		},
 		"Bomb": {
 			"texture": "Bomb",
@@ -308,7 +311,8 @@
 			"damage": 40,
 			"mass": 10,
 			"knockback": 2.0,
-			"iTime": 0.5
+			"iTime": 0.5,
+			"layer": 4.0
 		},
 		"Grenade": {
 			"texture": "Grenade",
@@ -326,7 +330,8 @@
 			"friction": 0.2,
 			"mass": 10,
 			"knockback": 10.0,
-			"iTime": 0.5
+			"iTime": 0.5,
+			"layer": 4.0
 		},
 		"Wall": {
 			"texture": "Wall",
@@ -339,7 +344,8 @@
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,
-			"mass": -1
+			"mass": -1,
+			"layer": 3.0
 		},
 		"Ground": {
 			"texture": "Ground",
@@ -352,7 +358,8 @@
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,
-			"mass": -1
+			"mass": -1,
+			"layer": 3.0
 		},
 		"EmptyBlock": {
 			"texture": "EmptyBlock",
@@ -379,7 +386,8 @@
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,
-			"mass": -1
+			"mass": -1,
+			"layer": 3.0
 		},
 		"Stone": {
 			"texture": "Stone",
@@ -393,7 +401,8 @@
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,
-			"mass": -1
+			"mass": -1,
+			"layer": 3.0
 		},
 		"VerticalDoor": {
 			"texture": "Door",
@@ -406,7 +415,8 @@
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,
-			"mass": -1
+			"mass": -1,
+			"layer": 5.0
 		},
 		"HorizontalDoor": {
 			"texture": "Door",
@@ -419,7 +429,8 @@
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,
-			"mass": -1
+			"mass": -1,
+			"layer": 5.0
 		},
 		"Savepoint": {
 			"texture": "Savepoint",
@@ -437,7 +448,8 @@
 			"damage": 0,
 			"invulnerable": true,
 			"mass": -1,
-			"npcType": "Savepoint"
+			"npcType": "Savepoint",
+			"layer": -1.0
 		},
 		"Test": {
 			"texture": "Test",
@@ -458,7 +470,8 @@
 			"mass": 50,
 			"maxHealth": 100,
 			"invulnerable": false,
-			"iTime": 0.5
+			"iTime": 0.5,
+			"layer": 1.0
 		},
 		"TalkingNPC": {
 			"texture": "TalkingNPC",
@@ -476,7 +489,8 @@
 			"maxHealth": 150,
 			"damage": 0,
 			"invulnerable": true,
-			"mass": -1
+			"mass": -1,
+			"layer": -1.0
 		}
 	},
 	"textures": {
