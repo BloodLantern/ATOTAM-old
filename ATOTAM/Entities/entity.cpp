@@ -253,32 +253,16 @@ void Entity::updateTexture()
         texture = &currentAnimation[frame];
 }
 
-std::vector<QImage> Entity::updateAnimation(std::string state)
+std::vector<QImage> Entity::updateAnimation(std::string state, std::pair<int, int> repeat)
 {
-
-    // Getting repeat parameter
-    unsigned int horizontalRepeat = 1;
-    unsigned int verticalRepeat = 1;
-    if (!nameParameters.empty()) {
-        for (std::vector<std::string>::iterator param = nameParameters.begin(); param != nameParameters.end(); param++)
-            if ((*param)[0] == 'S') {
-                unsigned int xIndex = 0;
-                for (std::string::iterator c = param->begin(); *c != 'x'; c++)
-                    if (*c != 'x')
-                        xIndex++;
-                std::string temp = (*param).substr(1, xIndex - 1);
-                horizontalRepeat = std::stoul(temp == "" ? "1" : temp);
-                temp = (*param).substr(xIndex + 1, (*param).size() - 1);
-                verticalRepeat = std::stoul(temp == "" ? "1" : temp);
-            }
-    }
-
     // First create the image list which will be returned
     // The first dimension is for the horizontal repetitions
     // The second one is for the vertical repetitions
     // The third one is for the animation
     std::vector<std::vector<std::vector<QImage>>>* anim = new std::vector<std::vector<std::vector<QImage>>>();
 
+    unsigned int horizontalRepeat = repeat.first;
+    unsigned int verticalRepeat = repeat.second;
     // Initialize vectors size
     for (unsigned int i = 0; i < horizontalRepeat; i++) {
         (*anim).push_back(std::vector<std::vector<QImage>>());
@@ -384,7 +368,7 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
 
     // Place the overlay on top of the current animation
     for (nlohmann::json ovrly : animJson["overlay"]) {
-        std::vector<QImage> overlay = updateAnimation(ovrly);
+        std::vector<QImage> overlay = updateAnimation(ovrly, std::pair<int, int>(horizontalRepeat, verticalRepeat));
         for (unsigned int i = 0; i < animation.size(); i++) {
             QImage result(std::max(overlay[i].width(), animation[i].width()), std::max(overlay[i].height(), animation[i].height()), animation[i].format());
             QPainter merger(&result);
@@ -405,6 +389,11 @@ std::vector<QImage> Entity::updateAnimation(std::string state)
     }
 
     return animation;
+}
+
+std::vector<QImage> Entity::updateAnimation()
+{
+    return updateAnimation(state, std::pair<int, int>(horizontalRepeat, verticalRepeat));
 }
 
 CollisionBox *Entity::getBox()
@@ -622,4 +611,24 @@ const std::string &Entity::getFullName() const
 void Entity::setFullName(const std::string &newFullName)
 {
     fullName = newFullName;
+}
+
+unsigned int Entity::getHorizontalRepeat() const
+{
+    return horizontalRepeat;
+}
+
+void Entity::setHorizontalRepeat(unsigned int newHorizontalRepeat)
+{
+    horizontalRepeat = newHorizontalRepeat;
+}
+
+unsigned int Entity::getVerticalRepeat() const
+{
+    return verticalRepeat;
+}
+
+void Entity::setVerticalRepeat(unsigned int newVerticalRepeat)
+{
+    verticalRepeat = newVerticalRepeat;
 }

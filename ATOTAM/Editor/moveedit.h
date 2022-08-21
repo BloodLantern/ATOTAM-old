@@ -1,27 +1,25 @@
 #ifndef MOVEEDIT_H
 #define MOVEEDIT_H
 
-#include "edit.h"
+#include "multitypeedit.h"
 
-class MoveEdit : public Edit
+class MoveEdit : public MultiTypeEdit
 {
 public:
-    MoveEdit(Map* map, Entity* entity, QPoint startingPos, QPoint endingPos);
-    MoveEdit(Map* map, int roomId, QPoint startingPos, QPoint endingPos);
+    MoveEdit(Map* map, Entity* entity, QPoint* delta = new QPoint());
+    MoveEdit(Map* map, int roomId, QPoint* delta = new QPoint());
+    virtual ~MoveEdit();
 
-private:
-    Entity* entity = nullptr;
-    int roomId = 0;
-
-    // General
-    bool roomMove = false;
-    QPoint startingPos = QPoint();
-    QPoint endingPos = QPoint();
+    QPoint *getDelta() const;
+    void setDelta(QPoint *newDelta);
 
     // Edit interface
-public:
     void unmake() override;
     void make() override;
+
+private:
+    // General
+    QPoint* delta = nullptr;
 };
 
 #endif // MOVEEDIT_H

@@ -26,7 +26,8 @@ public:
     ~Entity();
 
     void updateTexture();
-    std::vector<QImage> updateAnimation(std::string state);
+    std::vector<QImage> updateAnimation(std::string state, std::pair<int, int> repeat);
+    std::vector<QImage> updateAnimation(); // Updates animation using entity's values
     void updateV(double framerate);
     void applyKnockback(Entity *e, double kBForce);
     void forceKnockback(Entity *e, double kBForce);
@@ -95,6 +96,12 @@ public:
     const std::string &getFullName() const;
     void setFullName(const std::string &newFullName);
 
+    unsigned int getHorizontalRepeat() const;
+    void setHorizontalRepeat(unsigned int newHorizontalRepeat);
+
+    unsigned int getVerticalRepeat() const;
+    void setVerticalRepeat(unsigned int newVerticalRepeat);
+
 private:
     CollisionBox* box = nullptr;
     QImage* texture = nullptr; // Image to be rendered now
@@ -110,6 +117,8 @@ private:
     bool isMovable = true;
     std::string name = "";
     std::vector<std::string> nameParameters;
+    unsigned int horizontalRepeat = 1;
+    unsigned int verticalRepeat = 1;
     std::string fullName = "";
     double mass = 100;
 

@@ -14,25 +14,26 @@ public:
                            QImage* errorTexture,
                            QImage* emptyTexture,
                            int* renderingMultiplier,
-                           nlohmann::json editorJson);
+                           nlohmann::json editorJson,
+                           double physicsFrameRate);
 
     void paintEvent(QPaintEvent*) override;
     void mousePressEvent(QMouseEvent*) override;
     void mouseReleaseEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
     void wheelEvent(QWheelEvent*) override;
+    void keyPressEvent(QKeyEvent*) override;
 
     nlohmann::json loadJson(std::string);
     void saveJson(nlohmann::json json, std::string fileName);
     QPoint getClickAreaOffset(Entity*);
     std::pair<int, int> getClickAreaSize(Entity*);
+    void undoEdit();
+    void redoEdit();
+    void duplicateObject();
 
     nlohmann::json &getEditorJson();
     void setEditorJson(nlohmann::json &newEditorJson);
-    std::map<std::string, bool>* getInputList();
-    void setInputList(std::map<std::string, bool>* newInputList);
-    std::map<std::string, double>* getInputTime();
-    void setInputTime(std::map<std::string, double>* newInputTime);
     const std::string &getAssetsPath() const;
     void setAssetsPath(const std::string &newAssetsPath);
     QPoint getCamera() const;
@@ -45,11 +46,12 @@ public:
     void setZoomFactor(double newZoomFactor);
     Entity *getSelected() const;
     void setSelected(Entity *newSelected);
-    const std::vector<Edit*> &getEdits() const;
-    void setEdits(const std::vector<Edit*> &newEdits);
+    std::vector<Edit*> &getEdits();
+    void setEdits(std::vector<Edit*> &newEdits);
 
 private:
     void drawEntity(Entity* ent, QPainter* painter);
+    void getInputs();
 
     std::vector<Edit*> edits;
     nlohmann::json editorJson = nlohmann::json();
@@ -73,16 +75,12 @@ private:
     bool farEnough = false;
 
     // Selection
-    QPoint selectedStart = QPoint();
     Entity* selected = nullptr;
-
-    // QWidget interface
 
     // Keyboard inputs
     std::map<std::string, bool> inputList;
     std::map<std::string, double> inputTime;
-
-    // QWidget interface
+    double physicsFrameRate;
 };
 
 #endif // EDITORPREVIEW_H

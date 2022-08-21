@@ -354,6 +354,19 @@
 			"movable": false,
 			"mass": -1
 		},
+		"EmptyBlock": {
+			"texture": "EmptyBlock",
+			"offset_x": 0,
+			"offset_y": 0,
+			"width": 32,
+			"height": 32,
+			"type": "Terrain",
+			"defaultState": "None",
+			"gravity": false,
+			"friction": 0,
+			"movable": false,
+			"mass": -1
+		},
 		"MossyStone": {
 			"texture": "MossyStone",
 			"randomTexture": ["0", "1", "2", "3", "4"],
@@ -1973,6 +1986,21 @@
 				"yOffset": [0, 0],
 				"reversed": false,
 				"overlay": [],
+				"loop": false,
+				"refreshRate": -1,
+				"dontReset": false
+			}
+		},
+		"EmptyBlock": {
+			"None": {
+				"file": "empty.png",
+				"x": 0,
+				"y": 0,
+				"width": 1,
+				"height": 1,
+				"count": 1,
+				"emptyFramesReversed": false,
+				"reversed": false,
 				"loop": false,
 				"refreshRate": -1,
 				"dontReset": false

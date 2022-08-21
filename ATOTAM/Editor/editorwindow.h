@@ -8,9 +8,8 @@
 class EditorWindow : public QMainWindow
 {
 public:
-    EditorWindow(EditorPreview* preview, double physicsFrameRate);
+    EditorWindow(EditorPreview* preview);
 
-    void getInputs();
     void save();
     void saveValues();
 
@@ -18,9 +17,7 @@ public:
 
 private:
     EditorPreview* preview;
-    double physicsFrameRate;
 
-    // QWidget interface
 };
 
 #endif // EDITORWINDOW_H

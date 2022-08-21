@@ -38,9 +38,6 @@ void gameClock(MainWindow* w) {
         // And update the last frame time
         g->setLastFrameTime(std::chrono::high_resolution_clock::now());
 
-        if (w->getEditorWindow() != nullptr)
-            w->getEditorWindow()->getInputs();
-
         if (g->getDoorTransition() == "") {
             w->getInputs();
 

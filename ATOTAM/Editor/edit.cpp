@@ -6,6 +6,11 @@ Edit::Edit(Map *map)
 
 }
 
+Edit::~Edit()
+{
+
+}
+
 bool Edit::getMade() const
 {
     return made;

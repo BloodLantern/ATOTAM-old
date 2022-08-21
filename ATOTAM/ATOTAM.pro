@@ -11,6 +11,8 @@ CONFIG += c++11
 SOURCES += \
     Editor/edit.cpp \
     Editor/moveedit.cpp \
+    Editor/multitypeedit.cpp \
+    Editor/resizeedit.cpp \
     Entities/collisionbox.cpp \
     Entities/door.cpp \
     Entities/entity.cpp \
@@ -47,6 +49,8 @@ SOURCES += \
 HEADERS += \
     Editor/edit.h \
     Editor/moveedit.h \
+    Editor/multitypeedit.h \
+    Editor/resizeedit.h \
     Entities/collisionbox.h \
     Entities/door.h \
     Entities/dynamicobj.h \

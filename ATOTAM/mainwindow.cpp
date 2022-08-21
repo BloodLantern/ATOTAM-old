@@ -101,11 +101,11 @@ void MainWindow::setupEditorWindow(nlohmann::json editorJson)
 {
     // Map preview
     Map editedMap = Map::loadMap(editorJson["lastLaunch"]["map"]["id"], game->getAssetsPath());
-    EditorPreview* preview = new EditorPreview(&editedMap, &errorTexture, &emptyTexture, &renderingMultiplier, editorJson);
+    EditorPreview* preview = new EditorPreview(&editedMap, &errorTexture, &emptyTexture, &renderingMultiplier, editorJson, Physics::frameRate);
     preview->setAssetsPath(game->getAssetsPath());
 
     // Window
-    editorWindow = new EditorWindow(preview, Physics::frameRate);
+    editorWindow = new EditorWindow(preview);
     editorWindow->setWindowTitle("ATOTAM Map Editor");
     editorWindow->setMinimumSize(QSize(editorJson["values"]["minimumWindowSize"][0], editorJson["values"]["minimumWindowSize"][1]));
     // Set window screen

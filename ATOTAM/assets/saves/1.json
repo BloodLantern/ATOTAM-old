@@ -2,8 +2,8 @@
     "damageDone": 480,
     "damageReceived": 200,
     "deaths": 1,
-    "playTime": 821,
-    "roomID": 1,
+    "playTime": 827,
+    "roomID": 0,
     "roomsDiscovered": {
         "test": [
             2,
@@ -11,7 +11,8 @@
             0
         ],
         "testEditor": [
-            1
+            1,
+            0
         ]
     },
     "samos": {
@@ -23,5 +24,5 @@
         "missiles": 2
     },
     "saveMapName": "testEditor",
-    "savepointID": 1
+    "savepointID": 0
 }

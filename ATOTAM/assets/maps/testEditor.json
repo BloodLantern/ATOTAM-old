@@ -3,7 +3,7 @@
     "rooms": {
         "0": {
             "content": {
-                "Door": {
+                "Area": {
                     "VerticalDoor": [
                         {
                             "state": "Right",
@@ -24,6 +24,14 @@
                     ]
                 },
                 "NPC": {
+                    "Savepoint": [
+                        {
+                            "spID": 0,
+                            "state": "Normal",
+                            "x": 1216,
+                            "y": 192
+                        }
+                    ],
                     "TalkingNPC": [
                         {
                             "facing": "Left",
@@ -38,58 +46,56 @@
                         {
                             "x": 640,
                             "y": 448
-                        }
-                    ],
-                    "MossyStone_S29x": [
+                        },
                         {
+                            "horizontalRepeat": 29,
                             "x": 64,
                             "y": 1024
-                        }
-                    ],
-                    "MossyStone_S9x": [
+                        },
                         {
+                            "horizontalRepeat": 9,
                             "x": 64,
                             "y": 384
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 384,
                             "y": 640
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 192,
                             "y": 832
                         },
                         {
-                            "x": 1088,
-                            "y": 320
+                            "horizontalRepeat": 9,
+                            "verticalRepeat": 1,
+                            "x": 1088.0,
+                            "y": 320.0
                         }
                     ],
                     "Stone": [
                         {
                             "x": 576,
                             "y": 448
-                        }
-                    ],
-                    "Stone_S30x": [
+                        },
                         {
-                            "x": 0,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_Sx11": [
-                        {
+                            "verticalRepeat": 11,
                             "x": 1856,
                             "y": 64
-                        }
-                    ],
-                    "Stone_Sx16": [
+                        },
                         {
+                            "verticalRepeat": 16,
                             "x": 0,
                             "y": 64
-                        }
-                    ],
-                    "Stone_Sx7": [
+                        },
                         {
+                            "horizontalRepeat": 30,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "verticalRepeat": 7,
                             "x": 1600,
                             "y": 384
                         }
@@ -107,7 +113,7 @@
         },
         "1": {
             "content": {
-                "Door": {
+                "Area": {
                     "HorizontalDoor": [
                         {
                             "state": "Down",
@@ -125,59 +131,70 @@
                         }
                     ]
                 },
-                "Terrain": {
-                    "MossyStone_S10x": [
+                "NPC": {
+                    "Savepoint": [
                         {
+                            "spID": 1,
+                            "state": "Normal",
+                            "x": 2540,
+                            "y": 1536
+                        }
+                    ]
+                },
+                "Terrain": {
+                    "MossyStone": [
+                        {
+                            "horizontalRepeat": 10,
                             "x": 0,
                             "y": 1024
                         },
                         {
+                            "horizontalRepeat": 10,
                             "x": 384,
                             "y": 1216
                         },
                         {
+                            "horizontalRepeat": 10,
                             "x": 384,
                             "y": 1600
                         },
                         {
+                            "horizontalRepeat": 10,
                             "x": 384,
                             "y": 2048
                         },
                         {
+                            "horizontalRepeat": 10,
                             "x": 640,
                             "y": 1408
                         },
                         {
+                            "horizontalRepeat": 10,
                             "x": 640,
                             "y": 2240
-                        }
-                    ],
-                    "MossyStone_S12x": [
+                        },
                         {
+                            "horizontalRepeat": 12,
                             "x": 2240,
                             "y": 1664
-                        }
-                    ],
-                    "MossyStone_S30x": [
+                        },
                         {
-                            "x": 896,
-                            "y": 832
-                        }
-                    ],
-                    "MossyStone_S3x": [
-                        {
+                            "horizontalRepeat": 3,
                             "x": 1216,
                             "y": 1792
-                        }
-                    ],
-                    "MossyStone_S42x": [
+                        },
                         {
+                            "horizontalRepeat": 30,
+                            "x": 896,
+                            "y": 832
+                        },
+                        {
+                            "horizontalRepeat": 42,
                             "x": 320,
                             "y": 2432
-                        }
-                    ],
-                    "MossyStone_S9x": [
+                        },
                         {
+                            "horizontalRepeat": 9,
                             "x": 640,
                             "y": 1856
                         }
@@ -186,46 +203,39 @@
                         {
                             "x": 1216,
                             "y": 1856
-                        }
-                    ],
-                    "Stone_S46x": [
+                        },
                         {
-                            "x": 64,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_Sx10": [
-                        {
+                            "verticalRepeat": 10,
                             "x": 2752,
                             "y": 896
-                        }
-                    ],
-                    "Stone_Sx11": [
+                        },
                         {
+                            "verticalRepeat": 11,
                             "x": 1984,
                             "y": 1536
-                        }
-                    ],
-                    "Stone_Sx12": [
+                        },
                         {
+                            "verticalRepeat": 12,
                             "x": 0,
                             "y": 0
-                        }
-                    ],
-                    "Stone_Sx22": [
+                        },
                         {
+                            "verticalRepeat": 22,
                             "x": 0,
                             "y": 1088
-                        }
-                    ],
-                    "Stone_Sx39": [
+                        },
                         {
+                            "verticalRepeat": 39,
                             "x": 3008,
                             "y": 0
-                        }
-                    ],
-                    "Stone_Sx9": [
+                        },
                         {
+                            "horizontalRepeat": 46,
+                            "x": 64,
+                            "y": 0
+                        },
+                        {
+                            "verticalRepeat": 9,
                             "x": 2240,
                             "y": 1728
                         }
@@ -243,7 +253,7 @@
         },
         "2": {
             "content": {
-                "Door": {
+                "Area": {
                     "HorizontalDoor": [
                         {
                             "state": "Up",
@@ -258,68 +268,71 @@
                         {
                             "x": 672,
                             "y": 416
-                        }
-                    ],
-                    "MossyStone_S37x": [
+                        },
                         {
+                            "horizontalRepeat": 37,
                             "x": 64,
                             "y": 1024
-                        }
-                    ],
-                    "MossyStone_S9x": [
+                        },
                         {
+                            "horizontalRepeat": 9,
                             "x": 1856,
                             "y": 192
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 1664,
                             "y": 416
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 96,
                             "y": 928
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 64,
                             "y": 832
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 96,
                             "y": 736
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 64,
                             "y": 640
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 96,
                             "y": 544
                         }
                     ],
-                    "Stone_S34x": [
+                    "Stone": [
                         {
-                            "x": 0,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_Sx16": [
-                        {
+                            "verticalRepeat": 16,
                             "x": 0,
                             "y": 64
-                        }
-                    ],
-                    "Stone_Sx17": [
+                        },
                         {
+                            "verticalRepeat": 17,
                             "x": 2432,
                             "y": 0
-                        }
-                    ],
-                    "Stone_Sx8": [
+                        },
                         {
+                            "horizontalRepeat": 34,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "verticalRepeat": 8,
                             "x": 672,
                             "y": 480
                         },
                         {
+                            "verticalRepeat": 8,
                             "x": 2176,
                             "y": 480
                         }

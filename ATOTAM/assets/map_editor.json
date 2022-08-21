@@ -1,7 +1,11 @@
 {
-    "enabled": false,
+    "enabled": true,
     "inputs": {
-        "disableMovingSteps": 16
+        "control": 17,
+        "disableMovingSteps": 16,
+        "duplicateObject": 68,
+        "redoEdit": 89,
+        "undoEdit": 90
     },
     "lastLaunch": {
         "map": {
@@ -21,7 +25,7 @@
     },
     "values": {
         "cameraMinimumMove": 10,
-        "invisibleEntitiesHitboxOpacity": 100,
+        "invisibleEntitiesHitboxOpacity": 250,
         "minimumWindowSize": [
             1280,
             720

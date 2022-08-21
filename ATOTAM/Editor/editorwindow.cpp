@@ -1,35 +1,11 @@
 #include "editorwindow.h"
 #include <QCloseEvent>
 #include <QMessageBox>
-#include <windows.h>
 
-EditorWindow::EditorWindow(EditorPreview* preview, double physicsFrameRate)
+EditorWindow::EditorWindow(EditorPreview* preview)
     : preview(preview)
-    , physicsFrameRate(physicsFrameRate)
 {
 
-}
-
-void EditorWindow::getInputs()
-{
-    for (std::map<std::string, bool>::iterator i = preview->getInputList()->begin(); i != preview->getInputList()->end(); i ++) {
-        if (i->second)
-            (*preview->getInputTime())[i->first] += 1 / physicsFrameRate;
-        else
-            (*preview->getInputTime())[i->first] = 0;
-    }
-
-    //Only listen for inputs if the window is currently selected
-    if (isActiveWindow()) {
-        //Check every key
-        for (nlohmann::json::iterator i = preview->getEditorJson()["inputs"].begin(); i != preview->getEditorJson()["inputs"].end(); i++) {
-            (*preview->getInputList())[i.key()] = GetKeyState(i.value()) & 0x8000;
-        }
-    } else
-        //Reset the keys if the window is not selected
-        for (nlohmann::json::iterator i = preview->getEditorJson()["inputs"].begin(); i != preview->getEditorJson()["inputs"].end(); i++) {
-            (*preview->getInputList())[i.key()] = 0;
-        }
 }
 
 void EditorWindow::save()
@@ -51,7 +27,7 @@ void EditorWindow::saveValues()
 
 void EditorWindow::closeEvent(QCloseEvent *event)
 {
-    if (!preview->getEdits().empty())
+    if (!preview->getEdits().empty()) {
         if (preview->getEdits()[0]->getMade()) {
             // Was edited
             QMessageBox msgBox;
@@ -75,6 +51,10 @@ void EditorWindow::closeEvent(QCloseEvent *event)
             }
             return;
         }
+        for (auto edit = preview->getEdits().begin(); edit != preview->getEdits().end(); edit++)
+            delete *edit;
+        preview->getEdits().clear();
+    }
 
     // Wasn't edited
     saveValues();

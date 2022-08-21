@@ -43,11 +43,11 @@ std::vector<Entity *> Map::loadRoom(int id)
     // Json node of the selected room
     nlohmann::json roomJson = json["rooms"][std::to_string(id)];
     // Iterate over a map of entityTypes
-    for (const std::pair<std::string, nlohmann::json> entity : roomJson["content"].get<nlohmann::json::object_t>())
+    for (auto entity : roomJson["content"].items())
         // Iterate over a map of entityNames
-        for (const std::pair<std::string, nlohmann::json> name : entity.second.get<nlohmann::json::object_t>())
+        for (auto name : entity.value().items())
             // For each entity json node
-            for (nlohmann::json obj : name.second) {
+            for (nlohmann::json obj : name.value()) {
                 // Repeat 'obj["times"]' times
                 for (unsigned int i = 0; i < (obj["times"].is_null() ? 1 : static_cast<unsigned int>(obj["times"])); i++) {
                     Entity* e = nullptr;
@@ -56,7 +56,7 @@ std::vector<Entity *> Map::loadRoom(int id)
                     int y = static_cast<int>(roomJson["position"][1]) + static_cast<int>(obj["y"]);
                     std::string n; // Name
                     std::vector<std::string> np; // Name parameters
-                    std::string fullName = name.first; // Temporary
+                    std::string fullName = name.key(); // Temporary
 
                     // Only get name parameters if they exist
                     for (std::string::iterator c = fullName.begin(); c != fullName.end(); c++)
@@ -95,16 +95,16 @@ std::vector<Entity *> Map::loadRoom(int id)
                         }
 
                     // Specific Entities fields and initialization
-                    if (entity.first == "Terrain") {
+                    if (entity.key() == "Terrain") {
                         Terrain *t = new Terrain(x, y, n);
                         e = t;
-                    } else if (entity.first == "Area") {
+                    } else if (entity.key() == "Area") {
                         if (n == "HorizontalDoor" || n == "VerticalDoor") {
                             Door *d = new Door(x, y, n);
                             e = d;
                             d->setEndingRoom(obj["to"]);
                         }
-                    } else if (entity.first == "NPC") {
+                    } else if (entity.key() == "NPC") {
                         if (n == "Savepoint") {
                             Savepoint *s = new Savepoint(x, y, obj["spID"], this->name);
                             e = s;
@@ -112,7 +112,7 @@ std::vector<Entity *> Map::loadRoom(int id)
                             NPC *npc = new NPC(x, y, obj["facing"], n);
                             e = npc;
                         }
-                    } else if (entity.first == "Monster") {
+                    } else if (entity.key() == "Monster") {
                         Monster *m = new Monster(x, y, obj["facing"], n);
                         e = m;
                     }
@@ -130,32 +130,21 @@ std::vector<Entity *> Map::loadRoom(int id)
                         e->setState(obj["state"]);
 
                     // If the entity has a repetition, extend its collision box
-                    unsigned int horizontalRepeat = 1;
-                    unsigned int verticalRepeat = 1;
-                    if (!np.empty()) {
-                        for (std::vector<std::string>::iterator param = np.begin(); param != np.end(); param++)
-                            if ((*param)[0] == 'S') {
-                                unsigned int xIndex = 0;
-                                for (std::string::iterator c = param->begin(); *c != 'x'; c++)
-                                    if (*c != 'x')
-                                        xIndex++;
-                                std::string temp = (*param).substr(1, xIndex - 1);
-                                horizontalRepeat = std::stoul(temp == "" ? "1" : temp);
-                                temp = (*param).substr(xIndex + 1, (*param).size() - 1);
-                                verticalRepeat = std::stoul(temp == "" ? "1" : temp);
-                            }
-                    }
-                    // If the entity has these parameters
+                    unsigned int horizontalRepeat = obj["horizontalRepeat"].is_null() ? 1 : obj["horizontalRepeat"].get<int>();
+                    unsigned int verticalRepeat = obj["verticalRepeat"].is_null() ? 1 : obj["verticalRepeat"].get<int>();
                     if (horizontalRepeat != 1 || verticalRepeat != 1) {
                         CollisionBox* box = e->getBox();
                         box->setHeight(box->getHeight() * (verticalRepeat));
                         box->setWidth(box->getWidth() * (horizontalRepeat));
                     }
+                    e->setHorizontalRepeat(horizontalRepeat);
+                    e->setVerticalRepeat(verticalRepeat);
+
                     e->setNameParameters(np);
                     e->setRoomId(id);
 
                     // Rendering (should be the last function calls)
-                    e->setCurrentAnimation(e->updateAnimation(e->getState()));
+                    e->setCurrentAnimation(e->updateAnimation());
                     e->setFrame(0);
                     e->updateTexture();
 
@@ -184,7 +173,7 @@ std::vector<Entity *> Map::loadRooms()
     return result;
 }
 
-nlohmann::json Map::find(Entity *entity, QPoint pos)
+nlohmann::json Map::find(Entity *entity)
 {
     nlohmann::json j = json["rooms"][std::to_string(entity->getRoomId())];
     // Entity isn't in any room
@@ -203,8 +192,8 @@ nlohmann::json Map::find(Entity *entity, QPoint pos)
 
     // Eventually compare the entity and the json values
     for (const nlohmann::json &ent : j)
-        if (pos.x() == ent["x"]
-                && pos.y() == ent["y"]) {
+        if (entity->getX() == ent["x"]
+                && entity->getY() == ent["y"]) {
             j = ent;
             return j;
         }

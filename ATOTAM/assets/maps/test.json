@@ -46,60 +46,57 @@
                         {
                             "x": 640,
                             "y": 448
-                        }
-                    ],
-                    "MossyStone_S29x": [
+                        },
                         {
                             "x": 64,
-                            "y": 1024
-                        }
-                    ],
-                    "MossyStone_S9x": [
+                            "y": 1024,
+                            "horizontalRepeat": 29
+                        },
                         {
                             "x": 64,
-                            "y": 384
+                            "y": 384,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 384,
-                            "y": 640
+                            "y": 640,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 192,
-                            "y": 832
+                            "y": 832,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 1088,
-                            "y": 320
+                            "y": 320,
+                            "horizontalRepeat": 9
                         }
                     ],
                     "Stone": [
                         {
                             "x": 576,
                             "y": 448
-                        }
-                    ],
-                    "Stone_Sx11": [
+                        },
                         {
                             "x": 1856,
-                            "y": 64
-                        }
-                    ],
-                    "Stone_Sx16": [
+                            "y": 64,
+                            "verticalRepeat": 11
+                        },
                         {
                             "x": 0,
-                            "y": 64
-                        }
-                    ],
-                    "Stone_S30x": [
+                            "y": 64,
+                            "verticalRepeat": 16
+                        },
                         {
                             "x": 0,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_Sx7": [
+                            "y": 0,
+                            "horizontalRepeat": 30
+                        },
                         {
                             "x": 1600,
-                            "y": 384
+                            "y": 384,
+                            "verticalRepeat": 7
                         }
                     ]
                 }
@@ -134,108 +131,102 @@
                     ]
                 },
                 "Terrain": {
-                    "MossyStone_S10x": [
+                    "MossyStone": [
                         {
                             "x": 0,
-                            "y": 1024
+                            "y": 1024,
+                            "horizontalRepeat": 10
                         },
                         {
                             "x": 384,
-                            "y": 1216
+                            "y": 1216,
+                            "horizontalRepeat": 10
                         },
                         {
                             "x": 384,
-                            "y": 1600
+                            "y": 1600,
+                            "horizontalRepeat": 10
                         },
                         {
                             "x": 384,
-                            "y": 2048
+                            "y": 2048,
+                            "horizontalRepeat": 10
                         },
                         {
                             "x": 640,
-                            "y": 1408
+                            "y": 1408,
+                            "horizontalRepeat": 10
                         },
                         {
                             "x": 640,
-                            "y": 2240
-                        }
-                    ],
-                    "MossyStone_S12x": [
+                            "y": 2240,
+                            "horizontalRepeat": 10
+                        },
                         {
                             "x": 2240,
-                            "y": 1664
-                        }
-                    ],
-                    "MossyStone_S3x": [
+                            "y": 1664,
+                            "horizontalRepeat": 12
+                        },
                         {
                             "x": 1216,
-                            "y": 1792
-                        }
-                    ],
-                    "MossyStone_S30x": [
+                            "y": 1792,
+                            "horizontalRepeat": 3
+                        },
                         {
                             "x": 896,
-                            "y": 832
-                        }
-                    ],
-                    "MossyStone_S42x": [
+                            "y": 832,
+                            "horizontalRepeat": 30
+                        },
                         {
                             "x": 320,
-                            "y": 2432
-                        }
-                    ],
-                    "MossyStone_S9x": [
+                            "y": 2432,
+                            "horizontalRepeat": 42
+                        },
                         {
                             "x": 640,
-                            "y": 1856
+                            "y": 1856,
+                            "horizontalRepeat": 9
                         }
                     ],
                     "Stone": [
                         {
                             "x": 1216,
                             "y": 1856
-                        }
-                    ],
-                    "Stone_Sx10": [
+                        },
                         {
                             "x": 2752,
-                            "y": 896
-                        }
-                    ],
-                    "Stone_Sx11": [
+                            "y": 896,
+                            "verticalRepeat": 10
+                        },
                         {
                             "x": 1984,
-                            "y": 1536
-                        }
-                    ],
-                    "Stone_Sx12": [
+                            "y": 1536,
+                            "verticalRepeat": 11
+                        },
                         {
                             "x": 0,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_Sx22": [
+                            "y": 0,
+                            "verticalRepeat": 12
+                        },
                         {
                             "x": 0,
-                            "y": 1088
-                        }
-                    ],
-                    "Stone_Sx39": [
+                            "y": 1088,
+                            "verticalRepeat": 22
+                        },
                         {
                             "x": 3008,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_S46x": [
+                            "y": 0,
+                            "verticalRepeat": 39
+                        },
                         {
                             "x": 64,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_Sx9": [
+                            "y": 0,
+                            "horizontalRepeat": 46
+                        },
                         {
                             "x": 2240,
-                            "y": 1728
+                            "y": 1728,
+                            "verticalRepeat": 9
                         }
                     ]
                 },
@@ -276,70 +267,73 @@
                         {
                             "x": 672,
                             "y": 416
-                        }
-                    ],
-                    "MossyStone_S37x": [
+                        },
                         {
                             "x": 64,
-                            "y": 1024
-                        }
-                    ],
-                    "MossyStone_S9x": [
+                            "y": 1024,
+                            "horizontalRepeat": 37
+                        },
                         {
                             "x": 1856,
-                            "y": 192
+                            "y": 192,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 1664,
-                            "y": 416
+                            "y": 416,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 96,
-                            "y": 928
+                            "y": 928,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 64,
-                            "y": 832
+                            "y": 832,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 96,
-                            "y": 736
+                            "y": 736,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 64,
-                            "y": 640
+                            "y": 640,
+                            "horizontalRepeat": 9
                         },
                         {
                             "x": 96,
-                            "y": 544
+                            "y": 544,
+                            "horizontalRepeat": 9
                         }
                     ],
-                    "Stone_Sx16": [
+                    "Stone": [
                         {
                             "x": 0,
-                            "y": 64
-                        }
-                    ],
-                    "Stone_Sx17": [
+                            "y": 64,
+                            "verticalRepeat": 16
+                        },
                         {
                             "x": 2432,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_S34x": [
+                            "y": 0,
+                            "verticalRepeat": 17
+                        },
                         {
                             "x": 0,
-                            "y": 0
-                        }
-                    ],
-                    "Stone_Sx8": [
+                            "y": 0,
+                            "horizontalRepeat": 34
+                        },
                         {
                             "x": 672,
-                            "y": 480
+                            "y": 480,
+                            "verticalRepeat": 8
                         },
                         {
                             "x": 2176,
-                            "y": 480
+                            "y": 480,
+                            "verticalRepeat": 8
                         }
                     ]
                 }
