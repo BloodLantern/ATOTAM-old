@@ -241,6 +241,7 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     isMovable = entJson["movable"];
     mass = entJson["mass"];
     box = new CollisionBox(entJson["offset_x"], entJson["offset_y"], entJson["width"], entJson["height"]);
+    layer = entJson["layer"];
 }
 
 Entity::~Entity()
@@ -629,6 +630,16 @@ void Entity::setFullName(const std::string &newFullName)
 unsigned long long Entity::getEntityID() const
 {
     return entityID;
+}
+
+float Entity::getLayer() const
+{
+    return layer;
+}
+
+void Entity::setLayer(float newLayer)
+{
+    layer = newLayer;
 }
 
 bool operator==(Entity a, Entity b) {

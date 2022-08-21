@@ -98,6 +98,9 @@ public:
 
     unsigned long long getEntityID() const;
 
+    float getLayer() const;
+    void setLayer(float newLayer);
+
 private:
     CollisionBox* box = nullptr;
     QImage* texture = nullptr; // Image to be rendered now
@@ -123,6 +126,7 @@ private:
     std::string state = "None"; // Which animation should be rendered
     std::string lastFrameState = "None"; // Which animation was rendered in the last frame
     int roomId = 0; // ID of the room in which this Entity is
+    float layer = 0.0; //The bigger layer the later the entity is drawn
 };
 
 bool operator==(Entity a, Entity b);

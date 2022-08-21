@@ -46,6 +46,7 @@ Projectile::Projectile(double x, double y, std::string facing, std::string type,
     damage = proJson["damage"];
     lifeTime = proJson["lifeTime"];
     kb = proJson["knockback"];
+    setLayer(proJson["layer"]);
 
     if (type == "Beam") {
         setState(facing);

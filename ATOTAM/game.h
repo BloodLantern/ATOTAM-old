@@ -183,7 +183,7 @@ private:
     std::string doorTransition = "";
     nlohmann::json params;
     std::string language;
-    Dialogue currentDialogue;
+    Dialogue currentDialogue = Dialogue();
     QPoint cameraBeforeMapViewer;
     double menuArrowsTime = 0.0;
     bool renderHitboxes = false; // Render hitboxes as rectangles
