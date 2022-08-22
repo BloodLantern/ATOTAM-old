@@ -25,6 +25,7 @@ public:
     void wheelEvent(QWheelEvent*) override;
     void keyPressEvent(QKeyEvent*) override;
 
+    void getInputs();
     nlohmann::json loadJson(std::string);
     void saveJson(nlohmann::json json, std::string fileName);
     QPoint getClickAreaOffset(Entity*);
@@ -53,10 +54,11 @@ public:
     void setSelected(Entity *newSelected);
     std::vector<Edit*> &getEdits();
     void setEdits(std::vector<Edit*> &newEdits);
+    std::map<std::string, bool> &getInputList();
+    void setInputList(std::map<std::string, bool> &newInputList);
 
 private:
     void drawEntity(Entity* ent, QPainter* painter);
-    void getInputs();
 
     std::vector<Edit*> edits;
     nlohmann::json editorJson = nlohmann::json();
