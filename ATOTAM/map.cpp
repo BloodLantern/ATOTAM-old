@@ -1,11 +1,5 @@
-#include "Entities/monster.h"
-#include "Entities/savepoint.h"
+
 #include "map.h"
-#include <fstream>
-#include <Entities/area.h>
-#include <Entities/door.h>
-#include <Entities/npc.h>
-#include <Entities/terrain.h>
 
 Map::Map()
 {

@@ -1,10 +1,16 @@
 #ifndef MAP_H
 #define MAP_H
-
+#include "Entities/monster.h"
+#include "Entities/savepoint.h"
+#include <fstream>
+#include "Entities/area.h"
+#include "Entities/door.h"
+#include "Entities/npc.h"
+#include "Entities/terrain.h"
+#include "Entities/entity.h"
 #define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "nlohmann/json.hpp"
 #include <string>
-#include <Entities/entity.h>
 
 class Map
 {

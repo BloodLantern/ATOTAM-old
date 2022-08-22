@@ -1,9 +1,9 @@
 {
-    "damageDone": 890,
-    "damageReceived": 470,
-    "deaths": 4,
-    "playTime": 1430,
-    "roomID": 1,
+    "damageDone": 950,
+    "damageReceived": 1270,
+    "deaths": 12,
+    "playTime": 1637,
+    "roomID": 0,
     "roomsDiscovered": {
         "test": [
             2,
@@ -20,5 +20,5 @@
         "missiles": 4
     },
     "saveMapName": "test",
-    "savepointID": 1
+    "savepointID": 0
 }

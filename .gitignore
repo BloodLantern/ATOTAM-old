@@ -32,12 +32,11 @@
 .app
 ATOTAM/ATOTAM.pro.user
 ATOTAM/ATOTAM_en_US.ts.autosave
-BUILD/*.*
-BUILD/*
+BUILD_ATOTAM/*.*
+BUILD_ATOTAM/*
+BUILD_ATOTAM_MapEditor/*.*
+BUILD_ATOTAM_MapEditor/*
 *.qrc
-ATOTAM/BUILD/Makefile
 *.debug
 *.qm
-BUILD/.qtc_clangd/.cache/clangd/index/living.cpp.6971BE43DD800502.idx
-BUILD/.qtc_clangd/.cache/clangd/index/mainwindow.cpp.CD59DAB53057070F.idx
-BUILD/.qtc_clangd/compile_commands.json
+*.idx

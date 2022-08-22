@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "Editor/editorpreview.h"
 #include "qcoreevent.h"
 #include "physics.h"
 #include "qevent.h"
@@ -28,19 +27,12 @@ MainWindow::MainWindow(QApplication *app, std::string assetsPath)
     else
         show();
 
-    nlohmann::json editorJson = game->loadJson("map_editor");
-    if (editorJson["enabled"])
-        setupEditorWindow(editorJson);
     QCoreApplication::instance()->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete game;
-    if (editorWindow != nullptr) {
-        editorWindow->close();
-        delete editorWindow;
-    }
 }
 
 bool MainWindow::eventFilter(QObject* object, QEvent* event) {
@@ -106,38 +98,6 @@ void MainWindow::getInputs()
         for (nlohmann::json::iterator i = game->getKeyCodes().begin(); i != game->getKeyCodes().end(); i++) {
             (*game->getInputList())[i.key()] = 0;
         }
-}
-
-void MainWindow::setupEditorWindow(nlohmann::json editorJson)
-{
-    // Map preview
-    Map editedMap = Map::loadMap(editorJson["lastLaunch"]["map"]["id"], game->getAssetsPath());
-    EditorPreview* preview = new EditorPreview(&editedMap, &errorTexture, &emptyTexture, &renderingMultiplier, editorJson, Physics::frameRate);
-    preview->setAssetsPath(game->getAssetsPath());
-
-    // Window
-    editorWindow = new EditorWindow(preview);
-    editorWindow->setWindowTitle("ATOTAM Map Editor");
-    editorWindow->setMinimumSize(QSize(editorJson["values"]["minimumWindowSize"][0], editorJson["values"]["minimumWindowSize"][1]));
-    // Set window screen
-    QList<QScreen*> screens = m_qApp->screens();
-    if (screens.size() > 1) {
-        editorWindow->setScreen(screens[1]);
-        editorWindow->setGeometry(screens[1]->geometry().center().x() - static_cast<int>(editorJson["lastLaunch"]["window"]["size"][0])/2,
-                screens[1]->geometry().center().y() - static_cast<int>(editorJson["lastLaunch"]["window"]["size"][1])/2, 800, 600);
-    }
-
-    // Widgets inside the window
-
-    // Align widgets
-    QSplitter* splitter = new QSplitter;
-    splitter->addWidget(preview);
-
-    editorWindow->setCentralWidget(splitter);
-    if (editorJson["lastLaunch"]["window"]["maximized"])
-        editorWindow->showMaximized();
-    else
-        editorWindow->show();
 }
 
 void MainWindow::setupToDraw()
@@ -832,16 +792,6 @@ Game *MainWindow::getGame() const
 void MainWindow::setGame(Game *newGame)
 {
     game = newGame;
-}
-
-EditorWindow *MainWindow::getEditorWindow() const
-{
-    return editorWindow;
-}
-
-void MainWindow::setEditorWindow(EditorWindow *newEditorWindow)
-{
-    editorWindow = newEditorWindow;
 }
 
 bool MainWindow::getRender() const
