@@ -8,6 +8,7 @@ class Area : public Entity
 public:
     Area(double x, double y, CollisionBox* box, QImage* texture, std::string name);
     Area(double x, double y, std::string name);
+    Area(const Area&);
     ~Area();
 
     const std::string &getAreaType() const;

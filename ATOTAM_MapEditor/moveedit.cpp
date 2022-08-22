@@ -16,7 +16,10 @@ MoveEdit::MoveEdit(Map *map, int roomId, QPoint* delta)
 
 MoveEdit::~MoveEdit()
 {
-    delete delta;
+    if (delta) {
+        delete delta;
+        delta = nullptr;
+    }
 }
 
 

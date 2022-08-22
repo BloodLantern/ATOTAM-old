@@ -22,12 +22,21 @@ AddEdit::AddEdit(Map *map, int roomId)
 
 }
 
+AddEdit::~AddEdit()
+{
+    if (!made && entity && !roomEdit) {
+        delete entity;
+        entity = nullptr;
+    }
+}
+
 void AddEdit::unmake()
 {
     if (roomEdit) {
     } else {
         RemoveEdit edit(map, entity, entityList, selectedEntity);
         edit.make();
+        edit.setMade(false);
     }
     made = false;
 }

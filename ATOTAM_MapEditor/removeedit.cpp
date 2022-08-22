@@ -17,8 +17,10 @@ RemoveEdit::RemoveEdit(Map* map, int roomId)
 
 RemoveEdit::~RemoveEdit()
 {
-    if (!roomEdit)
+    if (!roomEdit && made && entity) {
         delete entity;
+        entity = nullptr;
+    }
 }
 
 

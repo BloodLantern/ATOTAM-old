@@ -18,10 +18,18 @@ Living::Living(double x, double y, std::string facing, std::string name)
     groundBox = new CollisionBox(getBox()->getX(), getBox()->getY() + getBox()->getHeight(), getBox()->getWidth(), 1);
 }
 
+Living::Living(const Living &living)
+    : Living(living.getX(), living.getY(), living.getFacing(), living.getName())
+{
+
+}
+
 Living::~Living()
 {
-    if (groundBox != nullptr)
+    if (groundBox != nullptr) {
         delete groundBox;
+        groundBox = nullptr;
+    }
 }
 
 bool Living::hit(int damage, Entity *origin, double kb, bool forced)

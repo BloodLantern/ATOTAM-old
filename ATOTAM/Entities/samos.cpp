@@ -24,8 +24,14 @@ Samos::Samos(double x, double y, int maxHealth, int maxGrenadeCount, int maxMiss
 
 Samos::~Samos()
 {
-    delete wallBoxL;
-    delete wallBoxR;
+    if (wallBoxL) {
+        delete wallBoxL;
+        wallBoxL = nullptr;
+    }
+    if (wallBoxR) {
+        delete wallBoxR;
+        wallBoxR = nullptr;
+    }
 }
 
 Projectile* Samos::shoot(std::string type)

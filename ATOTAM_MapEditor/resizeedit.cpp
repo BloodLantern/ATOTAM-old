@@ -20,8 +20,14 @@ ResizeEdit::ResizeEdit(Map *map, int roomId, Direction direction, std::pair<int,
 
 ResizeEdit::~ResizeEdit()
 {
-    delete delta;
-    delete move;
+    if (delta) {
+        delete delta;
+        delta = nullptr;
+    }
+    if (move) {
+        delete move;
+        move = nullptr;
+    }
 }
 
 void ResizeEdit::unmake()

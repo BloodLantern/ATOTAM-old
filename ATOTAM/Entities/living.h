@@ -10,6 +10,7 @@ public:
 
     Living(double x, double y, CollisionBox* box, QImage* texture, std::string entityType, int health, int maxHealth, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable);
     Living(double x, double y, std::string facing, std::string name);
+    Living(const Living&);
     ~Living();
 
     bool hit(int damage, Entity *origin = nullptr, double kb = 0, bool forced = false);

@@ -244,10 +244,28 @@ Entity::Entity(double x, double y, std::string facing, std::string name)
     layer = entJson["layer"];
 }
 
+Entity::Entity(const Entity &entity)
+    : Entity(entity.x, entity.y, entity.facing, entity.name)
+{
+    // Texture
+    setState(entity.getState());
+    setHorizontalRepeat(entity.getHorizontalRepeat());
+    setVerticalRepeat(entity.getVerticalRepeat());
+    setCurrentAnimation(updateAnimation());
+    setFrame(0);
+    updateTexture();
+    // Box
+    box->setWidth(box->getWidth() * getHorizontalRepeat());
+    box->setHeight(box->getHeight() * getVerticalRepeat());
+    roomId = entity.getRoomId();
+}
+
 Entity::~Entity()
 {
-    if (box != nullptr)
+    if (box != nullptr) {
         delete box;
+        box = nullptr;
+    }
 }
 
 void Entity::updateTexture()
@@ -608,7 +626,7 @@ void Entity::setNameParameters(const std::vector<std::string> &newNameParameters
 
 const std::string &Entity::getFullName() const
 {
-    return fullName;
+    return fullName == "" ? name : fullName;
 }
 
 void Entity::setFullName(const std::string &newFullName)

@@ -14,6 +14,12 @@ Area::Area(double x, double y, std::string name) :
     setState("Normal");
 }
 
+Area::Area(const Area &area)
+    : Area(area.getX(), area.getY(), area.getName())
+{
+
+}
+
 Area::~Area()
 {
 

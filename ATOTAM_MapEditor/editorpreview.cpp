@@ -28,8 +28,14 @@ EditorPreview::EditorPreview(Map* map, QImage* errorTexture, QImage* emptyTextur
 
 EditorPreview::~EditorPreview()
 {
-    delete emptyTexture;
-    delete errorTexture;
+    if (emptyTexture) {
+        delete emptyTexture;
+        emptyTexture = nullptr;
+    }
+    if (errorTexture) {
+        delete errorTexture;
+        errorTexture = nullptr;
+    }
 }
 
 void EditorPreview::getInputs()
@@ -71,7 +77,7 @@ void EditorPreview::saveJson(nlohmann::json json, std::string fileName)
 
 QPoint EditorPreview::getClickAreaOffset(Entity *ent)
 {
-    if (ent->getTexture() != emptyTexture)
+    if (ent->getTexture() != nullptr && ent->getTexture() != emptyTexture)
         return ent->getTexture()->offset();
     else
         return QPoint(ent->getBox()->getX(), ent->getBox()->getY());
@@ -79,7 +85,7 @@ QPoint EditorPreview::getClickAreaOffset(Entity *ent)
 
 std::pair<int, int> EditorPreview::getClickAreaSize(Entity *ent)
 {
-    if (ent->getTexture() != emptyTexture)
+    if (ent->getTexture() != nullptr && ent->getTexture() != emptyTexture)
         return std::pair<int, int>(ent->getTexture()->width(), ent->getTexture()->height());
     else
         return std::pair<int, int>(ent->getBox()->getWidth(), ent->getBox()->getHeight());
@@ -175,8 +181,6 @@ void EditorPreview::duplicateObject()
     if (selected) {
         clearUnmadeEdits();
         Entity* ent = new Entity(*selected);
-        ent->setBox(new CollisionBox(*selected->getBox()));
-        ent->setTexture(new QImage(*selected->getTexture()));
         addObject(ent);
     }
 }
@@ -308,10 +312,10 @@ void EditorPreview::drawEntity(Entity* ent, QPainter* painter)
     }
 
     // Make sure not to draw the Entities that aren't visible
-    if (x + ent->getTexture()->offset().x() + ent->getTexture()->width() * renderingMultiplier < camera.x() // If too much on the left
-            || x + ent->getTexture()->offset().x() > camera.x() + width() / zoomFactor // If too much on the right
-            || y + ent->getTexture()->offset().y() + ent->getTexture()->height() * renderingMultiplier < camera.y() // If too high
-            || y + ent->getTexture()->offset().y() > camera.y() + height() / zoomFactor) // If too low
+    if (x + getClickAreaOffset(ent).x() + getClickAreaSize(ent).first * renderingMultiplier < camera.x() // If too much on the left
+            || x + getClickAreaOffset(ent).x() > camera.x() + width() / zoomFactor // If too much on the right
+            || y + getClickAreaOffset(ent).y() + getClickAreaSize(ent).second * renderingMultiplier < camera.y() // If too high
+            || y + getClickAreaOffset(ent).y() > camera.y() + height() / zoomFactor) // If too low
         return;
 
     // This Entity is visible so add it to the visible Entities vector
