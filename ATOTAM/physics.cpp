@@ -1000,6 +1000,11 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         }
     }
 
+    if (inputList["down"] && !s->getOnGround())
+        s->setFastFalling(true);
+    else
+        s->setFastFalling(false);
+
     if (s->getState() == "MorphBall") {
         if (std::abs(s->getVX()) < 1)
             s->setState("MorphBallStop");
@@ -1038,6 +1043,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
     //Physics settings
     nlohmann::json paramJson = Entity::values["general"];
     double speedcap = static_cast<double>(paramJson["speedcap"]);
+    double fallcap = static_cast<double>(paramJson["fallcap"]);
     double slowcap = static_cast<double>(paramJson["slowcap"]);
     //Deletion list
     std::vector<Entity*> toDel;
@@ -1065,8 +1071,14 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
         if (s->getIsMovable()) {
             //Calc earth's attraction's acceleration if the (*ent)ity is affected
             if (s->getIsAffectedByGravity() && !s->getOnGround()) {
-                s->setVY(s->getVY() + gravity / frameRate);
+                if (s->getFastFalling())
+                    s->setVY(s->getVY() + 2 * gravity / frameRate);
+                else if (s->getVY() < fallcap)
+                    s->setVY(s->getVY() + gravity / frameRate);
+                else if (s->getVY() > fallcap + gravity / frameRate)
+                    s->setVY(s->getVY() - gravity / (2 * frameRate));
             }
+
             //Calc frictions
             if (s->getOnGround()) {
                 //Grounded frictions
@@ -1113,7 +1125,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
 
         if ((*m)->getIsMovable()) {
             //Calc earth's attraction's acceleration if the (*ent)ity is affected
-            if ((*m)->getIsAffectedByGravity() && !(*m)->getOnGround()) {
+            if ((*m)->getIsAffectedByGravity() && !(*m)->getOnGround() && (*m)->getVY() < fallcap) {
                 (*m)->setVY((*m)->getVY() + gravity / frameRate);
             }
             //Calc frictions
@@ -1169,7 +1181,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
 
         if ((*n)->getIsMovable()) {
             //Calc earth's attraction's acceleration if the (*ent)ity is affected
-            if ((*n)->getIsAffectedByGravity() && !(*n)->getOnGround()) {
+            if ((*n)->getIsAffectedByGravity() && !(*n)->getOnGround() && (*n)->getVY() < fallcap) {
                 (*n)->setVY((*n)->getVY() + gravity / frameRate);
             }
             //Calc frictions
@@ -1226,7 +1238,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
 
         if ((*d)->getIsMovable()) {
             //Calc earth's attraction's acceleration if the (*ent)ity is affected
-            if ((*d)->getIsAffectedByGravity() && !(*d)->getOnGround()) {
+            if ((*d)->getIsAffectedByGravity() && !(*d)->getOnGround() && (*d)->getVY() < fallcap) {
                 (*d)->setVY((*d)->getVY() + gravity / frameRate);
             }
             //Calc frictions
@@ -1274,7 +1286,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
 
         if ((*a)->getIsMovable()) {
             //Non-living objects can't be grounded
-            if ((*a)->getIsAffectedByGravity())
+            if ((*a)->getIsAffectedByGravity() && (*a)->getVY() < fallcap)
                 (*a)->setVY((*a)->getVY() + gravity / frameRate);
 
             if (std::abs((*a)->getVX()) < speedcap) {
@@ -1306,7 +1318,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
 
         if ((*p)->getIsMovable()) {
             //Non-living objects can't be grounded
-            if ((*p)->getIsAffectedByGravity())
+            if ((*p)->getIsAffectedByGravity() && (*p)->getVY() < fallcap)
                 (*p)->setVY((*p)->getVY() + gravity / frameRate);
 
             if (std::abs((*p)->getVX()) < speedcap) {

@@ -275,3 +275,13 @@ void Samos::setSpeedRetained(double newSpeedRetained)
 {
     speedRetained = newSpeedRetained;
 }
+
+bool Samos::getFastFalling() const
+{
+    return fastFalling;
+}
+
+void Samos::setFastFalling(bool newFastFalling)
+{
+    fastFalling = newFastFalling;
+}

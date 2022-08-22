@@ -143,9 +143,10 @@
                 "Terrain": {
                     "MossyStone": [
                         {
-                            "horizontalRepeat": 10,
-                            "x": 0,
-                            "y": 1024
+                            "horizontalRepeat": 6,
+                            "verticalRepeat": 1,
+                            "x": 0.0,
+                            "y": 1024.0
                         },
                         {
                             "horizontalRepeat": 10,
@@ -183,9 +184,10 @@
                             "y": 1792
                         },
                         {
-                            "horizontalRepeat": 30,
-                            "x": 896,
-                            "y": 832
+                            "horizontalRepeat": 35,
+                            "verticalRepeat": 1,
+                            "x": 576.0,
+                            "y": 832.0
                         },
                         {
                             "horizontalRepeat": 42,
@@ -202,6 +204,12 @@
                             "verticalRepeat": 1,
                             "x": 2240.0,
                             "y": 1984.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 1,
+                            "x": 2944.0,
+                            "y": 576.0
                         }
                     ],
                     "Stone": [
@@ -217,8 +225,8 @@
                         },
                         {
                             "verticalRepeat": 10,
-                            "x": 2688,
-                            "y": 896
+                            "x": 2752.0,
+                            "y": 896.0
                         },
                         {
                             "verticalRepeat": 11,

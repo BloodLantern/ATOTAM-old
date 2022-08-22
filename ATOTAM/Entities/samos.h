@@ -61,6 +61,9 @@ public:
     double getSpeedRetained() const;
     void setSpeedRetained(double newSpeedRetained);
 
+    bool getFastFalling() const;
+    void setFastFalling(bool newFastFalling);
+
 private:
     bool isInAltForm = false;
     int grenadeCount = 0;
@@ -77,6 +80,7 @@ private:
     CollisionBox* wallBoxL = nullptr;
     double speedRetained = 0.0;
     double retainTime = 0.0;
+    bool fastFalling = false;
 };
 
 #endif // SAMOS_H
