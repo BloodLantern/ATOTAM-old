@@ -5,6 +5,7 @@
 	"down": 40,
 	"jump": 83,
 	"aim": 160,
+	"run": 162,
 	"morph": 90,
 	"grapple": 81,
 	"weapon": 69,

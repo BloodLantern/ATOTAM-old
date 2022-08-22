@@ -24,6 +24,14 @@
                     ]
                 },
                 "NPC": {
+                    "Savepoint": [
+                        {
+                            "spID": 0,
+                            "state": "Normal",
+                            "x": 1216,
+                            "y": 192
+                        }
+                    ],
                     "TalkingNPC": [
                         {
                             "facing": "Left",
@@ -31,15 +39,7 @@
                             "x": 600,
                             "y": 950
                         }
-                    ],
-					"Savepoint": [
-						{
-							"x": 1216,
-							"y": 192,
-							"state": "Normal",
-							"spID": 0
-						}
-					]
+                    ]
                 },
                 "Terrain": {
                     "MossyStone": [
@@ -48,29 +48,29 @@
                             "y": 448
                         },
                         {
+                            "horizontalRepeat": 29,
                             "x": 64,
-                            "y": 1024,
-                            "horizontalRepeat": 29
+                            "y": 1024
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 64,
-                            "y": 384,
-                            "horizontalRepeat": 9
+                            "y": 384
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 384,
-                            "y": 640,
-                            "horizontalRepeat": 9
+                            "y": 640
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 192,
-                            "y": 832,
-                            "horizontalRepeat": 9
+                            "y": 832
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 1088,
-                            "y": 320,
-                            "horizontalRepeat": 9
+                            "y": 320
                         }
                     ],
                     "Stone": [
@@ -79,24 +79,24 @@
                             "y": 448
                         },
                         {
+                            "verticalRepeat": 11,
                             "x": 1856,
-                            "y": 64,
-                            "verticalRepeat": 11
+                            "y": 64
                         },
                         {
+                            "verticalRepeat": 16,
                             "x": 0,
-                            "y": 64,
-                            "verticalRepeat": 16
+                            "y": 64
                         },
                         {
+                            "horizontalRepeat": 30,
                             "x": 0,
-                            "y": 0,
-                            "horizontalRepeat": 30
+                            "y": 0
                         },
                         {
+                            "verticalRepeat": 7,
                             "x": 1600,
-                            "y": 384,
-                            "verticalRepeat": 7
+                            "y": 384
                         }
                     ]
                 }
@@ -130,62 +130,78 @@
                         }
                     ]
                 },
+                "NPC": {
+                    "Savepoint": [
+                        {
+                            "spID": 1,
+                            "state": "Normal",
+                            "x": 2540,
+                            "y": 1536
+                        }
+                    ]
+                },
                 "Terrain": {
                     "MossyStone": [
                         {
+                            "horizontalRepeat": 10,
                             "x": 0,
-                            "y": 1024,
-                            "horizontalRepeat": 10
+                            "y": 1024
                         },
                         {
-                            "x": 384,
-                            "y": 1216,
-                            "horizontalRepeat": 10
+                            "horizontalRepeat": 10,
+                            "x": 384.0,
+                            "y": 1216.0
                         },
                         {
-                            "x": 384,
-                            "y": 1600,
-                            "horizontalRepeat": 10
+                            "horizontalRepeat": 10,
+                            "x": 384.0,
+                            "y": 1600.0
                         },
                         {
-                            "x": 384,
-                            "y": 2048,
-                            "horizontalRepeat": 10
+                            "horizontalRepeat": 10,
+                            "x": 384.0,
+                            "y": 2048.0
                         },
                         {
-                            "x": 640,
-                            "y": 1408,
-                            "horizontalRepeat": 10
+                            "horizontalRepeat": 10,
+                            "x": 640.0,
+                            "y": 1408.0
                         },
                         {
-                            "x": 640,
-                            "y": 2240,
-                            "horizontalRepeat": 10
+                            "horizontalRepeat": 10,
+                            "x": 640.0,
+                            "y": 2240.0
                         },
                         {
+                            "horizontalRepeat": 12,
                             "x": 2240,
-                            "y": 1664,
-                            "horizontalRepeat": 12
+                            "y": 1664
                         },
                         {
+                            "horizontalRepeat": 3,
                             "x": 1216,
-                            "y": 1792,
-                            "horizontalRepeat": 3
+                            "y": 1792
                         },
                         {
+                            "horizontalRepeat": 30,
                             "x": 896,
-                            "y": 832,
-                            "horizontalRepeat": 30
+                            "y": 832
                         },
                         {
+                            "horizontalRepeat": 42,
                             "x": 320,
-                            "y": 2432,
-                            "horizontalRepeat": 42
+                            "y": 2432
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 640,
-                            "y": 1856,
-                            "horizontalRepeat": 9
+                            "y": 1856
+                        },
+                        {
+                            "horizontalRepeat": 12,
+                            "verticalRepeat": 1,
+                            "x": 2240.0,
+                            "y": 1984.0
                         }
                     ],
                     "Stone": [
@@ -194,52 +210,49 @@
                             "y": 1856
                         },
                         {
-                            "x": 2752,
-                            "y": 896,
-                            "verticalRepeat": 10
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 2,
+                            "x": 2240.0,
+                            "y": 1728.0
                         },
                         {
-                            "x": 1984,
-                            "y": 1536,
-                            "verticalRepeat": 11
+                            "verticalRepeat": 10,
+                            "x": 2688,
+                            "y": 896
                         },
                         {
+                            "verticalRepeat": 11,
+                            "x": 1764.0,
+                            "y": 1536.0
+                        },
+                        {
+                            "verticalRepeat": 12,
                             "x": 0,
-                            "y": 0,
-                            "verticalRepeat": 12
+                            "y": 0
                         },
                         {
+                            "verticalRepeat": 22,
                             "x": 0,
-                            "y": 1088,
-                            "verticalRepeat": 22
+                            "y": 1088
                         },
                         {
+                            "verticalRepeat": 39,
                             "x": 3008,
-                            "y": 0,
-                            "verticalRepeat": 39
+                            "y": 0
                         },
                         {
+                            "horizontalRepeat": 46,
                             "x": 64,
-                            "y": 0,
-                            "horizontalRepeat": 46
+                            "y": 0
                         },
                         {
-                            "x": 2240,
-                            "y": 1728,
-                            "verticalRepeat": 9
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 2240.0,
+                            "y": 2048.0
                         }
                     ]
-                },
-				"NPC": {
-					"Savepoint": [
-						{
-							"x": 2540,
-							"y": 1536,
-							"state": "Normal",
-							"spID": 1
-						}
-					]
-				}
+                }
             },
             "position": [
                 1920,
@@ -269,71 +282,71 @@
                             "y": 416
                         },
                         {
+                            "horizontalRepeat": 37,
                             "x": 64,
-                            "y": 1024,
-                            "horizontalRepeat": 37
+                            "y": 1024
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 1856,
-                            "y": 192,
-                            "horizontalRepeat": 9
+                            "y": 192
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 1664,
-                            "y": 416,
-                            "horizontalRepeat": 9
+                            "y": 416
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 96,
-                            "y": 928,
-                            "horizontalRepeat": 9
+                            "y": 928
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 64,
-                            "y": 832,
-                            "horizontalRepeat": 9
+                            "y": 832
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 96,
-                            "y": 736,
-                            "horizontalRepeat": 9
+                            "y": 736
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 64,
-                            "y": 640,
-                            "horizontalRepeat": 9
+                            "y": 640
                         },
                         {
+                            "horizontalRepeat": 9,
                             "x": 96,
-                            "y": 544,
-                            "horizontalRepeat": 9
+                            "y": 544
                         }
                     ],
                     "Stone": [
                         {
+                            "verticalRepeat": 16,
                             "x": 0,
-                            "y": 64,
-                            "verticalRepeat": 16
+                            "y": 64
                         },
                         {
+                            "verticalRepeat": 17,
                             "x": 2432,
-                            "y": 0,
-                            "verticalRepeat": 17
+                            "y": 0
                         },
                         {
+                            "horizontalRepeat": 34,
                             "x": 0,
-                            "y": 0,
-                            "horizontalRepeat": 34
+                            "y": 0
                         },
                         {
+                            "verticalRepeat": 8,
                             "x": 672,
-                            "y": 480,
-                            "verticalRepeat": 8
+                            "y": 480
                         },
                         {
+                            "verticalRepeat": 8,
                             "x": 2176,
-                            "y": 480,
-                            "verticalRepeat": 8
+                            "y": 480
                         }
                     ]
                 }

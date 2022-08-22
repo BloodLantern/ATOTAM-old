@@ -52,7 +52,8 @@ Projectile* Samos::shoot(std::string type)
         shootState = "Falling";
     else if (getState() == "IdleCrouch" || getState() == "CrouchAimUp" || getState() == "CrouchAimUpDiag" || getState() == "CrouchAimDownDiag" || getState() == "Crouching")
         shootState = "Crouching";
-    else if (getState() == "Walking" || getState() == "WalkingAimForward" || getState() == "WalkingAimDown" || getState() == "WalkingAimUp")
+    else if (getState() == "Walking" || getState() == "WalkingAimForward" || getState() == "WalkingAimDown" || getState() == "WalkingAimUp"
+             || getState() == "Running" || getState() == "RunningAimForward" || getState() == "RunningAimDown" || getState() == "RunningAimUp")
         shootState = "Walking";
     else if (getState() == "MorphBall")
         shootState = "Morph";
@@ -253,4 +254,24 @@ double Samos::getLagTime() const
 void Samos::setLagTime(double newLagTime)
 {
     lagTime = newLagTime;
+}
+
+double Samos::getRetainTime() const
+{
+    return retainTime;
+}
+
+void Samos::setRetainTime(double newRetainTime)
+{
+    retainTime = newRetainTime;
+}
+
+double Samos::getSpeedRetained() const
+{
+    return speedRetained;
+}
+
+void Samos::setSpeedRetained(double newSpeedRetained)
+{
+    speedRetained = newSpeedRetained;
 }

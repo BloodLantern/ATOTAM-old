@@ -55,6 +55,12 @@ public:
     double getLagTime() const;
     void setLagTime(double newLagTime);
 
+    double getRetainTime() const;
+    void setRetainTime(double newRetainTime);
+
+    double getSpeedRetained() const;
+    void setSpeedRetained(double newSpeedRetained);
+
 private:
     bool isInAltForm = false;
     int grenadeCount = 0;
@@ -69,6 +75,8 @@ private:
     std::string selectedWeapon = "Beam";
     CollisionBox* wallBoxR = nullptr;
     CollisionBox* wallBoxL = nullptr;
+    double speedRetained = 0.0;
+    double retainTime = 0.0;
 };
 
 #endif // SAMOS_H

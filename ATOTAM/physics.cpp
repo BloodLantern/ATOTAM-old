@@ -81,6 +81,14 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     std::vector<Entity*> toAdd;
     if (s->getState() == "MorphBallStop" || s->getState() == "MorphBallSlow" || s->getState() == "MorphBallSuperSlow")
         s->setState("MorphBall");
+    else if (s->getState() == "Running")
+        s->setState("Walking");
+    else if (s->getState() == "RunningAimForward")
+        s->setState("WalkingAimForward");
+    else if (s->getState() == "RunningAimUp")
+        s->setState("WalkingAimUp");
+    else if (s->getState() == "RunningAimDown")
+        s->setState("WalkingAimDown");
 
     if (s->getLagTime() > 0.0)
         s->setLagTime(s->getLagTime() - 1 / frameRate);
@@ -189,10 +197,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                                    && s->getVX() > -static_cast<double>(samosJson["morphGroundMaxSpeed"])) {
                             s->setVX(-static_cast<double>(samosJson["morphGroundMaxSpeed"]));
                         }
-                        if (s->getVX() < 0)
-                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                        else
-                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
                     } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                     s->setFacing("Left");
@@ -208,10 +213,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                                    && s->getVX() < static_cast<double>(samosJson["morphGroundMaxSpeed"])) {
                             s->setVX(static_cast<double>(samosJson["morphGroundMaxSpeed"]));
                         }
-                        if (s->getVX() > 0)
-                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                        else
-                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
                     } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                     s->setFacing("Right");
@@ -240,10 +242,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                                    && s->getVX() > -static_cast<double>(samosJson["morphAirMaxSpeed"])) {
                             s->setVX(-static_cast<double>(samosJson["morphAirMaxSpeed"]));
                         }
-                        if (s->getVX() < 0)
-                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                        else
-                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
                     } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                     s->setFacing("Left");
@@ -265,10 +264,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                                    && s->getVX() < static_cast<double>(samosJson["morphAirMaxSpeed"])) {
                             s->setVX(static_cast<double>(samosJson["morphAirMaxSpeed"]));
                         }
-                        if (s->getVX() > 0)
-                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                        else
-                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
                     } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                     s->setFacing("Right");
@@ -347,11 +343,25 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             if ((!s->getOnGround() && s->getIsAffectedByGravity()) || s->getState() == "Jumping") {
                 if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
                     if (s->getFacing() == "Left") {
-                        if (!wallL)
-                            s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+                        if (!wallL) {
+                            if (s->getVX() > static_cast<double>(samosJson["wallJumpPower_x"]))
+                                s->setVX(-s->getVX());
+                            else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() > static_cast<double>(samosJson["wallJumpPower_x"])) {
+                                s->setVX(-s->getSpeedRetained());
+                                s->setRetainTime(0.0);
+                            } else if (s->getVX() > -static_cast<double>(samosJson["wallJumpPower_x"]))
+                                s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+                        }
                     } else {
-                        if (!wallR)
-                            s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
+                        if (!wallR) {
+                            if (s->getVX() < -static_cast<double>(samosJson["wallJumpPower_x"]))
+                                s->setVX(-s->getVX());
+                            else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() < -static_cast<double>(samosJson["wallJumpPower_x"])) {
+                                s->setVX(-s->getSpeedRetained());
+                                s->setRetainTime(0.0);
+                            } else if (s->getVX() < static_cast<double>(samosJson["wallJumpPower_x"]))
+                                s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
+                        }
                     }
                     s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
                     s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
@@ -391,16 +401,25 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                         s->setState("MorphBalling");
                 } else if (inputList["left"] && !inputList["right"]) {
                     if (!wallL && canStand && s->getLagTime() <= 0.0) {
-                        if (s->getVX() > (static_cast<double>(samosJson["groundAcceleration"]) / frameRate - static_cast<double>(samosJson["groundMaxSpeed"]))) {
-                            s->setVX(s->getVX() - static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
-                        } else if (s->getVX() < (static_cast<double>(samosJson["groundAcceleration"]) / frameRate - static_cast<double>(samosJson["groundMaxSpeed"]))
-                                   && s->getVX() > -static_cast<double>(samosJson["groundMaxSpeed"])) {
-                            s->setVX(-static_cast<double>(samosJson["groundMaxSpeed"]));
+                        if (!inputList["run"]) {
+                            if (s->getVX() > (static_cast<double>(samosJson["groundAcceleration"]) / frameRate - static_cast<double>(samosJson["groundMaxSpeed"]))) {
+                                s->setVX(s->getVX() - static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
+                            } else if (s->getVX() < (static_cast<double>(samosJson["groundAcceleration"]) / frameRate - static_cast<double>(samosJson["groundMaxSpeed"]))
+                                       && s->getVX() > -static_cast<double>(samosJson["groundMaxSpeed"])) {
+                                s->setVX(-static_cast<double>(samosJson["groundMaxSpeed"]));
+                            }
+                        } else {
+                            if (s->getVX() > (static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate - static_cast<double>(samosJson["groundRunMaxSpeedGap"]))) {
+                                if (s->getVX() > -static_cast<double>(samosJson["groundMaxSpeed"]))
+                                    s->setVX(s->getVX() - static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
+                                else
+                                    s->setVX(s->getVX() - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate);
+                            } else if (s->getVX() < (static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate - static_cast<double>(samosJson["groundRunMaxSpeedGap"]))
+                                       && s->getVX() > -static_cast<double>(samosJson["groundRunMaxSpeed"])) {
+                                s->setVX(-static_cast<double>(samosJson["groundRunMaxSpeed"]));
+                            }
                         }
-                        if (s->getVX() < 0)
-                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                        else
-                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
                     } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                     s->setFacing("Left");
@@ -422,16 +441,25 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                     }
                 } else if (!inputList["left"] && inputList["right"]) {
                     if (!wallR && canStand && s->getLagTime() <= 0.0) {
-                        if (s->getVX() < (static_cast<double>(samosJson["groundMaxSpeed"]) - static_cast<double>(samosJson["groundAcceleration"]) / frameRate)) {
-                            s->setVX(s->getVX() + static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
-                        } else if (s->getVX() > (static_cast<double>(samosJson["groundMaxSpeed"]) - static_cast<double>(samosJson["groundAcceleration"]) / frameRate)
-                                   && s->getVX() < static_cast<double>(samosJson["groundMaxSpeed"])) {
-                            s->setVX(static_cast<double>(samosJson["groundMaxSpeed"]));
+                        if (!inputList["run"]) {
+                            if (s->getVX() < (static_cast<double>(samosJson["groundMaxSpeed"]) - static_cast<double>(samosJson["groundAcceleration"]) / frameRate)) {
+                                s->setVX(s->getVX() + static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
+                            } else if (s->getVX() > (static_cast<double>(samosJson["groundMaxSpeed"]) - static_cast<double>(samosJson["groundAcceleration"]) / frameRate)
+                                       && s->getVX() < static_cast<double>(samosJson["groundMaxSpeed"])) {
+                                s->setVX(static_cast<double>(samosJson["groundMaxSpeed"]));
+                            }
+                        } else {
+                            if (s->getVX() < (static_cast<double>(samosJson["groundRunMaxSpeedGap"]) - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate)) {
+                                if (s->getVX() < static_cast<double>(samosJson["groundMaxSpeed"]))
+                                    s->setVX(s->getVX() + static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
+                                else
+                                    s->setVX(s->getVX() + static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate);
+                            } else if (s->getVX() > (static_cast<double>(samosJson["groundRunMaxSpeedGap"]) - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate)
+                                       && s->getVX() < static_cast<double>(samosJson["groundRunMaxSpeed"])) {
+                                s->setVX(static_cast<double>(samosJson["groundRunMaxSpeed"]));
+                            }
                         }
-                        if (s->getVX() > 0)
-                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                        else
-                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
                     } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                     s->setFacing("Right");
@@ -487,11 +515,25 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             } else {
                 if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
                     if (s->getFacing() == "Left") {
-                        if (!wallL)
-                            s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+                        if (!wallL) {
+                            if (s->getVX() > static_cast<double>(samosJson["wallJumpPower_x"]))
+                                s->setVX(-s->getVX());
+                            else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() > static_cast<double>(samosJson["wallJumpPower_x"])) {
+                                s->setVX(-s->getSpeedRetained());
+                                s->setRetainTime(0.0);
+                            } else if (s->getVX() > -static_cast<double>(samosJson["wallJumpPower_x"]))
+                                s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+                        }
                     } else {
-                        if (!wallR)
-                            s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
+                        if (!wallR) {
+                            if (s->getVX() < -static_cast<double>(samosJson["wallJumpPower_x"]))
+                                s->setVX(-s->getVX());
+                            else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() < -static_cast<double>(samosJson["wallJumpPower_x"])) {
+                                s->setVX(-s->getSpeedRetained());
+                                s->setRetainTime(0.0);
+                            } else if (s->getVX() < static_cast<double>(samosJson["wallJumpPower_x"]))
+                                s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
+                        }
                     }
                     s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
                     s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
@@ -503,10 +545,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                                    && s->getVX() > -static_cast<double>(samosJson["airMaxSpeed"])) {
                             s->setVX(-static_cast<double>(samosJson["airMaxSpeed"]));
                         }
-                        if (s->getVX() < 0)
-                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                        else
-                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
                     } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                     s->setFacing("Left");
@@ -535,10 +574,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                                    && s->getVX() < static_cast<double>(samosJson["airMaxSpeed"])) {
                             s->setVX(static_cast<double>(samosJson["airMaxSpeed"]));
                         }
-                        if (s->getVX() > 0)
-                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                        else
-                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
                     } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
                     s->setFacing("Right");
@@ -695,28 +731,29 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         }
     }
 
+    bool wallJumpL = false;
+    bool wallJumpR = false;
+    for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
+        if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+            wallJumpL = true;
+        } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+            wallJumpR= true;
+        }
+        if (wallJumpL && wallJumpR)
+            break;
+    }
+    for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
+        if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
+            wallJumpL = true;
+        } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
+            wallJumpR= true;
+        }
+        if (wallJumpL && wallJumpR)
+            break;
+    }
+
     if (!s->getOnGround() && !inputList["aim"] && !inputList["shoot"] && s->getShootTime() <= 0 && !s->getIsInAltForm() && s->getState() != "MorphBalling" && canSpin) {
         std::string wallJump = "";
-        bool wallJumpL = false;
-        bool wallJumpR = false;
-        for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
-            if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
-                wallJumpL = true;
-            } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
-                wallJumpR= true;
-            }
-            if (wallJumpL && wallJumpR)
-                break;
-        }
-        for (std::vector<DynamicObj*>::iterator i = ds->begin(); i != ds->end(); i++) {
-            if (Entity::checkCollision(s ,s->getWallBoxL(), *i, (*i)->getBox())) {
-                wallJumpL = true;
-            } else if (Entity::checkCollision(s, s->getWallBoxR(), *i, (*i)->getBox())) {
-                wallJumpR= true;
-            }
-            if (wallJumpL && wallJumpR)
-                break;
-        }
 
         if (wallJumpL && !wallJumpR)
             wallJump = "Left";
@@ -755,6 +792,20 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                 s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
         }
     }
+
+    if (s->getRetainTime() > 0.0) {
+        if (s->getSpeedRetained() < 0 && s->getVX() <= 0 && !wallJumpL) {
+            s->setVX(s->getSpeedRetained());
+            s->setRetainTime(0.0);
+        } else if (s->getSpeedRetained() > 0 && s->getVX() >= 0 && !wallJumpR) {
+            s->setVX(s->getSpeedRetained());
+            s->setRetainTime(0.0);
+        } else {
+            s->setRetainTime(s->getRetainTime() - 1 / frameRate);
+        }
+    }
+    if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>())
+        s->setRetainTime(s->getRetainTime() - 1 / frameRate);
 
     if (s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag" || s->getState() == "CrouchAimDownDiag") {
         if (inputList["left"] && !inputList["right"]) {
@@ -957,6 +1008,26 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         else if (std::abs(s->getVX()) < 200)
             s->setState("MorphBallSlow");
     }
+    if (std::abs(s->getVX()) > 500) {
+        if (s->getState() == "Walking")
+            s->setState("Running");
+        else if (s->getState() == "WalkingAimForward")
+            s->setState("RunningAimForward");
+        else if (s->getState() == "WalkingAimUp")
+            s->setState("RunningAimUp");
+        else if (s->getState() == "WalkingAimDown")
+            s->setState("RunningAimDown");
+
+        if (s->getFrictionFactor() == samosJson["friction"].get<double>())
+            s->setFrictionFactor(samosJson["fastFriction"].get<double>());
+
+        if (s->getFrictionFactor() == samosJson["movingFriction"].get<double>())
+            s->setFrictionFactor(samosJson["movingFastFriction"].get<double>());
+    }
+
+    if (inputList["run"] && s->getFrictionFactor() == samosJson["movingFriction"].get<double>())
+        s->setFrictionFactor(samosJson["movingFastFriction"].get<double>());
+
     return toAdd;
 }
 
@@ -1268,7 +1339,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
     if (s != nullptr) {
         for (std::vector<Terrain*>::iterator j = ts->begin(); j != ts->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                double prevVX = s->getVX();
                 Entity::calcCollisionReplacement(s, *j);
+                if (prevVX != s->getVX()) {
+                    s->setSpeedRetained(prevVX);
+                    s->setRetainTime(Entity::values["names"]["Samos"]["speedRetainWindow"].get<double>());
+                }
             }
         }
         for (std::vector<Monster*>::iterator j = ms->begin(); j != ms->end(); j++) {
@@ -1280,13 +1356,20 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                     if (s->getHealth() != prevHp)
                         currentProgress.addDamageReceived(prevHp - s->getHealth());
                 }
-                if (s->getLagTime() <= 0.0)
+                if (s->getLagTime() <= 0.0) {
+                    s->hit(0, *j, Entity::values["names"][s->getName()]["contactKB"], true);
                     s->setLagTime(Entity::values["names"][s->getName()]["lagTime"]);
+                }
             }
         }
         for (std::vector<DynamicObj*>::iterator j = ds->begin(); j != ds->end(); j++) {
             if (Entity::checkCollision(s, s->getBox(), *j, (*j)->getBox())) {
+                double prevVX = s->getVX();
                 Entity::calcCollisionReplacement(s, *j);
+                if (prevVX != s->getVX()) {
+                    s->setSpeedRetained(prevVX);
+                    s->setRetainTime(Entity::values["names"]["Samos"]["speedRetainWindow"].get<double>());
+                }
             }
         }
         for (std::vector<Area*>::iterator j = as->begin(); j != as->end(); j++) {
