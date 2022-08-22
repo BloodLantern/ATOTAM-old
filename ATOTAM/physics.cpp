@@ -971,7 +971,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
     //Deletion list
     std::vector<Entity*> toDel;
 
-    nlohmann::json mapJson = currentMap.getJson()["rooms"][std::to_string(currentMap.getCurrentRoomId())];
+    nlohmann::json mapJson = (*currentMap.getJson())["rooms"][std::to_string(currentMap.getCurrentRoomId())];
 
     int roomS_x = mapJson["position"][0];
     int roomS_y = mapJson["position"][1];

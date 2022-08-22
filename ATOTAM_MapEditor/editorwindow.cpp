@@ -11,7 +11,7 @@ EditorWindow::EditorWindow(EditorPreview* preview)
 void EditorWindow::save()
 {
     // Save map
-    preview->saveJson(preview->getCurrentMap().getJson(), "maps/" + preview->getCurrentMap().getName());
+    preview->saveJson(*preview->getCurrentMap().getJson(), "maps/" + preview->getCurrentMap().getName());
 }
 
 void EditorWindow::saveValues()

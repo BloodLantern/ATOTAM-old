@@ -27,26 +27,26 @@ ResizeEdit::~ResizeEdit()
 void ResizeEdit::unmake()
 {
     if (roomEdit) {
-        nlohmann::json json = map->getJson();
+        /*nlohmann::json json = map->getJson();
         int roomPos[] = {json["rooms"][roomId]["position"][0], json["rooms"][roomId]["size"][1]};
         roomPos[0] = roomPos[0] - delta->first;
         roomPos[1] = roomPos[1] - delta->second;
         json["rooms"][roomId]["size"] = roomPos;
-        map->setJson(json);
+        map->setJson(json);*/
     } else {
-        // Get map Json
-        nlohmann::json mapJson = map->getJson();
+        // Get map Json pointer
+        nlohmann::json* mapJson = map->getJson();
+        // json_pointer to the entity list
+        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
-        // For easier reading and performance improvements
-        nlohmann::json entities = mapJson["rooms"][std::to_string(entity->getRoomId())]["content"][entity->getEntType()][entity->getFullName()];
         // Iterate over the entities with the same entType and name
-        for (auto& ent : entities.items())
+        for (auto& ent : mapJson->at(ptr).items())
             // Find the correct one
             if (ent.value() == entityJson) {
                 // Change the values
-                entities[std::stoi(ent.key())]["horizontalRepeat"] = entity->getHorizontalRepeat() - delta->first;
-                entities[std::stoi(ent.key())]["verticalRepeat"] = entity->getVerticalRepeat() - delta->second;
+                mapJson->at(ptr)[std::stoi(ent.key())]["horizontalRepeat"] = entity->getHorizontalRepeat() - delta->first;
+                mapJson->at(ptr)[std::stoi(ent.key())]["verticalRepeat"] = entity->getVerticalRepeat() - delta->second;
                 entity->getBox()->setWidth(entity->getBox()->getWidth() / entity->getHorizontalRepeat());
                 entity->getBox()->setHeight(entity->getBox()->getHeight() / entity->getVerticalRepeat());
                 entity->setHorizontalRepeat(entity->getHorizontalRepeat() - delta->first);
@@ -56,10 +56,6 @@ void ResizeEdit::unmake()
                 entity->setCurrentAnimation(entity->updateAnimation());
                 break;
             }
-        // Set back the modified json to the right one
-        mapJson["rooms"][std::to_string(entity->getRoomId())]["content"][entity->getEntType()][entity->getFullName()] = entities;
-        // And eventually set the map Json with the new one
-        map->setJson(mapJson);
     }
     move->unmake();
     made = false;
@@ -68,26 +64,26 @@ void ResizeEdit::unmake()
 void ResizeEdit::make()
 {
     if (roomEdit) {
-        nlohmann::json json = map->getJson();
+        /*nlohmann::json json = map->getJson();
         int roomPos[] = {json["rooms"][roomId]["position"][0], json["rooms"][roomId]["size"][1]};
         roomPos[0] = roomPos[0] + delta->first;
         roomPos[1] = roomPos[1] + delta->second;
         json["rooms"][roomId]["size"] = roomPos;
-        map->setJson(json);
+        map->setJson(json);*/
     } else {
-        // Get map Json
-        nlohmann::json mapJson = map->getJson();
+        // Get map Json pointer
+        nlohmann::json* mapJson = map->getJson();
+        // json_pointer to the entity list
+        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
-        // For easier reading and performance improvements
-        nlohmann::json entities = mapJson["rooms"][std::to_string(entity->getRoomId())]["content"][entity->getEntType()][entity->getFullName()];
         // Iterate over the entities with the same entType and name
-        for (auto& ent : entities.items())
+        for (auto& ent : mapJson->at(ptr).items())
             // Find the correct one
             if (ent.value() == entityJson) {
                 // Change the values
-                entities[std::stoi(ent.key())]["horizontalRepeat"] = entity->getHorizontalRepeat() + delta->first;
-                entities[std::stoi(ent.key())]["verticalRepeat"] = entity->getVerticalRepeat() + delta->second;
+                mapJson->at(ptr)[std::stoi(ent.key())]["horizontalRepeat"] = entity->getHorizontalRepeat() + delta->first;
+                mapJson->at(ptr)[std::stoi(ent.key())]["verticalRepeat"] = entity->getVerticalRepeat() + delta->second;
                 entity->getBox()->setWidth(entity->getBox()->getWidth() / entity->getHorizontalRepeat());
                 entity->getBox()->setHeight(entity->getBox()->getHeight() / entity->getVerticalRepeat());
                 entity->setHorizontalRepeat(entity->getHorizontalRepeat() + delta->first);
@@ -97,10 +93,6 @@ void ResizeEdit::make()
                 entity->setCurrentAnimation(entity->updateAnimation());
                 break;
             }
-        // Set back the modified json to the right one
-        mapJson["rooms"][std::to_string(entity->getRoomId())]["content"][entity->getEntType()][entity->getFullName()] = entities;
-        // And eventually set the map Json with the new one
-        map->setJson(mapJson);
     }
     move->make();
     made = true;

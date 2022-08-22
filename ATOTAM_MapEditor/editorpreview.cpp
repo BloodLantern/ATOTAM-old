@@ -2,6 +2,8 @@
 #include "resizeedit.h"
 #include "moveedit.h"
 #include "qpainter.h"
+#include "removeedit.h"
+#include "addedit.h"
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -83,12 +85,76 @@ std::pair<int, int> EditorPreview::getClickAreaSize(Entity *ent)
         return std::pair<int, int>(ent->getBox()->getWidth(), ent->getBox()->getHeight());
 }
 
+void EditorPreview::updateCursor(QPoint pos) // Relative to the entity
+{
+    bool changedCursor = false;
+
+    // Setting up variables
+    int maxDistance = editorJson["values"]["resizeMaximumCursorDistance"];
+
+    if (selected) {
+        if (pos.x() < (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() - maxDistance) * zoomFactor // If on the left of the right edge
+                && pos.x() > (selected->getX() + getClickAreaOffset(selected).x() - camera.x() + maxDistance) * zoomFactor // If on the right of the left edge
+                && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() - maxDistance) * zoomFactor // If over the bottom edge
+                && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() - camera.y() + maxDistance) * zoomFactor) { // If under the top edge
+            setCursor(Qt::CursorShape::OpenHandCursor);
+            changedCursor = true;
+        }
+
+        bool left = false;
+        if (pos.x() > (selected->getX() + getClickAreaOffset(selected).x() - camera.x() - maxDistance) * zoomFactor // Not too much on the left
+                && pos.x() < (selected->getX() + getClickAreaOffset(selected).x() - camera.x() + maxDistance) * zoomFactor // Not too much on the right
+                && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() - camera.y() - maxDistance) * zoomFactor // Not too high
+                && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() + maxDistance) * zoomFactor) // Not too low
+            left = true;
+        bool right = false;
+        if (pos.x() > (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() - maxDistance) * zoomFactor // Not too much on the left
+                && pos.x() < (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() + maxDistance) * zoomFactor // Not too much on the right
+                && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() - camera.y() - maxDistance) * zoomFactor // Not too high
+                && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() + maxDistance) * zoomFactor) // Not too low
+            right = true;
+        bool up = false;
+        if (pos.x() > (selected->getX() + getClickAreaOffset(selected).x() - camera.x() - maxDistance) * zoomFactor // Not too much on the left
+                && pos.x() < (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() + maxDistance) * zoomFactor // Not too much on the right
+                && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() - camera.y() - maxDistance) * zoomFactor // Not too high
+                && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() - camera.y() + maxDistance) * zoomFactor) // Not too low
+            up = true;
+        bool down = false;
+        if (pos.x() > (selected->getX() + getClickAreaOffset(selected).x() - camera.x() - maxDistance) * zoomFactor // Not too much on the left
+                && pos.x() < (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() + maxDistance) * zoomFactor // Not too much on the right
+                && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() - maxDistance) * zoomFactor // Not too high
+                && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() + maxDistance) * zoomFactor) // Not too low
+            down = true;
+
+        if ((left && up) || (right && down)) {
+            setCursor(Qt::CursorShape::SizeFDiagCursor);
+            changedCursor = true;
+        }
+        else if ((left && down) || (right && up)) {
+            setCursor(Qt::CursorShape::SizeBDiagCursor);
+            changedCursor = true;
+        }
+        else if (left || right) {
+            setCursor(Qt::CursorShape::SizeHorCursor);
+            changedCursor = true;
+        }
+        else if (up || down) {
+            setCursor(Qt::CursorShape::SizeVerCursor);
+            changedCursor = true;
+        }
+    }
+
+    if (!changedCursor)
+        setCursor(Qt::CursorShape::ArrowCursor);
+}
+
 void EditorPreview::undoEdit()
 {
     for (auto edit = edits.rbegin(); edit != edits.rend(); edit++)
         if ((*edit)->getMade()) {
             (*edit)->unmake();
             update();
+            updateCursor(lastMousePosition);
             break;
         }
 }
@@ -99,6 +165,7 @@ void EditorPreview::redoEdit()
         if (!(*edit)->getMade()) {
             (*edit)->make();
             update();
+            updateCursor(lastMousePosition);
             break;
         }
 }
@@ -106,8 +173,42 @@ void EditorPreview::redoEdit()
 void EditorPreview::duplicateObject()
 {
     if (selected) {
-        entities.push_back(selected = new Entity(*selected));
+        clearUnmadeEdits();
+        Entity* ent = new Entity(*selected);
+        ent->setBox(new CollisionBox(*selected->getBox()));
+        ent->setTexture(new QImage(*selected->getTexture()));
+        addObject(ent);
+    }
+}
+
+void EditorPreview::deleteObject()
+{
+    if (selected) {
+        clearUnmadeEdits();
+        RemoveEdit* remove = new RemoveEdit(&currentMap, selected, &entities, &selected);
+        remove->make();
+        edits.push_back(remove);
         update();
+        updateCursor(lastMousePosition);
+    }
+}
+
+void EditorPreview::clearUnmadeEdits()
+{
+    while (!edits.empty() && !(*(edits.end() - 1))->getMade()) {
+        delete *(edits.end() - 1);
+        edits.pop_back();
+    }
+}
+
+void EditorPreview::addObject(Entity *entity)
+{
+    if (entity) {
+        AddEdit* add = new AddEdit(&currentMap, entity, &entities, &selected);
+        add->make();
+        edits.push_back(add);
+        update();
+        updateCursor(lastMousePosition);
     }
 }
 
@@ -250,6 +351,7 @@ void EditorPreview::drawEntity(Entity* ent, QPainter* painter)
 
 void EditorPreview::mousePressEvent(QMouseEvent *event)
 {
+    lastMousePosition = event->pos();
     if (dragging) {
         event->ignore();
         return;
@@ -260,7 +362,7 @@ void EditorPreview::mousePressEvent(QMouseEvent *event)
         event->accept();
     } else if (event->button() == Qt::LeftButton) {
         // Room check
-        nlohmann::json mapJson = currentMap.getJson();
+        nlohmann::json mapJson = *currentMap.getJson();
         QPoint pos = event->pos();
         for (auto room : mapJson["rooms"].items())
             if (pos.x() < (room.value()["position"][0].get<int>() + room.value()["size"][0].get<int>() - camera.x()) * zoomFactor // If on the left of the right edge
@@ -313,6 +415,9 @@ void EditorPreview::mousePressEvent(QMouseEvent *event)
 
             dragging = true;
             clickStart = pos;
+
+            // Remove the unmade edits if they exist
+            clearUnmadeEdits();
 
             // Create and push back the right edit object
             if (move)
@@ -370,6 +475,7 @@ void EditorPreview::mousePressEvent(QMouseEvent *event)
 
 void EditorPreview::mouseReleaseEvent(QMouseEvent *event)
 {
+    lastMousePosition = event->pos();
     if (event->button() == Qt::RightButton || event->button() == Qt::LeftButton) {
         farEnough = false;
     }
@@ -400,6 +506,7 @@ void EditorPreview::mouseReleaseEvent(QMouseEvent *event)
 
 void EditorPreview::mouseMoveEvent(QMouseEvent *event)
 {
+    lastMousePosition = event->pos();
     if ((event->buttons() & Qt::LeftButton) && dragging && !edits.empty()) {
         if (MoveEdit* move = dynamic_cast<MoveEdit*>(*(edits.end() - 1))) {
             QPoint pos = event->pos();
@@ -490,66 +597,7 @@ void EditorPreview::mouseMoveEvent(QMouseEvent *event)
         }
     } else {
         if (selected) {
-            bool changedCursor = false;
-
-            // Setting up variables
-            int maxDistance = editorJson["values"]["resizeMaximumCursorDistance"];
-            // Relative to the entity
-            QPoint pos = event->pos();
-
-            if (pos.x() < (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() - maxDistance) * zoomFactor // If on the left of the right edge
-                    && pos.x() > (selected->getX() + getClickAreaOffset(selected).x() - camera.x() + maxDistance) * zoomFactor // If on the right of the left edge
-                    && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() - maxDistance) * zoomFactor // If over the bottom edge
-                    && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() - camera.y() + maxDistance) * zoomFactor) { // If under the top edge
-                setCursor(Qt::CursorShape::OpenHandCursor);
-                changedCursor = true;
-            }
-
-            bool left = false;
-            if (pos.x() > (selected->getX() + getClickAreaOffset(selected).x() - camera.x() - maxDistance) * zoomFactor // Not too much on the left
-                    && pos.x() < (selected->getX() + getClickAreaOffset(selected).x() - camera.x() + maxDistance) * zoomFactor // Not too much on the right
-                    && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() - camera.y() - maxDistance) * zoomFactor // Not too high
-                    && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() + maxDistance) * zoomFactor) // Not too low
-                left = true;
-            bool right = false;
-            if (pos.x() > (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() - maxDistance) * zoomFactor // Not too much on the left
-                    && pos.x() < (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() + maxDistance) * zoomFactor // Not too much on the right
-                    && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() - camera.y() - maxDistance) * zoomFactor // Not too high
-                    && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() + maxDistance) * zoomFactor) // Not too low
-                right = true;
-            bool up = false;
-            if (pos.x() > (selected->getX() + getClickAreaOffset(selected).x() - camera.x() - maxDistance) * zoomFactor // Not too much on the left
-                    && pos.x() < (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() + maxDistance) * zoomFactor // Not too much on the right
-                    && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() - camera.y() - maxDistance) * zoomFactor // Not too high
-                    && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() - camera.y() + maxDistance) * zoomFactor) // Not too low
-                up = true;
-            bool down = false;
-            if (pos.x() > (selected->getX() + getClickAreaOffset(selected).x() - camera.x() - maxDistance) * zoomFactor // Not too much on the left
-                    && pos.x() < (selected->getX() + getClickAreaOffset(selected).x() + getClickAreaSize(selected).first * renderingMultiplier - camera.x() + maxDistance) * zoomFactor // Not too much on the right
-                    && pos.y() > (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() - maxDistance) * zoomFactor // Not too high
-                    && pos.y() < (selected->getY() + getClickAreaOffset(selected).y() + getClickAreaSize(selected).second * renderingMultiplier - camera.y() + maxDistance) * zoomFactor) // Not too low
-                down = true;
-
-            if ((left && up) || (right && down)) {
-                setCursor(Qt::CursorShape::SizeFDiagCursor);
-                changedCursor = true;
-            }
-            else if ((left && down) || (right && up)) {
-                setCursor(Qt::CursorShape::SizeBDiagCursor);
-                changedCursor = true;
-            }
-            else if (left || right) {
-                setCursor(Qt::CursorShape::SizeHorCursor);
-                changedCursor = true;
-            }
-            else if (up || down) {
-                setCursor(Qt::CursorShape::SizeVerCursor);
-                changedCursor = true;
-            }
-
-            if (!changedCursor)
-                setCursor(Qt::CursorShape::ArrowCursor);
-
+            updateCursor(event->pos());
             event->accept();
         }
     }
@@ -589,7 +637,8 @@ void EditorPreview::keyPressEvent(QKeyEvent *)
             redoEdit();
         else if (inputList["duplicateObject"])
             duplicateObject();
-    }
+    } else if (inputList["delete"] || inputList["altDelete"])
+        deleteObject();
 }
 
 nlohmann::json &EditorPreview::getEditorJson()
@@ -622,7 +671,7 @@ void EditorPreview::setCamera(QPoint newCamera)
     camera = newCamera;
 }
 
-const Map &EditorPreview::getCurrentMap() const
+Map &EditorPreview::getCurrentMap()
 {
     return currentMap;
 }

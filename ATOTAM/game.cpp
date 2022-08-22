@@ -392,7 +392,7 @@ void Game::updateNPCs()
 
 void Game::updateCamera()
 {
-    nlohmann::json mapJson = currentMap.getJson()["rooms"][std::to_string(currentMap.getCurrentRoomId())];
+    nlohmann::json mapJson = (*currentMap.getJson())["rooms"][std::to_string(currentMap.getCurrentRoomId())];
 
     int roomS_x = mapJson["position"][0];
     int roomS_y = mapJson["position"][1];
@@ -435,7 +435,7 @@ void Game::updateInventory()
             inInventory = false;
         }
         if (inMap) {
-            nlohmann::json mapJson = currentMap.getJson();
+            nlohmann::json mapJson = *currentMap.getJson();
             std::vector<int> tRooms = currentProgress.getRoomsDiscovered()[currentMap.getName()];
             nlohmann::json currentRoom = mapJson["rooms"][std::to_string(currentMap.getCurrentRoomId())];
             int mapScaleDown = Entity::values["general"]["mapScaleDown"].get<int>();
@@ -511,7 +511,7 @@ void Game::updateInventory()
 
 std::pair<int, int> Game::loadRespawnPosition(Save respawnSave, Map respawnMap)
 {
-    nlohmann::json mapJson = respawnMap.getJson()["rooms"][std::to_string(respawnSave.getRoomID())];
+    nlohmann::json mapJson = (*respawnMap.getJson())["rooms"][std::to_string(respawnSave.getRoomID())];
     nlohmann::json sJson = Entity::values["names"]["Samos"];
     nlohmann::json spJson = Entity::values["names"]["Savepoint"];
 

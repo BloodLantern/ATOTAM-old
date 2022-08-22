@@ -1,8 +1,10 @@
 #include "addedit.h"
 #include "removeedit.h"
 
-RemoveEdit::RemoveEdit(Map* map, Entity* entity)
+RemoveEdit::RemoveEdit(Map* map, Entity* entity, std::vector<Entity *>* entityList, Entity **selectedEntity)
     : MultiTypeEdit(map, entity)
+    , entityList(entityList)
+    , selectedEntity(selectedEntity)
 {
 
 }
@@ -24,7 +26,7 @@ void RemoveEdit::unmake()
 {
     if (roomEdit) {
     } else {
-        AddEdit edit(map, entity);
+        AddEdit edit(map, entity, entityList);
         edit.make();
     }
     made = false;
@@ -34,24 +36,26 @@ void RemoveEdit::make()
 {
     if (roomEdit) {
     } else {
-        // Get map Json
-        nlohmann::json mapJson = map->getJson();
+        // Get map Json pointer
+        nlohmann::json* mapJson = map->getJson();
+        // json_pointer to the entity list
+        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
-        // For easier reading and performance improvements
-        nlohmann::json entities = mapJson["rooms"][std::to_string(entity->getRoomId())]["content"][entity->getEntType()][entity->getFullName()];
         // Iterate over the entities with the same entType and name
-        for (auto& ent : entities.items())
+        for (auto& ent : mapJson->at(ptr).items())
             // Find the correct one
             if (ent.value() == entityJson) {
                 // Remove it
-                entities.erase(ent.key());
+                mapJson->at(ptr).erase(std::stoi(ent.key()));
+                for (auto ent = entityList->begin(); ent != entityList->end(); ent++)
+                    if (*ent == entity) {
+                        entityList->erase(ent);
+                        *selectedEntity = nullptr;
+                        break;
+                    }
                 break;
             }
-        // Set back the modified json to the right one
-        mapJson["rooms"][std::to_string(entity->getRoomId())]["content"][entity->getEntType()][entity->getFullName()] = entities;
-        // And eventually set the map Json with the new one
-        map->setJson(mapJson);
     }
     made = true;
 }

@@ -29,9 +29,13 @@ public:
     void saveJson(nlohmann::json json, std::string fileName);
     QPoint getClickAreaOffset(Entity*);
     std::pair<int, int> getClickAreaSize(Entity*);
+    void updateCursor(QPoint);
     void undoEdit();
     void redoEdit();
     void duplicateObject();
+    void deleteObject();
+    void clearUnmadeEdits();
+    void addObject(Entity*);
 
     nlohmann::json &getEditorJson();
     void setEditorJson(nlohmann::json &newEditorJson);
@@ -39,7 +43,7 @@ public:
     void setAssetsPath(const std::string &newAssetsPath);
     QPoint getCamera() const;
     void setCamera(QPoint newCamera);
-    const Map &getCurrentMap() const;
+    Map &getCurrentMap();
     void setCurrentMap(const Map &newCurrentMap);
     int getRoomId() const;
     void setRoomId(int newRoomId);
@@ -59,6 +63,7 @@ private:
     Map currentMap = Map();
     int roomId = 0;
     std::string assetsPath;
+    QPoint lastMousePosition;
 
     // paintEvent fields
     std::vector<Entity*> entities = std::vector<Entity*>();

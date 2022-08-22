@@ -1,7 +1,9 @@
 {
     "enabled": true,
     "inputs": {
+        "altDelete": 8,
         "control": 17,
+        "delete": 46,
         "disableMovingSteps": 16,
         "duplicateObject": 68,
         "redoEdit": 89,

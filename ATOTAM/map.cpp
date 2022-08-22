@@ -186,8 +186,12 @@ nlohmann::json Map::find(Entity *entity)
 
     // Eventually compare the entity and the json values
     for (const nlohmann::json &ent : j)
-        if (entity->getX() == ent["x"]
-                && entity->getY() == ent["y"]) {
+        if (entity->getX()
+                - json["rooms"][std::to_string(entity->getRoomId())]["position"][0].get<int>()
+                == ent["x"]
+                && entity->getY()
+                - json["rooms"][std::to_string(entity->getRoomId())]["position"][1].get<int>()
+                == ent["y"]) {
             j = ent;
             return j;
         }
@@ -217,9 +221,9 @@ void Map::setName(const std::string &newName)
     name = newName;
 }
 
-const nlohmann::json Map::getJson() const
+nlohmann::json* Map::getJson()
 {
-    return json;
+    return &json;
 }
 
 void Map::setJson(const nlohmann::json &newJson)

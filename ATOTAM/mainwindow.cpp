@@ -169,7 +169,7 @@ void MainWindow::setupToDraw()
         //Draw hitboxes if necessary
         if (game->getRenderHitboxes()) {
 
-            nlohmann::json roomJson = game->getCurrentMap().getJson()["rooms"][std::to_string(game->getCurrentMap().getCurrentRoomId())];
+            nlohmann::json roomJson = (*game->getCurrentMap().getJson())["rooms"][std::to_string(game->getCurrentMap().getCurrentRoomId())];
             toDraw["room_position_x"] = roomJson["position"][0];
             toDraw["room_position_y"] = roomJson["position"][1];
             toDraw["room_size_x"] = roomJson["size"][0];
@@ -353,7 +353,7 @@ void MainWindow::setupToDraw()
         }
 
     } else {
-        nlohmann::json tMap = game->getCurrentMap().getJson();
+        nlohmann::json tMap = *game->getCurrentMap().getJson();
         std::vector<int> tRooms = game->getCurrentProgress().getRoomsDiscovered()[game->getCurrentMap().getName()];
         QPoint tempMC = game->getMapCameraPosition();
         int mapScaleDown = Entity::values["general"]["mapScaleDown"].get<int>();

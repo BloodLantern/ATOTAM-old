@@ -1,8 +1,17 @@
 #include "addedit.h"
 #include "removeedit.h"
 
-AddEdit::AddEdit(Map *map, Entity *entity)
+AddEdit::AddEdit(Map *map, Entity *entity, std::vector<Entity *>* entityList, Entity **selectedEntity)
     : MultiTypeEdit(map, entity)
+    , entityList(entityList)
+    , selectedEntity(selectedEntity)
+{
+
+}
+
+AddEdit::AddEdit(Map *map, Entity *entity, std::vector<Entity *> *entityList)
+    : MultiTypeEdit(map, entity)
+    , entityList(entityList)
 {
 
 }
@@ -17,33 +26,32 @@ void AddEdit::unmake()
 {
     if (roomEdit) {
     } else {
-        RemoveEdit edit(map, entity);
+        RemoveEdit edit(map, entity, entityList, selectedEntity);
         edit.make();
     }
+    made = false;
 }
 
 void AddEdit::make()
 {
     if (roomEdit) {
     } else {
-        // Get map Json
-        nlohmann::json mapJson = map->getJson();
-        // Find Entity json node in the map
-        nlohmann::json entityJson = map->find(entity);
-        // For easier reading and performance improvements
-        nlohmann::json entities = mapJson["rooms"][std::to_string(entity->getRoomId())]["content"][entity->getEntType()][entity->getFullName()];
-        // Iterate over the entities with the same entType and name
-        for (auto& ent : entities.items())
-            // Find the correct one
-            if (ent.value() == entityJson) {
-                // Remove it
-                entities.erase(ent.key());
-                break;
-            }
-        // Set back the modified json to the right one
-        mapJson["rooms"][std::to_string(entity->getRoomId())]["content"][entity->getEntType()][entity->getFullName()] = entities;
-        // And eventually set the map Json with the new one
-        map->setJson(mapJson);
+        // Get map Json pointer
+        nlohmann::json* mapJson = map->getJson();
+        // json_pointer to the entity list
+        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType() + "/" + entity->getFullName());
+        // json_pointer to the room position
+        nlohmann::json::json_pointer roomPtr("/rooms/" + std::to_string(entity->getRoomId()) + "/position");
+        nlohmann::json entJson;
+        entJson["x"] = entity->getX() + mapJson->at(roomPtr)[0].get<int>();
+        entJson["y"] = entity->getY() + mapJson->at(roomPtr)[1].get<int>();
+        entJson["horizontalRepeat"] = entity->getHorizontalRepeat();
+        entJson["verticalRepeat"] = entity->getVerticalRepeat();
+        // Add it
+        mapJson->at(ptr).push_back(entJson);
+        entityList->push_back(entity);
+        if (selectedEntity)
+            *selectedEntity = entity;
     }
     made = true;
 }
