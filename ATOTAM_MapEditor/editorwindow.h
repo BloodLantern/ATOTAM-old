@@ -13,11 +13,13 @@ public:
     void save();
     void saveValues();
 
+    // QWidget interface
     void closeEvent(QCloseEvent *) override;
+    void keyPressEvent(QKeyEvent *) override;
 
 private:
     EditorPreview* preview;
-
+    unsigned int lastSaveEditCount = 0;
 };
 
 #endif // EDITORWINDOW_H

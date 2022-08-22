@@ -631,7 +631,7 @@ void EditorPreview::wheelEvent(QWheelEvent *event)
     }
 }
 
-void EditorPreview::keyPressEvent(QKeyEvent *)
+void EditorPreview::keyPressEvent(QKeyEvent *event)
 {
     getInputs();
     if (inputList["control"]) {
@@ -641,8 +641,36 @@ void EditorPreview::keyPressEvent(QKeyEvent *)
             redoEdit();
         else if (inputList["duplicateObject"])
             duplicateObject();
+        else
+            event->ignore();
     } else if (inputList["delete"] || inputList["altDelete"])
         deleteObject();
+    else if (inputList["left"] && selected) {
+        MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(-1, 0));
+        move->make();
+        edits.push_back(move);
+        update();
+    }
+    else if (inputList["right"] && selected) {
+        MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(1, 0));
+        move->make();
+        edits.push_back(move);
+        update();
+    }
+    else if (inputList["up"] && selected) {
+        MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(0, -1));
+        move->make();
+        edits.push_back(move);
+        update();
+    }
+    else if (inputList["down"] && selected) {
+        MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(0, 1));
+        move->make();
+        edits.push_back(move);
+        update();
+    }
+    else
+        event->ignore();
 }
 
 nlohmann::json &EditorPreview::getEditorJson()
@@ -723,4 +751,14 @@ std::vector<Edit*> &EditorPreview::getEdits()
 void EditorPreview::setEdits(std::vector<Edit*> &newEdits)
 {
     edits = newEdits;
+}
+
+std::map<std::string, bool> &EditorPreview::getInputList()
+{
+    return inputList;
+}
+
+void EditorPreview::setInputList(std::map<std::string, bool> &newInputList)
+{
+    inputList = newInputList;
 }
