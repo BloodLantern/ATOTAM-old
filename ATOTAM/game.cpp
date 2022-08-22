@@ -37,6 +37,8 @@ void Game::loadGeneral()
     mapCameraSpeed = Entity::values["general"]["mapCameraSpeed"];
     cameraSize.first = Entity::values["general"]["camera_size_x"];
     cameraSize.second = Entity::values["general"]["camera_size_y"];
+    debugEnabled = Entity::values["general"]["debugEnabled"];
+    showDebugInfo = Entity::values["general"]["showDebugInfo"];
 }
 
 void Game::loadSave(Save save)
@@ -264,8 +266,10 @@ void Game::updateMenu()
             else if (menuOptions[selectedOption] == "Max hp")
                  s->setHealth(s->getMaxHealth());
             else if (menuOptions[selectedOption] == "Reload entities.json") {
+                int rID = currentMap.getCurrentRoomId();
                 Entity::values = Entity::loadValues(assetsPath);
                 loadGeneral();
+                currentMap.setCurrentRoomId(rID);
             } else if (menuOptions[selectedOption] == "Reload room") {
                 clearEntities("Samos");
                 addEntities(currentMap.loadRoom());
@@ -273,13 +277,11 @@ void Game::updateMenu()
                 int mapId = currentMap.getCurrentRoomId();
                 currentMap = Map::loadMap(currentMap.getName(), assetsPath);
                 currentMap.setCurrentRoomId(mapId);
-            } else if (menuOptions[selectedOption] == "Map viewer mode : ON") {
+            } else if (menuOptions[selectedOption] == "Map viewer mode : ON")
                 mapViewer = false;
-                camera = cameraBeforeMapViewer;
-            } else if (menuOptions[selectedOption] == "Map viewer mode : OFF") {
+            else if (menuOptions[selectedOption] == "Map viewer mode : OFF")
                 mapViewer = true;
-                cameraBeforeMapViewer = camera;
-            } else if (menuOptions[selectedOption] == "Fullscreen : ON") {
+            else if (menuOptions[selectedOption] == "Fullscreen : ON") {
                 fullscreen = false;
                 params["fullscreen"] = false;
                 std::ofstream paramsfile(assetsPath + "/params.json");
@@ -300,7 +302,10 @@ void Game::updateMenu()
             } else if (menuOptions[selectedOption] == "Respawn") {
                 loadSave(lastCheckpoint);
                 isPaused = false;
-            }
+            } else if (menuOptions[selectedOption] == "Debug info : ON")
+                showDebugInfo = false;
+            else if (menuOptions[selectedOption] == "Debug info : OFF")
+                showDebugInfo = true;
         }
 
 
@@ -310,7 +315,8 @@ void Game::updateMenu()
             menuOptions.push_back("Options");
             menuOptions.push_back("Reload last checkpoint");
             menuOptions.push_back("Reload last save");
-            menuOptions.push_back("Debug");
+            if (debugEnabled)
+                menuOptions.push_back("Debug");
             menuOptions.push_back("Quit");
         } else if (menu == "options") {
             menuOptions.clear();
@@ -330,6 +336,7 @@ void Game::updateMenu()
             menuOptions.push_back(std::string("Map viewer mode : ") + (mapViewer ? "ON" : "OFF"));
             menuOptions.push_back("Reload room");
             menuOptions.push_back("Reload map");
+            menuOptions.push_back(std::string("Debug info : ") + (showDebugInfo ? "ON" : "OFF"));
         } else if (menu == "death") {
             menuOptions.clear();
             menuOptions.push_back("Respawn");
@@ -1072,16 +1079,6 @@ void Game::setCurrentDialogue(const Dialogue &newCurrentDialogue)
     currentDialogue = newCurrentDialogue;
 }
 
-QPoint Game::getCameraBeforeMapViewer() const
-{
-    return cameraBeforeMapViewer;
-}
-
-void Game::setCameraBeforeMapViewer(QPoint newCameraBeforeMapViewer)
-{
-    cameraBeforeMapViewer = newCameraBeforeMapViewer;
-}
-
 double Game::getMenuArrowsTime() const
 {
     return menuArrowsTime;
@@ -1200,4 +1197,34 @@ const std::pair<int, int> &Game::getCameraSize() const
 void Game::setCameraSize(const std::pair<int, int> &newCameraSize)
 {
     cameraSize = newCameraSize;
+}
+
+bool Game::getShowHUD() const
+{
+    return showHUD;
+}
+
+void Game::setShowHUD(bool newShowHUD)
+{
+    showHUD = newShowHUD;
+}
+
+bool Game::getShowDebugInfo() const
+{
+    return showDebugInfo;
+}
+
+void Game::setShowDebugInfo(bool newShowDebugInfo)
+{
+    showDebugInfo = newShowDebugInfo;
+}
+
+bool Game::getDebugEnabled() const
+{
+    return debugEnabled;
+}
+
+void Game::setDebugEnabled(bool newDebugEnabled)
+{
+    debugEnabled = newDebugEnabled;
 }

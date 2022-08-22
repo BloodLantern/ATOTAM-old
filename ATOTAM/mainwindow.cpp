@@ -16,7 +16,6 @@ MainWindow::MainWindow(QApplication *app, std::string assetsPath)
     , game(new Game(assetsPath, "1"))
     , errorTexture(QString::fromStdString(game->getAssetsPath() + "/textures/error.png"))
     , emptyTexture(QString::fromStdString(game->getAssetsPath() + "/textures/empty.png"))
-    , showHUD(true)
 {
     setFixedSize(game->getResolution().first, game->getResolution().second);
 
@@ -115,10 +114,11 @@ void MainWindow::setupToDraw()
     toDraw["inMap"] = game->getInMap();
     toDraw["renderHitboxes"] = game->getRenderHitboxes();
     toDraw["showFps"] = game->getShowFps();
-    toDraw["showHUD"] = showHUD;
+    toDraw["showHUD"] = game->getShowHUD();
     toDraw["inDialogue"] = !game->getCurrentDialogue().isNull();
     toDraw["isPaused"] = game->getIsPaused();
     toDraw["updateCount"] = game->getUpdateCount();
+    toDraw["showDebugInfo"] = game->getShowDebugInfo();
 
 
     if (!game->getInInventory() && !game->getInMap()) {
@@ -332,7 +332,7 @@ void MainWindow::setupToDraw()
         }
 
         //HUD
-        if (game->getS() != nullptr && showHUD) {
+        if (game->getS() != nullptr && game->getShowHUD()) {
 
             toDraw["hud_selectedWeapon"] = game->translate(game->getS()->getSelectedWeapon(), std::vector<std::string>({"ui", "selectedWeapon"})).toStdString();
             toDraw["hud_health"] = game->getS()->getHealth();
@@ -438,6 +438,31 @@ void MainWindow::setupToDraw()
             toDraw["samos_box_h"] = s->getBox()->getHeight();
 
         }
+    }
+
+    if (game->getShowDebugInfo()) {
+        Samos* s =game->getS();
+
+        toDraw["samos_x"] = s->getX();
+        toDraw["samos_y"] = s->getY();
+        toDraw["samos_vx"] = s->getVX();
+        toDraw["samos_vy"] = s->getVY();
+        toDraw["samos_box_x"] = s->getBox()->getX();
+        toDraw["samos_box_y"] = s->getBox()->getY();
+        toDraw["samos_box_w"] = s->getBox()->getWidth();
+        toDraw["samos_box_h"] = s->getBox()->getHeight();
+        toDraw["samos_state"] = s->getState();
+        toDraw["samos_facing"] = s->getFacing();
+        toDraw["samos_speedRetained"] = s->getSpeedRetained();
+        toDraw["samos_retainTime"] = s->getRetainTime();
+        toDraw["samos_onGround"] = s->getOnGround();
+        toDraw["samos_room"] = s->getRoomId();
+        toDraw["samos_iTime"] = s->getITime();
+        toDraw["samos_lagTime"] = s->getLagTime();
+        toDraw["samos_shootTime"] = s->getShootTime();
+        toDraw["samos_switchDelay"] = s->getSwitchDelay();
+        toDraw["samos_fastFalling"] = s->getFastFalling();
+        toDraw["samos_jumpTime"] = s->getJumpTime();
     }
 }
 
@@ -741,6 +766,32 @@ void MainWindow::paintEvent(QPaintEvent *)
                               minimos);
         }
     }
+    if (tempToDraw["showDebugInfo"]) {
+        painter.fillRect(QRect(70, 70, 250, 410), QBrush(QColor(0,0,0,150)));
+
+        painter.setPen(QColor("white"));
+
+        painter.drawText(QPoint(80, 90), QString::fromStdString("X : " + std::to_string(tempToDraw["samos_x"].get<double>())));
+        painter.drawText(QPoint(80, 110), QString::fromStdString("Y : " + std::to_string(tempToDraw["samos_y"].get<double>())));
+        painter.drawText(QPoint(80, 130), QString::fromStdString("VX : " + std::to_string(tempToDraw["samos_vx"].get<double>())));
+        painter.drawText(QPoint(80, 150), QString::fromStdString("VY : " + std::to_string(tempToDraw["samos_vy"].get<double>())));
+        painter.drawText(QPoint(80, 170), QString::fromStdString("Box X : " + std::to_string(tempToDraw["samos_box_x"].get<int>())));
+        painter.drawText(QPoint(80, 190), QString::fromStdString("Box Y : " + std::to_string(tempToDraw["samos_box_y"].get<int>())));
+        painter.drawText(QPoint(80, 210), QString::fromStdString("Box Width : " + std::to_string(tempToDraw["samos_box_w"].get<int>())));
+        painter.drawText(QPoint(80, 230), QString::fromStdString("Box Height : " + std::to_string(tempToDraw["samos_box_h"].get<int>())));
+        painter.drawText(QPoint(80, 250), QString::fromStdString("State : " + tempToDraw["samos_state"].get<std::string>()));
+        painter.drawText(QPoint(80, 270), QString::fromStdString("Facing : " + tempToDraw["samos_facing"].get<std::string>()));
+        painter.drawText(QPoint(80, 290), QString::fromStdString("Speed retained : " + std::to_string(tempToDraw["samos_speedRetained"].get<double>())));
+        painter.drawText(QPoint(80, 310), QString::fromStdString("Retain time : " + std::to_string(tempToDraw["samos_retainTime"].get<double>())));
+        painter.drawText(QPoint(80, 330), QString::fromStdString("On ground : " + std::to_string(tempToDraw["samos_onGround"].get<bool>())));
+        painter.drawText(QPoint(80, 350), QString::fromStdString("Room ID : " + std::to_string(tempToDraw["samos_room"].get<int>())));
+        painter.drawText(QPoint(80, 370), QString::fromStdString("I-Time : " + std::to_string(tempToDraw["samos_iTime"].get<double>())));
+        painter.drawText(QPoint(80, 390), QString::fromStdString("Lag time : " + std::to_string(tempToDraw["samos_lagTime"].get<double>())));
+        painter.drawText(QPoint(80, 410), QString::fromStdString("Shoot cooldown : " + std::to_string(tempToDraw["samos_shootTime"].get<double>())));
+        painter.drawText(QPoint(80, 430), QString::fromStdString("Switch cooldown : " + std::to_string(tempToDraw["samos_switchDelay"].get<double>())));
+        painter.drawText(QPoint(80, 450), QString::fromStdString("Fast falling : " + std::to_string(tempToDraw["samos_fastFalling"].get<bool>())));
+        painter.drawText(QPoint(80, 470), QString::fromStdString("Jump time : " + std::to_string(tempToDraw["samos_jumpTime"].get<double>())));
+    }
     painter.end();
 }
 
@@ -772,16 +823,6 @@ const QImage &MainWindow::getEmptyTexture() const
 void MainWindow::setEmptyTexture(const QImage &newEmptyTexture)
 {
     emptyTexture = newEmptyTexture;
-}
-
-bool MainWindow::getShowHUD() const
-{
-    return showHUD;
-}
-
-void MainWindow::setShowHUD(bool newShowHUD)
-{
-    showHUD = newShowHUD;
 }
 
 Game *MainWindow::getGame() const

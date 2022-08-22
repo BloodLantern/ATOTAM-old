@@ -112,8 +112,6 @@ public:
     void setLanguage(const std::string &newLanguage);
     Dialogue &getCurrentDialogue();
     void setCurrentDialogue(const Dialogue &newCurrentDialogue);
-    QPoint getCameraBeforeMapViewer() const;
-    void setCameraBeforeMapViewer(QPoint newCameraBeforeMapViewer);
     double getMenuArrowsTime() const;
     void setMenuArrowsTime(double newMenuArrowsTime);
     bool getRenderHitboxes() const;
@@ -146,6 +144,15 @@ public:
 
     const std::pair<int, int> &getCameraSize() const;
     void setCameraSize(const std::pair<int, int> &newCameraSize);
+
+    bool getShowHUD() const;
+    void setShowHUD(bool newShowHUD);
+
+    bool getShowDebugInfo() const;
+    void setShowDebugInfo(bool newShowDebugInfo);
+
+    bool getDebugEnabled() const;
+    void setDebugEnabled(bool newDebugEnabled);
 
 private:
     std::string assetsPath;
@@ -184,7 +191,6 @@ private:
     nlohmann::json params;
     std::string language;
     Dialogue currentDialogue = Dialogue();
-    QPoint cameraBeforeMapViewer;
     double menuArrowsTime = 0.0;
     bool renderHitboxes = false; // Render hitboxes as rectangles
     bool showFps = true; // Whether to show fps in-game
@@ -200,6 +206,9 @@ private:
     QPoint mapCameraPosition = QPoint(0,0);
     double mapCameraSpeed = 100;
     std::pair<int, int> cameraSize = {1920, 1080};
+    bool showHUD = true;
+    bool showDebugInfo = false;
+    bool debugEnabled = false;
 };
 
 #endif // GAME_H

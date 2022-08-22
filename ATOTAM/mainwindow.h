@@ -29,8 +29,6 @@ public:
     void setErrorTexture(const QImage &newErrorTexture);
     const QImage &getEmptyTexture() const;
     void setEmptyTexture(const QImage &newEmptyTexture);
-    bool getShowHUD() const;
-    void setShowHUD(bool newShowHUD);
     Game *getGame() const;
     void setGame(Game *newGame);
     bool getRender() const;
@@ -50,7 +48,6 @@ private:
     int renderingMultiplier = 1; // Textures are rendered with their size being multiplied by this value
     QImage errorTexture;
     QImage emptyTexture;
-    bool showHUD = true;
     nlohmann::json toDraw;
     std::map<int, QImage> toDrawTextures;
     bool copyingToDraw = false;

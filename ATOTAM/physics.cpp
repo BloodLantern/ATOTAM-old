@@ -235,7 +235,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                 }
             } else {
                 if (inputList["left"] && !inputList["right"]) {
-                    if (s->getLagTime() <= 0.0) {
+                    if (!wallL && s->getLagTime() <= 0.0) {
                         if (s->getVX() > (static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate - static_cast<double>(samosJson["morphAirMaxSpeed"]))) {
                             s->setVX(s->getVX() - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate);
                         } else if (s->getVX() < (static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate - static_cast<double>(samosJson["morphAirMaxSpeed"]))
@@ -257,7 +257,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                         s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
                     }
                 } else if (!inputList["left"] && inputList["right"]) {
-                    if (s->getLagTime() <= 0.0) {
+                    if (!wallR && s->getLagTime() <= 0.0) {
                         if (s->getVX() < (static_cast<double>(samosJson["morphAirMaxSpeed"]) - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate)) {
                             s->setVX(s->getVX() + static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate);
                         } else if (s->getVX() > (static_cast<double>(samosJson["morphAirMaxSpeed"]) - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate)
@@ -538,7 +538,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                     s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
                     s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
                 } else if (inputList["left"] && !inputList["right"]) {
-                    if (s->getLagTime() <= 0.0) {
+                    if (!wallL && s->getLagTime() <= 0.0) {
                         if (s->getVX() > (static_cast<double>(samosJson["airAcceleration"]) / frameRate - static_cast<double>(samosJson["airMaxSpeed"]))) {
                             s->setVX(s->getVX() - static_cast<double>(samosJson["airAcceleration"]) / frameRate);
                         } else if (s->getVX() < (static_cast<double>(samosJson["airAcceleration"]) / frameRate - static_cast<double>(samosJson["airMaxSpeed"]))
@@ -567,7 +567,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                         s->setState("Falling");
                     }
                 } else if (!inputList["left"] && inputList["right"]) {
-                    if (s->getLagTime() <= 0.0) {
+                    if (!wallR && s->getLagTime() <= 0.0) {
                         if (s->getVX() < (static_cast<double>(samosJson["airMaxSpeed"]) - static_cast<double>(samosJson["airAcceleration"]) / frameRate)) {
                             s->setVX(s->getVX() + static_cast<double>(samosJson["airAcceleration"]) / frameRate);
                         } else if (s->getVX() > (static_cast<double>(samosJson["airMaxSpeed"]) - static_cast<double>(samosJson["airAcceleration"]) / frameRate)
