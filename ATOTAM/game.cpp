@@ -98,7 +98,7 @@ void Game::updateTas()
     if (!tas)
         return;
 
-    std::ifstream f(assetsPath + "/tas/test.tas");
+    std::ifstream f(assetsPath + "/tas/" + Entity::values["general"]["tasFile"].get<std::string>());
     // Stop the TAS if the last line has been read
     if (std::count(std::istreambuf_iterator<char>(f),
                        std::istreambuf_iterator<char>(), '\n') + 1 < line) {
@@ -112,7 +112,8 @@ void Game::updateTas()
     f.seekg(0);
     std::string content;
     for (int i = 0; i < line; i++)
-        std::getline(f, content);
+        while (content == "")
+            std::getline(f, content);
 
     // Remove the not special inputs
     std::map<std::string, bool> toDel;
