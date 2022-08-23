@@ -115,15 +115,15 @@ void Game::updateTas()
         std::getline(f, content);
 
     // Remove the not special inputs
-    std::vector<std::string> toDel;
+    std::map<std::string, bool> toDel;
     for (auto input : inputList) {
         if (input.first.size() > 8)
             if (input.first.substr(0, 8) == "SPECIAL_")
                 continue;
-        toDel.push_back(input.first);
+        toDel.emplace(input.first, input.second);
     }
-    for (std::string input : toDel)
-        inputList.erase(input);
+    for (auto input : toDel)
+        inputList.erase(input.first);
 
     std::vector<std::string> tokens = split(content, ',');
     for (unsigned int i = 0; i < tokens.size(); i++) {
@@ -139,7 +139,7 @@ void Game::updateTas()
             for (auto j : keyCodes.items())
                 for (const auto &k : j.value())
                     if (k == token) {
-                        if (!inputList[j.key()])
+                        if (!toDel[j.key()])
                             inputTime[j.key()] = 0;
                         else
                             inputTime[j.key()] += 1 / Physics::frameRate;
