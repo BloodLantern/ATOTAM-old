@@ -168,6 +168,9 @@ public:
     const nlohmann::json &getWindowsKeyCodes() const;
     void setWindowsKeyCodes(const nlohmann::json &newWindowsKeyCodes);
 
+    unsigned long long getCurrentInstructionFrames() const;
+    void setCurrentInstructionFrames(unsigned long long newCurrentInstructionFrames);
+
 private:
     std::string assetsPath;
 
@@ -230,7 +233,7 @@ private:
 
     // TASing
     bool tas = false;
-    unsigned long long currentInstructionFrames = 0;
+    unsigned long long currentInstructionFrames = 1;
     int line = 1;
     template <typename Out>
     void split(const std::string &s, char delim, Out result);

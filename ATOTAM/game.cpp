@@ -127,7 +127,7 @@ void Game::updateTas()
         try {
             unsigned long t = std::stoul(token);
             if (currentInstructionFrames == t)
-                currentInstructionFrames = 0;
+                currentInstructionFrames = 1;
             else
                 currentInstructionFrames++;
         } catch (const std::invalid_argument) {
@@ -144,7 +144,7 @@ void Game::updateTas()
         }
     }
 
-    if (currentInstructionFrames == 0)
+    if (currentInstructionFrames == 1)
         line++;
 }
 
@@ -1356,4 +1356,14 @@ const nlohmann::json &Game::getWindowsKeyCodes() const
 void Game::setWindowsKeyCodes(const nlohmann::json &newWindowsKeyCodes)
 {
     windowsKeyCodes = newWindowsKeyCodes;
+}
+
+unsigned long long Game::getCurrentInstructionFrames() const
+{
+    return currentInstructionFrames;
+}
+
+void Game::setCurrentInstructionFrames(unsigned long long newCurrentInstructionFrames)
+{
+    currentInstructionFrames = newCurrentInstructionFrames;
 }
