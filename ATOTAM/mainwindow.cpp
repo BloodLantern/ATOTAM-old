@@ -504,6 +504,7 @@ void MainWindow::setupToDraw()
         toDraw["samos_dashDirection"] = s->getDashDirection();
         toDraw["samos_frameCount"] = game->getFrameCount();
         toDraw["tas_lineFrameCount"] = game->getCurrentInstructionFrames();
+        toDraw["tas_lineNumber"] = game->getLine();
     }
 }
 
@@ -808,7 +809,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
     if (tempToDraw["showDebugInfo"]) {
-        painter.fillRect(QRect(70, 70, 250, 550), QBrush(QColor(0,0,0,150)));
+        painter.fillRect(QRect(70, 70, 250, 570), QBrush(QColor(0,0,0,150)));
 
         painter.setPen(QColor("white"));
 
@@ -839,6 +840,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawText(QPoint(80, 570), QString::fromStdString("Dash direction : " + tempToDraw["samos_dashDirection"].get<std::string>()));
         painter.drawText(QPoint(80, 590), QString::fromStdString("Frame count : " + std::to_string(tempToDraw["samos_frameCount"].get<int>())));
         painter.drawText(QPoint(80, 610), QString::fromStdString("TAS Current line frame count : " + std::to_string(tempToDraw["tas_lineFrameCount"].get<int>())));
+        painter.drawText(QPoint(80, 630), QString::fromStdString("TAS Current line number : " + std::to_string(tempToDraw["tas_lineNumber"].get<int>())));
     }
     painter.end();
 }

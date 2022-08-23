@@ -171,6 +171,9 @@ public:
     unsigned long long getCurrentInstructionFrames() const;
     void setCurrentInstructionFrames(unsigned long long newCurrentInstructionFrames);
 
+    int getLine() const;
+    void setLine(int newLine);
+
 private:
     std::string assetsPath;
 

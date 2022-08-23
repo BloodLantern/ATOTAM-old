@@ -1371,3 +1371,13 @@ void Game::setCurrentInstructionFrames(unsigned long long newCurrentInstructionF
 {
     currentInstructionFrames = newCurrentInstructionFrames;
 }
+
+int Game::getLine() const
+{
+    return line;
+}
+
+void Game::setLine(int newLine)
+{
+    line = newLine;
+}
