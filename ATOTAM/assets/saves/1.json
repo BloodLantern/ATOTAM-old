@@ -1,23 +1,24 @@
 {
     "damageDone": 1860,
-    "damageReceived": 2280,
+    "damageReceived": 2300,
     "deaths": 22,
-    "playTime": 2512,
+    "playTime": 2580,
     "roomID": 1,
     "roomsDiscovered": {
         "test": [
             2,
             1,
-            0
+            0,
+            3
         ]
     },
     "samos": {
         "grenades": 5,
-        "health": 999,
+        "health": 99,
         "maxGrenades": 5,
-        "maxHealth": 999,
-        "maxMissiles": 500,
-        "missiles": 500
+        "maxHealth": 9,
+        "maxMissiles": 5,
+        "missiles": 5
     },
     "saveMapName": "test",
     "savepointID": 1

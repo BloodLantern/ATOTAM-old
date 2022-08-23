@@ -468,6 +468,11 @@ void MainWindow::setupToDraw()
         toDraw["samos_switchDelay"] = s->getSwitchDelay();
         toDraw["samos_fastFalling"] = s->getFastFalling();
         toDraw["samos_jumpTime"] = s->getJumpTime();
+        toDraw["samos_priorDash_vx"] = s->getSpeedPriorDash().first;
+        toDraw["samos_priorDash_vy"] = s->getSpeedPriorDash().second;
+        toDraw["samos_dashTime"] = s->getDashTime();
+        toDraw["samos_dashCoolDown"] = s->getDashCoolDown();
+        toDraw["samos_dashDirection"] = s->getDashDirection();
     }
 }
 
@@ -772,7 +777,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
     if (tempToDraw["showDebugInfo"]) {
-        painter.fillRect(QRect(70, 70, 250, 410), QBrush(QColor(0,0,0,150)));
+        painter.fillRect(QRect(70, 70, 250, 510), QBrush(QColor(0,0,0,150)));
 
         painter.setPen(QColor("white"));
 
@@ -796,6 +801,11 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawText(QPoint(80, 430), QString::fromStdString("Switch cooldown : " + std::to_string(tempToDraw["samos_switchDelay"].get<double>())));
         painter.drawText(QPoint(80, 450), QString::fromStdString("Fast falling : " + std::to_string(tempToDraw["samos_fastFalling"].get<bool>())));
         painter.drawText(QPoint(80, 470), QString::fromStdString("Jump time : " + std::to_string(tempToDraw["samos_jumpTime"].get<double>())));
+        painter.drawText(QPoint(80, 490), QString::fromStdString("VX prior dash: " + std::to_string(tempToDraw["samos_priorDash_vx"].get<double>())));
+        painter.drawText(QPoint(80, 510), QString::fromStdString("VY prior dash: " + std::to_string(tempToDraw["samos_priorDash_vy"].get<double>())));
+        painter.drawText(QPoint(80, 530), QString::fromStdString("Dash time : " + std::to_string(tempToDraw["samos_dashTime"].get<double>())));
+        painter.drawText(QPoint(80, 550), QString::fromStdString("Dash cooldown : " + std::to_string(tempToDraw["samos_dashCoolDown"].get<double>())));
+        painter.drawText(QPoint(80, 570), QString::fromStdString("Dash direction : " + tempToDraw["samos_dashDirection"].get<std::string>()));
     }
     painter.end();
 }

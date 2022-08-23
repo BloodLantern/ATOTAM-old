@@ -311,3 +311,23 @@ void Samos::setDashDirection(const std::string &newDashDirection)
 {
     dashDirection = newDashDirection;
 }
+
+const std::pair<double, double> &Samos::getSpeedPriorDash() const
+{
+    return speedPriorDash;
+}
+
+void Samos::setSpeedPriorDash(const std::pair<double, double> &newSpeedPriorDash)
+{
+    speedPriorDash = newSpeedPriorDash;
+}
+
+double Samos::getDashCoolDown() const
+{
+    return dashCoolDown;
+}
+
+void Samos::setDashCoolDown(double newDashCoolDown)
+{
+    dashCoolDown = newDashCoolDown;
+}

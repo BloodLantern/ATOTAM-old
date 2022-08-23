@@ -127,6 +127,12 @@
                             "to": 0,
                             "x": 0,
                             "y": 768
+                        },
+                        {
+                            "state": "Right",
+                            "to": 3,
+                            "x": 3052.0,
+                            "y": 320.0
                         }
                     ]
                 },
@@ -244,9 +250,16 @@
                             "y": 1088
                         },
                         {
-                            "verticalRepeat": 39,
-                            "x": 3008,
-                            "y": 0
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 30,
+                            "x": 3008.0,
+                            "y": 576.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 5,
+                            "x": 3008.0,
+                            "y": 0.0
                         },
                         {
                             "horizontalRepeat": 46,
@@ -366,6 +379,128 @@
             "size": [
                 2496,
                 1088
+            ]
+        },
+        "3": {
+            "content": {
+                "Area": {
+                    "VerticalDoor": [
+                        {
+                            "state": "Left",
+                            "to": 1,
+                            "x": 0.0,
+                            "y": 320.0
+                        }
+                    ]
+                },
+                "NPC": {
+                    "Savepoint": [
+                        {
+                            "spID": 2,
+                            "state": "Normal",
+                            "x": 140.0,
+                            "y": 448.0
+                        }
+                    ]
+                },
+                "Terrain": {
+                    "MossyStone": [
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 1536.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 2816.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 4096.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 15,
+                            "verticalRepeat": 1,
+                            "x": 5376.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 256.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 4,
+                            "verticalRepeat": 1,
+                            "x": 0.0,
+                            "y": 576.0
+                        }
+                    ],
+                    "Stone": [
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 16,
+                            "x": 6336.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 0.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 1280.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 2560.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 3840.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 5120.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 4,
+                            "verticalRepeat": 7,
+                            "x": 0.0,
+                            "y": 640.0
+                        }
+                    ]
+                }
+            },
+            "position": [
+                4992,
+                0
+            ],
+            "size": [
+                6400,
+                1080
             ]
         }
     },

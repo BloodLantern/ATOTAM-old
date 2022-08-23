@@ -95,7 +95,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
 
     nlohmann::json samosJson = Entity::values["names"]["Samos"];
 
-    if (s->getOnGround() || !s->getIsAffectedByGravity()) {
+    if (s->getOnGround()) {
         if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
                 || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
             if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
@@ -175,7 +175,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         s->setIsInAltForm(true);
         s->setState("MorphBall");
     } else if (s->getState() == "UnMorphBalling" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["UnMorphBalling"]["count"]) - 1)) {
-        if (s->getOnGround() || !s->getIsAffectedByGravity()) {
+        if (s->getOnGround()) {
             s->setState("IdleCrouch");
             s->setY(s->getY() - static_cast<double>(samosJson["crouchHitbox_height"]) - static_cast<int>(samosJson["crouchHitbox_offset_y"]) +
                     static_cast<double>(samosJson["morphBallHitbox_height"]) + static_cast<int>(samosJson["morphBallHitbox_offset_y"]));
@@ -183,439 +183,673 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             s->setState("Falling");
     }
 
-    if (s->getIsInAltForm()) {
-        if (((inputList["morph"] && inputTime["morph"] == 0.0) || (inputList["up"] && inputTime["up"] == 0.0)) && canCrouch) {
-            s->setState("UnMorphBalling");
-            s->setIsInAltForm(false);
-        } else {
-            if (s->getOnGround() || !s->getIsAffectedByGravity()) {
-                if (inputList["left"] && !inputList["right"]) {
-                    if (!wallL && s->getLagTime() <= 0.0) {
-                        if (s->getVX() > (static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate - static_cast<double>(samosJson["morphGroundMaxSpeed"]))) {
-                            s->setVX(s->getVX() - static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate);
-                        } else if (s->getVX() < (static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate - static_cast<double>(samosJson["morphGroundMaxSpeed"]))
-                                   && s->getVX() > -static_cast<double>(samosJson["morphGroundMaxSpeed"])) {
-                            s->setVX(-static_cast<double>(samosJson["morphGroundMaxSpeed"]));
-                        }
-                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                    } else
-                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    s->setFacing("Left");
-                    if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"])) {
-                        s->setVY(-static_cast<double>(samosJson["morphJumpPower"]));
-                        s->setJumpTime(0);
-                    }
-                } else if (!inputList["left"] && inputList["right"]) {
-                    if (!wallR && s->getLagTime() <= 0.0) {
-                        if (s->getVX() < (static_cast<double>(samosJson["morphGroundMaxSpeed"]) - static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate)) {
-                            s->setVX(s->getVX() + static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate);
-                        } else if (s->getVX() > (static_cast<double>(samosJson["morphGroundMaxSpeed"]) - static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate)
-                                   && s->getVX() < static_cast<double>(samosJson["morphGroundMaxSpeed"])) {
-                            s->setVX(static_cast<double>(samosJson["morphGroundMaxSpeed"]));
-                        }
-                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                    } else
-                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    s->setFacing("Right");
-                    if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"])) {
-                        s->setVY(-static_cast<double>(samosJson["morphJumpPower"]));
-                        s->setJumpTime(0);
-                    }
-                } else {
-                    s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    if (inputList["jump"]  && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"])) {
-                        s->setVY(-static_cast<double>(samosJson["morphJumpPower"]));
-                        s->setJumpTime(0);
-                    }
-                    if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
-                        s->setVX(0);
-                }
-                if (!inputList["jump"]) {
-                    s->setJumpTime(-1);
-                }
+    if (inputList["dash"] && inputTime["dash"] == 0.0 && s->getDashCoolDown() <= 0.0 && s->getDashDirection() == "") {
+        s->setDashTime(samosJson["dashTime"].get<double>());
+        s->setIsAffectedByGravity(false);
+        s->setFrictionFactor(0);
+
+        if (inputList["right"] && !inputList["left"]) {
+            if (inputList["up"] && !inputList["down"]) {
+
+                s->setDashDirection("UpRight");
+                s->setFacing("Right");
+                if (!s->getIsInAltForm())
+                    s->setState("DashUpDiag");
+                s->setSpeedPriorDash({s->getVX(), s->getVY()});
+                s->setVX(std::max(s->getVX() + samosJson["dashBonus"].get<double>(), samosJson["dashBaseSpeed"].get<double>() * 0.707));
+                s->setVY(std::min(s->getVY() - samosJson["dashBonus"].get<double>(), -samosJson["dashBaseSpeed"].get<double>() * 0.707));
+
+            } else if (!inputList["up"] && inputList["down"]) {
+
+                s->setDashDirection("DownRight");
+                s->setFacing("Right");
+                if (!s->getIsInAltForm())
+                    s->setState("DashDownDiag");
+                s->setSpeedPriorDash({s->getVX(), s->getVY()});
+                s->setVX(std::max(s->getVX() + samosJson["dashBonus"].get<double>(), samosJson["dashBaseSpeed"].get<double>() * 0.707));
+                s->setVY(std::max(s->getVY() + samosJson["dashBonus"].get<double>(), samosJson["dashBaseSpeed"].get<double>() * 0.707));
+
             } else {
-                if (inputList["left"] && !inputList["right"]) {
-                    if (!wallL && s->getLagTime() <= 0.0) {
-                        if (s->getVX() > (static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate - static_cast<double>(samosJson["morphAirMaxSpeed"]))) {
-                            s->setVX(s->getVX() - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate);
-                        } else if (s->getVX() < (static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate - static_cast<double>(samosJson["morphAirMaxSpeed"]))
-                                   && s->getVX() > -static_cast<double>(samosJson["morphAirMaxSpeed"])) {
-                            s->setVX(-static_cast<double>(samosJson["morphAirMaxSpeed"]));
-                        }
-                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                    } else
-                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    s->setFacing("Left");
-                    if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0) {
-                        s->setVY(s->getVY() - (static_cast<double>(samosJson["morphJumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["morphPostJumpBoost"]) / (frameRate * static_cast<double>(samosJson["morphJumpTimeMax"])));
-                        s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                    } else if (s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0){
-                        if (s->getVY() < -static_cast<double>(samosJson["morphJumpFall"]))
-                            s->setVY(-static_cast<double>(samosJson["morphJumpFall"]));
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    } else {
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    }
-                } else if (!inputList["left"] && inputList["right"]) {
-                    if (!wallR && s->getLagTime() <= 0.0) {
-                        if (s->getVX() < (static_cast<double>(samosJson["morphAirMaxSpeed"]) - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate)) {
-                            s->setVX(s->getVX() + static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate);
-                        } else if (s->getVX() > (static_cast<double>(samosJson["morphAirMaxSpeed"]) - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate)
-                                   && s->getVX() < static_cast<double>(samosJson["morphAirMaxSpeed"])) {
-                            s->setVX(static_cast<double>(samosJson["morphAirMaxSpeed"]));
-                        }
-                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                    } else
-                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    s->setFacing("Right");
-                    if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0) {
-                        s->setVY(s->getVY() - (static_cast<double>(samosJson["morphJumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["morphPostJumpBoost"]) / (frameRate * static_cast<double>(samosJson["morphJumpTimeMax"])));
-                        s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                    } else if (s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0){
-                        if (s->getVY() < -static_cast<double>(samosJson["morphJumpFall"]))
-                            s->setVY(-static_cast<double>(samosJson["morphJumpFall"]));
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    } else {
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    }
+
+                s->setDashDirection("Right");
+                s->setFacing("Right");
+                if (!s->getIsInAltForm())
+                    s->setState("Dash");
+                s->setSpeedPriorDash({s->getVX(), 0.0});
+                s->setVX(std::max(s->getVX() + samosJson["dashBonus"].get<double>(), samosJson["dashBaseSpeed"].get<double>()));
+                s->setVY(0.0);
+
+            }
+        } else if (!inputList["right"] && inputList["left"]) {
+            if (inputList["up"] && !inputList["down"]) {
+
+                s->setDashDirection("UpLeft");
+                s->setFacing("Left");
+                if (!s->getIsInAltForm())
+                    s->setState("DashUpDiag");
+                s->setSpeedPriorDash({s->getVX(), s->getVY()});
+                s->setVX(std::min(s->getVX() - samosJson["dashBonus"].get<double>(), -samosJson["dashBaseSpeed"].get<double>() * 0.707));
+                s->setVY(std::min(s->getVY() - samosJson["dashBonus"].get<double>(), -samosJson["dashBaseSpeed"].get<double>() * 0.707));
+
+            } else if (!inputList["up"] && inputList["down"]) {
+
+                s->setDashDirection("DownLeft");
+                s->setFacing("Left");
+                if (!s->getIsInAltForm())
+                    s->setState("DashDownDiag");
+                s->setSpeedPriorDash({s->getVX(), s->getVY()});
+                s->setVX(std::min(s->getVX() - samosJson["dashBonus"].get<double>(), -samosJson["dashBaseSpeed"].get<double>() * 0.707));
+                s->setVY(std::max(s->getVY() + samosJson["dashBonus"].get<double>(), samosJson["dashBaseSpeed"].get<double>() * 0.707));
+
+            } else {
+
+                s->setDashDirection("Left");
+                s->setFacing("Left");
+                if (!s->getIsInAltForm())
+                    s->setState("Dash");
+                s->setSpeedPriorDash({s->getVX(), 0.0});
+                s->setVX(std::min(s->getVX() - samosJson["dashBonus"].get<double>(), -samosJson["dashBaseSpeed"].get<double>()));
+                s->setVY(0.0);
+
+            }
+        } else {
+            if (inputList["up"] && !inputList["down"]) {
+
+                s->setDashDirection("Up");
+                if (!s->getIsInAltForm())
+                    s->setState("DashUp");
+                s->setSpeedPriorDash({0.0, s->getVY()});
+                s->setVX(0.0);
+                s->setVY(std::min(s->getVY() - samosJson["dashBonus"].get<double>(), -samosJson["dashBaseSpeed"].get<double>()));
+
+            } else if (!inputList["up"] && inputList["down"]) {
+
+                s->setDashDirection("Down");
+                if (!s->getIsInAltForm())
+                    s->setState("DashDown");
+                s->setSpeedPriorDash({0.0, s->getVY()});
+                s->setVX(0.0);
+                s->setVY(std::max(s->getVY() + samosJson["dashBonus"].get<double>(), samosJson["dashBaseSpeed"].get<double>()));
+
+            } else {
+                if (s->getFacing() == "Right") {
+
+                    s->setDashDirection("Right");
+                    if (!s->getIsInAltForm())
+                        s->setState("Dash");
+                    s->setSpeedPriorDash({s->getVX(), 0.0});
+                    s->setVX(std::max(s->getVX() + samosJson["dashBonus"].get<double>(), samosJson["dashBaseSpeed"].get<double>()));
+                    s->setVY(0.0);
+
                 } else {
-                    s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0) {
-                        s->setVY(s->getVY() - (static_cast<double>(samosJson["morphJumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["morphPostJumpBoost"]) / (frameRate * static_cast<double>(samosJson["morphJumpTimeMax"])));
-                        s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                    } else if (s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0){
-                        if (s->getVY() < -static_cast<double>(samosJson["morphJumpFall"]))
-                            s->setVY(-static_cast<double>(samosJson["morphJumpFall"]));
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    } else {
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    }
-                    if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
-                        s->setVX(0);
+
+                    s->setDashDirection("Left");
+                    if (!s->getIsInAltForm())
+                        s->setState("Dash");
+                    s->setSpeedPriorDash({s->getVX(), 0.0});
+                    s->setVX(std::min(s->getVX() - samosJson["dashBonus"].get<double>(), -samosJson["dashBaseSpeed"].get<double>()));
+                    s->setVY(0.0);
                 }
             }
         }
-    } else {
-        if (inputList["morph"] && inputTime["morph"] == 0.0 && canMorph) {
-            s->setState("MorphBalling");
-            if (s->getOnGround() || !s->getIsAffectedByGravity()) {
-                if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag") || (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                    s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
-                            static_cast<int>(samosJson["fallingHitbox_height"]) + static_cast<int>(samosJson["fallingHitbox_offset_y"]));
-                } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
-                    s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
-                            static_cast<int>(samosJson["spinJumpHitbox_height"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"]));
-                } else if (s->getState() == "IdleCrouch" || s->getState() == "Crouching" || s->getState() == "UnCrouching") {
-                    s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
-                            static_cast<int>(samosJson["crouchHitbox_height"]) + static_cast<int>(samosJson["crouchHitbox_offset_y"]));
-                } else
-                    s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
-                            static_cast<int>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]));
-           }
-        } else if (inputList["aim"] && s->getState() != "MorphBalling") {
-            if (s->getOnGround() || !s->getIsAffectedByGravity()) {
-                if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
-                        || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                    if (canStand)
-                        s->setState("Landing");
-                    else if (canCrouch)
-                        s->setState("IdleCrouch");
-                    else if (canMorph)
-                        s->setState("MorphBalling");
-                } else if (inputList["jump"]  && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && canStand) {
-                    s->setVY(-static_cast<double>(samosJson["jumpPower"]));
-                    s->setJumpTime(0);
-                    s->setState("Jumping");
-                } else if ((s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag"
-                           || s->getState() == "CrouchAimDownDiag" || s->getState() == "UnMorphBalling") && canCrouch) {
-                    s->setState("IdleCrouch");
+        if (s->getIsInAltForm())
+            s->setState("MorphBallDash");
+    } else if (s->getDashDirection() != "") {
+        if (s->getOnGround()) {
+            if (inputList["jump"] && inputTime["jump"] == 0.0 && canSpin) {
+                s->setDashTime(0.0);
+                s->setDashDirection("");
+                s->setDashCoolDown(samosJson["dashGroundCooldown"].get<double>());
+                s->setJumpTime(0);
+                s->setIsAffectedByGravity(true);
+                s->setFrictionFactor(samosJson["movingFriction"].get<double>());
+                if (s->getIsInAltForm()) {
+                    s->setVY(-static_cast<double>(samosJson["morphJumpPower"]));
+                    s->setState("MorphBall");
                 } else {
-                    if (canStand)
-                        s->setState("Standing");
-                    else if (canCrouch)
-                        s->setState("IdleCrouch");
-                    else if (canMorph)
-                        s->setState("MorphBalling");
+                    s->setVY(-static_cast<double>(samosJson["jumpPower"]));
+                    s->setState("SpinJump");
                 }
-                if (!inputList["jump"])
-                    s->setJumpTime(-1);
-            }
-            if ((!s->getOnGround() && s->getIsAffectedByGravity()) || s->getState() == "Jumping") {
-                if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
-                    if (s->getFacing() == "Left") {
-                        if (!wallL) {
-                            if (s->getVX() > static_cast<double>(samosJson["wallJumpPower_x"]))
-                                s->setVX(-s->getVX());
-                            else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() > static_cast<double>(samosJson["wallJumpPower_x"])) {
-                                s->setVX(-s->getSpeedRetained());
-                                s->setRetainTime(0.0);
-                            } else if (s->getVX() > -static_cast<double>(samosJson["wallJumpPower_x"]))
-                                s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+            } else if (s->getDashTime() <= 0.0) {
+                s->setDashDirection("");
+                s->setIsAffectedByGravity(true);
+                s->setFrictionFactor(samosJson["movingFriction"].get<double>());
+                s->setDashCoolDown(samosJson["dashGroundCooldown"].get<double>());
+
+                if (s->getVX() > 0) {
+                    if (!wallR) {
+                        if (s->getSpeedPriorDash().first > 0.0) {
+                            s->setVX(std::min(s->getVX(), std::max(s->getSpeedPriorDash().first, samosJson["dashBaseEndingSpeed"].get<double>())));
+                        } else {
+                            s->setVX(std::min(s->getVX(), samosJson["dashBaseEndingSpeed"].get<double>()));
                         }
                     } else {
-                        if (!wallR) {
-                            if (s->getVX() < -static_cast<double>(samosJson["wallJumpPower_x"]))
-                                s->setVX(-s->getVX());
-                            else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() < -static_cast<double>(samosJson["wallJumpPower_x"])) {
-                                s->setVX(-s->getSpeedRetained());
-                                s->setRetainTime(0.0);
-                            } else if (s->getVX() < static_cast<double>(samosJson["wallJumpPower_x"]))
-                                s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
-                        }
+                        s->setVX(0.0);
                     }
-                    s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
-                    s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                } else {
+                    if (!wallL) {
+                        if (s->getSpeedPriorDash().first < 0.0) {
+                            s->setVX(std::max(s->getVX(), std::min(s->getSpeedPriorDash().first, -samosJson["dashBaseEndingSpeed"].get<double>())));
+                        } else {
+                            s->setVX(std::max(s->getVX(), -samosJson["dashBaseEndingSpeed"].get<double>()));
+                        }
+                    } else {
+                        s->setVX(0.0);
+                    }
                 }
 
-                if (canFall)
-                    s->setState("Falling");
-                else if (canSpin)
-                    s->setState("SpinJump");
-                else if (canMorph)
-                    s->setState("MorphBalling");
-
-                if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
-                    s->setVY(s->getVY() - (static_cast<double>(samosJson["jumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["postJumpBoost"]) / (frameRate * static_cast<double>(samosJson["jumpTimeMax"])));
-                    s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                } else if (s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0){
-                    if (s->getVY() < -static_cast<double>(samosJson["jumpFall"]))
-                        s->setVY(-static_cast<double>(samosJson["jumpFall"]));
-                    s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                if (s->getVY() > 0) {
+                    s->setVY(0.0);
                 } else {
-                    s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                    if (s->getSpeedPriorDash().second < 0.0) {
+                        s->setVY(std::max(s->getVY(), std::min(s->getSpeedPriorDash().second, -samosJson["dashBaseEndingUpSpeed"].get<double>())));
+                    } else {
+                        s->setVY(std::max(s->getVY(), -samosJson["dashBaseEndingUpSpeed"].get<double>()));
+                    }
+                }
+
+                if (s->getIsInAltForm())
+                    s->setState("MorphBall");
+                else {
+                    if (canStand)
+                        s->setState("Standing");
+                    else if (canMorph && !canCrouch)
+                        s->setState("morphBalling");
+                    else
+                        s->setState("IdleCrouch");
                 }
             }
-
-            if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
-                s->setVX(0);
-            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
         } else {
-            if (s->getOnGround() || !s->getIsAffectedByGravity()) {
-                if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
-                        || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
-                    if (canStand)
-                        s->setState("Landing");
-                    else if (canCrouch)
-                        s->setState("IdleCrouch");
-                    else if (canMorph)
-                        s->setState("MorphBalling");
-                } else if (inputList["left"] && !inputList["right"]) {
-                    if (!wallL && canStand && s->getLagTime() <= 0.0) {
-                        if (!inputList["run"]) {
-                            if (s->getVX() > (static_cast<double>(samosJson["groundAcceleration"]) / frameRate - static_cast<double>(samosJson["groundMaxSpeed"]))) {
-                                s->setVX(s->getVX() - static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
-                            } else if (s->getVX() < (static_cast<double>(samosJson["groundAcceleration"]) / frameRate - static_cast<double>(samosJson["groundMaxSpeed"]))
-                                       && s->getVX() > -static_cast<double>(samosJson["groundMaxSpeed"])) {
-                                s->setVX(-static_cast<double>(samosJson["groundMaxSpeed"]));
-                            }
+            if (s->getDashTime() <= 0.0) {
+                s->setDashDirection("");
+                s->setIsAffectedByGravity(true);
+                s->setFrictionFactor(samosJson["movingFriction"].get<double>());
+                s->setDashCoolDown(samosJson["dashAirCooldown"].get<double>());
+
+                if (s->getVX() > 0) {
+                    if (!wallR) {
+                        if (s->getSpeedPriorDash().first > 0.0) {
+                            s->setVX(std::min(s->getVX(), std::max(s->getSpeedPriorDash().first, samosJson["dashBaseEndingSpeed"].get<double>())));
                         } else {
-                            if (s->getVX() > (static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate - static_cast<double>(samosJson["groundRunMaxSpeedGap"]))) {
-                                if (s->getVX() > -static_cast<double>(samosJson["groundMaxSpeed"]))
-                                    s->setVX(s->getVX() - static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
-                                else
-                                    s->setVX(s->getVX() - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate);
-                            } else if (s->getVX() < (static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate - static_cast<double>(samosJson["groundRunMaxSpeedGap"]))
-                                       && s->getVX() > -static_cast<double>(samosJson["groundRunMaxSpeed"])) {
-                                s->setVX(-static_cast<double>(samosJson["groundRunMaxSpeed"]));
-                            }
+                            s->setVX(std::min(s->getVX(), samosJson["dashBaseEndingSpeed"].get<double>()));
                         }
-                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                    } else
-                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    s->setFacing("Left");
-                    if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && canSpin) {
-                        s->setVY(-static_cast<double>(samosJson["jumpPower"]));
-                        s->setJumpTime(0);
-                        s->setState("SpinJump");
-                    } else if (s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling" && canStand) {
-                        if (!wallL && s->getLagTime() <= 0.0) {
-                            if (inputList["down"] && !inputList["up"])
-                                s->setState("WalkingAimDown");
-                            else if (!inputList["down"] && inputList["up"])
-                                s->setState("WalkingAimUp");
-                            else
-                                s->setState("Walking");
-                        } else {
-                            s->setState("Standing");
-                        }
-                    }
-                } else if (!inputList["left"] && inputList["right"]) {
-                    if (!wallR && canStand && s->getLagTime() <= 0.0) {
-                        if (!inputList["run"]) {
-                            if (s->getVX() < (static_cast<double>(samosJson["groundMaxSpeed"]) - static_cast<double>(samosJson["groundAcceleration"]) / frameRate)) {
-                                s->setVX(s->getVX() + static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
-                            } else if (s->getVX() > (static_cast<double>(samosJson["groundMaxSpeed"]) - static_cast<double>(samosJson["groundAcceleration"]) / frameRate)
-                                       && s->getVX() < static_cast<double>(samosJson["groundMaxSpeed"])) {
-                                s->setVX(static_cast<double>(samosJson["groundMaxSpeed"]));
-                            }
-                        } else {
-                            if (s->getVX() < (static_cast<double>(samosJson["groundRunMaxSpeedGap"]) - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate)) {
-                                if (s->getVX() < static_cast<double>(samosJson["groundMaxSpeed"]))
-                                    s->setVX(s->getVX() + static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
-                                else
-                                    s->setVX(s->getVX() + static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate);
-                            } else if (s->getVX() > (static_cast<double>(samosJson["groundRunMaxSpeedGap"]) - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate)
-                                       && s->getVX() < static_cast<double>(samosJson["groundRunMaxSpeed"])) {
-                                s->setVX(static_cast<double>(samosJson["groundRunMaxSpeed"]));
-                            }
-                        }
-                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                    } else
-                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    s->setFacing("Right");
-                    if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && canSpin) {
-                        s->setVY(-static_cast<double>(samosJson["jumpPower"]));
-                        s->setJumpTime(0);
-                        s->setState("SpinJump");
-                    } else if (s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling") {
-                        if (!wallR && s->getLagTime() <= 0.0) {
-                            if (inputList["down"] && !inputList["up"])
-                                s->setState("WalkingAimDown");
-                            else if (!inputList["down"] && inputList["up"])
-                                s->setState("WalkingAimUp");
-                            else
-                                s->setState("Walking");
-                        } else {
-                            s->setState("Standing");
-                        }
+                    } else {
+                        s->setVX(0.0);
                     }
                 } else {
-                    s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && canStand) {
+                    if (!wallL) {
+                        if (s->getSpeedPriorDash().first < 0.0) {
+                            s->setVX(std::max(s->getVX(), std::min(s->getSpeedPriorDash().first, -samosJson["dashBaseEndingSpeed"].get<double>())));
+                        } else {
+                            s->setVX(std::max(s->getVX(), -samosJson["dashBaseEndingSpeed"].get<double>()));
+                        }
+                    } else {
+                        s->setVX(0.0);
+                    }
+                }
+
+                if (s->getVY() > 0) {
+                    if (s->getSpeedPriorDash().second > 0.0) {
+                        s->setVY(std::min(s->getVY(), std::max(s->getSpeedPriorDash().second, samosJson["dashBaseEndingUpSpeed"].get<double>())));
+                    } else {
+                        s->setVY(std::min(s->getVY(), samosJson["dashBaseEndingUpSpeed"].get<double>()));
+                    }
+                } else {
+                    if (s->getSpeedPriorDash().second < 0.0) {
+                        s->setVY(std::max(s->getVY(), std::min(s->getSpeedPriorDash().second, -samosJson["dashBaseEndingUpSpeed"].get<double>())));
+                    } else {
+                        s->setVY(std::max(s->getVY(), -samosJson["dashBaseEndingUpSpeed"].get<double>()));
+                    }
+                }
+
+                if (s->getIsInAltForm())
+                    s->setState("MorphBall");
+                else {
+                    if (canFall)
+                        s->setState("Falling");
+                    else if (canMorph && !canSpin)
+                        s->setState("morphBalling");
+                    else
+                        s->setState("SpinJump");
+                }
+            }
+        }
+        s->setDashTime(s->getDashTime() - 1 / frameRate);
+    } else {
+        if (s->getIsInAltForm()) {
+            if (((inputList["morph"] && inputTime["morph"] == 0.0) || (inputList["up"] && inputTime["up"] == 0.0)) && canCrouch) {
+                s->setState("UnMorphBalling");
+                s->setIsInAltForm(false);
+            } else {
+                if (s->getOnGround()) {
+                    if (inputList["left"] && !inputList["right"]) {
+                        if (!wallL && s->getLagTime() <= 0.0) {
+                            if (s->getVX() > (static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate - static_cast<double>(samosJson["morphGroundMaxSpeed"]))) {
+                                s->setVX(s->getVX() - static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate);
+                            } else if (s->getVX() < (static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate - static_cast<double>(samosJson["morphGroundMaxSpeed"]))
+                                       && s->getVX() > -static_cast<double>(samosJson["morphGroundMaxSpeed"])) {
+                                s->setVX(-static_cast<double>(samosJson["morphGroundMaxSpeed"]));
+                            }
+                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                        } else
+                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFacing("Left");
+                        if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"])) {
+                            s->setVY(-static_cast<double>(samosJson["morphJumpPower"]));
+                            s->setJumpTime(0);
+                        }
+                    } else if (!inputList["left"] && inputList["right"]) {
+                        if (!wallR && s->getLagTime() <= 0.0) {
+                            if (s->getVX() < (static_cast<double>(samosJson["morphGroundMaxSpeed"]) - static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate)) {
+                                s->setVX(s->getVX() + static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate);
+                            } else if (s->getVX() > (static_cast<double>(samosJson["morphGroundMaxSpeed"]) - static_cast<double>(samosJson["morphGroundAcceleration"]) / frameRate)
+                                       && s->getVX() < static_cast<double>(samosJson["morphGroundMaxSpeed"])) {
+                                s->setVX(static_cast<double>(samosJson["morphGroundMaxSpeed"]));
+                            }
+                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                        } else
+                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFacing("Right");
+                        if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"])) {
+                            s->setVY(-static_cast<double>(samosJson["morphJumpPower"]));
+                            s->setJumpTime(0);
+                        }
+                    } else {
+                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        if (inputList["jump"]  && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"])) {
+                            s->setVY(-static_cast<double>(samosJson["morphJumpPower"]));
+                            s->setJumpTime(0);
+                        }
+                        if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
+                            s->setVX(0);
+                    }
+                    if (!inputList["jump"]) {
+                        s->setJumpTime(-1);
+                    }
+                } else {
+                    if (inputList["left"] && !inputList["right"]) {
+                        if (!wallL && s->getLagTime() <= 0.0) {
+                            if (s->getVX() > (static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate - static_cast<double>(samosJson["morphAirMaxSpeed"]))) {
+                                s->setVX(s->getVX() - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate);
+                            } else if (s->getVX() < (static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate - static_cast<double>(samosJson["morphAirMaxSpeed"]))
+                                       && s->getVX() > -static_cast<double>(samosJson["morphAirMaxSpeed"])) {
+                                s->setVX(-static_cast<double>(samosJson["morphAirMaxSpeed"]));
+                            }
+                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                        } else
+                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFacing("Left");
+                        if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0) {
+                            s->setVY(s->getVY() - (static_cast<double>(samosJson["morphJumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["morphPostJumpBoost"]) / (frameRate * static_cast<double>(samosJson["morphJumpTimeMax"])));
+                            s->setJumpTime(s->getJumpTime() + 1 / frameRate);
+                        } else if (s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0){
+                            if (s->getVY() < -static_cast<double>(samosJson["morphJumpFall"]))
+                                s->setVY(-static_cast<double>(samosJson["morphJumpFall"]));
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        } else {
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        }
+                    } else if (!inputList["left"] && inputList["right"]) {
+                        if (!wallR && s->getLagTime() <= 0.0) {
+                            if (s->getVX() < (static_cast<double>(samosJson["morphAirMaxSpeed"]) - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate)) {
+                                s->setVX(s->getVX() + static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate);
+                            } else if (s->getVX() > (static_cast<double>(samosJson["morphAirMaxSpeed"]) - static_cast<double>(samosJson["morphAirAcceleration"]) / frameRate)
+                                       && s->getVX() < static_cast<double>(samosJson["morphAirMaxSpeed"])) {
+                                s->setVX(static_cast<double>(samosJson["morphAirMaxSpeed"]));
+                            }
+                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                        } else
+                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFacing("Right");
+                        if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0) {
+                            s->setVY(s->getVY() - (static_cast<double>(samosJson["morphJumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["morphPostJumpBoost"]) / (frameRate * static_cast<double>(samosJson["morphJumpTimeMax"])));
+                            s->setJumpTime(s->getJumpTime() + 1 / frameRate);
+                        } else if (s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0){
+                            if (s->getVY() < -static_cast<double>(samosJson["morphJumpFall"]))
+                                s->setVY(-static_cast<double>(samosJson["morphJumpFall"]));
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        } else {
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        }
+                    } else {
+                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0) {
+                            s->setVY(s->getVY() - (static_cast<double>(samosJson["morphJumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["morphPostJumpBoost"]) / (frameRate * static_cast<double>(samosJson["morphJumpTimeMax"])));
+                            s->setJumpTime(s->getJumpTime() + 1 / frameRate);
+                        } else if (s->getJumpTime() < static_cast<double>(samosJson["morphJumpTimeMax"]) && s->getJumpTime() >= 0){
+                            if (s->getVY() < -static_cast<double>(samosJson["morphJumpFall"]))
+                                s->setVY(-static_cast<double>(samosJson["morphJumpFall"]));
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        } else {
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        }
+                        if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
+                            s->setVX(0);
+                    }
+                }
+            }
+        } else {
+            if (inputList["morph"] && inputTime["morph"] == 0.0 && canMorph) {
+                s->setState("MorphBalling");
+                if (s->getOnGround()) {
+                    if ((s->getState() == "Falling") || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag") || (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                        s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
+                                static_cast<int>(samosJson["fallingHitbox_height"]) + static_cast<int>(samosJson["fallingHitbox_offset_y"]));
+                    } else if (s->getState() == "SpinJump" || s->getState() == "WallJump") {
+                        s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
+                                static_cast<int>(samosJson["spinJumpHitbox_height"]) + static_cast<int>(samosJson["spinJumpHitbox_offset_y"]));
+                    } else if (s->getState() == "IdleCrouch" || s->getState() == "Crouching" || s->getState() == "UnCrouching") {
+                        s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
+                                static_cast<int>(samosJson["crouchHitbox_height"]) + static_cast<int>(samosJson["crouchHitbox_offset_y"]));
+                    } else
+                        s->setY(s->getY() - static_cast<int>(samosJson["morphBallHitbox_height"]) - static_cast<int>(samosJson["morphBallHitbox_offset_y"]) +
+                                static_cast<int>(samosJson["height"]) + static_cast<int>(samosJson["offset_y"]));
+               }
+            } else if (inputList["aim"] && s->getState() != "MorphBalling") {
+                if (s->getOnGround()) {
+                    if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
+                            || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                        if (canStand)
+                            s->setState("Landing");
+                        else if (canCrouch)
+                            s->setState("IdleCrouch");
+                        else if (canMorph)
+                            s->setState("MorphBalling");
+                    } else if (inputList["jump"]  && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && canStand) {
                         s->setVY(-static_cast<double>(samosJson["jumpPower"]));
                         s->setJumpTime(0);
                         s->setState("Jumping");
-                    } else if (s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling") {
-                        if (inputList["down"] && !inputList["up"] && inputTime["down"] == 0.0 && canMorph && s->getState() == "IdleCrouch")
+                    } else if ((s->getState() == "Crouching" || s->getState() == "IdleCrouch" || s->getState() == "CrouchAimUp" || s->getState() == "CrouchAimUpDiag"
+                               || s->getState() == "CrouchAimDownDiag" || s->getState() == "UnMorphBalling") && canCrouch) {
+                        s->setState("IdleCrouch");
+                    } else {
+                        if (canStand)
+                            s->setState("Standing");
+                        else if (canCrouch)
+                            s->setState("IdleCrouch");
+                        else if (canMorph)
                             s->setState("MorphBalling");
-                        else {
-                            if (canCrouch) {
-                                if (!inputList["up"] && inputList["down"] && inputTime["down"] == 0.0 && (s->getState() == "Standing" || s->getState() == "UnCrouching"))
-                                    s->setState("Crouching");
-                                else if (s->getState() == "Crouching" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["Crouching"]["count"]) - 1))
-                                    s->setState("IdleCrouch");
+                    }
+                    if (!inputList["jump"])
+                        s->setJumpTime(-1);
+                }
+                if (!s->getOnGround() || s->getState() == "Jumping") {
+                    if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
+                        if (s->getFacing() == "Left") {
+                            if (!wallL) {
+                                if (s->getVX() > static_cast<double>(samosJson["wallJumpPower_x"]))
+                                    s->setVX(-s->getVX());
+                                else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() > static_cast<double>(samosJson["wallJumpPower_x"])) {
+                                    s->setVX(-s->getSpeedRetained());
+                                    s->setRetainTime(0.0);
+                                } else if (s->getVX() > -static_cast<double>(samosJson["wallJumpPower_x"]))
+                                    s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
                             }
-                            if (canStand) {
-                                if (inputList["up"] && !inputList["down"] && inputTime["up"] == 0.0 && (s->getState() == "IdleCrouch" || s->getState() == "Crouching") && s->getState() != "UnMorphBalling")
-                                    s->setState("UnCrouching");
-                                else if (s->getState() == "UnCrouching" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["UnCrouching"]["count"]) - 1))
-                                    s->setState("Standing");
-
-                                if (s->getState() != "IdleCrouch" && s->getState() != "Crouching" && s->getState() != "UnCrouching" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "CrouchAimDownDiag"&& s->getState() != "UnMorphBalling")
-                                    s->setState("Standing");
+                        } else {
+                            if (!wallR) {
+                                if (s->getVX() < -static_cast<double>(samosJson["wallJumpPower_x"]))
+                                    s->setVX(-s->getVX());
+                                else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() < -static_cast<double>(samosJson["wallJumpPower_x"])) {
+                                    s->setVX(-s->getSpeedRetained());
+                                    s->setRetainTime(0.0);
+                                } else if (s->getVX() < static_cast<double>(samosJson["wallJumpPower_x"]))
+                                    s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
                             }
                         }
+                        s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
+                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
                     }
-                    if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
-                        s->setVX(0);
+
+                    if (canFall)
+                        s->setState("Falling");
+                    else if (canSpin)
+                        s->setState("SpinJump");
+                    else if (canMorph)
+                        s->setState("MorphBalling");
+
+                    if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
+                        s->setVY(s->getVY() - (static_cast<double>(samosJson["jumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["postJumpBoost"]) / (frameRate * static_cast<double>(samosJson["jumpTimeMax"])));
+                        s->setJumpTime(s->getJumpTime() + 1 / frameRate);
+                    } else if (s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0){
+                        if (s->getVY() < -static_cast<double>(samosJson["jumpFall"]))
+                            s->setVY(-static_cast<double>(samosJson["jumpFall"]));
+                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                    } else {
+                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                    }
                 }
-                if (!inputList["jump"]) {
-                    s->setJumpTime(-1);
-                }
+
+                if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
+                    s->setVX(0);
+                s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
             } else {
-                if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
-                    if (s->getFacing() == "Left") {
-                        if (!wallL) {
-                            if (s->getVX() > static_cast<double>(samosJson["wallJumpPower_x"]))
-                                s->setVX(-s->getVX());
-                            else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() > static_cast<double>(samosJson["wallJumpPower_x"])) {
-                                s->setVX(-s->getSpeedRetained());
-                                s->setRetainTime(0.0);
-                            } else if (s->getVX() > -static_cast<double>(samosJson["wallJumpPower_x"]))
-                                s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+                if (s->getOnGround()) {
+                    if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
+                            || (s->getState() == "FallingAimUp")|| (s->getState() == "FallingAimUpDiag")|| (s->getState() == "FallingAimDownDiag")|| (s->getState() == "FallingAimDown")) {
+                        if (canStand)
+                            s->setState("Landing");
+                        else if (canCrouch)
+                            s->setState("IdleCrouch");
+                        else if (canMorph)
+                            s->setState("MorphBalling");
+                    } else if (inputList["left"] && !inputList["right"]) {
+                        if (!wallL && canStand && s->getLagTime() <= 0.0) {
+                            if (!inputList["run"]) {
+                                if (s->getVX() > (static_cast<double>(samosJson["groundAcceleration"]) / frameRate - static_cast<double>(samosJson["groundMaxSpeed"]))) {
+                                    s->setVX(s->getVX() - static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
+                                } else if (s->getVX() < (static_cast<double>(samosJson["groundAcceleration"]) / frameRate - static_cast<double>(samosJson["groundMaxSpeed"]))
+                                           && s->getVX() > -static_cast<double>(samosJson["groundMaxSpeed"])) {
+                                    s->setVX(-static_cast<double>(samosJson["groundMaxSpeed"]));
+                                }
+                            } else {
+                                if (s->getVX() > (static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate - static_cast<double>(samosJson["groundRunMaxSpeedGap"]))) {
+                                    if (s->getVX() > -static_cast<double>(samosJson["groundMaxSpeed"]))
+                                        s->setVX(s->getVX() - static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
+                                    else
+                                        s->setVX(s->getVX() - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate);
+                                } else if (s->getVX() < (static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate - static_cast<double>(samosJson["groundRunMaxSpeedGap"]))
+                                           && s->getVX() > -static_cast<double>(samosJson["groundRunMaxSpeed"])) {
+                                    s->setVX(-static_cast<double>(samosJson["groundRunMaxSpeed"]));
+                                }
+                            }
+                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                        } else
+                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFacing("Left");
+                        if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && canSpin) {
+                            s->setVY(-static_cast<double>(samosJson["jumpPower"]));
+                            s->setJumpTime(0);
+                            s->setState("SpinJump");
+                        } else if (s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling" && canStand) {
+                            if (!wallL && s->getLagTime() <= 0.0) {
+                                if (inputList["down"] && !inputList["up"])
+                                    s->setState("WalkingAimDown");
+                                else if (!inputList["down"] && inputList["up"])
+                                    s->setState("WalkingAimUp");
+                                else
+                                    s->setState("Walking");
+                            } else {
+                                s->setState("Standing");
+                            }
+                        }
+                    } else if (!inputList["left"] && inputList["right"]) {
+                        if (!wallR && canStand && s->getLagTime() <= 0.0) {
+                            if (!inputList["run"]) {
+                                if (s->getVX() < (static_cast<double>(samosJson["groundMaxSpeed"]) - static_cast<double>(samosJson["groundAcceleration"]) / frameRate)) {
+                                    s->setVX(s->getVX() + static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
+                                } else if (s->getVX() > (static_cast<double>(samosJson["groundMaxSpeed"]) - static_cast<double>(samosJson["groundAcceleration"]) / frameRate)
+                                           && s->getVX() < static_cast<double>(samosJson["groundMaxSpeed"])) {
+                                    s->setVX(static_cast<double>(samosJson["groundMaxSpeed"]));
+                                }
+                            } else {
+                                if (s->getVX() < (static_cast<double>(samosJson["groundRunMaxSpeedGap"]) - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate)) {
+                                    if (s->getVX() < static_cast<double>(samosJson["groundMaxSpeed"]))
+                                        s->setVX(s->getVX() + static_cast<double>(samosJson["groundAcceleration"]) / frameRate);
+                                    else
+                                        s->setVX(s->getVX() + static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate);
+                                } else if (s->getVX() > (static_cast<double>(samosJson["groundRunMaxSpeedGap"]) - static_cast<double>(samosJson["groundRunAcceleration"]) / frameRate)
+                                           && s->getVX() < static_cast<double>(samosJson["groundRunMaxSpeed"])) {
+                                    s->setVX(static_cast<double>(samosJson["groundRunMaxSpeed"]));
+                                }
+                            }
+                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                        } else
+                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFacing("Right");
+                        if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && canSpin) {
+                            s->setVY(-static_cast<double>(samosJson["jumpPower"]));
+                            s->setJumpTime(0);
+                            s->setState("SpinJump");
+                        } else if (s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling") {
+                            if (!wallR && s->getLagTime() <= 0.0) {
+                                if (inputList["down"] && !inputList["up"])
+                                    s->setState("WalkingAimDown");
+                                else if (!inputList["down"] && inputList["up"])
+                                    s->setState("WalkingAimUp");
+                                else
+                                    s->setState("Walking");
+                            } else {
+                                s->setState("Standing");
+                            }
                         }
                     } else {
-                        if (!wallR) {
-                            if (s->getVX() < -static_cast<double>(samosJson["wallJumpPower_x"]))
-                                s->setVX(-s->getVX());
-                            else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() < -static_cast<double>(samosJson["wallJumpPower_x"])) {
-                                s->setVX(-s->getSpeedRetained());
-                                s->setRetainTime(0.0);
-                            } else if (s->getVX() < static_cast<double>(samosJson["wallJumpPower_x"]))
-                                s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
-                        }
-                    }
-                    s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
-                    s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                } else if (inputList["left"] && !inputList["right"]) {
-                    if (!wallL && s->getLagTime() <= 0.0) {
-                        if (s->getVX() > (static_cast<double>(samosJson["airAcceleration"]) / frameRate - static_cast<double>(samosJson["airMaxSpeed"]))) {
-                            s->setVX(s->getVX() - static_cast<double>(samosJson["airAcceleration"]) / frameRate);
-                        } else if (s->getVX() < (static_cast<double>(samosJson["airAcceleration"]) / frameRate - static_cast<double>(samosJson["airMaxSpeed"]))
-                                   && s->getVX() > -static_cast<double>(samosJson["airMaxSpeed"])) {
-                            s->setVX(-static_cast<double>(samosJson["airMaxSpeed"]));
-                        }
-                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                    } else
                         s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    s->setFacing("Left");
-                    if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
-                        s->setVY(s->getVY() - (static_cast<double>(samosJson["jumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["postJumpBoost"]) / (frameRate * static_cast<double>(samosJson["jumpTimeMax"])));
-                        s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                    } else if (s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0){
-                        if (s->getVY() < -static_cast<double>(samosJson["jumpFall"]))
-                            s->setVY(-static_cast<double>(samosJson["jumpFall"]));
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    } else {
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    }
-                    if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"])))
-                                            s->setState("JumpEnd");
+                        if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && canStand) {
+                            s->setVY(-static_cast<double>(samosJson["jumpPower"]));
+                            s->setJumpTime(0);
+                            s->setState("Jumping");
+                        } else if (s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling") {
+                            if (inputList["down"] && !inputList["up"] && inputTime["down"] == 0.0 && canMorph && s->getState() == "IdleCrouch")
+                                s->setState("MorphBalling");
+                            else {
+                                if (canCrouch) {
+                                    if (!inputList["up"] && inputList["down"] && inputTime["down"] == 0.0 && (s->getState() == "Standing" || s->getState() == "UnCrouching"))
+                                        s->setState("Crouching");
+                                    else if (s->getState() == "Crouching" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["Crouching"]["count"]) - 1))
+                                        s->setState("IdleCrouch");
+                                }
+                                if (canStand) {
+                                    if (inputList["up"] && !inputList["down"] && inputTime["up"] == 0.0 && (s->getState() == "IdleCrouch" || s->getState() == "Crouching") && s->getState() != "UnMorphBalling")
+                                        s->setState("UnCrouching");
+                                    else if (s->getState() == "UnCrouching" && s->getFrame() == (static_cast<unsigned int>(Entity::values["textures"][Entity::values["names"]["Samos"]["texture"]]["UnCrouching"]["count"]) - 1))
+                                        s->setState("Standing");
 
-                    if (s->getState() != "SpinJump" && s->getState() != "WallJump" && s->getState() != "Jumping" && s->getState() != "JumpEnd"
-                            && s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling" && canFall) {
-                        s->setState("Falling");
-                    }
-                } else if (!inputList["left"] && inputList["right"]) {
-                    if (!wallR && s->getLagTime() <= 0.0) {
-                        if (s->getVX() < (static_cast<double>(samosJson["airMaxSpeed"]) - static_cast<double>(samosJson["airAcceleration"]) / frameRate)) {
-                            s->setVX(s->getVX() + static_cast<double>(samosJson["airAcceleration"]) / frameRate);
-                        } else if (s->getVX() > (static_cast<double>(samosJson["airMaxSpeed"]) - static_cast<double>(samosJson["airAcceleration"]) / frameRate)
-                                   && s->getVX() < static_cast<double>(samosJson["airMaxSpeed"])) {
-                            s->setVX(static_cast<double>(samosJson["airMaxSpeed"]));
+                                    if (s->getState() != "IdleCrouch" && s->getState() != "Crouching" && s->getState() != "UnCrouching" && s->getState() != "CrouchAimUp" && s->getState() != "CrouchAimUpDiag" && s->getState() != "CrouchAimDownDiag"&& s->getState() != "UnMorphBalling")
+                                        s->setState("Standing");
+                                }
+                            }
                         }
-                        s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
-                    } else
-                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    s->setFacing("Right");
-                    if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
-                        s->setVY(s->getVY() - (static_cast<double>(samosJson["jumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["postJumpBoost"]) / (frameRate * static_cast<double>(samosJson["jumpTimeMax"])));
-                        s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                    } else if (s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0){
-                        if (s->getVY() < -static_cast<double>(samosJson["jumpFall"]))
-                            s->setVY(-static_cast<double>(samosJson["jumpFall"]));
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    } else {
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
+                            s->setVX(0);
                     }
-                    if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"])))
-                                            s->setState("JumpEnd");
-
-                    if (s->getState() != "SpinJump" && s->getState() != "WallJump" && s->getState() != "Jumping" && s->getState() != "JumpEnd"
-                            && s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling" && canFall) {
-                        s->setState("Falling");
+                    if (!inputList["jump"]) {
+                        s->setJumpTime(-1);
                     }
                 } else {
-                    s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
-                    if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
-                        s->setVY(s->getVY() - (static_cast<double>(samosJson["jumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["postJumpBoost"]) / (frameRate * static_cast<double>(samosJson["jumpTimeMax"])));
-                        s->setJumpTime(s->getJumpTime() + 1 / frameRate);
-                    } else if (s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0){
-                        if (s->getVY() < -static_cast<double>(samosJson["jumpFall"]))
-                            s->setVY(-static_cast<double>(samosJson["jumpFall"]));
+                    if (inputList["jump"] && inputTime["jump"] < static_cast<double>(samosJson["preJumpWindow"]) && s->getState() == "WallJump" && (s->getJumpTime() < 0.0 || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"]))) {
+                        if (s->getFacing() == "Left") {
+                            if (!wallL) {
+                                if (s->getVX() > static_cast<double>(samosJson["wallJumpPower_x"]))
+                                    s->setVX(-s->getVX());
+                                else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() > static_cast<double>(samosJson["wallJumpPower_x"])) {
+                                    s->setVX(-s->getSpeedRetained());
+                                    s->setRetainTime(0.0);
+                                } else if (s->getVX() > -static_cast<double>(samosJson["wallJumpPower_x"]))
+                                    s->setVX(-static_cast<double>(samosJson["wallJumpPower_x"]));
+                            }
+                        } else {
+                            if (!wallR) {
+                                if (s->getVX() < -static_cast<double>(samosJson["wallJumpPower_x"]))
+                                    s->setVX(-s->getVX());
+                                else if (s->getRetainTime() > -samosJson["speedRetainWallJumpBonusWindow"].get<double>() && s->getSpeedRetained() < -static_cast<double>(samosJson["wallJumpPower_x"])) {
+                                    s->setVX(-s->getSpeedRetained());
+                                    s->setRetainTime(0.0);
+                                } else if (s->getVX() < static_cast<double>(samosJson["wallJumpPower_x"]))
+                                    s->setVX(static_cast<double>(samosJson["wallJumpPower_x"]));
+                            }
+                        }
+                        s->setVY(-static_cast<double>(samosJson["wallJumpPower_y"]));
                         s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    } else {
-                        s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
-                    }
-                    if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"])))
-                                            s->setState("JumpEnd");
-                    if (s->getState() != "SpinJump" && s->getState() != "WallJump" && s->getState() != "Jumping" && s->getState() != "JumpEnd"
-                            && s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling" && canFall) {
-                        s->setState("Falling");
-                    }
+                    } else if (inputList["left"] && !inputList["right"]) {
+                        if (!wallL && s->getLagTime() <= 0.0) {
+                            if (s->getVX() > (static_cast<double>(samosJson["airAcceleration"]) / frameRate - static_cast<double>(samosJson["airMaxSpeed"]))) {
+                                s->setVX(s->getVX() - static_cast<double>(samosJson["airAcceleration"]) / frameRate);
+                            } else if (s->getVX() < (static_cast<double>(samosJson["airAcceleration"]) / frameRate - static_cast<double>(samosJson["airMaxSpeed"]))
+                                       && s->getVX() > -static_cast<double>(samosJson["airMaxSpeed"])) {
+                                s->setVX(-static_cast<double>(samosJson["airMaxSpeed"]));
+                            }
+                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                        } else
+                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFacing("Left");
+                        if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
+                            s->setVY(s->getVY() - (static_cast<double>(samosJson["jumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["postJumpBoost"]) / (frameRate * static_cast<double>(samosJson["jumpTimeMax"])));
+                            s->setJumpTime(s->getJumpTime() + 1 / frameRate);
+                        } else if (s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0){
+                            if (s->getVY() < -static_cast<double>(samosJson["jumpFall"]))
+                                s->setVY(-static_cast<double>(samosJson["jumpFall"]));
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        } else {
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        }
+                        if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"])))
+                                                s->setState("JumpEnd");
 
-                    if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
-                        s->setVX(0);
+                        if (s->getState() != "SpinJump" && s->getState() != "WallJump" && s->getState() != "Jumping" && s->getState() != "JumpEnd"
+                                && s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling" && canFall) {
+                            s->setState("Falling");
+                        }
+                    } else if (!inputList["left"] && inputList["right"]) {
+                        if (!wallR && s->getLagTime() <= 0.0) {
+                            if (s->getVX() < (static_cast<double>(samosJson["airMaxSpeed"]) - static_cast<double>(samosJson["airAcceleration"]) / frameRate)) {
+                                s->setVX(s->getVX() + static_cast<double>(samosJson["airAcceleration"]) / frameRate);
+                            } else if (s->getVX() > (static_cast<double>(samosJson["airMaxSpeed"]) - static_cast<double>(samosJson["airAcceleration"]) / frameRate)
+                                       && s->getVX() < static_cast<double>(samosJson["airMaxSpeed"])) {
+                                s->setVX(static_cast<double>(samosJson["airMaxSpeed"]));
+                            }
+                            s->setFrictionFactor(static_cast<double>(samosJson["movingFriction"]));
+                        } else
+                            s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        s->setFacing("Right");
+                        if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
+                            s->setVY(s->getVY() - (static_cast<double>(samosJson["jumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["postJumpBoost"]) / (frameRate * static_cast<double>(samosJson["jumpTimeMax"])));
+                            s->setJumpTime(s->getJumpTime() + 1 / frameRate);
+                        } else if (s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0){
+                            if (s->getVY() < -static_cast<double>(samosJson["jumpFall"]))
+                                s->setVY(-static_cast<double>(samosJson["jumpFall"]));
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        } else {
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        }
+                        if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"])))
+                                                s->setState("JumpEnd");
+
+                        if (s->getState() != "SpinJump" && s->getState() != "WallJump" && s->getState() != "Jumping" && s->getState() != "JumpEnd"
+                                && s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling" && canFall) {
+                            s->setState("Falling");
+                        }
+                    } else {
+                        s->setFrictionFactor(static_cast<double>(samosJson["friction"]));
+                        if (inputList["jump"] && s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0) {
+                            s->setVY(s->getVY() - (static_cast<double>(samosJson["jumpTimeMax"]) - s->getJumpTime()) * static_cast<double>(samosJson["postJumpBoost"]) / (frameRate * static_cast<double>(samosJson["jumpTimeMax"])));
+                            s->setJumpTime(s->getJumpTime() + 1 / frameRate);
+                        } else if (s->getJumpTime() < static_cast<double>(samosJson["jumpTimeMax"]) && s->getJumpTime() >= 0){
+                            if (s->getVY() < -static_cast<double>(samosJson["jumpFall"]))
+                                s->setVY(-static_cast<double>(samosJson["jumpFall"]));
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        } else {
+                            s->setJumpTime(static_cast<double>(samosJson["jumpTimeMax"]));
+                        }
+                        if (s->getState() == "Jumping" && (!inputList["jump"] || s->getJumpTime() >= static_cast<double>(samosJson["jumpTimeMax"])))
+                                                s->setState("JumpEnd");
+                        if (s->getState() != "SpinJump" && s->getState() != "WallJump" && s->getState() != "Jumping" && s->getState() != "JumpEnd"
+                                && s->getState() != "MorphBalling" && s->getState() != "UnMorphBalling" && canFall) {
+                            s->setState("Falling");
+                        }
+
+                        if (std::abs(s->getVX()) < static_cast<double>(samosJson["slowcap"]))
+                            s->setVX(0);
+                    }
                 }
             }
         }
@@ -623,6 +857,10 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
 
     if (s->getShootTime() > 0.0) {
         s->setShootTime(s->getShootTime() - 1 / frameRate);
+    }
+
+    if (s->getDashCoolDown() > 0.0) {
+        s->setDashCoolDown(s->getDashCoolDown() - 1 / frameRate);
     }
 
     if (s->getShootTime() <= 0.0 && inputList["shoot"]) {
@@ -661,7 +899,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         delete fallBox;
         delete crouchBox;
         delete standBox;
-    } else if (s->getState() == "MorphBall" || s->getState() == "MorphBalling") {
+    } else if (s->getState() == "MorphBall" || s->getState() == "MorphBalling" || s->getState() == "MorphBallDash") {
         if ((*s->getBox()) != *morphBox) {
             s->setBox(morphBox);
             changedBox = "morph";
@@ -752,7 +990,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             break;
     }
 
-    if (!s->getOnGround() && !inputList["aim"] && !inputList["shoot"] && s->getShootTime() <= 0 && !s->getIsInAltForm() && s->getState() != "MorphBalling" && canSpin) {
+    if (!s->getOnGround() && !inputList["aim"] && !inputList["shoot"] && s->getShootTime() <= 0 && !s->getIsInAltForm() && s->getState() != "MorphBalling" && canSpin && s->getDashDirection() == "") {
         std::string wallJump = "";
 
         if (wallJumpL && !wallJumpR)
@@ -795,10 +1033,10 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
 
     if (s->getRetainTime() > 0.0) {
         if (s->getSpeedRetained() < 0 && s->getVX() <= 0 && !wallJumpL) {
-            s->setVX(s->getSpeedRetained());
+            s->setVX(std::min(s->getSpeedRetained(), s->getVX()));
             s->setRetainTime(0.0);
         } else if (s->getSpeedRetained() > 0 && s->getVX() >= 0 && !wallJumpR) {
-            s->setVX(s->getSpeedRetained());
+            s->setVX(std::max(s->getSpeedRetained(), s->getVX()));
             s->setRetainTime(0.0);
         } else {
             s->setRetainTime(s->getRetainTime() - 1 / frameRate);
@@ -985,7 +1223,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     } else
         s->setSwitchDelay(0.0);
 
-    if (s->getShootTime() <= 0.0 && inputList["shoot"] && inputTime["shoot"] == 0.0) {
+    if (s->getShootTime() <= 0.0 && inputList["shoot"] && inputTime["shoot"] == 0.0 && s->getDashDirection() == "") {
         Projectile* p = nullptr;
         if (s->getIsInAltForm())
             p = s->shoot("Bomb");
@@ -1028,6 +1266,15 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
 
         if (s->getFrictionFactor() == samosJson["movingFriction"].get<double>())
             s->setFrictionFactor(samosJson["movingFastFriction"].get<double>());
+
+        if (std::abs(s->getVX()) > 1000) {
+
+            if (s->getFrictionFactor() == samosJson["fastFriction"].get<double>())
+                s->setFrictionFactor(samosJson["superFastFriction"].get<double>());
+
+            if (s->getFrictionFactor() == samosJson["movingFastFriction"].get<double>())
+                s->setFrictionFactor(samosJson["movingSuperFastFriction"].get<double>());
+        }
     }
 
     if (inputList["run"] && s->getFrictionFactor() == samosJson["movingFriction"].get<double>())
@@ -1082,21 +1329,17 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
             //Calc frictions
             if (s->getOnGround()) {
                 //Grounded frictions
-                if (std::abs(s->getVX()) < speedcap) {
-                    if (s->getVX() > 0)
-                        s->setVX(1 / ((1 / s->getVX()) + (groundFriction * s->getFrictionFactor() / frameRate)));
-                    else if (s->getVX() < 0)
-                        s->setVX(1 / ((1 / s->getVX()) - (groundFriction * s->getFrictionFactor() / frameRate)));
-                }
+                if (s->getVX() > 0)
+                    s->setVX(1 / ((1 / s->getVX()) + (groundFriction * s->getFrictionFactor() / frameRate)));
+                else if (s->getVX() < 0)
+                    s->setVX(1 / ((1 / s->getVX()) - (groundFriction * s->getFrictionFactor() / frameRate)));
 
             } else {
                 //Air friction
-                if (std::abs(s->getVX()) < speedcap) {
-                    if (s->getVX() > 0)
-                        s->setVX(1 / ((1 / s->getVX()) + (airFriction * s->getFrictionFactor() / frameRate)));
-                    else if (s->getVX() < 0)
-                        s->setVX(1 / ((1 / s->getVX()) - (airFriction * s->getFrictionFactor() / frameRate)));
-                }
+                if (s->getVX() > 0)
+                    s->setVX(1 / ((1 / s->getVX()) + (airFriction * s->getFrictionFactor() / frameRate)));
+                else if (s->getVX() < 0)
+                    s->setVX(1 / ((1 / s->getVX()) - (airFriction * s->getFrictionFactor() / frameRate)));
             }
             //Speedcap
             if (std::abs(s->getVY()) > speedcap) {
@@ -1162,6 +1405,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                 else
                     (*m)->setVY(-speedcap);
             }
+            if (std::abs((*m)->getVX()) > speedcap) {
+                if ((*m)->getVX() > 0)
+                    (*m)->setVX(speedcap);
+                else
+                    (*m)->setVX(-speedcap);
+            }
             //Move entities
             (*m)->updateV(frameRate);
         }
@@ -1217,6 +1466,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                     (*n)->setVY(speedcap);
                 else
                     (*n)->setVY(-speedcap);
+            }
+            if (std::abs((*n)->getVX()) > speedcap) {
+                if ((*n)->getVX() > 0)
+                    (*n)->setVX(speedcap);
+                else
+                    (*n)->setVX(-speedcap);
             }
             //Move entities
             (*n)->updateV(frameRate);
@@ -1275,6 +1530,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                 else
                     (*d)->setVY(-speedcap);
             }
+            if (std::abs((*d)->getVX()) > speedcap) {
+                if ((*d)->getVX() > 0)
+                    (*d)->setVX(speedcap);
+                else
+                    (*d)->setVX(-speedcap);
+            }
             //Move entities
             (*d)->updateV(frameRate);
         }
@@ -1307,6 +1568,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                 else
                     (*a)->setVY(-speedcap);
             }
+            if (std::abs((*a)->getVX()) > speedcap) {
+                if ((*a)->getVX() > 0)
+                    (*a)->setVX(speedcap);
+                else
+                    (*a)->setVX(-speedcap);
+            }
             //Move entities
             (*a)->updateV(frameRate);
         }
@@ -1334,6 +1601,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                     (*p)->setVY(speedcap);
                 else
                     (*p)->setVY(-speedcap);
+            }
+            if (std::abs((*p)->getVX()) > speedcap) {
+                if ((*p)->getVX() > 0)
+                    (*p)->setVX(speedcap);
+                else
+                    (*p)->setVX(-speedcap);
             }
             //Move entities
             if ((*p)->getLifeTime() != Entity::values["names"][(*p)->getName()]["lifeTime"])
@@ -1365,6 +1638,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                 if (s->getITime() <= 0.0) {
                     int prevHp = s->getHealth();
                     s->hit((*j)->getDamage(), *j, Entity::values["names"][s->getName()]["contactKB"], true);
+                    s->setLagTime(Entity::values["names"][s->getName()]["lagTime"]);
                     if (s->getHealth() != prevHp)
                         currentProgress.addDamageReceived(prevHp - s->getHealth());
                 }
@@ -1372,6 +1646,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                     s->hit(0, *j, Entity::values["names"][s->getName()]["contactKB"], true);
                     s->setLagTime(Entity::values["names"][s->getName()]["lagTime"]);
                 }
+                s->setDashTime(0.0);
             }
         }
         for (std::vector<DynamicObj*>::iterator j = ds->begin(); j != ds->end(); j++) {
@@ -1407,6 +1682,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                 int prevHp = s->getHealth();
                 (*j)->hitting(s);
                 if (s->getHealth() != prevHp) {
+                    s->setDashTime(0.0);
                     currentProgress.addDamageReceived(prevHp - s->getHealth());
                     if ((*j)->getOwnerType() == "Samos")
                         currentProgress.addDamageDone(prevHp - s->getHealth());
@@ -1562,6 +1838,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
 
     //Update the grounded state of livings
     if (s != nullptr) {
+        bool prevOnGround = s->getOnGround();
         s->setOnGround(false);
         for (std::vector<Terrain*>::iterator j = ts->begin(); j!= ts->end(); j++) {
             if (Entity::checkCollision(s, s->getGroundBox(), *j, (*j)->getBox())) {
@@ -1581,6 +1858,9 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
             s->setStandingOn(nullptr);
         if (s->getY() + s->getGroundBox()->getY() + s->getGroundBox()->getHeight() > roomE_y)
             s->setOnGround(true);
+
+        if (s->getOnGround() && !prevOnGround)
+            s->setDashCoolDown(0.0);
     }
 
     for (std::vector<Monster*>::iterator i = ms->begin(); i != ms->end(); i++) {

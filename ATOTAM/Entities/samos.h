@@ -70,6 +70,12 @@ public:
     const std::string &getDashDirection() const;
     void setDashDirection(const std::string &newDashDirection);
 
+    const std::pair<double, double> &getSpeedPriorDash() const;
+    void setSpeedPriorDash(const std::pair<double, double> &newSpeedPriorDash);
+
+    double getDashCoolDown() const;
+    void setDashCoolDown(double newDashCoolDown);
+
 private:
     bool isInAltForm = false;
     int grenadeCount = 0;
@@ -87,7 +93,9 @@ private:
     double speedRetained = 0.0;
     double retainTime = 0.0;
     bool fastFalling = false;
+    std::pair<double, double> speedPriorDash = {0.0, 0.0};
     double dashTime = 0.0;
+    double dashCoolDown = 0.0;
     std::string dashDirection = "";
 };
 
