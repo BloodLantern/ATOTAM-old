@@ -89,8 +89,11 @@ void Game::updateFrameAdvance()
 
 void Game::updateTas()
 {
-    if (inputList["SPECIAL_toggleTAS"] && inputTime["SPECIAL_toggleTAS"] == 0)
+    if (inputList["SPECIAL_toggleTAS"] && inputTime["SPECIAL_toggleTAS"] == 0) {
         tas = !tas;
+        line = 1;
+        currentInstructionFrames = 1;
+    }
 
     if (!tas)
         return;
@@ -101,6 +104,7 @@ void Game::updateTas()
                        std::istreambuf_iterator<char>(), '\n') + 1 < line) {
         tas = false;
         line = 1;
+        currentInstructionFrames = 1;
         return;
     }
     // Reset the stream value
