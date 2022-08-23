@@ -219,13 +219,9 @@ compiler_clean: compiler_lrelease_clean compiler_rcc_clean compiler_moc_predefs_
 
 
 release/precompiledheaders.h.gch/c: ../ATOTAM_MapEditor/precompiledheaders.h ../ATOTAM/nlohmann/json.hpp \
-		../ATOTAM/map.h \
-		../ATOTAM/Entities/monster.h \
-		../ATOTAM/Entities/living.h \
-		../ATOTAM/Entities/entity.h \
-		../ATOTAM/Entities/collisionbox.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/QImage \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qimage.h \
+		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QApplication \
+		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qapplication.h \
+		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qtguiglobal.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qglobal.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qconfig-bootstrapped.h \
@@ -248,23 +244,20 @@ release/precompiledheaders.h.gch/c: ../ATOTAM_MapEditor/precompiledheaders.h ../
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qnumeric.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qversiontagging.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qtgui-config.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qcolor.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qrgb.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qnamespace.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qtmetamacros.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringlist.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qlist.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydatapointer.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydataops.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydata.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qpair.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qcontainertools_impl.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qhashfunctions.h \
+		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qcoreapplication.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstring.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qchar.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringview.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearray.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qrefcount.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qnamespace.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qtmetamacros.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydata.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qpair.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydataops.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qcontainertools_impl.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearrayview.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringliteral.h \
@@ -273,49 +266,25 @@ release/precompiledheaders.h.gch/c: ../ATOTAM_MapEditor/precompiledheaders.h ../
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qutf8stringview.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringtokenizer.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringbuilder.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qiterator.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearraylist.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qalgorithms.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringmatcher.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qrgba64.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qpaintdevice.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qcoreevent.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qobjectdefs.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs_win.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qrect.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qmargins.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qsize.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qpoint.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qpixelformat.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qtransform.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qpolygon.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qregion.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qdatastream.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qscopedpointer.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qiodevicebase.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qline.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/QString \
-		../ATOTAM/Entities/savepoint.h \
-		../ATOTAM/Entities/npc.h \
-		../ATOTAM/Entities/area.h \
-		../ATOTAM/Entities/door.h \
-		../ATOTAM/Entities/terrain.h \
-		../ATOTAM/Entities/dynamicobj.h \
-		../ATOTAM/Entities/projectile.h \
-		../ATOTAM/Entities/samos.h \
-		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QApplication \
-		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qapplication.h \
-		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
-		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qcoreapplication.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qcoreevent.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qeventloop.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qobject.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qlist.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qhashfunctions.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qiterator.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearraylist.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringlist.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qalgorithms.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringmatcher.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qscopedpointer.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qmetatype.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qcompare.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qvarlengtharray.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qscopeguard.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qdatastream.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qiodevicebase.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qiterable.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qmetacontainer.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qcontainerinfo.h \
@@ -349,9 +318,25 @@ release/precompiledheaders.h.gch/c: ../ATOTAM_MapEditor/precompiledheaders.h ../
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qexception.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qpointer.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qvariant.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qpoint.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qsize.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qmargins.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qcursor.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qbitmap.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpixmap.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qpaintdevice.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qrect.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qcolor.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qrgb.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qrgba64.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qimage.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qpixelformat.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qtransform.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qpolygon.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qregion.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qline.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qguiapplication.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qinputmethod.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qlocale.h \
@@ -391,6 +376,7 @@ release/precompiledheaders.h.gch/c: ../ATOTAM_MapEditor/precompiledheaders.h ../
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpainter.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qtextoption.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpen.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/QImage \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/QPoint \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QMessageBox \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qmessagebox.h \
@@ -404,13 +390,9 @@ release/precompiledheaders.h.gch/c: ../ATOTAM_MapEditor/precompiledheaders.h ../
 	$(CC) -x c-header -c $(CFLAGS) $(INCPATH) -o release\precompiledheaders.h.gch\c ..\ATOTAM_MapEditor\precompiledheaders.h
 
 release/precompiledheaders.h.gch/c++: ../ATOTAM_MapEditor/precompiledheaders.h ../ATOTAM/nlohmann/json.hpp \
-		../ATOTAM/map.h \
-		../ATOTAM/Entities/monster.h \
-		../ATOTAM/Entities/living.h \
-		../ATOTAM/Entities/entity.h \
-		../ATOTAM/Entities/collisionbox.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/QImage \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qimage.h \
+		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QApplication \
+		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qapplication.h \
+		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qtguiglobal.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qglobal.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qconfig-bootstrapped.h \
@@ -433,23 +415,20 @@ release/precompiledheaders.h.gch/c++: ../ATOTAM_MapEditor/precompiledheaders.h .
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qnumeric.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qversiontagging.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qtgui-config.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qcolor.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qrgb.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qnamespace.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qtmetamacros.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringlist.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qlist.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydatapointer.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydataops.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydata.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qpair.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qcontainertools_impl.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qhashfunctions.h \
+		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qcoreapplication.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstring.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qchar.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringview.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearray.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qrefcount.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qnamespace.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qtmetamacros.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydata.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qpair.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qarraydataops.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qcontainertools_impl.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearrayview.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringliteral.h \
@@ -458,49 +437,25 @@ release/precompiledheaders.h.gch/c++: ../ATOTAM_MapEditor/precompiledheaders.h .
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qutf8stringview.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringtokenizer.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringbuilder.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qiterator.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearraylist.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qalgorithms.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringmatcher.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qrgba64.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qpaintdevice.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qcoreevent.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qobjectdefs.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs_win.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qrect.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qmargins.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qsize.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qpoint.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qpixelformat.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qtransform.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qpolygon.h \
-		../../../Qt/6.2.3/mingw_64/include/QtGui/qregion.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qdatastream.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qscopedpointer.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qiodevicebase.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qline.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/QString \
-		../ATOTAM/Entities/savepoint.h \
-		../ATOTAM/Entities/npc.h \
-		../ATOTAM/Entities/area.h \
-		../ATOTAM/Entities/door.h \
-		../ATOTAM/Entities/terrain.h \
-		../ATOTAM/Entities/dynamicobj.h \
-		../ATOTAM/Entities/projectile.h \
-		../ATOTAM/Entities/samos.h \
-		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QApplication \
-		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qapplication.h \
-		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
-		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qcoreapplication.h \
-		../../../Qt/6.2.3/mingw_64/include/QtCore/qcoreevent.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qeventloop.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qobject.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qlist.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qhashfunctions.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qiterator.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qbytearraylist.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringlist.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qalgorithms.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qstringmatcher.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qscopedpointer.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qmetatype.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qcompare.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qvarlengtharray.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qscopeguard.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qdatastream.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qiodevicebase.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qiterable.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qmetacontainer.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qcontainerinfo.h \
@@ -534,9 +489,25 @@ release/precompiledheaders.h.gch/c++: ../ATOTAM_MapEditor/precompiledheaders.h .
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qexception.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qpointer.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qvariant.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qpoint.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qsize.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qmargins.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qcursor.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qbitmap.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpixmap.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qpaintdevice.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qrect.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qcolor.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qrgb.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qrgba64.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qimage.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qpixelformat.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qtransform.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qpolygon.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/qregion.h \
+		../../../Qt/6.2.3/mingw_64/include/QtCore/qline.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qguiapplication.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qinputmethod.h \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/qlocale.h \
@@ -576,6 +547,7 @@ release/precompiledheaders.h.gch/c++: ../ATOTAM_MapEditor/precompiledheaders.h .
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpainter.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qtextoption.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpen.h \
+		../../../Qt/6.2.3/mingw_64/include/QtGui/QImage \
 		../../../Qt/6.2.3/mingw_64/include/QtCore/QPoint \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QMessageBox \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qmessagebox.h \
@@ -1089,6 +1061,8 @@ release/editorpreview.o: ../ATOTAM_MapEditor/editorpreview.cpp ../ATOTAM_MapEdit
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpainter.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qtextoption.h \
 		../../../Qt/6.2.3/mingw_64/include/QtGui/qpen.h \
+		../ATOTAM_MapEditor/removeedit.h \
+		../ATOTAM_MapEditor/addedit.h \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/QMainWindow \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qmainwindow.h \
 		../../../Qt/6.2.3/mingw_64/include/QtWidgets/qtabwidget.h \

@@ -4,7 +4,7 @@
 #define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include <../ATOTAM/nlohmann/json.hpp>
 
-#include <../ATOTAM/map.h>
+/*#include <../ATOTAM/map.h>
 #include <../ATOTAM/Entities/area.h>
 #include <../ATOTAM/Entities/collisionbox.h>
 #include <../ATOTAM/Entities/door.h>
@@ -16,7 +16,7 @@
 #include <../ATOTAM/Entities/projectile.h>
 #include <../ATOTAM/Entities/samos.h>
 #include <../ATOTAM/Entities/savepoint.h>
-#include <../ATOTAM/Entities/terrain.h>
+#include <../ATOTAM/Entities/terrain.h>*/
 
 #include <QApplication>
 #include <QMainWindow>

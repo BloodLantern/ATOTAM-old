@@ -64,6 +64,12 @@ public:
     bool getFastFalling() const;
     void setFastFalling(bool newFastFalling);
 
+    double getDashTime() const;
+    void setDashTime(double newDashTime);
+
+    const std::string &getDashDirection() const;
+    void setDashDirection(const std::string &newDashDirection);
+
 private:
     bool isInAltForm = false;
     int grenadeCount = 0;
@@ -81,6 +87,8 @@ private:
     double speedRetained = 0.0;
     double retainTime = 0.0;
     bool fastFalling = false;
+    double dashTime = 0.0;
+    std::string dashDirection = "";
 };
 
 #endif // SAMOS_H

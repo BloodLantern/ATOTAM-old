@@ -90,7 +90,12 @@ void MainWindow::getInputs()
     if (isActiveWindow()) {
         //Check every key
         for (nlohmann::json::iterator i = game->getKeyCodes().begin(); i != game->getKeyCodes().end(); i++) {
-            (*game->getInputList())[i.key()] = GetKeyState(i.value()) & 0x8000;
+            for (nlohmann::json::iterator j = i.value().begin(); j != i.value().end(); j++)
+                if (GetKeyState(j.value()) & 0x8000) {
+                    (*game->getInputList())[i.key()] = true;
+                    break;
+                } else
+                    (*game->getInputList())[i.key()] = false;
         }
     } else
         //Reset the keys if the window is not selected

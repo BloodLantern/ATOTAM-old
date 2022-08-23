@@ -291,3 +291,23 @@ void Samos::setFastFalling(bool newFastFalling)
 {
     fastFalling = newFastFalling;
 }
+
+double Samos::getDashTime() const
+{
+    return dashTime;
+}
+
+void Samos::setDashTime(double newDashTime)
+{
+    dashTime = newDashTime;
+}
+
+const std::string &Samos::getDashDirection() const
+{
+    return dashDirection;
+}
+
+void Samos::setDashDirection(const std::string &newDashDirection)
+{
+    dashDirection = newDashDirection;
+}
