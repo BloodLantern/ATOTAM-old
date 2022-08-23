@@ -130,11 +130,7 @@ void MainWindow::getSpecialInputs()
                             (*game->getInputList())[i.key()] = false;
                     }
         }
-    } else
-        //Reset the keys if the window is not selected
-        for (nlohmann::json::iterator i = game->getKeyCodes().begin(); i != game->getKeyCodes().end(); i++) {
-            (*game->getInputList())[i.key()] = 0;
-        }
+    }
 }
 
 void MainWindow::setupToDraw()

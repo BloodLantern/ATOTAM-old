@@ -39,8 +39,11 @@ void gameClock(MainWindow* w) {
                     && (*g->getInputTime())["SPECIAL_frameAdvance"] == 0)
                     && g->getFrameAdvance())
                 continue;
+            g->updateTas();
         }
-        w->getInputs();
+        if (!g->getTas()) {
+            w->getInputs();
+        }
 
         // Update FPS if it has to
         if ((std::chrono::high_resolution_clock::now() - g->getLastFpsShown()).count() > g->getShowFpsUpdateRate())

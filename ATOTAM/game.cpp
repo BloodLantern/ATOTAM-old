@@ -83,9 +83,83 @@ void Game::die()
 
 void Game::updateFrameAdvance()
 {
-    if (frameAdvanceEnabled)
-        if (inputList["SPECIAL_toggleFrameAdvance"] && inputTime["SPECIAL_toggleFrameAdvance"] == 0)
-            frameAdvance = !frameAdvance;
+    if (inputList["SPECIAL_toggleFrameAdvance"] && inputTime["SPECIAL_toggleFrameAdvance"] == 0)
+        frameAdvance = !frameAdvance;
+}
+
+void Game::updateTas()
+{
+    if (inputList["SPECIAL_toggleTAS"] && inputTime["SPECIAL_toggleTAS"] == 0)
+        tas = !tas;
+
+    if (!tas)
+        return;
+
+    std::ifstream f(assetsPath + "/tas/test.tas");
+    // Stop the TAS if the last line has been read
+    if (std::count(std::istreambuf_iterator<char>(f),
+                       std::istreambuf_iterator<char>(), '\n') + 1 < line) {
+        tas = false;
+        line = 1;
+        return;
+    }
+    // Reset the stream value
+    f.clear();
+    f.seekg(0);
+    std::string content;
+    for (int i = 0; i < line; i++)
+        std::getline(f, content);
+
+    // Remove the not special inputs
+    std::vector<std::string> toDel;
+    for (auto input : inputList) {
+        if (input.first.size() > 8)
+            if (input.first.substr(0, 8) == "SPECIAL_")
+                continue;
+        toDel.push_back(input.first);
+    }
+    for (std::string input : toDel)
+        inputList.erase(input);
+
+    std::vector<std::string> tokens = split(content, ',');
+    for (unsigned int i = 0; i < tokens.size(); i++) {
+        std::string token = tokens[i];
+        unsigned long t = std::stoul(token);
+        if (i == 0) {
+            if (currentInstructionFrames == t)
+                currentInstructionFrames = 0;
+            else
+                currentInstructionFrames++;
+        } else {
+            // Add the TASed ones
+            for (auto j : keyCodes.items())
+                if (j.value()[0] == t) {
+                    if (!inputList[j.key()])
+                        inputTime[j.key()] = 0;
+                    else
+                        inputTime[j.key()] += 1 / Physics::frameRate;
+                    inputList[j.key()] = true;
+                }
+        }
+    }
+
+    if (currentInstructionFrames == 0)
+        line++;
+}
+
+template <typename Out>
+void Game::split(const std::string &s, char delim, Out result) {
+    std::istringstream iss(s);
+    std::string item;
+    while (std::getline(iss, item, delim)) {
+        *result++ = item;
+    }
+}
+
+std::vector<std::string> Game::split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, std::back_inserter(elems));
+    return elems;
 }
 
 Game::Game(std::string assetsPath, std::string saveNumber)
@@ -1260,4 +1334,14 @@ bool Game::getFrameAdvanceEnabled() const
 void Game::setFrameAdvanceEnabled(bool newFrameAdvanceEnabled)
 {
     frameAdvanceEnabled = newFrameAdvanceEnabled;
+}
+
+bool Game::getTas() const
+{
+    return tas;
+}
+
+void Game::setTas(bool newTas)
+{
+    tas = newTas;
 }

@@ -16,5 +16,6 @@
 	"interact": [70],
 	"map": [9],
 	"SPECIAL_frameAdvance": [161],
-	"SPECIAL_toggleFrameAdvance": [107]
+	"SPECIAL_toggleFrameAdvance": [107],
+	"SPECIAL_toggleTAS": [163]
 }

@@ -43,6 +43,7 @@ public:
     void addRoomDiscovered(std::string mapName, int roomID);
     void die();
     void updateFrameAdvance();
+    void updateTas();
 
     std::vector<Entity *> *getEntities();
     void setEntities(const std::vector<Entity *> &newRendering);
@@ -161,6 +162,9 @@ public:
     bool getFrameAdvanceEnabled() const;
     void setFrameAdvanceEnabled(bool newFrameAdvanceEnabled);
 
+    bool getTas() const;
+    void setTas(bool newTas);
+
 private:
     std::string assetsPath;
 
@@ -216,8 +220,17 @@ private:
     bool showHUD = true;
     bool showDebugInfo = false;
     bool debugEnabled = false;
+
     bool frameAdvanceEnabled = false;
     bool frameAdvance = false;
+
+    // TASing
+    bool tas = false;
+    unsigned long long currentInstructionFrames = 0;
+    int line = 1;
+    template <typename Out>
+    void split(const std::string &s, char delim, Out result);
+    std::vector<std::string> split(const std::string &s, char delim);
 };
 
 #endif // GAME_H
