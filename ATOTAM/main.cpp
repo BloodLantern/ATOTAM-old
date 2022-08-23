@@ -32,14 +32,24 @@ void gameClock(MainWindow* w) {
         waitTime = 1000000.0/(Physics::frameRate * g->getGameSpeed());
         auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
+        if (g->getFrameAdvanceEnabled()) {
+            w->getSpecialInputs();
+            g->updateFrameAdvance();
+            if (!((*g->getInputList())["SPECIAL_frameAdvance"]
+                    && (*g->getInputTime())["SPECIAL_frameAdvance"] == 0)
+                    && g->getFrameAdvance())
+                continue;
+        }
+        w->getInputs();
+
         // Update FPS if it has to
         if ((std::chrono::high_resolution_clock::now() - g->getLastFpsShown()).count() > g->getShowFpsUpdateRate())
             g->setFps(1000000000 / (std::chrono::high_resolution_clock::now() - g->getLastFrameTime()).count());
+
         // And update the last frame time
         g->setLastFrameTime(std::chrono::high_resolution_clock::now());
 
         if (g->getDoorTransition() == "") {
-            w->getInputs();
 
             if (!g->getIsPaused()) {
                 if (!g->getInInventory() && !g->getInMap()) {

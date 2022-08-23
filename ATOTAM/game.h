@@ -42,6 +42,7 @@ public:
     void loadSave(Save save);
     void addRoomDiscovered(std::string mapName, int roomID);
     void die();
+    void updateFrameAdvance();
 
     std::vector<Entity *> *getEntities();
     void setEntities(const std::vector<Entity *> &newRendering);
@@ -154,6 +155,12 @@ public:
     bool getDebugEnabled() const;
     void setDebugEnabled(bool newDebugEnabled);
 
+    bool getFrameAdvance() const;
+    void setFrameAdvance(bool newFrameAdvance);
+
+    bool getFrameAdvanceEnabled() const;
+    void setFrameAdvanceEnabled(bool newFrameAdvanceEnabled);
+
 private:
     std::string assetsPath;
 
@@ -209,6 +216,8 @@ private:
     bool showHUD = true;
     bool showDebugInfo = false;
     bool debugEnabled = false;
+    bool frameAdvanceEnabled = false;
+    bool frameAdvance = false;
 };
 
 #endif // GAME_H

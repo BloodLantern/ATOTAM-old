@@ -38,6 +38,7 @@ void Game::loadGeneral()
     cameraSize.first = Entity::values["general"]["camera_size_x"];
     cameraSize.second = Entity::values["general"]["camera_size_y"];
     debugEnabled = Entity::values["general"]["debugEnabled"];
+    frameAdvanceEnabled = Entity::values["general"]["frameAdvanceEnabled"];
     showDebugInfo = Entity::values["general"]["showDebugInfo"];
 }
 
@@ -78,6 +79,13 @@ void Game::die()
     menu = "death";
     menuOptions = {"Respawn", "Quit"};
     selectedOption = 0;
+}
+
+void Game::updateFrameAdvance()
+{
+    if (frameAdvanceEnabled)
+        if (inputList["SPECIAL_toggleFrameAdvance"] && inputTime["SPECIAL_toggleFrameAdvance"] == 0)
+            frameAdvance = !frameAdvance;
 }
 
 Game::Game(std::string assetsPath, std::string saveNumber)
@@ -306,6 +314,10 @@ void Game::updateMenu()
                 showDebugInfo = false;
             else if (menuOptions[selectedOption] == "Debug info : OFF")
                 showDebugInfo = true;
+            else if (menuOptions[selectedOption] == "Frame advance : ENABLED")
+                frameAdvanceEnabled = false;
+            else if (menuOptions[selectedOption] == "Frame advance : DISABLED")
+                frameAdvanceEnabled = true;
         }
 
 
@@ -337,6 +349,7 @@ void Game::updateMenu()
             menuOptions.push_back("Reload room");
             menuOptions.push_back("Reload map");
             menuOptions.push_back(std::string("Debug info : ") + (showDebugInfo ? "ON" : "OFF"));
+            menuOptions.push_back(std::string("Frame advance : ") + (frameAdvanceEnabled ? "ENABLED" : "DISABLED"));
         } else if (menu == "death") {
             menuOptions.clear();
             menuOptions.push_back("Respawn");
@@ -1227,4 +1240,24 @@ bool Game::getDebugEnabled() const
 void Game::setDebugEnabled(bool newDebugEnabled)
 {
     debugEnabled = newDebugEnabled;
+}
+
+bool Game::getFrameAdvance() const
+{
+    return frameAdvance;
+}
+
+void Game::setFrameAdvance(bool newFrameAdvance)
+{
+    frameAdvance = newFrameAdvance;
+}
+
+bool Game::getFrameAdvanceEnabled() const
+{
+    return frameAdvanceEnabled;
+}
+
+void Game::setFrameAdvanceEnabled(bool newFrameAdvanceEnabled)
+{
+    frameAdvanceEnabled = newFrameAdvanceEnabled;
 }

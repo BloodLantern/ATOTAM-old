@@ -104,6 +104,39 @@ void MainWindow::getInputs()
         }
 }
 
+void MainWindow::getSpecialInputs()
+{
+    for (std::map<std::string, bool>::iterator i = game->getInputList()->begin(); i != game->getInputList()->end(); i ++) {
+        if (i->first.size() > 8)
+            if (i->first.substr(0, 8) == "SPECIAL_") {
+                if (i->second)
+                    (*game->getInputTime())[i->first] += 1 / Physics::frameRate;
+                else
+                    (*game->getInputTime())[i->first] = 0;
+            }
+    }
+
+    //Only listen for inputs if the window is currently selected
+    if (isActiveWindow()) {
+        //Check every key
+        for (nlohmann::json::iterator i = game->getKeyCodes().begin(); i != game->getKeyCodes().end(); i++) {
+            for (nlohmann::json::iterator j = i.value().begin(); j != i.value().end(); j++)
+                if (i.key().size() > 8)
+                    if (i.key().substr(0, 8) == "SPECIAL_") {
+                        if (GetKeyState(j.value()) & 0x8000) {
+                            (*game->getInputList())[i.key()] = true;
+                            break;
+                        } else
+                            (*game->getInputList())[i.key()] = false;
+                    }
+        }
+    } else
+        //Reset the keys if the window is not selected
+        for (nlohmann::json::iterator i = game->getKeyCodes().begin(); i != game->getKeyCodes().end(); i++) {
+            (*game->getInputList())[i.key()] = 0;
+        }
+}
+
 void MainWindow::setupToDraw()
 {
     toDrawTextures.clear();

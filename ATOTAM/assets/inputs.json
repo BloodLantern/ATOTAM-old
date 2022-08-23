@@ -14,5 +14,7 @@
 	"menu": [27],
 	"enter": [13],
 	"interact": [70],
-	"map": [9]
+	"map": [9],
+	"SPECIAL_frameAdvance": [161],
+	"SPECIAL_toggleFrameAdvance": [107]
 }

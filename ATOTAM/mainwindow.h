@@ -21,6 +21,7 @@ public:
     void paintEvent(QPaintEvent*);
     void closeEvent(QCloseEvent*);
     void getInputs();
+    void getSpecialInputs();
     void setupToDraw();
 
     int getRenderingMultiplier() const;
