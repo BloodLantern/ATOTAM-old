@@ -166,6 +166,7 @@ Game::Game(std::string assetsPath, std::string saveNumber)
     : assetsPath(assetsPath)
     , running(true)
     , keyCodes(loadJson("inputs"))
+    , windowsKeyCodes(loadJson("windowsKeyCodes"))
     , stringsJson(loadJson("strings"))
     , isPaused(false)
     , resolution({1920,1080})
@@ -1344,4 +1345,14 @@ bool Game::getTas() const
 void Game::setTas(bool newTas)
 {
     tas = newTas;
+}
+
+const nlohmann::json &Game::getWindowsKeyCodes() const
+{
+    return windowsKeyCodes;
+}
+
+void Game::setWindowsKeyCodes(const nlohmann::json &newWindowsKeyCodes)
+{
+    windowsKeyCodes = newWindowsKeyCodes;
 }

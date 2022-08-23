@@ -165,6 +165,9 @@ public:
     bool getTas() const;
     void setTas(bool newTas);
 
+    const nlohmann::json &getWindowsKeyCodes() const;
+    void setWindowsKeyCodes(const nlohmann::json &newWindowsKeyCodes);
+
 private:
     std::string assetsPath;
 
@@ -188,6 +191,7 @@ private:
     unsigned long long frameCount = 0;
     unsigned long long updateCount = 0;
     nlohmann::json keyCodes;
+    nlohmann::json windowsKeyCodes;
     nlohmann::json stringsJson;
     std::map<std::string, bool> inputList;
     std::map<std::string, double> inputTime;

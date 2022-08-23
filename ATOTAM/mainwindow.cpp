@@ -91,7 +91,7 @@ void MainWindow::getInputs()
         //Check every key
         for (nlohmann::json::iterator i = game->getKeyCodes().begin(); i != game->getKeyCodes().end(); i++) {
             for (nlohmann::json::iterator j = i.value().begin(); j != i.value().end(); j++)
-                if (GetKeyState(j.value()) & 0x8000) {
+                if (GetKeyState(game->getWindowsKeyCodes()[j.value()].get<int>()) & 0x8000) {
                     (*game->getInputList())[i.key()] = true;
                     break;
                 } else
@@ -123,7 +123,7 @@ void MainWindow::getSpecialInputs()
             for (nlohmann::json::iterator j = i.value().begin(); j != i.value().end(); j++)
                 if (i.key().size() > 8)
                     if (i.key().substr(0, 8) == "SPECIAL_") {
-                        if (GetKeyState(j.value()) & 0x8000) {
+                        if (GetKeyState(game->getWindowsKeyCodes()[j.value()].get<int>()) & 0x8000) {
                             (*game->getInputList())[i.key()] = true;
                             break;
                         } else
