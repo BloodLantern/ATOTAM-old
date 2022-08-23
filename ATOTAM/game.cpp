@@ -111,9 +111,11 @@ void Game::updateTas()
     f.clear();
     f.seekg(0);
     std::string content;
-    for (int i = 0; i < line; i++)
+    for (int i = 0; i < line; i++) {
+        std::getline(f, content);
         while (content == "")
             std::getline(f, content);
+    }
 
     // Remove the not special inputs
     std::map<std::string, bool> toDel;
