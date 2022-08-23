@@ -24,6 +24,7 @@
 		"debugEnabled": true,
 		"frameAdvanceEnabled": true,
 		"showDebugInfo": true,
+		"tasFile": "test",
 		"defaultAnimationValues": {
 			"file": "empty.png",
 			"x": 0,
