@@ -124,22 +124,23 @@ void Game::updateTas()
     std::vector<std::string> tokens = split(content, ',');
     for (unsigned int i = 0; i < tokens.size(); i++) {
         std::string token = tokens[i];
-        unsigned long t = std::stoul(token);
-        if (i == 0) {
+        try {
+            unsigned long t = std::stoul(token);
             if (currentInstructionFrames == t)
                 currentInstructionFrames = 0;
             else
                 currentInstructionFrames++;
-        } else {
+        } catch (const std::invalid_argument) {
             // Add the TASed ones
             for (auto j : keyCodes.items())
-                if (j.value()[0] == t) {
-                    if (!inputList[j.key()])
-                        inputTime[j.key()] = 0;
-                    else
-                        inputTime[j.key()] += 1 / Physics::frameRate;
-                    inputList[j.key()] = true;
-                }
+                for (const auto &k : j.value())
+                    if (k == token) {
+                        if (!inputList[j.key()])
+                            inputTime[j.key()] = 0;
+                        else
+                            inputTime[j.key()] += 1 / Physics::frameRate;
+                        inputList[j.key()] = true;
+                    }
         }
     }
 

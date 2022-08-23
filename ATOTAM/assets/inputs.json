@@ -17,5 +17,5 @@
 	"map": ["Tab"],
 	"SPECIAL_frameAdvance": ["RShift"],
 	"SPECIAL_toggleFrameAdvance": ["Add"],
-	"SPECIAL_toggleTAS": ["RControl"]
+	"SPECIAL_toggleTAS": ["RAlt"]
 }
