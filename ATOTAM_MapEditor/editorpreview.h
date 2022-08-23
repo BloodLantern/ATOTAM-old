@@ -18,13 +18,6 @@ public:
                            double physicsFrameRate);
     ~EditorPreview();
 
-    void paintEvent(QPaintEvent*) override;
-    void mousePressEvent(QMouseEvent*) override;
-    void mouseReleaseEvent(QMouseEvent*) override;
-    void mouseMoveEvent(QMouseEvent*) override;
-    void wheelEvent(QWheelEvent*) override;
-    void keyPressEvent(QKeyEvent*) override;
-
     void getInputs();
     nlohmann::json loadJson(std::string);
     void saveJson(nlohmann::json json, std::string fileName);
@@ -59,6 +52,7 @@ public:
 
 private:
     void drawEntity(Entity* ent, QPainter* painter);
+    void removeNullEntities();
 
     std::vector<Edit*> edits;
     nlohmann::json editorJson = nlohmann::json();
@@ -89,6 +83,17 @@ private:
     std::map<std::string, bool> inputList;
     std::map<std::string, double> inputTime;
     double physicsFrameRate;
+
+    // QWidget interface
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+    void paintEvent(QPaintEvent*) override;
+    void mousePressEvent(QMouseEvent*) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
+    void mouseMoveEvent(QMouseEvent*) override;
+    void wheelEvent(QWheelEvent*) override;
+    void keyPressEvent(QKeyEvent*) override;
 };
 
 #endif // EDITORPREVIEW_H

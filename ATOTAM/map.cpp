@@ -93,7 +93,7 @@ std::vector<Entity *> Map::loadRoom(int id)
                         Terrain *t = new Terrain(x, y, n);
                         e = t;
                     } else if (entity.key() == "Area") {
-                        if (n == "HorizontalDoor" || n == "VerticalDoor") {
+                        if (n.substr(n.size() - 4, 4) == "Door") {
                             Door *d = new Door(x, y, n);
                             e = d;
                             d->setEndingRoom(obj["to"]);
@@ -197,6 +197,9 @@ nlohmann::json Map::find(Entity *entity)
         }
 
     // Nothing was found
+    std::cerr << j.dump(4) << std::endl;
+    std::cerr << "Entity x (relative):" << entity->getX() - json["rooms"][std::to_string(entity->getRoomId())]["position"][0].get<int>() << std::endl;
+    std::cerr << "Entity y (relative):" << entity->getY() - json["rooms"][std::to_string(entity->getRoomId())]["position"][1].get<int>() << std::endl;
     throw std::invalid_argument("Map::find(Entity*) received an Entity that couldn't be found.");
 }
 

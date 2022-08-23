@@ -26,6 +26,7 @@ public:
     Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable);
     Entity(double x, double y, std::string facing, std::string name);
     Entity(const Entity&);
+    Entity();
     ~Entity();
 
     void updateTexture();
@@ -141,5 +142,10 @@ private:
 };
 
 bool operator==(Entity a, Entity b);
+
+// To allow the use of QVariant with Entities
+Q_DECLARE_METATYPE(Entity);
+QDataStream &operator<<(QDataStream &out, const Entity &myObj);
+QDataStream &operator>>(QDataStream &in, Entity &myObj);
 
 #endif // ENTITY_H

@@ -58,8 +58,6 @@ HEADERS += \
 
 PRECOMPILED_HEADER = precompiledheaders.h
 
-TRANSLATIONS += \
-    ATOTAM_MapEditor_fr_FR.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 

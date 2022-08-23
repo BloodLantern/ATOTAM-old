@@ -280,6 +280,7 @@
 		"Beam": {
 			"texture": "Beam",
 			"defaultState": "None",
+			"type": "Projectile",
 			"height": 16,
 			"width": 16,
 			"hit_height": 16,
@@ -297,6 +298,7 @@
 		"Missile": {
 			"texture": "Missile",
 			"defaultState": "None",
+			"type": "Projectile",
 			"height": 30,
 			"width": 30,
 			"hit_height": 50,
@@ -314,6 +316,7 @@
 		"Bomb": {
 			"texture": "Bomb",
 			"defaultState": "None",
+			"type": "Projectile",
 			"height": 16,
 			"width": 16,
 			"hit_height": 48,
@@ -331,6 +334,7 @@
 		"Grenade": {
 			"texture": "Grenade",
 			"defaultState": "None",
+			"type": "Projectile",
 			"height": 16,
 			"width": 16,
 			"hit_height": 48,
@@ -412,7 +416,7 @@
 			"width": 20,
 			"height": 256,
 			"type": "Area",
-			"defaultState": "None",
+			"defaultState": "Right",
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,
@@ -426,7 +430,7 @@
 			"width": 256,
 			"height": 20,
 			"type": "Area",
-			"defaultState": "None",
+			"defaultState": "Down",
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,
@@ -440,7 +444,7 @@
 			"width": 64,
 			"height": 128,
 			"type": "NPC",
-			"defaultState": "None",
+			"defaultState": "Normal",
 			"gravity":  false,
 			"friction": 0,
 			"movable": false,

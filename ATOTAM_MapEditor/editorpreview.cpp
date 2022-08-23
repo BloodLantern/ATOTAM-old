@@ -1,4 +1,5 @@
 #include "editorpreview.h"
+#include "qmimedata.h"
 #include "resizeedit.h"
 #include "moveedit.h"
 #include "qpainter.h"
@@ -42,20 +43,25 @@ void EditorPreview::getInputs()
 {
     for (std::map<std::string, bool>::iterator i = inputList.begin(); i != inputList.end(); i ++) {
         if (i->second)
-            inputTime[i->first] += 1 / physicsFrameRate;
+            inputList[i->first] += 1 / physicsFrameRate;
         else
-            inputTime[i->first] = 0;
+            inputList[i->first] = 0;
     }
 
     //Only listen for inputs if the window is currently selected
     if (isActiveWindow()) {
         //Check every key
-        for (nlohmann::json::iterator i = getEditorJson()["inputs"].begin(); i != getEditorJson()["inputs"].end(); i++) {
-            inputList[i.key()] = GetKeyState(i.value()) & 0x8000;
+        for (nlohmann::json::iterator i = editorJson["inputs"].begin(); i != editorJson["inputs"].end(); i++) {
+            for (nlohmann::json::iterator j = i.value().begin(); j != i.value().end(); j++)
+                if (GetKeyState(j.value()) & 0x8000) {
+                    inputList[i.key()] = true;
+                    break;
+                } else
+                    inputList[i.key()] = false;
         }
     } else
         //Reset the keys if the window is not selected
-        for (nlohmann::json::iterator i = getEditorJson()["inputs"].begin(); i != getEditorJson()["inputs"].end(); i++) {
+        for (nlohmann::json::iterator i = editorJson["inputs"].begin(); i != editorJson["inputs"].end(); i++) {
             inputList[i.key()] = 0;
         }
 }
@@ -181,6 +187,8 @@ void EditorPreview::duplicateObject()
     if (selected) {
         clearUnmadeEdits();
         Entity* ent = new Entity(*selected);
+        ent->setX(ent->getX() + 32);
+        ent->setY(ent->getY() + 32);
         addObject(ent);
     }
 }
@@ -220,6 +228,7 @@ void EditorPreview::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     visibleEntities.clear();
+    removeNullEntities();
     std::vector<Entity*> currentRoom;
 
     for (std::vector<Entity*>::iterator ent = entities.begin(); ent != entities.end(); ent++) {
@@ -351,6 +360,15 @@ void EditorPreview::drawEntity(Entity* ent, QPainter* painter)
                                 ent->getTexture()->height() * zoomFactor * renderingMultiplier),
                                 *ent->getTexture());
     }
+}
+
+void EditorPreview::removeNullEntities()
+{
+    std::vector<Entity*> nonNullEntities;
+    for (auto ent = entities.begin(); ent != entities.end(); ent++)
+        if (*ent != nullptr)
+            nonNullEntities.push_back(*ent);
+    entities = nonNullEntities;
 }
 
 void EditorPreview::mousePressEvent(QMouseEvent *event)
@@ -643,7 +661,7 @@ void EditorPreview::keyPressEvent(QKeyEvent *event)
             duplicateObject();
         else
             event->ignore();
-    } else if (inputList["delete"] || inputList["altDelete"])
+    } else if (inputList["delete"])
         deleteObject();
     else if (inputList["left"] && selected) {
         MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(-1, 0));
@@ -671,6 +689,19 @@ void EditorPreview::keyPressEvent(QKeyEvent *event)
     }
     else
         event->ignore();
+}
+
+void EditorPreview::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat(QString::fromStdString("Entity")))
+        event->acceptProposedAction();
+}
+
+void EditorPreview::dropEvent(QDropEvent *event)
+{
+    if (const QMimeData* data = event->mimeData()) {
+        // Do smth
+    }
 }
 
 nlohmann::json &EditorPreview::getEditorJson()

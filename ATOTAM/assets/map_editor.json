@@ -1,18 +1,40 @@
 {
     "enabled": true,
     "inputs": {
-        "altDelete": 8,
-        "control": 17,
-        "delete": 46,
-        "disableMovingSteps": 16,
-        "down": 40,
-        "duplicateObject": 68,
-        "left": 37,
-        "redoEdit": 89,
-        "right": 39,
-        "save": 83,
-        "undoEdit": 90,
-        "up": 38
+        "control": [
+            17
+        ],
+        "delete": [
+            46,
+            8
+        ],
+        "disableMovingSteps": [
+            16
+        ],
+        "down": [
+            40
+        ],
+        "duplicateObject": [
+            68
+        ],
+        "left": [
+            37
+        ],
+        "redoEdit": [
+            89
+        ],
+        "right": [
+            39
+        ],
+        "save": [
+            83
+        ],
+        "undoEdit": [
+            90
+        ],
+        "up": [
+            38
+        ]
     },
     "lastLaunch": {
         "map": {

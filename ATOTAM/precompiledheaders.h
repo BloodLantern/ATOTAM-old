@@ -42,5 +42,6 @@
 #include <thread>
 #include <math.h>
 #include <fstream>
+#include <string>
 
 #endif // PRECOMPILEDHEADERS_H

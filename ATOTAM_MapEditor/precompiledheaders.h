@@ -31,9 +31,14 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPaintEvent>
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QTreeView>
 
 #include <iostream>
 #include <math.h>
 #include <fstream>
+#include <set>
+#include <string>
 
 #endif // PRECOMPILEDHEADERS_H
