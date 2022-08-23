@@ -388,13 +388,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                     }
                 }
 
-                if (s->getVY() > 0) {
-                    if (s->getSpeedPriorDash().second > 0.0) {
-                        s->setVY(std::min(s->getVY(), std::max(s->getSpeedPriorDash().second, samosJson["dashBaseEndingUpSpeed"].get<double>())));
-                    } else {
-                        s->setVY(std::min(s->getVY(), samosJson["dashBaseEndingUpSpeed"].get<double>()));
-                    }
-                } else {
+                if (s->getVY() < 0) {
                     if (s->getSpeedPriorDash().second < 0.0) {
                         s->setVY(std::max(s->getVY(), std::min(s->getSpeedPriorDash().second, -samosJson["dashBaseEndingUpSpeed"].get<double>())));
                     } else {

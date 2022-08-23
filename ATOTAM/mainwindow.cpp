@@ -494,7 +494,7 @@ void MainWindow::setupToDraw()
         toDraw["samos_speedRetained"] = s->getSpeedRetained();
         toDraw["samos_retainTime"] = s->getRetainTime();
         toDraw["samos_onGround"] = s->getOnGround();
-        toDraw["samos_room"] = s->getRoomId();
+        toDraw["samos_room"] = game->getCurrentMap().getCurrentRoomId();
         toDraw["samos_iTime"] = s->getITime();
         toDraw["samos_lagTime"] = s->getLagTime();
         toDraw["samos_shootTime"] = s->getShootTime();
@@ -506,6 +506,7 @@ void MainWindow::setupToDraw()
         toDraw["samos_dashTime"] = s->getDashTime();
         toDraw["samos_dashCoolDown"] = s->getDashCoolDown();
         toDraw["samos_dashDirection"] = s->getDashDirection();
+        toDraw["samos_frameCount"] = game->getFrameCount();
     }
 }
 
@@ -810,7 +811,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
     if (tempToDraw["showDebugInfo"]) {
-        painter.fillRect(QRect(70, 70, 250, 510), QBrush(QColor(0,0,0,150)));
+        painter.fillRect(QRect(70, 70, 250, 530), QBrush(QColor(0,0,0,150)));
 
         painter.setPen(QColor("white"));
 
@@ -839,6 +840,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawText(QPoint(80, 530), QString::fromStdString("Dash time : " + std::to_string(tempToDraw["samos_dashTime"].get<double>())));
         painter.drawText(QPoint(80, 550), QString::fromStdString("Dash cooldown : " + std::to_string(tempToDraw["samos_dashCoolDown"].get<double>())));
         painter.drawText(QPoint(80, 570), QString::fromStdString("Dash direction : " + tempToDraw["samos_dashDirection"].get<std::string>()));
+        painter.drawText(QPoint(80, 590), QString::fromStdString("Frame count : " + std::to_string(tempToDraw["samos_frameCount"].get<int>())));
     }
     painter.end();
 }

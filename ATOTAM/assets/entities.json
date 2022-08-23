@@ -8,7 +8,7 @@
 		"renderHitboxes": true,
 		"groundFriction": 0.1,
 		"airFriction": 0.01,
-		"fallcap": 750,
+		"fallcap": 900,
 		"speedcap": 1500,
 		"slowcap": 30,
 		"mapViewer": false,
