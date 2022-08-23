@@ -49,6 +49,10 @@ void gameClock(MainWindow* w) {
         // And update the last frame time
         g->setLastFrameTime(std::chrono::high_resolution_clock::now());
 
+        prevCount = std::round(g->getFrameCount() * 60.0 / Physics::frameRate);
+        g->setFrameCount(g->getFrameCount() + 1);
+        g->setUpdateCount(std::round(g->getFrameCount() * 60.0 / Physics::frameRate));
+
         if (g->getDoorTransition() == "") {
 
             if (!g->getIsPaused()) {
@@ -82,11 +86,6 @@ void gameClock(MainWindow* w) {
                         g->updateMapViewer();
                     }
 
-
-
-                    prevCount = std::round(g->getFrameCount() * 60.0 / Physics::frameRate);
-                    g->setFrameCount(g->getFrameCount() + 1);
-                    g->setUpdateCount(std::round(g->getFrameCount() * 60.0 / Physics::frameRate));
                     if (prevCount != g->getUpdateCount())
                         g->updateAnimations();
                 }

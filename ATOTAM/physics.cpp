@@ -1246,14 +1246,6 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             s->setState("MorphBallSlow");
     }
     if (std::abs(s->getVX()) > 500) {
-        if (s->getState() == "Walking")
-            s->setState("Running");
-        else if (s->getState() == "WalkingAimForward")
-            s->setState("RunningAimForward");
-        else if (s->getState() == "WalkingAimUp")
-            s->setState("RunningAimUp");
-        else if (s->getState() == "WalkingAimDown")
-            s->setState("RunningAimDown");
 
         if (s->getFrictionFactor() == samosJson["friction"].get<double>())
             s->setFrictionFactor(samosJson["fastFriction"].get<double>());
@@ -1262,6 +1254,14 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             s->setFrictionFactor(samosJson["movingFastFriction"].get<double>());
 
         if (std::abs(s->getVX()) > 1000) {
+            if (s->getState() == "Walking")
+                s->setState("Running");
+            else if (s->getState() == "WalkingAimForward")
+                s->setState("RunningAimForward");
+            else if (s->getState() == "WalkingAimUp")
+                s->setState("RunningAimUp");
+            else if (s->getState() == "WalkingAimDown")
+                s->setState("RunningAimDown");
 
             if (s->getFrictionFactor() == samosJson["fastFriction"].get<double>())
                 s->setFrictionFactor(samosJson["superFastFriction"].get<double>());
