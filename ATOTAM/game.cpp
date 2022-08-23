@@ -98,7 +98,7 @@ void Game::updateTas()
     if (!tas)
         return;
 
-    std::ifstream f(assetsPath + "/tas/" + Entity::values["general"]["tasFile"].get<std::string>());
+    std::ifstream f(assetsPath + "/tas/" + Entity::values["general"]["tasFile"].get<std::string>() + ".tas");
     // Stop the TAS if the last line has been read
     if (std::count(std::istreambuf_iterator<char>(f),
                        std::istreambuf_iterator<char>(), '\n') + 1 < line) {
