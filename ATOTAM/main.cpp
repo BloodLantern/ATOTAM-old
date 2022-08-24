@@ -39,10 +39,12 @@ void gameClock(MainWindow* w) {
         if (g->getFrameAdvanceEnabled()) {
             w->getSpecialInputs();
             g->updateFrameAdvance();
-            if ((*g->getInputList())["SPECIAL_toggleTAS"] && (*g->getInputTime())["SPECIAL_toggleTAS"] == 0) {
+            if ((*g->getInputList())["SPECIAL_toggleTAS"] && (*g->getInputTime())["SPECIAL_toggleTAS"] == 0)
                 g->setTas(!g->getTas());
-                g->setLine(1);
+            else if ((*g->getInputList())["SPECIAL_restartTAS"] && (*g->getInputTime())["SPECIAL_restartTAS"] == 0) {
+                g->setTas(true);
                 g->setCurrentInstructionFrames(1);
+                g->setLine(1);
             }
             if ((!((*g->getInputList())["SPECIAL_frameAdvance"]
                     && (*g->getInputTime())["SPECIAL_frameAdvance"] == 0)

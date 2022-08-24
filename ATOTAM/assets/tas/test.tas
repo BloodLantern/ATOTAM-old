@@ -10,11 +10,11 @@
 
 	2, Left, LControl
 	1, Left, Q, LControl
-	40, Left, S, LControl
+	27, Left, S, LControl
 	1, Left, LControl
 
-	19, Right, S, LControl
-	6, Right, Down, S, LControl
+	5, Right, S, LControl
+	//6, Right, Down, S, LControl
 
 	5, Right, Up, Q, LControl
 	1, Right, S, LControl
@@ -36,6 +36,6 @@
 	1, Left, Q, LControl
 	14, Left, S, LControl
 	15, Left, LControl
-	
+
 	3, Down, Left, Q, LControl
 	100, Left, S, LControl
