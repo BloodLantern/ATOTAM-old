@@ -38,8 +38,8 @@ void Entity::calcCollisionReplacement(Entity *obj1, Entity *obj2)
     }
 
     //Adjust values depending on the side of the collision
-    if (obj1->x + obj1->getBox()->getX() > obj2->x + obj2->getBox()->getX()) minX *= -1;
-    if (obj1->y + obj1->getBox()->getY() > obj2->y + obj2->getBox()->getY()) minY *= -1;
+    if (obj1->x + obj1->getBox()->getX() + obj1->getBox()->getWidth() / 2 > obj2->x + obj2->getBox()->getX() + obj2->getBox()->getWidth() / 2) minX *= -1;
+    if (obj1->y + obj1->getBox()->getY() + obj1->getBox()->getHeight() / 2 > obj2->y + obj2->getBox()->getY() + obj2->getBox()->getHeight() / 2) minY *= -1;
 
     //Decide which entity to move (depending on if one is not movable)
     if (obj1->isMovable && obj2->isMovable) {

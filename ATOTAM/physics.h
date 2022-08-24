@@ -25,9 +25,9 @@ public:
     static std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap, Save currentProgress);
     static std::vector<Entity*> handleCollision(Entity* obj1, Entity* obj2);
     static bool updateProjectile(Projectile* p);
-    static bool canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds);
-    static bool canChangeBoxAxis(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, bool alongY);
-    static std::vector<Entity*> updateSamos(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::map<std::string, bool> inputList, std::map<std::string, double> inputTime);
+    static bool canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::pair<int, int> roomS, std::pair<int, int> roomE);
+    static bool canChangeBoxAxis(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::pair<int, int> roomS, std::pair<int, int> roomE, bool alongY);
+    static std::vector<Entity*> updateSamos(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::map<std::string, bool> inputList, std::map<std::string, double> inputTime, Map currentMap);
 };
 
 #endif // PHYSICS_H

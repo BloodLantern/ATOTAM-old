@@ -444,7 +444,7 @@
                     ],
                     "Stone": [
                         {
-                            "horizontalRepeat": 1,
+                            "horizontalRepeat": 3,
                             "verticalRepeat": 16,
                             "x": 6336.0,
                             "y": 64.0

@@ -3,7 +3,7 @@
 double Physics::frameRate;
 double Physics::gravity;
 
-bool Physics::canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds)
+bool Physics::canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::pair<int, int> roomS, std::pair<int, int> roomE)
 {
     Entity ne = Entity(e->getX(), e->getY(), new CollisionBox(*b), nullptr, e->getEntType(), e->getIsAffectedByGravity(), e->getFacing(), e->getFrictionFactor(), e->getName(), e->getIsMovable());
     for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
@@ -17,6 +17,16 @@ bool Physics::canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts
         }
     }
 
+    if (ne.getX() + ne.getBox()->getX() + ne.getBox()->getWidth() > roomE.first) {
+        ne.setX(roomE.first - ne.getBox()->getX() - ne.getBox()->getWidth());
+    } else if (ne.getX() + ne.getBox()->getX() < roomS.first) {
+        ne.setX(roomS.first - ne.getBox()->getX());
+    } if (ne.getY() + ne.getBox()->getY() + ne.getBox()->getHeight() > roomE.second) {
+        ne.setY(roomE.second - ne.getBox()->getY() - ne.getBox()->getHeight());
+    } else if (ne.getY() + ne.getBox()->getY() < roomS.second) {
+        ne.setY(roomS.second - ne.getBox()->getY());
+    }
+
     for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
         if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
             return false;
@@ -26,12 +36,22 @@ bool Physics::canChangeBox(Entity *e, CollisionBox *b, std::vector<Terrain*> *ts
         if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
             return false;
         }
+    }
+
+    if (ne.getX() + ne.getBox()->getX() + ne.getBox()->getWidth() > roomE.first) {
+        return false;
+    } else if (ne.getX() + ne.getBox()->getX() < roomS.first) {
+        return false;
+    } if (ne.getY() + ne.getBox()->getY() + ne.getBox()->getHeight() > roomE.second) {
+        return false;
+    } else if (ne.getY() + ne.getBox()->getY() < roomS.second) {
+        return false;
     }
 
     return true;
 }
 
-bool Physics::canChangeBoxAxis(Entity *e, CollisionBox *b, std::vector<Terrain *> *ts, std::vector<DynamicObj *> *ds, bool alongY)
+bool Physics::canChangeBoxAxis(Entity *e, CollisionBox *b, std::vector<Terrain *> *ts, std::vector<DynamicObj *> *ds, std::pair<int, int> roomS, std::pair<int, int> roomE, bool alongY)
 {
     Entity ne = Entity(e->getX(), e->getY(), new CollisionBox(*b), nullptr, e->getEntType(), e->getIsAffectedByGravity(), e->getFacing(), e->getFrictionFactor(), e->getName(), e->getIsMovable());
     for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
@@ -45,6 +65,16 @@ bool Physics::canChangeBoxAxis(Entity *e, CollisionBox *b, std::vector<Terrain *
         }
     }
 
+    if (ne.getX() + ne.getBox()->getX() + ne.getBox()->getWidth() > roomE.first) {
+        ne.setX(roomE.first - ne.getBox()->getX() - ne.getBox()->getWidth());
+    } else if (ne.getX() + ne.getBox()->getX() < roomS.first) {
+        ne.setX(roomS.first - ne.getBox()->getX());
+    } if (ne.getY() + ne.getBox()->getY() + ne.getBox()->getHeight() > roomE.second) {
+        ne.setY(roomE.second - ne.getBox()->getY() - ne.getBox()->getHeight());
+    } else if (ne.getY() + ne.getBox()->getY() < roomS.second) {
+        ne.setY(roomS.second - ne.getBox()->getY());
+    }
+
     for (std::vector<Terrain*>::iterator i = ts->begin(); i != ts->end(); i++) {
         if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
             return false;
@@ -54,6 +84,16 @@ bool Physics::canChangeBoxAxis(Entity *e, CollisionBox *b, std::vector<Terrain *
         if (Entity::checkCollision(&ne, b, *i, (*i)->getBox())) {
             return false;
         }
+    }
+
+    if (ne.getX() + ne.getBox()->getX() + ne.getBox()->getWidth() > roomE.first) {
+        return false;
+    } else if (ne.getX() + ne.getBox()->getX() < roomS.first) {
+        return false;
+    } if (ne.getY() + ne.getBox()->getY() + ne.getBox()->getHeight() > roomE.second) {
+        return false;
+    } else if (ne.getY() + ne.getBox()->getY() < roomS.second) {
+        return false;
     }
 
     return true;
@@ -76,7 +116,7 @@ bool Physics::updateProjectile(Projectile *p)
         return false;
 }
 
-std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::map<std::string, bool> inputList, std::map<std::string, double> inputTime)
+std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::map<std::string, bool> inputList, std::map<std::string, double> inputTime, Map currentMap)
 {
     std::vector<Entity*> toAdd;
     if (s->getState() == "MorphBallStop" || s->getState() == "MorphBallSlow" || s->getState() == "MorphBallSuperSlow")
@@ -94,6 +134,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
         s->setLagTime(s->getLagTime() - 1 / frameRate);
 
     nlohmann::json samosJson = Entity::values["names"]["Samos"];
+    nlohmann::json roomJson = (*currentMap.getJson())["rooms"][std::to_string(currentMap.getCurrentRoomId())];
 
     if (s->getOnGround()) {
         if ((s->getState() == "Jumping") || (s->getState() == "SpinJump") || (s->getState() == "Falling") || (s->getState() == "JumpEnd") || (s->getState() == "WallJump")
@@ -107,44 +148,47 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
             }
         }
     }
+    std::pair<int, int> roomS = {roomJson["position"][0], roomJson["position"][1]};
+    std::pair<int, int> roomE = {roomJson["position"][0].get<int>() + roomJson["size"][0].get<int>(),
+                                 roomJson["position"][1].get<int>() + roomJson["size"][1].get<int>()};
 
     CollisionBox* spinBox = new CollisionBox(samosJson["spinJumpHitbox_offset_x"], samosJson["spinJumpHitbox_offset_y"],
                   samosJson["spinJumpHitbox_width"], samosJson["spinJumpHitbox_height"]);
-    bool canSpin = canChangeBoxAxis(s, spinBox, ts, ds, true);
+    bool canSpin = canChangeBoxAxis(s, spinBox, ts, ds, roomS, roomE, true);
     bool freeCanSpin = false;
     if (!canSpin) {
-        canSpin = canChangeBox(s, spinBox, ts, ds);
+        canSpin = canChangeBox(s, spinBox, ts, ds, roomS, roomE);
         freeCanSpin = true;
     }
     CollisionBox* morphBox = new CollisionBox(samosJson["morphBallHitbox_offset_x"], samosJson["morphBallHitbox_offset_y"],
                   samosJson["morphBallHitbox_width"], samosJson["morphBallHitbox_height"]);
-    bool canMorph = canChangeBoxAxis(s, morphBox, ts, ds, true);
+    bool canMorph = canChangeBoxAxis(s, morphBox, ts, ds, roomS, roomE, true);
     bool freeCanMorph = false;
     if (!canMorph) {
-        canMorph = canChangeBox(s, morphBox, ts, ds);
+        canMorph = canChangeBox(s, morphBox, ts, ds, roomS, roomE);
         freeCanMorph = true;
     }
     CollisionBox* fallBox = new CollisionBox(samosJson["fallingHitbox_offset_x"], samosJson["fallingHitbox_offset_y"],
                 samosJson["fallingHitbox_width"], samosJson["fallingHitbox_height"]);
-    bool canFall = canChangeBoxAxis(s, fallBox, ts, ds, true);
+    bool canFall = canChangeBoxAxis(s, fallBox, ts, ds, roomS, roomE, true);
     bool freeCanFall = false;
     if (!canFall) {
-        canFall = canChangeBox(s, fallBox, ts, ds);
+        canFall = canChangeBox(s, fallBox, ts, ds, roomS, roomE);
         freeCanFall = true;
     }
     CollisionBox* crouchBox = new CollisionBox(samosJson["crouchHitbox_offset_x"], samosJson["crouchHitbox_offset_y"],
                   samosJson["crouchHitbox_width"], samosJson["crouchHitbox_height"]);
-    bool canCrouch = canChangeBoxAxis(s, crouchBox, ts, ds, true);
+    bool canCrouch = canChangeBoxAxis(s, crouchBox, ts, ds, roomS, roomE, true);
     bool freeCanCrouch = false;
     if (!canCrouch) {
-        canCrouch = canChangeBox(s, crouchBox, ts, ds);
+        canCrouch = canChangeBox(s, crouchBox, ts, ds, roomS, roomE);
         freeCanCrouch = true;
     }
     CollisionBox* standBox = new CollisionBox(samosJson["offset_x"], samosJson["offset_y"], samosJson["width"], samosJson["height"]);
-    bool canStand = canChangeBoxAxis(s, standBox, ts, ds, true);
+    bool canStand = canChangeBoxAxis(s, standBox, ts, ds, roomS, roomE, true);
     bool freeCanStand = false;
     if (!canStand) {
-        canStand = canChangeBox(s, standBox, ts, ds);
+        canStand = canChangeBox(s, standBox, ts, ds, roomS, roomE);
         freeCanStand = true;
     }
 
@@ -1687,12 +1731,16 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
         if (s->getIsMovable() && s->getBox() != nullptr) {
             if (s->getX() + s->getBox()->getX() + s->getBox()->getWidth() > roomE_x) {
                 s->setX(roomE_x - s->getBox()->getX() - s->getBox()->getWidth());
+                s->setVX(0.0);
             } else if (s->getX() + s->getBox()->getX() < roomS_x) {
                 s->setX(roomS_x - s->getBox()->getX());
+                s->setVX(0.0);
             } if (s->getY() + s->getBox()->getY() + s->getBox()->getHeight() > roomE_y) {
                 s->setY(roomE_y - s->getBox()->getY() - s->getBox()->getHeight());
+                s->setVY(0.0);
             } else if (s->getY() + s->getBox()->getY() < roomS_y) {
                 s->setY(roomS_y - s->getBox()->getY());
+                s->setVY(0.0);
             }
         }
     }
@@ -1734,12 +1782,16 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
         if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
             if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
                 (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
+                (*i)->setVX(0.0);
             } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
                 (*i)->setX(roomS_x - (*i)->getBox()->getX());
+                (*i)->setVX(0.0);
             } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
                 (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
+                (*i)->setVY(0.0);
             } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
                 (*i)->setY(roomS_y - (*i)->getBox()->getY());
+                (*i)->setVY(0.0);
             }
         }
     }
@@ -1772,12 +1824,16 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
         if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
             if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
                 (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
+                (*i)->setVX(0.0);
             } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
                 (*i)->setX(roomS_x - (*i)->getBox()->getX());
+                (*i)->setVX(0.0);
             } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
                 (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
+                (*i)->setVY(0.0);
             } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
                 (*i)->setY(roomS_y - (*i)->getBox()->getY());
+                (*i)->setVY(0.0);
             }
         }
     }
@@ -1794,12 +1850,16 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
         if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
             if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
                 (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
+                (*i)->setVX(0.0);
             } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
                 (*i)->setX(roomS_x - (*i)->getBox()->getX());
+                (*i)->setVX(0.0);
             } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
                 (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
+                (*i)->setVY(0.0);
             } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
                 (*i)->setY(roomS_y - (*i)->getBox()->getY());
+                (*i)->setVY(0.0);
             }
         }
     }
@@ -1816,15 +1876,19 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
         if ((*i)->getIsMovable() && (*i)->getBox() != nullptr) {
             if ((*i)->getX() + (*i)->getBox()->getX() + (*i)->getBox()->getWidth() > roomE_x) {
                 (*i)->setX(roomE_x - (*i)->getBox()->getX() - (*i)->getBox()->getWidth());
+                (*i)->setVX(0.0);
                 (*i)->timeOut();
             } else if ((*i)->getX() + (*i)->getBox()->getX() < roomS_x) {
                 (*i)->setX(roomS_x - (*i)->getBox()->getX());
+                (*i)->setVX(0.0);
                 (*i)->timeOut();
             } if ((*i)->getY() + (*i)->getBox()->getY() + (*i)->getBox()->getHeight() > roomE_y) {
                 (*i)->setY(roomE_y - (*i)->getBox()->getY() - (*i)->getBox()->getHeight());
+                (*i)->setVY(0.0);
                 (*i)->timeOut();
             } else if ((*i)->getY() + (*i)->getBox()->getY() < roomS_y) {
                 (*i)->setY(roomS_y - (*i)->getBox()->getY());
+                (*i)->setVY(0.0);
                 (*i)->timeOut();
             }
         }

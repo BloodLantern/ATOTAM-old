@@ -68,7 +68,7 @@ void gameClock(MainWindow* w) {
                     if (!g->getMapViewer()) {
                         // Update physics
                         if (g->getS() != nullptr) {
-                            g->addEntities(Physics::updateSamos(g->getS(), g->getTerrains(), g->getDynamicObjs(), *g->getInputList(), *g->getInputTime()));
+                            g->addEntities(Physics::updateSamos(g->getS(), g->getTerrains(), g->getDynamicObjs(), *g->getInputList(), *g->getInputTime(), g->getCurrentMap()));
                             g->updateNPCs();
                             g->updateCamera();
                         }

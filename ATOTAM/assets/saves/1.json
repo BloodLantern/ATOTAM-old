@@ -2,8 +2,8 @@
     "damageDone": 2160,
     "damageReceived": 2440,
     "deaths": 23,
-    "playTime": 3682,
-    "roomID": 0,
+    "playTime": 3694,
+    "roomID": 3,
     "roomsDiscovered": {
         "test": [
             2,
@@ -21,5 +21,5 @@
         "missiles": 0
     },
     "saveMapName": "test",
-    "savepointID": 0
+    "savepointID": 2
 }
