@@ -93,9 +93,12 @@ void Game::updateTas()
         return;
 
     std::ifstream f(assetsPath + "/tas/" + Entity::values["general"]["tasFile"].get<std::string>() + ".tas");
+    std::string content;
+    // Count the lines
+    long i;
+    for (i = 0; std::getline(f, content); ++i);
     // Stop the TAS if the last line has been read
-    if (std::count(std::istreambuf_iterator<char>(f),
-                       std::istreambuf_iterator<char>(), '\n') + 1 < line) {
+    if (i < line + linesSkipped) {
         tas = false;
         line = 1;
         currentInstructionFrames = 1;
@@ -104,7 +107,7 @@ void Game::updateTas()
     // Reset the stream value
     f.clear();
     f.seekg(0);
-    std::string content;
+    // Go back to the line we were at the last update + 1
     linesSkipped = 0;
     for (int i = 0; i < line; i++) {
         std::getline(f, content);
@@ -129,17 +132,21 @@ void Game::updateTas()
     for (const auto &input : toDel)
         inputList.erase(input.first);
 
+    // Analyse the tokens
     std::vector<std::string> tokens = split(content, ',');
     for (unsigned int i = 0; i < tokens.size(); i++) {
         std::string token = tokens[i];
         try {
             unsigned long t = std::stoul(token);
+            // Update the frame count
             lastInstructionFrames = currentInstructionFrames;
             if (currentInstructionFrames == t)
                 currentInstructionFrames = 1;
+            else if (currentInstructionFrames > t)
+                currentInstructionFrames -= t + 1;
             else
                 currentInstructionFrames++;
-        } catch (const std::invalid_argument) {
+        } catch (const std::invalid_argument&) {
             // Add the TASed inputs
             for (const auto &j : keyCodes.items())
                 for (const auto &k : j.value())
@@ -153,6 +160,7 @@ void Game::updateTas()
         }
     }
 
+    // Increment the line count if the frame count was reset
     if (currentInstructionFrames == 1)
         line++;
 }
