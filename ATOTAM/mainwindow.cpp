@@ -503,8 +503,8 @@ void MainWindow::setupToDraw()
         toDraw["samos_dashCoolDown"] = s->getDashCoolDown();
         toDraw["samos_dashDirection"] = s->getDashDirection();
         toDraw["samos_frameCount"] = game->getFrameCount();
-        toDraw["tas_lineFrameCount"] = game->getCurrentInstructionFrames();
-        toDraw["tas_lineNumber"] = game->getLine();
+        toDraw["tas_lineFrameCount"] = game->getLastInstructionFrames();
+        toDraw["tas_lineNumber"] = (game->getCurrentInstructionFrames() == 1 ? game->getLine() - 1 : game->getLine()) + game->getLinesSkipped();
     }
 }
 

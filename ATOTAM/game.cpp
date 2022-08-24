@@ -89,12 +89,6 @@ void Game::updateFrameAdvance()
 
 void Game::updateTas()
 {
-    if (inputList["SPECIAL_toggleTAS"] && inputTime["SPECIAL_toggleTAS"] == 0) {
-        tas = !tas;
-        line = 1;
-        currentInstructionFrames = 1;
-    }
-
     if (!tas)
         return;
 
@@ -111,11 +105,18 @@ void Game::updateTas()
     f.clear();
     f.seekg(0);
     std::string content;
+    linesSkipped = 0;
     for (int i = 0; i < line; i++) {
         std::getline(f, content);
-        while (content == "")
+        while (content == "" || (content.size() >= 2 && content.substr(0, 2) == "//")) {
             std::getline(f, content);
+            linesSkipped++;
+        }
     }
+
+    // Remove ' ' and '\t' from the line
+    content.erase(std::remove(content.begin(), content.end(), ' '), content.end());
+    content.erase(std::remove(content.begin(), content.end(), '\t'), content.end());
 
     // Remove the not special inputs
     std::map<std::string, bool> toDel;
@@ -125,7 +126,7 @@ void Game::updateTas()
                 continue;
         toDel.emplace(input.first, input.second);
     }
-    for (auto input : toDel)
+    for (const auto &input : toDel)
         inputList.erase(input.first);
 
     std::vector<std::string> tokens = split(content, ',');
@@ -133,13 +134,14 @@ void Game::updateTas()
         std::string token = tokens[i];
         try {
             unsigned long t = std::stoul(token);
+            lastInstructionFrames = currentInstructionFrames;
             if (currentInstructionFrames == t)
                 currentInstructionFrames = 1;
             else
                 currentInstructionFrames++;
         } catch (const std::invalid_argument) {
-            // Add the TASed ones
-            for (auto j : keyCodes.items())
+            // Add the TASed inputs
+            for (const auto &j : keyCodes.items())
                 for (const auto &k : j.value())
                     if (k == token) {
                         if (!toDel[j.key()])
@@ -1383,4 +1385,24 @@ int Game::getLine() const
 void Game::setLine(int newLine)
 {
     line = newLine;
+}
+
+unsigned long long Game::getLastInstructionFrames() const
+{
+    return lastInstructionFrames;
+}
+
+void Game::setLastInstructionFrames(unsigned long long newLastInstructionFrames)
+{
+    lastInstructionFrames = newLastInstructionFrames;
+}
+
+int Game::getLinesSkipped() const
+{
+    return linesSkipped;
+}
+
+void Game::setLinesSkipped(int newLinesSkipped)
+{
+    linesSkipped = newLinesSkipped;
 }

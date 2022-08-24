@@ -174,6 +174,12 @@ public:
     int getLine() const;
     void setLine(int newLine);
 
+    unsigned long long getLastInstructionFrames() const;
+    void setLastInstructionFrames(unsigned long long newLastInstructionFrames);
+
+    int getLinesSkipped() const;
+    void setLinesSkipped(int newLinesSkipped);
+
 private:
     std::string assetsPath;
 
@@ -237,6 +243,8 @@ private:
     // TASing
     bool tas = false;
     unsigned long long currentInstructionFrames = 1;
+    unsigned long long lastInstructionFrames = 0;
+    int linesSkipped = 0;
     int line = 1;
     template <typename Out>
     void split(const std::string &s, char delim, Out result);
