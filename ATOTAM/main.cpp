@@ -30,6 +30,10 @@ void gameClock(MainWindow* w) {
     Game* g = w->getGame();
     while (g->getRunning()) {
         waitTime = 1000000.0/(Physics::frameRate * g->getGameSpeed());
+        if ((*g->getInputList())["SPECIAL_fastForward"])
+            waitTime /= 4;
+        else if ((*g->getInputList())["SPECIAL_slowForward"])
+            waitTime *= 4;
         auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
         if (g->getFrameAdvanceEnabled()) {
@@ -40,9 +44,11 @@ void gameClock(MainWindow* w) {
                 g->setLine(1);
                 g->setCurrentInstructionFrames(1);
             }
-            if (!((*g->getInputList())["SPECIAL_frameAdvance"]
+            if ((!((*g->getInputList())["SPECIAL_frameAdvance"]
                     && (*g->getInputTime())["SPECIAL_frameAdvance"] == 0)
                     && g->getFrameAdvance())
+                    && !(*g->getInputList())["SPECIAL_slowForward"]
+                    && !(*g->getInputList())["SPECIAL_fastForward"])
                 continue;
             g->updateTas();
         }
