@@ -210,7 +210,7 @@ private:
     std::chrono::system_clock::time_point lastFpsShown; // Time of the last frame in which the shown fps were updated
     std::chrono::system_clock::time_point lastFrameTime; // Time of the last frame in which the shown fps were updated
     unsigned int fps = 0; // Fps count when 'lastFpsShown' was updated
-    unsigned int showFpsUpdateRate = true; // Time (in ns) between each fps update
+    unsigned int showFpsUpdateRate = 500000000; // Time (in ns) between each fps update
     bool isPaused = false;
     std::pair<int,int> resolution = {1920, 1080};
     double mapViewerCameraSpeed = 100;

@@ -331,3 +331,13 @@ void Samos::setDashCoolDown(double newDashCoolDown)
 {
     dashCoolDown = newDashCoolDown;
 }
+
+const std::string &Samos::getDashCoolDownType() const
+{
+    return dashCoolDownType;
+}
+
+void Samos::setDashCoolDownType(const std::string &newDashCoolDownType)
+{
+    dashCoolDownType = newDashCoolDownType;
+}

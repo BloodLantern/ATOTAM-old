@@ -76,6 +76,9 @@ public:
     double getDashCoolDown() const;
     void setDashCoolDown(double newDashCoolDown);
 
+    const std::string &getDashCoolDownType() const;
+    void setDashCoolDownType(const std::string &newDashCoolDownType);
+
 private:
     bool isInAltForm = false;
     int grenadeCount = 0;
@@ -96,6 +99,7 @@ private:
     std::pair<double, double> speedPriorDash = {0.0, 0.0};
     double dashTime = 0.0;
     double dashCoolDown = 0.0;
+    std::string dashCoolDownType = "Grounded";
     std::string dashDirection = "";
 };
 

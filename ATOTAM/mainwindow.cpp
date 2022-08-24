@@ -372,6 +372,14 @@ void MainWindow::setupToDraw()
             toDraw["hud_health"] = game->getS()->getHealth();
             toDraw["hud_missileCount"] = game->getS()->getMissileCount();
             toDraw["hud_grenadeCount"] = game->getS()->getGrenadeCount();
+
+            if (game->getS()->getDashDirection() != "") {
+                toDraw["hud_dashBar"] = game->getS()->getDashTime() >= 0.0 ? game->getS()->getDashTime() / Entity::values["names"]["Samos"]["dashTime"].get<double>() : 0.0;
+            } else if (game->getS()->getDashCoolDownType() == "Air") {
+                toDraw["hud_dashBar"] = game->getS()->getDashCoolDown() >= 0.0 ? (1 - game->getS()->getDashCoolDown() / Entity::values["names"]["Samos"]["dashAirCooldown"].get<double>()) : 1.0;
+            } else {
+                toDraw["hud_dashBar"] = game->getS()->getDashCoolDown() >= 0.0 ? (1 - game->getS()->getDashCoolDown() / Entity::values["names"]["Samos"]["dashGroundCooldown"].get<double>()) : 1.0;
+            }
         }
 
         // Dialogue
@@ -500,6 +508,7 @@ void MainWindow::setupToDraw()
         toDraw["samos_priorDash_vx"] = s->getSpeedPriorDash().first;
         toDraw["samos_priorDash_vy"] = s->getSpeedPriorDash().second;
         toDraw["samos_dashTime"] = s->getDashTime();
+        toDraw["samos_dashCoolDownType"] = s->getDashCoolDownType();
         toDraw["samos_dashCoolDown"] = s->getDashCoolDown();
         toDraw["samos_dashDirection"] = s->getDashDirection();
         toDraw["samos_frameCount"] = game->getFrameCount();
@@ -731,6 +740,13 @@ void MainWindow::paintEvent(QPaintEvent *)
             painter.fillRect(QRect(380,15,80,30), QColor("white"));
             painter.drawRect(QRect(380,15,80,30));
             painter.drawText(QPoint(390, 40), QString::fromStdString("H : " + std::to_string(tempToDraw["hud_health"].get<int>())));
+
+
+            //Dash
+            painter.fillRect(QRect(480,15,190,30), QColor("white"));
+            painter.drawRect(QRect(480,15,190,30));
+            painter.drawText(QPoint(490, 40), "Dash : ");
+            painter.fillRect(QRect(560,20,100*tempToDraw["hud_dashBar"].get<double>(),20), QColor(tempToDraw["hud_dashBar"].get<double>() == 1.0 ? "gray" : "darkGray"));
         }
 
         // Dialogue
@@ -809,7 +825,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
     if (tempToDraw["showDebugInfo"]) {
-        painter.fillRect(QRect(70, 70, 250, 570), QBrush(QColor(0,0,0,150)));
+        painter.fillRect(QRect(70, 70, 250, 590), QBrush(QColor(0,0,0,150)));
 
         painter.setPen(QColor("white"));
 
@@ -837,10 +853,11 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawText(QPoint(80, 510), QString::fromStdString("VY prior dash: " + std::to_string(tempToDraw["samos_priorDash_vy"].get<double>())));
         painter.drawText(QPoint(80, 530), QString::fromStdString("Dash time : " + std::to_string(tempToDraw["samos_dashTime"].get<double>())));
         painter.drawText(QPoint(80, 550), QString::fromStdString("Dash cooldown : " + std::to_string(tempToDraw["samos_dashCoolDown"].get<double>())));
-        painter.drawText(QPoint(80, 570), QString::fromStdString("Dash direction : " + tempToDraw["samos_dashDirection"].get<std::string>()));
-        painter.drawText(QPoint(80, 590), QString::fromStdString("Frame count : " + std::to_string(tempToDraw["samos_frameCount"].get<int>())));
-        painter.drawText(QPoint(80, 610), QString::fromStdString("TAS Current line frame count : " + std::to_string(tempToDraw["tas_lineFrameCount"].get<int>())));
-        painter.drawText(QPoint(80, 630), QString::fromStdString("TAS Current line number : " + std::to_string(tempToDraw["tas_lineNumber"].get<int>())));
+        painter.drawText(QPoint(80, 570), QString::fromStdString("Dash cooldown type : " + tempToDraw["samos_dashCoolDownType"].get<std::string>()));
+        painter.drawText(QPoint(80, 590), QString::fromStdString("Dash direction : " + tempToDraw["samos_dashDirection"].get<std::string>()));
+        painter.drawText(QPoint(80, 610), QString::fromStdString("Frame count : " + std::to_string(tempToDraw["samos_frameCount"].get<int>())));
+        painter.drawText(QPoint(80, 630), QString::fromStdString("TAS Current line frame count : " + std::to_string(tempToDraw["tas_lineFrameCount"].get<int>())));
+        painter.drawText(QPoint(80, 650), QString::fromStdString("TAS Current line number : " + std::to_string(tempToDraw["tas_lineNumber"].get<int>())));
     }
     painter.end();
 }

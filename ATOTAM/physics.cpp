@@ -344,6 +344,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                 s->setDashTime(0.0);
                 s->setDashDirection("");
                 s->setDashCoolDown(samosJson["dashGroundCooldown"].get<double>());
+                s->setDashCoolDownType("Ground");
                 s->setJumpTime(0);
                 s->setIsAffectedByGravity(true);
                 s->setFrictionFactor(samosJson["movingFriction"].get<double>());
@@ -359,6 +360,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                 s->setIsAffectedByGravity(true);
                 s->setFrictionFactor(samosJson["movingFriction"].get<double>());
                 s->setDashCoolDown(samosJson["dashGroundCooldown"].get<double>());
+                s->setDashCoolDownType("Ground");
 
                 if (s->getVX() > 0) {
                     if (!wallR) {
@@ -409,6 +411,7 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
                 s->setIsAffectedByGravity(true);
                 s->setFrictionFactor(samosJson["movingFriction"].get<double>());
                 s->setDashCoolDown(samosJson["dashAirCooldown"].get<double>());
+                s->setDashCoolDownType("Air");
 
                 if (s->getVX() > 0) {
                     if (!wallR) {

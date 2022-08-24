@@ -24,7 +24,7 @@
 		"debugEnabled": true,
 		"frameAdvanceEnabled": true,
 		"showDebugInfo": true,
-		"tasFile": "test",
+		"tasFile": "zuper_speed",
 		"defaultAnimationValues": {
 			"file": "empty.png",
 			"x": 0,
