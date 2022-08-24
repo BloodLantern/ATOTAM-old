@@ -111,15 +111,17 @@ void Game::updateTas()
     linesSkipped = 0;
     for (int i = 0; i < line; i++) {
         std::getline(f, content);
+        // Remove ' ' and '\t' from the line
+        content.erase(std::remove(content.begin(), content.end(), ' '), content.end());
+        content.erase(std::remove(content.begin(), content.end(), '\t'), content.end());
         while (content == "" || (content.size() >= 2 && content.substr(0, 2) == "//")) {
             std::getline(f, content);
+            // Remove ' ' and '\t' from the line
+            content.erase(std::remove(content.begin(), content.end(), ' '), content.end());
+            content.erase(std::remove(content.begin(), content.end(), '\t'), content.end());
             linesSkipped++;
         }
     }
-
-    // Remove ' ' and '\t' from the line
-    content.erase(std::remove(content.begin(), content.end(), ' '), content.end());
-    content.erase(std::remove(content.begin(), content.end(), '\t'), content.end());
 
     // Remove the not special inputs
     std::map<std::string, bool> toDel;

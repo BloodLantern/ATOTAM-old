@@ -6,36 +6,70 @@
 	1, Left, S, LControl
 	20, Down, Left, LControl
 	// 1 more frame to get the run speed boost
-	1, Left, LControl
-
 	2, Left, LControl
+
 	1, Left, Q, LControl
-	27, Left, S, LControl
+	29, Left, S, LControl
 	1, Left, LControl
 
-	5, Right, S, LControl
-	//6, Right, Down, S, LControl
+	4, Right, S, LControl
 
-	5, Right, Up, Q, LControl
+	14, Right, Up, Q, LControl
 	1, Right, S, LControl
 	20, Down, Right, LControl
 
 	1, Right, Q, LControl
 	1, Right, S, LControl
-	20, Down, Right, LControl
-	// 1 more frame to get the run speed boost
+	11, Down, Right, LControl
 	1, Right, LControl
-
-	1, Right, Q, LControl
-	1, Right, S, LControl
-	5, Down, Right, LControl
 
 	1, Left, S, LControl
 	25, Down, Left, LControl
 
 	1, Left, Q, LControl
-	14, Left, S, LControl
-	15, Left, LControl
+	12, Left, S, LControl
+	10, Left, LControl
 
-	3, Down, Left, Q, LControl
-	100, Left, S, LControl
+	1, Left, Q, LControl
+	13, Left, S, LControl
+	8, Left, LControl
+
+	1, Left, Q, LControl,
+	1, Left, S, LControl
+	20, Down, Left, LControl
+
+	1, Left, Q, LControl,
+	20, Left, S, LControl
+	1, Left, LControl
+
+	1, Right, S, LControl
+	9, Right, LControl
+	1, Right, Q, LControl
+	1, Right, S, LControl
+
+	20, Down, Right, LControl
+	1, Right, Q, LControl
+	1, Right, S, LControl
+
+	42, Down, Right, LControl
+	8, Down, Right, Q, LControl
+	15, Right, S, LControl
+	1, Right, LControl
+
+	6, Left, S, LControl
+	1, Left, LControl
+
+	6, Right, S, LControl
+	1, Right, LControl
+
+	6, Left, S, LControl
+	1, Left, LControl
+
+	6, Right, S, LControl
+	1, Right, LControl
+	
+	6, Left, S, LControl
+	1, Left, LControl
+
+	6, Right, S, LControl
+	1, Right, LControl
