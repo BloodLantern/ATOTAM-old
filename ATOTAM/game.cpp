@@ -38,7 +38,7 @@ void Game::loadGeneral()
     cameraSize.first = Entity::values["general"]["camera_size_x"];
     cameraSize.second = Entity::values["general"]["camera_size_y"];
     debugEnabled = Entity::values["general"]["debugEnabled"];
-    frameAdvanceEnabled = Entity::values["general"]["frameAdvanceEnabled"];
+    tasToolEnabled = Entity::values["general"]["frameAdvanceEnabled"];
     showDebugInfo = Entity::values["general"]["showDebugInfo"];
 }
 
@@ -81,12 +81,6 @@ void Game::die()
     selectedOption = 0;
 }
 
-void Game::updateFrameAdvance()
-{
-    if (inputList["SPECIAL_toggleFrameAdvance"] && inputTime["SPECIAL_toggleFrameAdvance"] == 0)
-        frameAdvance = !frameAdvance;
-}
-
 void Game::updateTas()
 {
     if (!tas)
@@ -94,9 +88,22 @@ void Game::updateTas()
 
     std::ifstream f(assetsPath + "/tas/" + Entity::values["general"]["tasFile"].get<std::string>() + ".tas");
     std::string content;
-    // Count the lines
+    // Count the lines and detect the breakpoints
     long i;
-    for (i = 0; std::getline(f, content); ++i);
+    for (i = 0; std::getline(f, content); ++i)
+        if (content == "$") {
+            furtherBreakpoint = i;
+            if (line == 1)
+                ultraFastForward = true;
+        }
+
+    // If we reached the breakpoint, go in frame advance mode and stop the ultra fast forward
+    if (line + linesSkipped - 1 == furtherBreakpoint && furtherBreakpoint > 1) {
+        frameAdvance = true;
+        ultraFastForward = false;
+        line++;
+    }
+
     // Stop the TAS if the last line has been read
     if (i < line + linesSkipped) {
         tas = false;
@@ -104,9 +111,11 @@ void Game::updateTas()
         currentInstructionFrames = 1;
         return;
     }
+
     // Reset the stream value
     f.clear();
     f.seekg(0);
+
     // Go back to the line we were at the last update + 1
     linesSkipped = 0;
     for (int i = 0; i < line; i++) {
@@ -409,10 +418,10 @@ void Game::updateMenu()
                 showDebugInfo = false;
             else if (menuOptions[selectedOption] == "Debug info : OFF")
                 showDebugInfo = true;
-            else if (menuOptions[selectedOption] == "Frame advance : ENABLED")
-                frameAdvanceEnabled = false;
-            else if (menuOptions[selectedOption] == "Frame advance : DISABLED")
-                frameAdvanceEnabled = true;
+            else if (menuOptions[selectedOption] == "TAS Tool : ON")
+                tasToolEnabled = false;
+            else if (menuOptions[selectedOption] == "TAS Tool : OFF")
+                tasToolEnabled = true;
         }
 
 
@@ -444,7 +453,7 @@ void Game::updateMenu()
             menuOptions.push_back("Reload room");
             menuOptions.push_back("Reload map");
             menuOptions.push_back(std::string("Debug info : ") + (showDebugInfo ? "ON" : "OFF"));
-            menuOptions.push_back(std::string("Frame advance : ") + (frameAdvanceEnabled ? "ENABLED" : "DISABLED"));
+            menuOptions.push_back(std::string("TAS Tool : ") + (tasToolEnabled ? "ON" : "OFF"));
         } else if (menu == "death") {
             menuOptions.clear();
             menuOptions.push_back("Respawn");
@@ -1347,14 +1356,14 @@ void Game::setFrameAdvance(bool newFrameAdvance)
     frameAdvance = newFrameAdvance;
 }
 
-bool Game::getFrameAdvanceEnabled() const
+bool Game::getTasToolEnabled() const
 {
-    return frameAdvanceEnabled;
+    return tasToolEnabled;
 }
 
-void Game::setFrameAdvanceEnabled(bool newFrameAdvanceEnabled)
+void Game::setTasToolEnabled(bool newTasToolEnabled)
 {
-    frameAdvanceEnabled = newFrameAdvanceEnabled;
+    tasToolEnabled = newTasToolEnabled;
 }
 
 bool Game::getTas() const
@@ -1415,4 +1424,14 @@ int Game::getLinesSkipped() const
 void Game::setLinesSkipped(int newLinesSkipped)
 {
     linesSkipped = newLinesSkipped;
+}
+
+bool Game::getUltraFastForward() const
+{
+    return ultraFastForward;
+}
+
+void Game::setUltraFastForward(bool newUltraFastForward)
+{
+    ultraFastForward = newUltraFastForward;
 }

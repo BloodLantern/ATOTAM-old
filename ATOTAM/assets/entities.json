@@ -23,8 +23,9 @@
 		"camera_size_y": 1080,
 		"debugEnabled": true,
 		"frameAdvanceEnabled": true,
+		"tasFile": "test",
 		"showDebugInfo": true,
-		"tasFile": "zuper_speed",
+		"tasFile": "test",
 		"defaultAnimationValues": {
 			"file": "empty.png",
 			"x": 0,

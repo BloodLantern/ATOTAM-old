@@ -36,9 +36,10 @@ void gameClock(MainWindow* w) {
             waitTime *= 4;
         auto end = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(waitTime);
 
-        if (g->getFrameAdvanceEnabled()) {
+        if (g->getTasToolEnabled()) {
             w->getSpecialInputs();
-            g->updateFrameAdvance();
+            if ((*g->getInputList())["SPECIAL_toggleFrameAdvance"] && (*g->getInputTime())["SPECIAL_toggleFrameAdvance"] == 0)
+                g->setFrameAdvance(!g->getFrameAdvance());
             if ((*g->getInputList())["SPECIAL_toggleTAS"] && (*g->getInputTime())["SPECIAL_toggleTAS"] == 0)
                 g->setTas(!g->getTas());
             else if ((*g->getInputList())["SPECIAL_restartTAS"] && (*g->getInputTime())["SPECIAL_restartTAS"] == 0) {
@@ -50,8 +51,13 @@ void gameClock(MainWindow* w) {
                     && (*g->getInputTime())["SPECIAL_frameAdvance"] == 0)
                     && g->getFrameAdvance())
                     && !(*g->getInputList())["SPECIAL_slowForward"]
-                    && !(*g->getInputList())["SPECIAL_fastForward"])
+                    && !(*g->getInputList())["SPECIAL_fastForward"]) {
+                // Wait between frames
+                while (std::chrono::high_resolution_clock::now() < end) {
+                    std::this_thread::sleep_for(std::chrono::microseconds(999));
+                }
                 continue;
+            }
             g->updateTas();
         }
         if (!g->getTas()) {
@@ -210,17 +216,23 @@ void gameClock(MainWindow* w) {
             }
         }
 
-        // Eventually render the game
-        if (!w->getCopyingToDraw()) {
-            w->setRender(false);
-            w->setupToDraw();
+        // Only paint if not in ultra fast forward or every 60 frames
+        if (!g->getUltraFastForward() || g->getFrameCount() % 60 == 0) {
+            // Eventually render the game
+            if (!w->getCopyingToDraw()) {
+                w->setRender(false);
+                w->setupToDraw();
+            }
+            w->setRender(true);
+            w->update();
         }
-        w->setRender(true);
-        w->update();
 
-        while (std::chrono::high_resolution_clock::now() < end) {
-            std::this_thread::sleep_for(std::chrono::microseconds(999));
-        }
+        // Only wait if not in ultra fast forward
+        if (!g->getUltraFastForward())
+            // Wait between frames
+            while (std::chrono::high_resolution_clock::now() < end) {
+                std::this_thread::sleep_for(std::chrono::microseconds(999));
+            }
     }
     w->setRender(true);
 

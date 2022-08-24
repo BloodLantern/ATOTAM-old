@@ -46,30 +46,30 @@
 	9, Right, LControl
 	1, Right, Q, LControl
 	1, Right, S, LControl
-
 	20, Down, Right, LControl
+
 	1, Right, Q, LControl
 	1, Right, S, LControl
+	19, Right, LControl
+	10, Right, S, E, LControl
+	1, Left, D, LShift, LControl
+	6, Right, Down, S, LControl
+	3, Right, S, LControl
 
-	42, Down, Right, LControl
-	8, Down, Right, Q, LControl
-	15, Right, S, LControl
-	1, Right, LControl
+	18, Right, Up, Q, LControl
 
-	6, Left, S, LControl
-	1, Left, LControl
+	37, Left, S, LControl
+	17, Left, Down, LControl
+	4, Left, LControl
+	12, Left, S, LControl
 
-	6, Right, S, LControl
-	1, Right, LControl
+	10, Up, Left, Q, LControl
+	1, Left, S, LControl
+	11, Down, Left, LControl
 
-	6, Left, S, LControl
-	1, Left, LControl
+	46
 
-	6, Right, S, LControl
-	1, Right, LControl
-	
-	6, Left, S, LControl
-	1, Left, LControl
-
-	6, Right, S, LControl
-	1, Right, LControl
+	9, Down, Left, LControl
+	1, Left, Q, LControl
+	1, Left, S, LControl
+	20, Left, LControl

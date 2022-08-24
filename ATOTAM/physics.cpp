@@ -1734,16 +1734,12 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
         if (s->getIsMovable() && s->getBox() != nullptr) {
             if (s->getX() + s->getBox()->getX() + s->getBox()->getWidth() > roomE_x) {
                 s->setX(roomE_x - s->getBox()->getX() - s->getBox()->getWidth());
-                s->setVX(0.0);
             } else if (s->getX() + s->getBox()->getX() < roomS_x) {
                 s->setX(roomS_x - s->getBox()->getX());
-                s->setVX(0.0);
             } if (s->getY() + s->getBox()->getY() + s->getBox()->getHeight() > roomE_y) {
                 s->setY(roomE_y - s->getBox()->getY() - s->getBox()->getHeight());
-                s->setVY(0.0);
             } else if (s->getY() + s->getBox()->getY() < roomS_y) {
                 s->setY(roomS_y - s->getBox()->getY());
-                s->setVY(0.0);
             }
         }
     }

@@ -42,7 +42,6 @@ public:
     void loadSave(Save save);
     void addRoomDiscovered(std::string mapName, int roomID);
     void die();
-    void updateFrameAdvance();
     void updateTas();
 
     std::vector<Entity *> *getEntities();
@@ -159,8 +158,8 @@ public:
     bool getFrameAdvance() const;
     void setFrameAdvance(bool newFrameAdvance);
 
-    bool getFrameAdvanceEnabled() const;
-    void setFrameAdvanceEnabled(bool newFrameAdvanceEnabled);
+    bool getTasToolEnabled() const;
+    void setTasToolEnabled(bool newTasToolEnabled);
 
     bool getTas() const;
     void setTas(bool newTas);
@@ -179,6 +178,9 @@ public:
 
     int getLinesSkipped() const;
     void setLinesSkipped(int newLinesSkipped);
+
+    bool getUltraFastForward() const;
+    void setUltraFastForward(bool newUltraFastForward);
 
 private:
     std::string assetsPath;
@@ -237,12 +239,14 @@ private:
     bool showDebugInfo = false;
     bool debugEnabled = false;
 
-    bool frameAdvanceEnabled = false;
+    bool tasToolEnabled = false;
     bool frameAdvance = false;
 
     // TASing
     bool tas = false;
     unsigned long long currentInstructionFrames = 1;
+    bool ultraFastForward = false;
+    int furtherBreakpoint = 1;
     unsigned long long lastInstructionFrames = 0;
     int linesSkipped = 0;
     int line = 1;
