@@ -11,6 +11,9 @@ public:
     Area(const Area&);
     ~Area();
 
+    virtual nlohmann::json getJsonRepresentation();
+    virtual void setJsonValues(nlohmann::json);
+
     const std::string &getAreaType() const;
     void setAreaType(const std::string &newAreaType);
 

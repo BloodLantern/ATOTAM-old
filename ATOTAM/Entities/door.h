@@ -9,6 +9,9 @@ public:
     Door(double x, double y, std::string name);
     ~Door();
 
+    nlohmann::json getJsonRepresentation();
+    void setJsonValues(nlohmann::json);
+
     int getEndingRoom() const;
     void setEndingRoom(int newEndingRoom);
 

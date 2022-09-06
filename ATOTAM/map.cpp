@@ -167,6 +167,8 @@ std::vector<Entity *> Map::loadRooms()
     return result;
 }
 
+// Checks if this Entity is present in this room.
+// If true, returns its JSON representation; otherwise, throws an InvalidArgument exception.
 nlohmann::json Map::find(Entity *entity)
 {
     nlohmann::json j = json["rooms"][std::to_string(entity->getRoomId())];
@@ -185,21 +187,24 @@ nlohmann::json Map::find(Entity *entity)
         throw std::invalid_argument("Map::find(Entity*) received an Entity name which isn't present in this room.");
 
     // Eventually compare the entity and the json values
-    for (const nlohmann::json &ent : j)
-        if (entity->getX()
-                - json["rooms"][std::to_string(entity->getRoomId())]["position"][0].get<int>()
-                == ent["x"]
-                && entity->getY()
-                - json["rooms"][std::to_string(entity->getRoomId())]["position"][1].get<int>()
-                == ent["y"]) {
-            j = ent;
-            return j;
+    for (const nlohmann::json &ent : j) {
+        nlohmann::json entJson = entity->getJsonRepresentation();
+        // X pos relative to the room
+        entJson["x"] = entJson["x"].get<double>()
+                        - json["rooms"][std::to_string(entity->getRoomId())]["position"][0].get<int>();
+        // Y pos relative to the room
+        entJson["y"] = entJson["y"].get<double>()
+                        - json["rooms"][std::to_string(entity->getRoomId())]["position"][1].get<int>();
+        if (entJson == ent) {
+            return entJson;
         }
+    }
 
     // Nothing was found
-    std::cerr << j.dump(4) << std::endl;
-    std::cerr << "Entity x (relative):" << entity->getX() - json["rooms"][std::to_string(entity->getRoomId())]["position"][0].get<int>() << std::endl;
-    std::cerr << "Entity y (relative):" << entity->getY() - json["rooms"][std::to_string(entity->getRoomId())]["position"][1].get<int>() << std::endl;
+    std::cerr << "Map entity type JSON node:" << std::endl;
+    std::cerr << j.dump(4) << std::endl << std::endl;
+    std::cerr << "Entity JSON node (the one to find):" << std::endl;
+    std::cerr << entity->getJsonRepresentation().dump(4) << std::endl << std::endl;
     throw std::invalid_argument("Map::find(Entity*) received an Entity that couldn't be found.");
 }
 

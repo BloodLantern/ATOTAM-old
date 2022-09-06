@@ -262,12 +262,12 @@ void EditorPreview::paintEvent(QPaintEvent *)
 
         if (dragging && !edits.empty()) {
             if (MoveEdit* move = dynamic_cast<MoveEdit*>(*(edits.end() - 1))) {
-                x += move->getDelta()->x();
-                y += move->getDelta()->y();
+                x += move->getDelta().x();
+                y += move->getDelta().y();
             } else if (ResizeEdit* resize = dynamic_cast<ResizeEdit*>(*(edits.end() - 1)))
                 if (MoveEdit* move = resize->getMove()) {
-                    x += move->getDelta()->x();
-                    y += move->getDelta()->y();
+                    x += move->getDelta().x();
+                    y += move->getDelta().y();
                 }
         }
 
@@ -279,8 +279,10 @@ void EditorPreview::paintEvent(QPaintEvent *)
                         QColor(0, 0, 255, editorJson["values"]["selectedEntitiesOverlayOpacity"]));
 
         if (dragging && !edits.empty())
-            if (dynamic_cast<ResizeEdit*>(*(edits.end() - 1)))
-                selected->setCurrentAnimation(selected->updateAnimation());
+            if (ResizeEdit* resize = dynamic_cast<ResizeEdit*>(*(edits.end() - 1)))
+                if (resize->getDeltaChangedLastFrame()) {
+                    resize->setDeltaChangedLastFrame(false);
+                }
     }
 
     painter.end();
@@ -294,15 +296,16 @@ void EditorPreview::drawEntity(Entity* ent, QPainter* painter)
     if (ent == selected)
         if (dragging && !edits.empty()) {
             if (MoveEdit* move = dynamic_cast<MoveEdit*>(*(edits.end() - 1))) {
-                x += move->getDelta()->x();
-                y += move->getDelta()->y();
+                x += move->getDelta().x();
+                y += move->getDelta().y();
             } else if (ResizeEdit* resize = dynamic_cast<ResizeEdit*>(*(edits.end() - 1))) {
-                selected->setCurrentAnimation(selected->updateAnimation(selected->getState(),
-                                          std::pair<int, int>(selected->getHorizontalRepeat() + resize->getDelta()->first,
-                                                              selected->getVerticalRepeat() + resize->getDelta()->second)));
+                if (resize->getDeltaChangedLastFrame())
+                    selected->setCurrentAnimation(selected->updateAnimation(selected->getState(),
+                                              std::pair<int, int>(selected->getHorizontalRepeat() + resize->getDelta().first,
+                                                                  selected->getVerticalRepeat() + resize->getDelta().second)));
                 if (MoveEdit* move = resize->getMove()) {
-                    x += move->getDelta()->x();
-                    y += move->getDelta()->y();
+                    x += move->getDelta().x();
+                    y += move->getDelta().y();
                 }
             }
         }
@@ -508,14 +511,14 @@ void EditorPreview::mouseReleaseEvent(QMouseEvent *event)
             if (!edits.empty()) {
                 if (MoveEdit* move = dynamic_cast<MoveEdit*>(*(edits.end() - 1))) {
                     setCursor(Qt::CursorShape::OpenHandCursor);
-                    if (!move->getDelta()->isNull())
+                    if (!move->getDelta().isNull())
                         move->make();
                     else {
                         delete move;
                         edits.pop_back();
                     }
                 } else if (ResizeEdit* resize = dynamic_cast<ResizeEdit*>(*(edits.end() - 1))) {
-                    if (resize->getDelta()->first != 0 || resize->getDelta()->second != 0)
+                    if (resize->getDelta().first != 0 || resize->getDelta().second != 0)
                         resize->make();
                     else {
                         delete resize;
@@ -536,67 +539,72 @@ void EditorPreview::mouseMoveEvent(QMouseEvent *event)
             // If the Shift key is held
             getInputs();
             if (inputList["disableMovingSteps"]) {
-                QPoint* delta = move->getDelta();
+                QPoint delta = move->getDelta();
                 // Move object without steps
-                delta->setX(-(clickStart.x() - pos.x()) / zoomFactor);
-                delta->setY(-(clickStart.y() - pos.y()) / zoomFactor);
+                delta.setX(-(clickStart.x() - pos.x()) / zoomFactor);
+                delta.setY(-(clickStart.y() - pos.y()) / zoomFactor);
+                move->setDelta(delta);
                 event->accept();
                 update();
             } else {
-                QPoint* delta = move->getDelta();
+                QPoint delta = move->getDelta();
                 // Move object with steps
-                delta->setX(-(((int)(std::round(clickStart.x() - pos.x()) / zoomFactor)) / editorJson["values"]["selectedEntityMoveStep"].get<int>())
+                delta.setX(-(((int)(std::round(clickStart.x() - pos.x()) / zoomFactor)) / editorJson["values"]["selectedEntityMoveStep"].get<int>())
                         * editorJson["values"]["selectedEntityMoveStep"].get<int>());
-                delta->setY(-(((int)(std::round(clickStart.y() - pos.y()) / zoomFactor)) / editorJson["values"]["selectedEntityMoveStep"].get<int>())
+                delta.setY(-(((int)(std::round(clickStart.y() - pos.y()) / zoomFactor)) / editorJson["values"]["selectedEntityMoveStep"].get<int>())
                         * editorJson["values"]["selectedEntityMoveStep"].get<int>());
+                move->setDelta(delta);
                 event->accept();
                 update();
             }
         } else if (ResizeEdit* resize = dynamic_cast<ResizeEdit*>(*(edits.end() - 1))) {
             QPoint pos = event->pos();
-            std::pair<int, int>* delta = resize->getDelta();
+            std::pair<int, int> delta = resize->getDelta();
             ResizeEdit::Direction direction = resize->getDirection();
             if (direction == ResizeEdit::Down
                     || direction == ResizeEdit::Right
                     || direction == ResizeEdit::DownRight) {
                 if (direction != ResizeEdit::Down)
-                    delta->first = std::max(((pos.x() - clickStart.x()) / zoomFactor)
-                                            / Entity::values["names"][selected->getName()]["width"].get<int>(),
+                    delta.first = std::max(std::round(((pos.x() - clickStart.x()) / zoomFactor)
+                                            / Entity::values["names"][selected->getName()]["width"].get<int>() + 0.25),
                             1.0 - selected->getHorizontalRepeat());
                 if (direction != ResizeEdit::Right)
-                    delta->second = std::max(((pos.y() - clickStart.y()) / zoomFactor)
-                                             / Entity::values["names"][selected->getName()]["height"].get<int>(),
+                    delta.second = std::max(std::round(((pos.y() - clickStart.y()) / zoomFactor)
+                                             / Entity::values["names"][selected->getName()]["height"].get<int>() + 0.25),
                             1.0 - selected->getVerticalRepeat());
             } else {
                 MoveEdit* move = resize->getMove();
                 if (!move)
                     move = new MoveEdit(&currentMap, selected);
                 if (direction != ResizeEdit::Up)
-                    delta->first = std::max(-(((pos.x() - clickStart.x()) / zoomFactor)
-                                              / Entity::values["names"][selected->getName()]["width"].get<int>()),
+                    delta.first = std::max(-std::round(((pos.x() - clickStart.x()) / zoomFactor)
+                                              / Entity::values["names"][selected->getName()]["width"].get<int>() + 0.25),
                             1.0 - selected->getHorizontalRepeat());
                 if (direction != ResizeEdit::Left)
-                    delta->second = std::max(-(((pos.y() - clickStart.y()) / zoomFactor)
-                                               / Entity::values["names"][selected->getName()]["height"].get<int>()),
+                    delta.second = std::max(-std::round(((pos.y() - clickStart.y()) / zoomFactor)
+                                               / Entity::values["names"][selected->getName()]["height"].get<int>() + 0.25),
                             1.0 - selected->getVerticalRepeat());
                 if (direction == ResizeEdit::UpRight)
-                    delta->first = std::max(((pos.x() - clickStart.x()) / zoomFactor)
-                                              / Entity::values["names"][selected->getName()]["width"].get<int>(),
+                    delta.first = std::max(std::round(((pos.x() - clickStart.x()) / zoomFactor)
+                                              / Entity::values["names"][selected->getName()]["width"].get<int>() + 0.25),
                             1.0 - selected->getHorizontalRepeat());
                 if (direction == ResizeEdit::DownLeft)
-                    delta->second = std::max(((pos.y() - clickStart.y()) / zoomFactor)
-                                               / Entity::values["names"][selected->getName()]["height"].get<int>(),
+                    delta.second = std::max(std::round(((pos.y() - clickStart.y()) / zoomFactor)
+                                               / Entity::values["names"][selected->getName()]["height"].get<int>() + 0.25),
                             1.0 - selected->getVerticalRepeat());
 
                 if (direction != ResizeEdit::UpRight
                         && direction != ResizeEdit::DownLeft)
-                    move->setDelta(new QPoint(-delta->first * Entity::values["names"][selected->getName()]["width"].get<int>(),
-                            -delta->second * Entity::values["names"][selected->getName()]["height"].get<int>()));
+                    move->setDelta(QPoint(-delta.first * Entity::values["names"][selected->getName()]["width"].get<int>(),
+                            -delta.second * Entity::values["names"][selected->getName()]["height"].get<int>()));
                 else if (direction == ResizeEdit::UpRight)
-                    move->setDelta(new QPoint(0, -delta->second * Entity::values["names"][selected->getName()]["height"].get<int>()));
+                    move->setDelta(QPoint(0, -delta.second * Entity::values["names"][selected->getName()]["height"].get<int>()));
                 else if (direction == ResizeEdit::DownLeft)
-                    move->setDelta(new QPoint(-delta->first * Entity::values["names"][selected->getName()]["width"].get<int>(), 0));
+                    move->setDelta(QPoint(-delta.first * Entity::values["names"][selected->getName()]["width"].get<int>(), 0));
             }
+            // For calls inside setter
+            resize->setDelta(delta);
+
             event->accept();
             update();
         }
@@ -664,25 +672,25 @@ void EditorPreview::keyPressEvent(QKeyEvent *event)
     } else if (inputList["delete"])
         deleteObject();
     else if (inputList["left"] && selected) {
-        MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(-1, 0));
+        MoveEdit* move = new MoveEdit(&currentMap, selected, QPoint(-1, 0));
         move->make();
         edits.push_back(move);
         update();
     }
     else if (inputList["right"] && selected) {
-        MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(1, 0));
+        MoveEdit* move = new MoveEdit(&currentMap, selected, QPoint(1, 0));
         move->make();
         edits.push_back(move);
         update();
     }
     else if (inputList["up"] && selected) {
-        MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(0, -1));
+        MoveEdit* move = new MoveEdit(&currentMap, selected, QPoint(0, -1));
         move->make();
         edits.push_back(move);
         update();
     }
     else if (inputList["down"] && selected) {
-        MoveEdit* move = new MoveEdit(&currentMap, selected, new QPoint(0, 1));
+        MoveEdit* move = new MoveEdit(&currentMap, selected, QPoint(0, 1));
         move->make();
         edits.push_back(move);
         update();

@@ -1,18 +1,18 @@
 #include "resizeedit.h"
 
-ResizeEdit::ResizeEdit(Map *map, Entity *entity, Direction direction, std::pair<int, int>* delta)
+ResizeEdit::ResizeEdit(Map *map, Entity *entity, Direction direction, std::pair<int, int> delta)
     : MultiTypeEdit(map, entity)
     , delta(delta)
-    , move(new MoveEdit(map, entity, new QPoint(delta->first, delta->second)))
+    , move(new MoveEdit(map, entity, QPoint(delta.first, delta.second)))
     , direction(direction)
 {
 
 }
 
-ResizeEdit::ResizeEdit(Map *map, int roomId, Direction direction, std::pair<int, int>* delta)
+ResizeEdit::ResizeEdit(Map *map, int roomId, Direction direction, std::pair<int, int> delta)
     : MultiTypeEdit(map, roomId)
     , delta(delta)
-    , move(new MoveEdit(map, roomId, new QPoint(delta->first, delta->second)))
+    , move(new MoveEdit(map, roomId, QPoint(delta.first, delta.second)))
     , direction(direction)
 {
 
@@ -20,10 +20,6 @@ ResizeEdit::ResizeEdit(Map *map, int roomId, Direction direction, std::pair<int,
 
 ResizeEdit::~ResizeEdit()
 {
-    if (delta) {
-        delete delta;
-        delta = nullptr;
-    }
     if (move) {
         delete move;
         move = nullptr;
@@ -43,7 +39,10 @@ void ResizeEdit::unmake()
         // Get map Json pointer
         nlohmann::json* mapJson = map->getJson();
         // json_pointer to the entity list
-        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType() + "/" + entity->getFullName());
+        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId())
+                                         + "/content/" + entity->getEntType() + "/" + entity->getFullName());
+        // json_pointer to the room position
+        nlohmann::json::json_pointer roomPtr("/rooms/" + std::to_string(entity->getRoomId()) + "/position");
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
         // Iterate over the entities with the same entType and name
@@ -51,14 +50,25 @@ void ResizeEdit::unmake()
             // Find the correct one
             if (ent.value() == entityJson) {
                 // Change the values
-                mapJson->at(ptr)[std::stoi(ent.key())]["horizontalRepeat"] = entity->getHorizontalRepeat() - delta->first;
-                mapJson->at(ptr)[std::stoi(ent.key())]["verticalRepeat"] = entity->getVerticalRepeat() - delta->second;
+                // Reset box size
                 entity->getBox()->setWidth(entity->getBox()->getWidth() / entity->getHorizontalRepeat());
                 entity->getBox()->setHeight(entity->getBox()->getHeight() / entity->getVerticalRepeat());
-                entity->setHorizontalRepeat(entity->getHorizontalRepeat() - delta->first);
-                entity->setVerticalRepeat(entity->getVerticalRepeat() - delta->second);
+                // Change repeat argument
+                entity->setHorizontalRepeat(entity->getHorizontalRepeat() - delta.first);
+                entity->setVerticalRepeat(entity->getVerticalRepeat() - delta.second);
+                // Resize box
                 entity->getBox()->setWidth(entity->getBox()->getWidth() * entity->getHorizontalRepeat());
                 entity->getBox()->setHeight(entity->getBox()->getHeight() * entity->getVerticalRepeat());
+
+                // Update entityJson
+                entityJson = entity->getJsonRepresentation();
+
+                // Update map
+                mapJson->at(ptr)[std::stoi(ent.key())] = entityJson;
+                mapJson->at(ptr)[std::stoi(ent.key())]["x"] = entityJson["x"].get<double>() - mapJson->at(roomPtr)[0].get<int>();
+                mapJson->at(ptr)[std::stoi(ent.key())]["y"] = entityJson["y"].get<double>() - mapJson->at(roomPtr)[1].get<int>();
+
+                // Eventually update the animation (and therefore, the texture)
                 entity->setCurrentAnimation(entity->updateAnimation());
                 break;
             }
@@ -80,7 +90,10 @@ void ResizeEdit::make()
         // Get map Json pointer
         nlohmann::json* mapJson = map->getJson();
         // json_pointer to the entity list
-        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType() + "/" + entity->getFullName());
+        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId())
+                                         + "/content/" + entity->getEntType() + "/" + entity->getFullName());
+        // json_pointer to the room position
+        nlohmann::json::json_pointer roomPtr("/rooms/" + std::to_string(entity->getRoomId()) + "/position");
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
         // Iterate over the entities with the same entType and name
@@ -88,20 +101,41 @@ void ResizeEdit::make()
             // Find the correct one
             if (ent.value() == entityJson) {
                 // Change the values
-                mapJson->at(ptr)[std::stoi(ent.key())]["horizontalRepeat"] = entity->getHorizontalRepeat() + delta->first;
-                mapJson->at(ptr)[std::stoi(ent.key())]["verticalRepeat"] = entity->getVerticalRepeat() + delta->second;
+                // Reset box size
                 entity->getBox()->setWidth(entity->getBox()->getWidth() / entity->getHorizontalRepeat());
                 entity->getBox()->setHeight(entity->getBox()->getHeight() / entity->getVerticalRepeat());
-                entity->setHorizontalRepeat(entity->getHorizontalRepeat() + delta->first);
-                entity->setVerticalRepeat(entity->getVerticalRepeat() + delta->second);
+                // Change repeat argument
+                entity->setHorizontalRepeat(entity->getHorizontalRepeat() + delta.first);
+                entity->setVerticalRepeat(entity->getVerticalRepeat() + delta.second);
+                // Resize box
                 entity->getBox()->setWidth(entity->getBox()->getWidth() * entity->getHorizontalRepeat());
                 entity->getBox()->setHeight(entity->getBox()->getHeight() * entity->getVerticalRepeat());
+
+                // Update entityJson
+                entityJson = entity->getJsonRepresentation();
+
+                // Update map
+                mapJson->at(ptr)[std::stoi(ent.key())] = entityJson;
+                mapJson->at(ptr)[std::stoi(ent.key())]["x"] = entityJson["x"].get<double>() - mapJson->at(roomPtr)[0].get<int>();
+                mapJson->at(ptr)[std::stoi(ent.key())]["y"] = entityJson["y"].get<double>() - mapJson->at(roomPtr)[1].get<int>();
+
+                // Eventually update the animation (and therefore, the texture)
                 entity->setCurrentAnimation(entity->updateAnimation());
                 break;
             }
     }
     move->make();
     made = true;
+}
+
+bool ResizeEdit::getDeltaChangedLastFrame() const
+{
+    return deltaChangedLastFrame;
+}
+
+void ResizeEdit::setDeltaChangedLastFrame(bool newDeltaChangedLastFrame)
+{
+    deltaChangedLastFrame = newDeltaChangedLastFrame;
 }
 
 ResizeEdit::Direction ResizeEdit::getDirection() const
@@ -114,13 +148,15 @@ void ResizeEdit::setDirection(ResizeEdit::Direction newDirection)
     direction = newDirection;
 }
 
-std::pair<int, int> *ResizeEdit::getDelta() const
+std::pair<int, int> ResizeEdit::getDelta() const
 {
     return delta;
 }
 
-void ResizeEdit::setDelta(std::pair<int, int> *newDelta)
+void ResizeEdit::setDelta(std::pair<int, int> newDelta)
 {
+    if (delta != newDelta)
+        deltaChangedLastFrame = true;
     delta = newDelta;
 }
 

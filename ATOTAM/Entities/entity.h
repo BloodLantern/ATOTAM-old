@@ -27,7 +27,7 @@ public:
     Entity(double x, double y, std::string facing, std::string name);
     Entity(const Entity&);
     Entity();
-    ~Entity();
+    virtual ~Entity();
 
     void updateTexture();
     std::vector<QImage> updateAnimation(std::string state, std::pair<int, int> repeat);
@@ -35,6 +35,9 @@ public:
     void updateV(double framerate);
     void applyKnockback(Entity *e, double kBForce);
     void forceKnockback(Entity *e, double kBForce);
+
+    virtual nlohmann::json getJsonRepresentation();
+    virtual void setJsonValues(nlohmann::json);
 
     CollisionBox *getBox();
     void setBox(CollisionBox *newBox);

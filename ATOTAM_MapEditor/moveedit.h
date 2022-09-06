@@ -6,12 +6,12 @@
 class MoveEdit : public MultiTypeEdit
 {
 public:
-    MoveEdit(Map* map, Entity* entity, QPoint* delta = new QPoint());
-    MoveEdit(Map* map, int roomId, QPoint* delta = new QPoint());
+    MoveEdit(Map* map, Entity* entity, QPoint delta = QPoint());
+    MoveEdit(Map* map, int roomId, QPoint delta = QPoint());
     virtual ~MoveEdit();
 
-    QPoint *getDelta() const;
-    void setDelta(QPoint *newDelta);
+    QPoint getDelta() const;
+    void setDelta(QPoint newDelta);
 
     // Edit interface
     void unmake() override;
@@ -19,7 +19,7 @@ public:
 
 private:
     // General
-    QPoint* delta = nullptr;
+    QPoint delta = QPoint();
 };
 
 #endif // MOVEEDIT_H

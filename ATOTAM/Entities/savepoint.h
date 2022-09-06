@@ -9,6 +9,9 @@ public:
     Savepoint(double x, double y, int spID, std::string mapName);
     ~Savepoint();
 
+    nlohmann::json getJsonRepresentation();
+    void setJsonValues(nlohmann::json);
+
     int getSavepointID() const;
     void setSavepointID(int newSavepointID);
 

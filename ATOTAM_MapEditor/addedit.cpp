@@ -52,10 +52,9 @@ void AddEdit::make()
         // json_pointer to the room position
         nlohmann::json::json_pointer roomPtr("/rooms/" + std::to_string(entity->getRoomId()) + "/position");
         nlohmann::json entJson;
-        entJson["x"] = entity->getX() + mapJson->at(roomPtr)[0].get<int>();
-        entJson["y"] = entity->getY() + mapJson->at(roomPtr)[1].get<int>();
-        entJson["horizontalRepeat"] = entity->getHorizontalRepeat();
-        entJson["verticalRepeat"] = entity->getVerticalRepeat();
+        entJson = entity->getJsonRepresentation();
+        entJson["x"] = entJson["x"].get<double>() - mapJson->at(roomPtr)[0].get<int>();
+        entJson["y"] = entJson["y"].get<double>() - mapJson->at(roomPtr)[1].get<int>();
         // Add it
         mapJson->at(ptr).push_back(entJson);
         entityList->push_back(entity);
