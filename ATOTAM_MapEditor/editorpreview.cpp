@@ -762,18 +762,19 @@ void EditorPreview::dragMoveEvent(QDragMoveEvent *event)
             if (dynamic_cast<AddEdit*>(edits[edits.size() - 1])) {
                 QPointF pos = event->position();
                 setCursor(Qt::CursorShape::ClosedHandCursor);
-                // If the Shift key is held
                 getInputs();
                 if (inputList["disableMovingSteps"]) {
+                    // If the Shift key is held
                     // Move object without steps
-                    selected->setX((pos.x() - clickStart.x()) / zoomFactor + clickStart.x());
-                    selected->setY((pos.y() - clickStart.y()) / zoomFactor + clickStart.y());
+                    selected->setX((pos.x() - clickStart.x()) / zoomFactor + clickStart.x() + camera.x());
+                    selected->setY((pos.y() - clickStart.y()) / zoomFactor + clickStart.y() + camera.y());
                 } else {
+                    // Otherwise
                     // Move object with steps
-                    selected->setX(((int)(std::round(pos.x() - clickStart.x()) / zoomFactor + clickStart.x()))
+                    selected->setX(((int)(std::round(pos.x() - clickStart.x()) / zoomFactor + clickStart.x() + camera.x()))
                                    / editorJson["values"]["selectedEntityMoveStep"].get<int>()
                                    * editorJson["values"]["selectedEntityMoveStep"].get<int>());
-                    selected->setY(((int)(std::round(pos.y() - clickStart.y()) / zoomFactor + clickStart.y()))
+                    selected->setY(((int)(std::round(pos.y() - clickStart.y()) / zoomFactor + clickStart.y() + camera.y()))
                                    / editorJson["values"]["selectedEntityMoveStep"].get<int>()
                                    * editorJson["values"]["selectedEntityMoveStep"].get<int>());
                 }
