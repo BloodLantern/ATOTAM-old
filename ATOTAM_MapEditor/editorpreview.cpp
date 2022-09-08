@@ -786,9 +786,9 @@ void EditorPreview::dragMoveEvent(QDragMoveEvent *event)
 void EditorPreview::dragLeaveEvent(QDragLeaveEvent *)
 {
     if (AddEdit* add = dynamic_cast<AddEdit*>(edits[edits.size() - 1])) {
-        delete add->getEntity();
         delete add;
         edits.pop_back();
+        setCursor(Qt::ArrowCursor);
         update();
     }
 }

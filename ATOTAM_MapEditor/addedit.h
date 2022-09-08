@@ -17,7 +17,7 @@ public:
 
 private:
     std::vector<Entity*>* entityList;
-    Entity** selectedEntity;
+    Entity** selectedEntity = nullptr;
 };
 
 #endif // ADDEDIT_H

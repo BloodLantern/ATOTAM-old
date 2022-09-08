@@ -27,6 +27,8 @@ AddEdit::~AddEdit()
     if (!made && entity && !roomEdit) {
         delete entity;
         entity = nullptr;
+        if (selectedEntity != nullptr)
+            *selectedEntity = nullptr;
     }
 }
 
