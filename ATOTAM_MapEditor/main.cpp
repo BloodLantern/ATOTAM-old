@@ -1,5 +1,6 @@
 #include "editorpreview.h"
 #include "editorwindow.h"
+#include "entitylist.h"
 
 #include <QApplication>
 #include <QSplitter>
@@ -59,19 +60,24 @@ QStandardItemModel* setupObjectList() {
         type->setEditable(false);
 
         model->appendRow(type);
-        for (Entity* e : entities) {
-            if (e->getEntType() != t)
+        for (std::vector<Entity*>::iterator e = entities.begin(); e != entities.end(); e++) {
+            if (*e == nullptr)
+                continue;
+            if ((*e)->getEntType() != t)
                 continue;
             QStandardItem* item = new QStandardItem;
 
             item->setDragEnabled(true);
-            item->setDropEnabled(true);
-            item->setText(QString::fromStdString(e->getName()));
+            item->setDropEnabled(false);
+            item->setText(QString::fromStdString((*e)->getName()));
             item->setCheckable(false);
+            type->setSelectable(false);
             item->setEditable(false);
-            item->setIcon(QIcon(QPixmap::fromImage(*e->getTexture(), Qt::ColorOnly)));
+            item->setIcon(QIcon(QPixmap::fromImage(*(*e)->getTexture(), Qt::ColorOnly)));
 
             type->appendRow(item);
+            delete (*e);
+            (*e) = nullptr;
         }
     }
 
@@ -103,14 +109,16 @@ void setupEditorWindow(nlohmann::json editorJson, std::string assetsPath)
     }*/
 
     // Widgets inside the window
-    //QTreeView* objectList = new QTreeView;
-    //objectList->setHeaderHidden(true);
-    //objectList->setFixedSize(200, 1080);
-    //objectList->setModel(setupObjectList());
+    EntityList* objectList = new EntityList;
+    objectList->setDragDropMode(QAbstractItemView::DragOnly);
+    objectList->setDragEnabled(true);
+    objectList->setHeaderHidden(true);
+    objectList->setFixedSize(200, 1080);
+    objectList->setModel(setupObjectList());
 
     // Align widgets
     QSplitter* splitter = new QSplitter;
-    //splitter->addWidget(objectList);
+    splitter->addWidget(objectList);
     splitter->addWidget(preview);
 
     editorWindow->setCentralWidget(splitter);

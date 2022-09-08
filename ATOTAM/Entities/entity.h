@@ -146,9 +146,4 @@ private:
 
 bool operator==(Entity a, Entity b);
 
-// To allow the use of QVariant with Entities
-Q_DECLARE_METATYPE(Entity);
-QDataStream &operator<<(QDataStream &out, const Entity &myObj);
-QDataStream &operator>>(QDataStream &in, Entity &myObj);
-
 #endif // ENTITY_H

@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     addedit.cpp \
+    entitylist.cpp \
     main.cpp \
     edit.cpp \
     editorpreview.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     edit.h \
     editorpreview.h \
     editorwindow.h \
+    entitylist.h \
     moveedit.h \
     precompiledheaders.h \
     removeedit.h \

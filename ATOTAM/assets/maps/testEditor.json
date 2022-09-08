@@ -16,8 +16,7 @@
                 "Monster": {
                     "Test": [
                         {
-                            "facing": "Left",
-                            "state": "Standing",
+                            "facing": "Right",
                             "x": 1000,
                             "y": 950
                         }

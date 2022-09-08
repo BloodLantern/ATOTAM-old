@@ -58,6 +58,17 @@ void RemoveEdit::make()
                     }
                 break;
             }
+
+        // If the entity name array is empty, remove it
+        if (mapJson->at(ptr).empty()) {
+            ptr = nlohmann::json::json_pointer("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType());
+            mapJson->at(ptr).erase(entity->getFullName());
+        }
+        // If the entity name array is empty, remove it
+        if (mapJson->at(ptr).empty()) {
+            ptr = nlohmann::json::json_pointer("/rooms/" + std::to_string(entity->getRoomId()) + "/content");
+            mapJson->at(ptr).erase(entity->getEntType());
+        }
     }
     made = true;
 }

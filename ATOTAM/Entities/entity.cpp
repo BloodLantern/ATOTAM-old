@@ -707,22 +707,3 @@ void Entity::setLayer(float newLayer)
 bool operator==(Entity a, Entity b) {
     return a.getEntityID() == b.getEntityID();
 }
-
-QDataStream &operator<<(QDataStream &out, const Entity &ent) {
-    out << QString::fromStdString(ent.getName()) << QString::fromStdString(ent.getEntType()) << *ent.getTexture() << QString::fromStdString(ent.getState());
-    return out;
-}
-
-QDataStream &operator>>(QDataStream &in, Entity &ent) {
-    QString s;
-    in >> s;
-    ent.setName(s.toStdString());
-    in >> s;
-    ent.setEntType(s.toStdString());
-    QImage i;
-    in >> i;
-    ent.setTexture(&i);
-    in >> s;
-    ent.setState(s.toStdString());
-    return in;
-}

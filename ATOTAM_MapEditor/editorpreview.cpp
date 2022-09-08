@@ -23,6 +23,7 @@ EditorPreview::EditorPreview(Map* map, QImage* errorTexture, QImage* emptyTextur
 {
     setMouseTracking(true);
     setFocusPolicy(Qt::ClickFocus);
+    setAcceptDrops(true);
     camera.setX(editorJson["lastLaunch"]["map"]["camera"][0]);
     camera.setY(editorJson["lastLaunch"]["map"]["camera"][1]);
 }
@@ -538,25 +539,23 @@ void EditorPreview::mouseMoveEvent(QMouseEvent *event)
             setCursor(Qt::CursorShape::ClosedHandCursor);
             // If the Shift key is held
             getInputs();
+            QPoint delta = move->getDelta();
             if (inputList["disableMovingSteps"]) {
-                QPoint delta = move->getDelta();
                 // Move object without steps
-                delta.setX(-(clickStart.x() - pos.x()) / zoomFactor);
-                delta.setY(-(clickStart.y() - pos.y()) / zoomFactor);
-                move->setDelta(delta);
-                event->accept();
-                update();
+                delta.setX((pos.x() - clickStart.x()) / zoomFactor);
+                delta.setY((pos.y() - clickStart.y()) / zoomFactor);
             } else {
-                QPoint delta = move->getDelta();
                 // Move object with steps
-                delta.setX(-(((int)(std::round(clickStart.x() - pos.x()) / zoomFactor)) / editorJson["values"]["selectedEntityMoveStep"].get<int>())
-                        * editorJson["values"]["selectedEntityMoveStep"].get<int>());
-                delta.setY(-(((int)(std::round(clickStart.y() - pos.y()) / zoomFactor)) / editorJson["values"]["selectedEntityMoveStep"].get<int>())
-                        * editorJson["values"]["selectedEntityMoveStep"].get<int>());
-                move->setDelta(delta);
-                event->accept();
-                update();
+                delta.setX(((int)(std::round(pos.x() - clickStart.x()) / zoomFactor))
+                           / editorJson["values"]["selectedEntityMoveStep"].get<int>()
+                           * editorJson["values"]["selectedEntityMoveStep"].get<int>());
+                delta.setY(((int)(std::round(pos.y() - clickStart.y()) / zoomFactor))
+                           / editorJson["values"]["selectedEntityMoveStep"].get<int>()
+                           * editorJson["values"]["selectedEntityMoveStep"].get<int>());
             }
+            move->setDelta(delta);
+            event->accept();
+            update();
         } else if (ResizeEdit* resize = dynamic_cast<ResizeEdit*>(*(edits.end() - 1))) {
             QPoint pos = event->pos();
             std::pair<int, int> delta = resize->getDelta();
@@ -615,7 +614,8 @@ void EditorPreview::mouseMoveEvent(QMouseEvent *event)
         }
         QPoint pos = event->pos();
         // If the mouse was moved far enough
-        if (std::sqrt(std::pow(pos.x() - clickStart.x(), 2) + std::pow(pos.y() - clickStart.y(), 2)) > editorJson["values"]["cameraMinimumMove"])
+        if (std::sqrt(std::pow(pos.x() - clickStart.x(), 2) + std::pow(pos.y() - clickStart.y(), 2))
+                > editorJson["values"]["cameraMinimumMove"])
             farEnough = true;
 
         if (farEnough) {
@@ -701,14 +701,105 @@ void EditorPreview::keyPressEvent(QKeyEvent *event)
 
 void EditorPreview::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat(QString::fromStdString("Entity")))
+    if (event->mimeData()->hasText()) {
+        // Tell Qt to accept the drag and drop action
         event->acceptProposedAction();
+
+        // Split the drag and drop data to obtain the EntityType and the EntityName
+        std::stringstream str(event->mimeData()->text().toStdString());
+        std::string segment;
+        std::vector<std::string> seglist;
+        while(std::getline(str, segment, ':'))
+        {
+           seglist.push_back(segment);
+        }
+
+        // Here 'seglist' contains 2 strings: entType and entName
+        std::string type = seglist[0];
+        std::string name = seglist[1];
+
+        float x = (event->position().x() + camera.x()) / zoomFactor;
+        float y = (event->position().y() + camera.y()) / zoomFactor;
+        clickStart = event->position().toPoint();
+
+        // So now we can instantiate the Entity
+        Entity* entity = nullptr;
+        if (type == "Terrain")
+            entity = new Terrain(x, y, name);
+        else if (type == "NPC")
+            entity = new NPC(x, y, "Right", name);
+        else if (type == "Area") {
+            if (name.substr(name.size() - 5, 4) == "Door")
+                entity = new Door(x, y, name);
+            else
+                entity = new Area(x, y, name);
+        } else if (type == "Monster")
+            entity = new Monster(x, y, "Right", name);
+
+        entity->setRoomId(roomId);
+
+        // Rendering (should be the last function calls)
+        entity->setCurrentAnimation(entity->updateAnimation());
+        entity->setFrame(0);
+        entity->updateTexture();
+
+        clearUnmadeEdits();
+        edits.push_back(new AddEdit(&currentMap, entity, &entities, &selected));
+        update();
+        updateCursor(lastMousePosition);
+
+        update();
+    }
+}
+
+void EditorPreview::dragMoveEvent(QDragMoveEvent *event)
+{
+    if (event->mimeData()->hasText()) {
+        // Tell Qt to accept the drag and drop action
+        event->acceptProposedAction();
+
+        if (selected != nullptr)
+            if (dynamic_cast<AddEdit*>(edits[edits.size() - 1])) {
+                QPointF pos = event->position();
+                setCursor(Qt::CursorShape::ClosedHandCursor);
+                // If the Shift key is held
+                getInputs();
+                if (inputList["disableMovingSteps"]) {
+                    // Move object without steps
+                    selected->setX((pos.x() - clickStart.x()) / zoomFactor + clickStart.x());
+                    selected->setY((pos.y() - clickStart.y()) / zoomFactor + clickStart.y());
+                } else {
+                    // Move object with steps
+                    selected->setX(((int)(std::round(pos.x() - clickStart.x()) / zoomFactor + clickStart.x()))
+                                   / editorJson["values"]["selectedEntityMoveStep"].get<int>()
+                                   * editorJson["values"]["selectedEntityMoveStep"].get<int>());
+                    selected->setY(((int)(std::round(pos.y() - clickStart.y()) / zoomFactor + clickStart.y()))
+                                   / editorJson["values"]["selectedEntityMoveStep"].get<int>()
+                                   * editorJson["values"]["selectedEntityMoveStep"].get<int>());
+                }
+                update();
+            }
+    }
+}
+
+void EditorPreview::dragLeaveEvent(QDragLeaveEvent *)
+{
+    if (AddEdit* add = dynamic_cast<AddEdit*>(edits[edits.size() - 1])) {
+        delete add->getEntity();
+        delete add;
+        edits.pop_back();
+        update();
+    }
 }
 
 void EditorPreview::dropEvent(QDropEvent *event)
 {
-    if (const QMimeData* data = event->mimeData()) {
-        // Do smth
+    event->acceptProposedAction();
+    if (AddEdit* add = dynamic_cast<AddEdit*>(edits[edits.size() - 1])) {
+        add->make();
+        setFocus(Qt::MouseFocusReason);
+        updateCursor(event->position().toPoint());
+        update();
     }
 }
 
