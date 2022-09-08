@@ -6,6 +6,7 @@
 #include <QSplitter>
 #include <QStandardItemModel>
 #include <QTreeView>
+#include <QVBoxLayout>
 #include <fstream>
 #include <set>
 
@@ -116,10 +117,17 @@ void setupEditorWindow(nlohmann::json editorJson, std::string assetsPath)
     objectList->setFixedSize(200, 1080);
     objectList->setModel(setupObjectList());
 
+    // Properties list
+    QWidget* propertiesWidget = new QWidget;
+    propertiesWidget->setFixedSize(200, 1080);
+    QVBoxLayout l;
+    propertiesWidget->setLayout(&l);
+
     // Align widgets
     QSplitter* splitter = new QSplitter;
     splitter->addWidget(objectList);
     splitter->addWidget(preview);
+    splitter->addWidget(propertiesWidget);
 
     editorWindow->setCentralWidget(splitter);
     if (editorJson["lastLaunch"]["window"]["maximized"])
