@@ -188,7 +188,7 @@ nlohmann::json Map::find(Entity *entity)
 
     // Eventually compare the entity and the json values
     for (const nlohmann::json &ent : j) {
-        nlohmann::json entJson = entity->getJsonRepresentation();
+        nlohmann::json entJson = entity->getJsonRepresentation(false);
         // X pos relative to the room
         entJson["x"] = entJson["x"].get<double>()
                         - json["rooms"][std::to_string(entity->getRoomId())]["position"][0].get<int>();
@@ -204,7 +204,7 @@ nlohmann::json Map::find(Entity *entity)
     std::cerr << "Map entity type JSON node:" << std::endl;
     std::cerr << j.dump(4) << std::endl << std::endl;
     std::cerr << "Entity JSON node (the one to find):" << std::endl;
-    std::cerr << entity->getJsonRepresentation().dump(4) << std::endl << std::endl;
+    std::cerr << entity->getJsonRepresentation(false).dump(4) << std::endl << std::endl;
     throw std::invalid_argument("Map::find(Entity*) received an Entity that couldn't be found.");
 }
 

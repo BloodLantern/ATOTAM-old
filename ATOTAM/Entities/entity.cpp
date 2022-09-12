@@ -221,26 +221,40 @@ void Entity::forceKnockback(Entity *e, double kBForce)
     vY = (((y + box->getY() + (box->getHeight() / 2)) < (e->y + e->box->getY() + (e->box->getHeight() / 2))) ? -1 : 1) * 1000 * kBForce / mass;
 }
 
-nlohmann::json Entity::getJsonRepresentation()
+nlohmann::json Entity::getJsonRepresentation(bool defaultValues)
 {
     nlohmann::json result;
     result["x"] = x; // !!! ABSOLUTE POSITION, NOT RELATIVE TO THE ROOM AS IN THE JSON
     result["y"] = y; // !!! ABSOLUTE POSITION, NOT RELATIVE TO THE ROOM AS IN THE JSON
-    if (state != "None")
+    if (!defaultValues) {
+        if (state != "None")
+            result["state"] = state;
+    } else
         result["state"] = state;
-    if (facing != "None")
+    if (!defaultValues) {
+        if (facing != "None")
+            result["facing"] = facing;
+    } else
         result["facing"] = facing;
-    if (horizontalRepeat != 1)
+    if (!defaultValues) {
+        if (horizontalRepeat != 1)
+            result["horizontalRepeat"] = horizontalRepeat;
+    } else
         result["horizontalRepeat"] = horizontalRepeat;
-    if (verticalRepeat != 1)
+    if (!defaultValues) {
+        if (verticalRepeat != 1)
+            result["verticalRepeat"] = verticalRepeat;
+    } else
         result["verticalRepeat"] = verticalRepeat;
     return result;
 }
 
 void Entity::setJsonValues(nlohmann::json json)
 {
-    x = json["x"];
-    y = json["y"];
+    if (!json["x"].is_null())
+        x = json["x"];
+    if (!json["y"].is_null())
+        y = json["y"];
     if (!json["state"].is_null())
         state = json["state"];
     if (!json["facing"].is_null())

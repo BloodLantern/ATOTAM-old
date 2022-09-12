@@ -5,12 +5,16 @@
 #include "qpainter.h"
 #include "removeedit.h"
 #include "addedit.h"
+#include "propertiesedit.h"
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QCursor>
 #include <iostream>
 #include <windows.h>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QLabel>
 
 EditorPreview::EditorPreview(Map* map, QImage* errorTexture, QImage* emptyTexture, int renderingMultiplier, nlohmann::json editorJson, double physicsFrameRate)
     : editorJson(editorJson)
@@ -65,6 +69,26 @@ void EditorPreview::getInputs()
         for (nlohmann::json::iterator i = editorJson["inputs"].begin(); i != editorJson["inputs"].end(); i++) {
             inputList[i.key()] = 0;
         }
+}
+
+void EditorPreview::updateProperty(std::string key, std::string value)
+{
+    clearUnmadeEdits();
+
+    nlohmann::json property;
+    try {
+        // Try to set the value as an integer
+        property[key] = stoi(value);
+    } catch (...) {
+        // If it fails, set it as a string instead
+        property[key] = value;
+    }
+
+    PropertiesEdit* edit = new PropertiesEdit(&currentMap, selected, property);
+    edit->make();
+    edits.push_back(edit);
+
+    update();
 }
 
 nlohmann::json EditorPreview::loadJson(std::string fileName)
@@ -255,6 +279,7 @@ void EditorPreview::paintEvent(QPaintEvent *)
         drawEntity(*ent, &painter);
 
     if (selected != nullptr) {
+
         // Draw the selected entity on top
         drawEntity(selected, &painter);
 
@@ -287,6 +312,9 @@ void EditorPreview::paintEvent(QPaintEvent *)
     }
 
     painter.end();
+
+    // Update the properties page
+    properties->updateProperties();
 }
 
 void EditorPreview::drawEntity(Entity* ent, QPainter* painter)
@@ -874,6 +902,11 @@ void EditorPreview::setSelected(Entity *newSelected)
     selected = newSelected;
 }
 
+Entity **EditorPreview::getSelectedPointer()
+{
+    return &selected;
+}
+
 std::vector<Edit*> &EditorPreview::getEdits()
 {
     return edits;
@@ -892,4 +925,14 @@ std::map<std::string, bool> &EditorPreview::getInputList()
 void EditorPreview::setInputList(std::map<std::string, bool> &newInputList)
 {
     inputList = newInputList;
+}
+
+PropertiesModel *EditorPreview::getProperties() const
+{
+    return properties;
+}
+
+void EditorPreview::setProperties(PropertiesModel *newProperties)
+{
+    properties = newProperties;
 }

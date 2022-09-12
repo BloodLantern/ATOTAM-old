@@ -1,10 +1,12 @@
 #include "editorpreview.h"
 #include "editorwindow.h"
 #include "entitylist.h"
+#include "propertiesmodel.h"
 
 #include <QApplication>
 #include <QSplitter>
 #include <QStandardItemModel>
+#include <QTableView>
 #include <QTreeView>
 #include <QVBoxLayout>
 #include <fstream>
@@ -118,16 +120,20 @@ void setupEditorWindow(nlohmann::json editorJson, std::string assetsPath)
     objectList->setModel(setupObjectList());
 
     // Properties list
-    QWidget* propertiesWidget = new QWidget;
-    propertiesWidget->setFixedSize(200, 1080);
-    QVBoxLayout l;
-    propertiesWidget->setLayout(&l);
+    QTreeView* propertiesView = new QTreeView;
+    propertiesView->setFixedSize(200, 1080);
+    propertiesView->setSortingEnabled(true);
+    PropertiesModel* properties = new PropertiesModel(preview->getSelectedPointer());
+    QObject::connect(properties, &PropertiesModel::updateProperty,
+                     preview, &EditorPreview::updateProperty);
+    propertiesView->setModel(properties);
+    preview->setProperties(properties);
 
     // Align widgets
     QSplitter* splitter = new QSplitter;
     splitter->addWidget(objectList);
     splitter->addWidget(preview);
-    splitter->addWidget(propertiesWidget);
+    splitter->addWidget(propertiesView);
 
     editorWindow->setCentralWidget(splitter);
     if (editorJson["lastLaunch"]["window"]["maximized"])

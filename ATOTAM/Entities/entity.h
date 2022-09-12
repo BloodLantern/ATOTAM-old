@@ -36,7 +36,7 @@ public:
     void applyKnockback(Entity *e, double kBForce);
     void forceKnockback(Entity *e, double kBForce);
 
-    virtual nlohmann::json getJsonRepresentation();
+    virtual nlohmann::json getJsonRepresentation(bool defaultValues);
     virtual void setJsonValues(nlohmann::json);
 
     CollisionBox *getBox();

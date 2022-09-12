@@ -46,7 +46,7 @@ void MoveEdit::unmake()
                 entity->setY(entity->getY() - delta.y());
 
                 // Update entityJson
-                entityJson = entity->getJsonRepresentation();
+                entityJson = entity->getJsonRepresentation(false);
 
                 // Update map
                 mapJson->at(ptr)[std::stoi(ent.key())] = entityJson;
@@ -86,7 +86,7 @@ void MoveEdit::make()
                 entity->setY(entity->getY() + delta.y());
 
                 // Update entityJson
-                entityJson = entity->getJsonRepresentation();
+                entityJson = entity->getJsonRepresentation(false);
 
                 // Update map
                 mapJson->at(ptr)[std::stoi(ent.key())] = entityJson;

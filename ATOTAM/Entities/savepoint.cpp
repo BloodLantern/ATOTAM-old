@@ -13,36 +13,18 @@ Savepoint::~Savepoint()
 
 }
 
-nlohmann::json Savepoint::getJsonRepresentation()
+nlohmann::json Savepoint::getJsonRepresentation(bool defaultValues)
 {
-    nlohmann::json result;
-    result["x"] = getX();
-    result["y"] = getY();
-    if (getState() != "None")
-        result["state"] = getState();
-    if (getFacing() != "None")
-        result["facing"] = getFacing();
-    if (getHorizontalRepeat() != 1)
-        result["horizontalRepeat"] = getHorizontalRepeat();
-    if (getVerticalRepeat() != 1)
-        result["verticalRepeat"] = getVerticalRepeat();
+    nlohmann::json result = NPC::getJsonRepresentation(defaultValues);
     result["spID"] = savepointID;
     return result;
 }
 
 void Savepoint::setJsonValues(nlohmann::json json)
 {
-    setX(json["x"]);
-    setY(json["y"]);
-    if (!json["state"].is_null())
-        setState(json["state"]);
-    if (!json["facing"].is_null())
-        setFacing(json["facing"]);
-    if (!json["horizontalRepeat"].is_null())
-        setHorizontalRepeat(json["horizontalRepeat"]);
-    if (!json["verticalRepeat"].is_null())
-        setVerticalRepeat(json["verticalRepeat"]);
-    savepointID = json["spID"];
+    Entity::setJsonValues(json);
+    if (!json["spID"].is_null())
+        savepointID = json["spID"];
 }
 
 int Savepoint::getSavepointID() const

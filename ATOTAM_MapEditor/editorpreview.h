@@ -1,5 +1,6 @@
 
 #include "edit.h"
+#include "propertiesmodel.h"
 #ifndef EDITORPREVIEW_H
 #define EDITORPREVIEW_H
 
@@ -45,14 +46,21 @@ public:
     void setZoomFactor(double newZoomFactor);
     Entity *getSelected() const;
     void setSelected(Entity *newSelected);
+    Entity **getSelectedPointer();
     std::vector<Edit*> &getEdits();
     void setEdits(std::vector<Edit*> &newEdits);
     std::map<std::string, bool> &getInputList();
     void setInputList(std::map<std::string, bool> &newInputList);
+    PropertiesModel *getProperties() const;
+    void setProperties(PropertiesModel *newProperties);
+
+public slots:
+    void updateProperty(std::string key, std::string value);
 
 private:
     void drawEntity(Entity* ent, QPainter* painter);
     void removeNullEntities();
+    void updateProperties();
 
     std::vector<Edit*> edits;
     nlohmann::json editorJson = nlohmann::json();
@@ -78,6 +86,7 @@ private:
 
     // Selection
     Entity* selected = nullptr;
+    PropertiesModel* properties = nullptr;
 
     // Keyboard inputs
     std::map<std::string, bool> inputList;

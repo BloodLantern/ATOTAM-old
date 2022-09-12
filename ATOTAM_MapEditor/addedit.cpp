@@ -54,7 +54,7 @@ void AddEdit::make()
         // json_pointer to the room position
         nlohmann::json::json_pointer roomPtr("/rooms/" + std::to_string(entity->getRoomId()) + "/position");
         nlohmann::json entJson;
-        entJson = entity->getJsonRepresentation();
+        entJson = entity->getJsonRepresentation(false);
         entJson["x"] = entJson["x"].get<double>() - mapJson->at(roomPtr)[0].get<int>();
         entJson["y"] = entJson["y"].get<double>() - mapJson->at(roomPtr)[1].get<int>();
         // Create the entity type category if null

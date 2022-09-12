@@ -16,6 +16,8 @@ SOURCES += \
     editorpreview.cpp \
     editorwindow.cpp \
     moveedit.cpp \
+    propertiesedit.cpp \
+    propertiesmodel.cpp \
     removeedit.cpp \
     resizeedit.cpp \
     multitypeedit.cpp \
@@ -31,9 +33,10 @@ SOURCES += \
     ../ATOTAM/Entities/npc.cpp \
     ../ATOTAM/Entities/samos.cpp \
     ../ATOTAM/Entities/savepoint.cpp \
-    ../ATOTAM/Entities/projectile.cpp \
+    ../ATOTAM/Entities/projectile.cpp
 
 HEADERS += \
+    propertiesmodel.h \
     addedit.h \
     edit.h \
     editorpreview.h \
@@ -41,6 +44,7 @@ HEADERS += \
     entitylist.h \
     moveedit.h \
     precompiledheaders.h \
+    propertiesedit.h \
     removeedit.h \
     resizeedit.h \
     multitypeedit.h \
@@ -56,7 +60,7 @@ HEADERS += \
     ../ATOTAM/Entities/npc.h \
     ../ATOTAM/Entities/samos.h \
     ../ATOTAM/Entities/savepoint.h \
-    ../ATOTAM/Entities/projectile.h \
+    ../ATOTAM/Entities/projectile.h
 
 PRECOMPILED_HEADER = precompiledheaders.h
 

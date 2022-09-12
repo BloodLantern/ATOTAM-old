@@ -22,9 +22,12 @@ void EditorWindow::saveValues()
     editorJson["map"]["camera"] = {preview->getCamera().x(), preview->getCamera().y()};
     editorJson["map"]["id"] = preview->getCurrentMap().getName();
 
+    editorJson["window"]["maximized"] = isMaximized();
+    editorJson["window"]["size"] = {width(), height()};
+    editorJson["window"]["position"] = {x(), y()};
+
     preview->saveJson(preview->getEditorJson(), "map_editor");
 }
-
 
 void EditorWindow::closeEvent(QCloseEvent *event)
 {

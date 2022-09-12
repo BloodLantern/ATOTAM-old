@@ -38,10 +38,16 @@ void gameClock(MainWindow* w) {
 
         if (g->getTasToolEnabled()) {
             w->getSpecialInputs();
+
             if ((*g->getInputList())["SPECIAL_toggleFrameAdvance"] && (*g->getInputTime())["SPECIAL_toggleFrameAdvance"] == 0)
                 g->setFrameAdvance(!g->getFrameAdvance());
             if ((*g->getInputList())["SPECIAL_toggleTAS"] && (*g->getInputTime())["SPECIAL_toggleTAS"] == 0)
                 g->setTas(!g->getTas());
+            if ((*g->getInputList())["SPECIAL_toggleHitboxes"] && (*g->getInputTime())["SPECIAL_toggleHitboxes"] == 0)
+                g->setRenderHitboxes(!g->getRenderHitboxes());
+            if ((*g->getInputList())["SPECIAL_toggleFreeCamera"] && (*g->getInputTime())["SPECIAL_toggleFreeCamera"] == 0)
+                g->setMapViewer(!g->getMapViewer());
+
             else if ((*g->getInputList())["SPECIAL_restartTAS"] && (*g->getInputTime())["SPECIAL_restartTAS"] == 0) {
                 g->setTas(true);
                 g->setCurrentInstructionFrames(1);

@@ -61,7 +61,7 @@ void ResizeEdit::unmake()
                 entity->getBox()->setHeight(entity->getBox()->getHeight() * entity->getVerticalRepeat());
 
                 // Update entityJson
-                entityJson = entity->getJsonRepresentation();
+                entityJson = entity->getJsonRepresentation(false);
 
                 // Update map
                 mapJson->at(ptr)[std::stoi(ent.key())] = entityJson;
@@ -112,7 +112,7 @@ void ResizeEdit::make()
                 entity->getBox()->setHeight(entity->getBox()->getHeight() * entity->getVerticalRepeat());
 
                 // Update entityJson
-                entityJson = entity->getJsonRepresentation();
+                entityJson = entity->getJsonRepresentation(false);
 
                 // Update map
                 mapJson->at(ptr)[std::stoi(ent.key())] = entityJson;

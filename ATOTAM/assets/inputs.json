@@ -20,5 +20,7 @@
 	"SPECIAL_toggleTAS": ["Add"],
 	"SPECIAL_restartTAS": ["Substract"],
 	"SPECIAL_fastForward": ["8"],
-	"SPECIAL_slowForward": ["7"]
+	"SPECIAL_slowForward": ["7"],
+	"SPECIAL_toggleHitboxes": ["Divide"],
+	"SPECIAL_toggleFreeCamera": ["Multiply"]
 }
