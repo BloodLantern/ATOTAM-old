@@ -28,7 +28,7 @@ void PropertiesEdit::unmake()
         // Get map Json pointer
         nlohmann::json* mapJson = map->getJson();
         // json_pointer to the entity list
-        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId())
+        nlohmann::json::json_pointer ptr("/rooms/" + entity->getRoomId()
                                          + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
@@ -60,7 +60,7 @@ void PropertiesEdit::make()
         // Get map Json pointer
         nlohmann::json* mapJson = map->getJson();
         // json_pointer to the entity list
-        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId())
+        nlohmann::json::json_pointer ptr("/rooms/" + entity->getRoomId()
                                          + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);

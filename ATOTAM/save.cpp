@@ -184,30 +184,30 @@ void Save::setSaveMapName(const std::string &newSaveMapName)
     saveMapName = newSaveMapName;
 }
 
-int Save::getRoomID() const
+std::string Save::getRoomID() const
 {
     return roomID;
 }
 
-void Save::setRoomID(int newRoomID)
+void Save::setRoomID(std::string newRoomID)
 {
     roomID = newRoomID;
 }
 
-std::map<std::string, std::vector<int>> &Save::getRoomsDiscovered()
+std::map<std::string, std::vector<std::string>> &Save::getRoomsDiscovered()
 {
     return roomsDiscovered;
 }
 
-void Save::setRoomsDiscovered(const std::map<std::string, std::vector<int> > &newRoomsDiscovered)
+void Save::setRoomsDiscovered(const std::map<std::string, std::vector<std::string> > &newRoomsDiscovered)
 {
     roomsDiscovered = newRoomsDiscovered;
 }
 
-void Save::addRoomDiscovered(std::string mapName, int roomID)
+void Save::addRoomDiscovered(std::string mapName, std::string roomID)
 {
     bool alreadyFound = false;
-    for (std::vector<int>::iterator i = roomsDiscovered[mapName].begin(); i != roomsDiscovered[mapName].end(); i++) {
+    for (std::vector<std::string>::iterator i = roomsDiscovered[mapName].begin(); i != roomsDiscovered[mapName].end(); i++) {
         if (*i == roomID) {
             alreadyFound = true;
             break;

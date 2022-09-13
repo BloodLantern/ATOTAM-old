@@ -39,10 +39,10 @@ void ResizeEdit::unmake()
         // Get map Json pointer
         nlohmann::json* mapJson = map->getJson();
         // json_pointer to the entity list
-        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId())
+        nlohmann::json::json_pointer ptr("/rooms/" + entity->getRoomId()
                                          + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // json_pointer to the room position
-        nlohmann::json::json_pointer roomPtr("/rooms/" + std::to_string(entity->getRoomId()) + "/position");
+        nlohmann::json::json_pointer roomPtr("/rooms/" + entity->getRoomId() + "/position");
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
         // Iterate over the entities with the same entType and name
@@ -90,10 +90,10 @@ void ResizeEdit::make()
         // Get map Json pointer
         nlohmann::json* mapJson = map->getJson();
         // json_pointer to the entity list
-        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId())
+        nlohmann::json::json_pointer ptr("/rooms/" + entity->getRoomId()
                                          + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // json_pointer to the room position
-        nlohmann::json::json_pointer roomPtr("/rooms/" + std::to_string(entity->getRoomId()) + "/position");
+        nlohmann::json::json_pointer roomPtr("/rooms/" + entity->getRoomId() + "/position");
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
         // Iterate over the entities with the same entType and name

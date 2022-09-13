@@ -38,10 +38,10 @@ public:
     void setAssetsPath(const std::string &newAssetsPath);
     QPoint getCamera() const;
     void setCamera(QPoint newCamera);
-    Map &getCurrentMap();
+    Map* getCurrentMap();
     void setCurrentMap(const Map &newCurrentMap);
-    int getRoomId() const;
-    void setRoomId(int newRoomId);
+    std::string getRoomId() const;
+    void setRoomId(std::string newRoomId);
     double getZoomFactor() const;
     void setZoomFactor(double newZoomFactor);
     Entity *getSelected() const;
@@ -65,7 +65,7 @@ private:
     std::vector<Edit*> edits;
     nlohmann::json editorJson = nlohmann::json();
     Map currentMap = Map();
-    int roomId = 0;
+    std::string roomId = "0";
     std::string assetsPath;
     QPoint lastMousePosition;
 

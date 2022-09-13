@@ -1,5 +1,10 @@
 
 #include "map.h"
+#include "Entities/door.h"
+#include "Entities/npc.h"
+#include "Entities/terrain.h"
+#include "Entities/monster.h"
+#include "Entities/savepoint.h"
 
 Map::Map()
 {
@@ -20,22 +25,12 @@ Map::Map(nlohmann::json json)
 
 }
 
-int Map::getLastRoomId() const
-{
-    return lastRoomId;
-}
-
-void Map::setLastRoomId(int newLastRoomId)
-{
-    lastRoomId = newLastRoomId;
-}
-
-std::vector<Entity *> Map::loadRoom(int id)
+std::vector<Entity *> Map::loadRoom(std::string id)
 {
     // Result
     std::vector<Entity*> entities;
     // Json node of the selected room
-    nlohmann::json roomJson = json["rooms"][std::to_string(id)];
+    nlohmann::json roomJson = json["rooms"][id];
     // Iterate over a map of entityTypes
     for (auto entity : roomJson["content"].items())
         // Iterate over a map of entityNames
@@ -158,7 +153,7 @@ std::vector<Entity *> Map::loadRooms()
     std::vector<Entity*> result;
     for (const std::pair<std::string, nlohmann::json> room : json["rooms"].get<nlohmann::json::object_t>()) {
         // Load room content
-        std::vector<Entity*> roomContent = loadRoom(std::stoi(room.first));
+        std::vector<Entity*> roomContent = loadRoom(room.first);
         // Preallocate memory
         result.reserve(roomContent.size());
         // Merge vectors
@@ -171,7 +166,7 @@ std::vector<Entity *> Map::loadRooms()
 // If true, returns its JSON representation; otherwise, throws an InvalidArgument exception.
 nlohmann::json Map::find(Entity *entity)
 {
-    nlohmann::json j = json["rooms"][std::to_string(entity->getRoomId())];
+    nlohmann::json j = json["rooms"][entity->getRoomId()];
     // Entity isn't in any room
     if (j.is_null())
         throw std::invalid_argument("Map::find(Entity*) received an Entity which is in a non-existent room.");
@@ -191,10 +186,10 @@ nlohmann::json Map::find(Entity *entity)
         nlohmann::json entJson = entity->getJsonRepresentation(false);
         // X pos relative to the room
         entJson["x"] = entJson["x"].get<double>()
-                        - json["rooms"][std::to_string(entity->getRoomId())]["position"][0].get<int>();
+                        - json["rooms"][entity->getRoomId()]["position"][0].get<int>();
         // Y pos relative to the room
         entJson["y"] = entJson["y"].get<double>()
-                        - json["rooms"][std::to_string(entity->getRoomId())]["position"][1].get<int>();
+                        - json["rooms"][entity->getRoomId()]["position"][1].get<int>();
         if (entJson == ent) {
             return entJson;
         }
@@ -208,15 +203,25 @@ nlohmann::json Map::find(Entity *entity)
     throw std::invalid_argument("Map::find(Entity*) received an Entity that couldn't be found.");
 }
 
-int Map::getCurrentRoomId() const
+std::string Map::getCurrentRoomId() const
 {
     return currentRoomId;
 }
 
-void Map::setCurrentRoomId(int newCurrentRoomId)
+void Map::setCurrentRoomId(std::string newCurrentRoomId)
 {
     setLastRoomId(currentRoomId);
     currentRoomId = newCurrentRoomId;
+}
+
+std::string Map::getLastRoomId() const
+{
+    return lastRoomId;
+}
+
+void Map::setLastRoomId(std::string newLastRoomId)
+{
+    lastRoomId = newLastRoomId;
 }
 
 const std::string &Map::getName() const

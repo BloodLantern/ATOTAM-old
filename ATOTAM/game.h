@@ -40,7 +40,7 @@ public:
     QString translate(std::string text, std::vector<std::string> subCategories);
     void loadGeneral();
     void loadSave(Save save);
-    void addRoomDiscovered(std::string mapName, int roomID);
+    void addRoomDiscovered(std::string mapName, std::string roomID);
     void die();
     void updateTas();
 

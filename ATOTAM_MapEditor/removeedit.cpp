@@ -41,7 +41,7 @@ void RemoveEdit::make()
         // Get map Json pointer
         nlohmann::json* mapJson = map->getJson();
         // json_pointer to the entity list
-        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType() + "/" + entity->getFullName());
+        nlohmann::json::json_pointer ptr("/rooms/" + entity->getRoomId() + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // Find Entity json node in the map
         nlohmann::json entityJson = map->find(entity);
         // Iterate over the entities with the same entType and name
@@ -61,12 +61,12 @@ void RemoveEdit::make()
 
         // If the entity name array is empty, remove it
         if (mapJson->at(ptr).empty()) {
-            ptr = nlohmann::json::json_pointer("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType());
+            ptr = nlohmann::json::json_pointer("/rooms/" + entity->getRoomId() + "/content/" + entity->getEntType());
             mapJson->at(ptr).erase(entity->getFullName());
         }
         // If the entity name array is empty, remove it
         if (mapJson->at(ptr).empty()) {
-            ptr = nlohmann::json::json_pointer("/rooms/" + std::to_string(entity->getRoomId()) + "/content");
+            ptr = nlohmann::json::json_pointer("/rooms/" + entity->getRoomId() + "/content");
             mapJson->at(ptr).erase(entity->getEntType());
         }
     }

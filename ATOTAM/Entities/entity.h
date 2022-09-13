@@ -94,8 +94,8 @@ public:
     double getMass() const;
     void setMass(double newMass);
 
-    int getRoomId() const;
-    void setRoomId(int newRoomId);
+    std::string getRoomId() const;
+    void setRoomId(std::string newRoomId);
 
     const std::vector<std::string> &getNameParameters() const;
     void setNameParameters(const std::vector<std::string> &newNameParameters);
@@ -140,7 +140,7 @@ private:
     std::vector<QImage> currentAnimation; // Full current animation
     std::string state = "None"; // Which animation should be rendered
     std::string lastFrameState = "None"; // Which animation was rendered in the last frame
-    int roomId = 0; // ID of the room in which this Entity is
+    std::string roomId = "0"; // ID of the room in which this Entity is
     float layer = 0.0; //The bigger layer the later the entity is drawn
 };
 

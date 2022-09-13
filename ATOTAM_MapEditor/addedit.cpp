@@ -50,19 +50,19 @@ void AddEdit::make()
         // Get map Json pointer
         nlohmann::json* mapJson = map->getJson();
         // json_pointer to the entity list
-        nlohmann::json::json_pointer ptr("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType());
+        nlohmann::json::json_pointer ptr("/rooms/" + entity->getRoomId() + "/content/" + entity->getEntType());
         // json_pointer to the room position
-        nlohmann::json::json_pointer roomPtr("/rooms/" + std::to_string(entity->getRoomId()) + "/position");
+        nlohmann::json::json_pointer roomPtr("/rooms/" + entity->getRoomId() + "/position");
         nlohmann::json entJson;
         entJson = entity->getJsonRepresentation(false);
         entJson["x"] = entJson["x"].get<double>() - mapJson->at(roomPtr)[0].get<int>();
         entJson["y"] = entJson["y"].get<double>() - mapJson->at(roomPtr)[1].get<int>();
         // Create the entity type category if null
-        if (mapJson->at(nlohmann::json::json_pointer("/rooms/" + std::to_string(entity->getRoomId()) + "/content"))[entity->getEntType()].is_null())
+        if (mapJson->at(nlohmann::json::json_pointer("/rooms/" + entity->getRoomId() + "/content"))[entity->getEntType()].is_null())
             mapJson->at(ptr) = "{}"_json;
-        ptr = nlohmann::json::json_pointer("/rooms/" + std::to_string(entity->getRoomId()) + "/content/" + entity->getEntType() + "/" + entity->getFullName());
+        ptr = nlohmann::json::json_pointer("/rooms/" + entity->getRoomId() + "/content/" + entity->getEntType() + "/" + entity->getFullName());
         // Create the entity name array if null
-        if (mapJson->at(nlohmann::json::json_pointer("/rooms/" + std::to_string(entity->getRoomId()) + "/content"))[entity->getEntType()][entity->getFullName()].is_null())
+        if (mapJson->at(nlohmann::json::json_pointer("/rooms/" + entity->getRoomId() + "/content"))[entity->getEntType()][entity->getFullName()].is_null())
             mapJson->at(ptr) = "[]"_json;
         // Add it
         mapJson->at(ptr).push_back(entJson);

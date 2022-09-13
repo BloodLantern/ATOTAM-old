@@ -15,6 +15,11 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QLabel>
+#include "../ATOTAM/Entities/terrain.h"
+#include "../ATOTAM/Entities/door.h"
+#include "../ATOTAM/Entities/area.h"
+#include "../ATOTAM/Entities/npc.h"
+#include "../ATOTAM/Entities/monster.h"
 
 EditorPreview::EditorPreview(Map* map, QImage* errorTexture, QImage* emptyTexture, int renderingMultiplier, nlohmann::json editorJson, double physicsFrameRate)
     : editorJson(editorJson)
@@ -76,13 +81,16 @@ void EditorPreview::updateProperty(std::string key, std::string value)
     clearUnmadeEdits();
 
     nlohmann::json property;
-    try {
-        // Try to set the value as an integer
-        property[key] = stoi(value);
-    } catch (...) {
-        // If it fails, set it as a string instead
+    if (selected->getJsonRepresentation(true)[key].is_number())
+        try {
+            // Try to set the value as an integer
+            property[key] = stoi(value);
+        } catch (...) {
+            // If it fails, set it as a string instead
+            property[key] = value;
+        }
+    else
         property[key] = value;
-    }
 
     PropertiesEdit* edit = new PropertiesEdit(&currentMap, selected, property);
     edit->make();
@@ -424,7 +432,7 @@ void EditorPreview::mousePressEvent(QMouseEvent *event)
                     && pos.y() < (room.value()["position"][1].get<int>() + room.value()["size"][1].get<int>() - camera.y()) * zoomFactor // If over the bottom edge
                     && pos.y() > (room.value()["position"][1].get<int>() - camera.y()) * zoomFactor) // If under the top edge
                 // The click was made in this room so set it as the current one
-                roomId = std::stoi(room.key());
+                roomId = room.key();
 
 
         // Entity check
@@ -862,9 +870,9 @@ void EditorPreview::setCamera(QPoint newCamera)
     camera = newCamera;
 }
 
-Map &EditorPreview::getCurrentMap()
+Map* EditorPreview::getCurrentMap()
 {
-    return currentMap;
+    return &currentMap;
 }
 
 void EditorPreview::setCurrentMap(const Map &newCurrentMap)
@@ -872,12 +880,12 @@ void EditorPreview::setCurrentMap(const Map &newCurrentMap)
     currentMap = newCurrentMap;
 }
 
-int EditorPreview::getRoomId() const
+std::string EditorPreview::getRoomId() const
 {
     return roomId;
 }
 
-void EditorPreview::setRoomId(int newRoomId)
+void EditorPreview::setRoomId(std::string newRoomId)
 {
     roomId = newRoomId;
 }

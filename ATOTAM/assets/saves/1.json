@@ -3,13 +3,13 @@
     "damageReceived": 2580,
     "deaths": 24,
     "playTime": 3944,
-    "roomID": 1,
+    "roomID": "1",
     "roomsDiscovered": {
         "test": [
-            2,
-            1,
-            0,
-            3
+            "2",
+            "1",
+            "0",
+            "3"
         ]
     },
     "samos": {

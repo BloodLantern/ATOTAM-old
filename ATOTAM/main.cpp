@@ -138,7 +138,7 @@ void gameClock(MainWindow* w) {
                 g->setInMap(false);
                 g->setIsPaused(false);
 
-                nlohmann::json mapJson = (*g->getCurrentMap().getJson())["rooms"][std::to_string(g->getCurrentMap().getCurrentRoomId())];
+                nlohmann::json mapJson = (*g->getCurrentMap().getJson())["rooms"][g->getCurrentMap().getCurrentRoomId()];
 
                 int roomS_x = mapJson["position"][0];
                 int roomS_y = mapJson["position"][1];

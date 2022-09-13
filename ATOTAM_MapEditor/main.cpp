@@ -15,6 +15,11 @@
 #define JSON_DIAGNOSTICS 1 // Json extended error messages
 #include "../ATOTAM/nlohmann/json.hpp"
 #include "../ATOTAM/map.h"
+#include "../ATOTAM/Entities/terrain.h"
+#include "../ATOTAM/Entities/door.h"
+#include "../ATOTAM/Entities/area.h"
+#include "../ATOTAM/Entities/npc.h"
+#include "../ATOTAM/Entities/monster.h"
 
 QStandardItemModel* setupObjectList() {
     QStandardItemModel* model = new QStandardItemModel;
@@ -136,6 +141,11 @@ void setupEditorWindow(nlohmann::json editorJson, std::string assetsPath)
     splitter->addWidget(propertiesView);
 
     editorWindow->setCentralWidget(splitter);
+
+    editorWindow->setGeometry(editorJson["lastLaunch"]["window"]["position"][0],
+                editorJson["lastLaunch"]["window"]["position"][1],
+                editorJson["lastLaunch"]["window"]["size"][0],
+                editorJson["lastLaunch"]["window"]["size"][1]);
     if (editorJson["lastLaunch"]["window"]["maximized"])
         editorWindow->showMaximized();
     else

@@ -39,20 +39,21 @@
     "lastLaunch": {
         "map": {
             "camera": [
-                0,
-                0
+                1152,
+                37
             ],
-            "id": "testEditor"
+            "id": "testEditor",
+            "roomId": "0"
         },
         "window": {
             "maximized": true,
+            "position": [
+                0,
+                -8
+            ],
             "size": [
                 1280,
                 720
-            ],
-            "position": [
-                0,
-                0
             ]
         }
     },

@@ -20,17 +20,17 @@ nlohmann::json Door::getJsonRepresentation(bool defaultValues)
 
 void Door::setJsonValues(nlohmann::json json)
 {
-    Entity::setJsonValues(json);
+    Area::setJsonValues(json);
     if (!json["to"].is_null())
         endingRoom = json["to"];
 }
 
-int Door::getEndingRoom() const
+std::string Door::getEndingRoom() const
 {
     return endingRoom;
 }
 
-void Door::setEndingRoom(int newEndingRoom)
+void Door::setEndingRoom(std::string newEndingRoom)
 {
     endingRoom = newEndingRoom;
 }

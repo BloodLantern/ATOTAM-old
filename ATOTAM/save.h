@@ -51,12 +51,12 @@ public:
     const std::string &getSaveMapName() const;
     void setSaveMapName(const std::string &newSaveMapName);
 
-    int getRoomID() const;
-    void setRoomID(int newRoomID);
+    std::string getRoomID() const;
+    void setRoomID(std::string newRoomID);
 
-    std::map<std::string, std::vector<int> > &getRoomsDiscovered();
-    void setRoomsDiscovered(const std::map<std::string, std::vector<int>> &newRoomsDiscovered);
-    void addRoomDiscovered(std::string mapName, int roomID);
+    std::map<std::string, std::vector<std::string> > &getRoomsDiscovered();
+    void setRoomsDiscovered(const std::map<std::string, std::vector<std::string>> &newRoomsDiscovered);
+    void addRoomDiscovered(std::string mapName, std::string roomID);
 
 private:
     int samosHealth;
@@ -66,10 +66,10 @@ private:
     int samosGrenades;
     int samosMaxGrenades;
     int savepointID;
-    int roomID;
+    std::string roomID;
     std::string saveMapName;
     // Items
-    std::map<std::string, std::vector<int>> roomsDiscovered;
+    std::map<std::string, std::vector<std::string>> roomsDiscovered;
     unsigned long playTime; // In seconds
     int deaths;
     int damageDone;

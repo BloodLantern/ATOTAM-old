@@ -62,7 +62,7 @@ void Game::loadSave(Save save)
     currentDialogue = Dialogue();
 }
 
-void Game::addRoomDiscovered(std::string mapName, int roomID)
+void Game::addRoomDiscovered(std::string mapName, std::string roomID)
 {
     currentProgress.addRoomDiscovered(mapName, roomID);
 }
@@ -378,7 +378,7 @@ void Game::updateMenu()
             else if (menuOptions[selectedOption] == "Max hp")
                  s->setHealth(s->getMaxHealth());
             else if (menuOptions[selectedOption] == "Reload entities.json") {
-                int rID = currentMap.getCurrentRoomId();
+                std::string rID = currentMap.getCurrentRoomId();
                 Entity::values = Entity::loadValues(assetsPath);
                 loadGeneral();
                 currentMap.setCurrentRoomId(rID);
@@ -386,7 +386,7 @@ void Game::updateMenu()
                 clearEntities("Samos");
                 addEntities(currentMap.loadRoom());
             } else if (menuOptions[selectedOption] == "Reload map") {
-                int mapId = currentMap.getCurrentRoomId();
+                std::string mapId = currentMap.getCurrentRoomId();
                 currentMap = Map::loadMap(currentMap.getName(), assetsPath);
                 currentMap.setCurrentRoomId(mapId);
             } else if (menuOptions[selectedOption] == "Map viewer mode : ON")
@@ -516,7 +516,7 @@ void Game::updateNPCs()
 
 void Game::updateCamera()
 {
-    nlohmann::json mapJson = (*currentMap.getJson())["rooms"][std::to_string(currentMap.getCurrentRoomId())];
+    nlohmann::json mapJson = (*currentMap.getJson())["rooms"][currentMap.getCurrentRoomId()];
 
     int roomS_x = mapJson["position"][0];
     int roomS_y = mapJson["position"][1];
@@ -560,8 +560,8 @@ void Game::updateInventory()
         }
         if (inMap) {
             nlohmann::json mapJson = *currentMap.getJson();
-            std::vector<int> tRooms = currentProgress.getRoomsDiscovered()[currentMap.getName()];
-            nlohmann::json currentRoom = mapJson["rooms"][std::to_string(currentMap.getCurrentRoomId())];
+            std::vector<std::string> tRooms = currentProgress.getRoomsDiscovered()[currentMap.getName()];
+            nlohmann::json currentRoom = mapJson["rooms"][currentMap.getCurrentRoomId()];
             int mapScaleDown = Entity::values["general"]["mapScaleDown"].get<int>();
 
             int x_min = currentRoom["position"][0].get<int>();
@@ -569,8 +569,8 @@ void Game::updateInventory()
             int y_min = currentRoom["position"][1].get<int>();
             int y_max = currentRoom["position"][1].get<int>() + currentRoom["size"][1].get<int>();
 
-            for (int i : tRooms) {
-                nlohmann::json room = mapJson["rooms"][std::to_string(i)];
+            for (std::string i : tRooms) {
+                nlohmann::json room = mapJson["rooms"][i];
                 if (room["position"][0].get<int>() + room["size"][0].get<int>() > x_max)
                     x_max = room["position"][0].get<int>() + room["size"][0].get<int>();
                 if (room["position"][0].get<int>() < x_min)
@@ -635,7 +635,7 @@ void Game::updateInventory()
 
 std::pair<int, int> Game::loadRespawnPosition(Save respawnSave, Map respawnMap)
 {
-    nlohmann::json mapJson = (*respawnMap.getJson())["rooms"][std::to_string(respawnSave.getRoomID())];
+    nlohmann::json mapJson = (*respawnMap.getJson())["rooms"][respawnSave.getRoomID()];
     nlohmann::json sJson = Entity::values["names"]["Samos"];
     nlohmann::json spJson = Entity::values["names"]["Savepoint"];
 
@@ -656,7 +656,7 @@ std::pair<int, int> Game::loadRespawnPosition(Save respawnSave, Map respawnMap)
 void Game::updateMapViewer()
 {
     if (inputList["enter"] && inputTime["enter"] == 0.0) {
-        int mapId = currentMap.getCurrentRoomId();
+        std::string mapId = currentMap.getCurrentRoomId();
         currentMap = Map::loadMap(currentMap.getName(), assetsPath);
         currentMap.setCurrentRoomId(mapId);
         clearEntities("Samos");

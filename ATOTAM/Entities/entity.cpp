@@ -653,12 +653,12 @@ void Entity::setMass(double newMass)
     mass = newMass;
 }
 
-int Entity::getRoomId() const
+std::string Entity::getRoomId() const
 {
     return roomId;
 }
 
-void Entity::setRoomId(int newRoomId)
+void Entity::setRoomId(std::string newRoomId)
 {
     roomId = newRoomId;
 }

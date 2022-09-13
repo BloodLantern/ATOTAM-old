@@ -12,11 +12,11 @@ public:
     nlohmann::json getJsonRepresentation(bool defaultValues);
     void setJsonValues(nlohmann::json);
 
-    int getEndingRoom() const;
-    void setEndingRoom(int newEndingRoom);
+    std::string getEndingRoom() const;
+    void setEndingRoom(std::string newEndingRoom);
 
 private:
-    int endingRoom = 0;
+    std::string endingRoom = "0";
 };
 
 #endif // DOOR_H

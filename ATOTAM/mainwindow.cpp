@@ -203,7 +203,7 @@ void MainWindow::setupToDraw()
         //Draw hitboxes if necessary
         if (game->getRenderHitboxes()) {
 
-            nlohmann::json roomJson = (*game->getCurrentMap().getJson())["rooms"][std::to_string(game->getCurrentMap().getCurrentRoomId())];
+            nlohmann::json roomJson = (*game->getCurrentMap().getJson())["rooms"][game->getCurrentMap().getCurrentRoomId()];
             toDraw["room_position_x"] = roomJson["position"][0];
             toDraw["room_position_y"] = roomJson["position"][1];
             toDraw["room_size_x"] = roomJson["size"][0];
@@ -396,7 +396,7 @@ void MainWindow::setupToDraw()
 
     } else {
         nlohmann::json tMap = *game->getCurrentMap().getJson();
-        std::vector<int> tRooms = game->getCurrentProgress().getRoomsDiscovered()[game->getCurrentMap().getName()];
+        std::vector<std::string> tRooms = game->getCurrentProgress().getRoomsDiscovered()[game->getCurrentMap().getName()];
         QPoint tempMC = game->getMapCameraPosition();
         int mapScaleDown = Entity::values["general"]["mapScaleDown"].get<int>();
 
@@ -408,8 +408,8 @@ void MainWindow::setupToDraw()
 
         std::vector<nlohmann::json> roomsInfo;
 
-        for (int i : tRooms) {
-            nlohmann::json room = tMap["rooms"][std::to_string(i)];
+        for (std::string i : tRooms) {
+            nlohmann::json room = tMap["rooms"][i];
             if (room["position"][0].get<int>() + room["size"][0].get<int>() < tempMC.x() // If too much on the left
                     || room["position"][0].get<int>() > tempMC.x() + game->getCameraSize().first * mapScaleDown // If too much on the right
                     || room["position"][1].get<int>() + room["size"][1].get<int>() < tempMC.y() // If too high
@@ -842,7 +842,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawText(QPoint(80, 290), QString::fromStdString("Speed retained : " + std::to_string(tempToDraw["samos_speedRetained"].get<double>())));
         painter.drawText(QPoint(80, 310), QString::fromStdString("Retain time : " + std::to_string(tempToDraw["samos_retainTime"].get<double>())));
         painter.drawText(QPoint(80, 330), QString::fromStdString("On ground : " + std::to_string(tempToDraw["samos_onGround"].get<bool>())));
-        painter.drawText(QPoint(80, 350), QString::fromStdString("Room ID : " + std::to_string(tempToDraw["samos_room"].get<int>())));
+        painter.drawText(QPoint(80, 350), QString::fromStdString("Room ID : " + tempToDraw["samos_room"].get<std::string>()));
         painter.drawText(QPoint(80, 370), QString::fromStdString("I-Time : " + std::to_string(tempToDraw["samos_iTime"].get<double>())));
         painter.drawText(QPoint(80, 390), QString::fromStdString("Lag time : " + std::to_string(tempToDraw["samos_lagTime"].get<double>())));
         painter.drawText(QPoint(80, 410), QString::fromStdString("Shoot cooldown : " + std::to_string(tempToDraw["samos_shootTime"].get<double>())));

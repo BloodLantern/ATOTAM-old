@@ -7,7 +7,7 @@
                     "VerticalDoor": [
                         {
                             "state": "Right",
-                            "to": 1,
+                            "to": "1",
                             "x": 1900,
                             "y": 768
                         }
@@ -120,7 +120,7 @@
                     "HorizontalDoor": [
                         {
                             "state": "Down",
-                            "to": 2,
+                            "to": "2",
                             "x": 64,
                             "y": 2475
                         }
@@ -128,7 +128,7 @@
                     "VerticalDoor": [
                         {
                             "state": "Left",
-                            "to": 0,
+                            "to": "0",
                             "x": 0,
                             "y": 768
                         }
@@ -260,7 +260,7 @@
                     "HorizontalDoor": [
                         {
                             "state": "Up",
-                            "to": 1,
+                            "to": "1",
                             "x": 2176,
                             "y": 0
                         }
@@ -352,5 +352,5 @@
             ]
         }
     },
-    "startingRoom": 0
+    "startingRoom": "0"
 }
