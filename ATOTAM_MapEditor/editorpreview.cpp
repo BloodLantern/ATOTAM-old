@@ -87,8 +87,8 @@ void EditorPreview::updateProperty(std::string key, std::string value)
             property[key] = stoi(value);
             if (key == "x")
                 property[key] += currentMap.getJson()->at(""_json_pointer)["rooms"][selected->getRoomId()]["position"][0];
-            else if (key == "x")
-                    property[key] += currentMap.getJson()->at(""_json_pointer)["rooms"][selected->getRoomId()]["position"][1];
+            else if (key == "y")
+                property[key] += currentMap.getJson()->at(""_json_pointer)["rooms"][selected->getRoomId()]["position"][1];
         } catch (...) {
             // If it fails, set it as a string instead
             property[key] = value;

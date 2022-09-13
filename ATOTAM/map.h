@@ -15,6 +15,7 @@ public:
     std::vector<Entity*> loadRoom(); // Loads the current room id and returns the array of entities it contains
     std::vector<Entity*> loadRooms(); // Loads all rooms and returns the array of entity they contain
     nlohmann::json find(Entity* entity); // Finds the given entity in this map's Json and returns its path
+    void changeRoom(Entity* entity, std::string newRoomId); // Changes the current room of this Entity to the new one. DOES NOT CHANGE ITS COORDINATES
 
     const std::string &getName() const;
     void setName(const std::string &newName);

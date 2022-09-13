@@ -263,6 +263,8 @@ void Entity::setJsonValues(nlohmann::json json)
         horizontalRepeat = json["horizontalRepeat"];
     if (!json["verticalRepeat"].is_null())
         verticalRepeat = json["verticalRepeat"];
+    if (!json["roomId"].is_null())
+        roomId = json["roomId"];
 }
 
 Entity::Entity(double x, double y, CollisionBox* box, QImage* texture, std::string entType, bool isAffectedByGravity, std::string facing, double frictionFactor, std::string name, bool isMovable)

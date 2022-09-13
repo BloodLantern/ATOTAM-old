@@ -163,7 +163,7 @@ std::vector<Entity *> Map::loadRooms()
 }
 
 // Checks if this Entity is present in this room.
-// If true, returns its JSON representation; otherwise, throws an InvalidArgument exception.
+// If true, returns its JSON representation with coordinates relative to the room ones; otherwise, throws an InvalidArgument exception.
 nlohmann::json Map::find(Entity *entity)
 {
     nlohmann::json j = json["rooms"][entity->getRoomId()];
@@ -181,15 +181,15 @@ nlohmann::json Map::find(Entity *entity)
     if (j.is_null())
         throw std::invalid_argument("Map::find(Entity*) received an Entity name which isn't present in this room.");
 
+    nlohmann::json entJson = entity->getJsonRepresentation(false);
+    // X pos relative to the room
+    entJson["x"] = entJson["x"].get<double>()
+                    - json["rooms"][entity->getRoomId()]["position"][0].get<int>();
+    // Y pos relative to the room
+    entJson["y"] = entJson["y"].get<double>()
+                    - json["rooms"][entity->getRoomId()]["position"][1].get<int>();
     // Eventually compare the entity and the json values
     for (const nlohmann::json &ent : j) {
-        nlohmann::json entJson = entity->getJsonRepresentation(false);
-        // X pos relative to the room
-        entJson["x"] = entJson["x"].get<double>()
-                        - json["rooms"][entity->getRoomId()]["position"][0].get<int>();
-        // Y pos relative to the room
-        entJson["y"] = entJson["y"].get<double>()
-                        - json["rooms"][entity->getRoomId()]["position"][1].get<int>();
         if (entJson == ent) {
             return entJson;
         }
@@ -199,8 +199,20 @@ nlohmann::json Map::find(Entity *entity)
     std::cerr << "Map entity type JSON node:" << std::endl;
     std::cerr << j.dump(4) << std::endl << std::endl;
     std::cerr << "Entity JSON node (the one to find):" << std::endl;
-    std::cerr << entity->getJsonRepresentation(false).dump(4) << std::endl << std::endl;
+    std::cerr << entJson.dump(4) << std::endl << std::endl;
     throw std::invalid_argument("Map::find(Entity*) received an Entity that couldn't be found.");
+}
+
+void Map::changeRoom(Entity *entity, std::string newRoomId)
+{
+    std::string oldRoomId = entity->getRoomId();
+    // Do nothing if the new room is the same one
+    if (oldRoomId == newRoomId)
+        return;
+
+    // Make sure this Entity is in this Map and get its JSON node
+    nlohmann::json entJson = find(entity);
+    json["rooms"][oldRoomId]["content"][entity->getEntType()][entity->getName()].erase();
 }
 
 std::string Map::getCurrentRoomId() const
