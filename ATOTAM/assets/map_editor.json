@@ -39,8 +39,8 @@
     "lastLaunch": {
         "map": {
             "camera": [
-                1152,
-                37
+                1475,
+                52
             ],
             "id": "testEditor",
             "roomId": "0"
@@ -65,6 +65,9 @@
             720
         ],
         "otherRoomEntityOverlayOpacity": 150,
+        "propertiesBlacklist": [
+            "areaType"
+        ],
         "resizeMaximumCursorDistance": 4,
         "selectedEntitiesOverlayOpacity": 100,
         "selectedEntityMoveStep": 32,

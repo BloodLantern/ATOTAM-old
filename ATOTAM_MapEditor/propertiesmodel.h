@@ -2,12 +2,13 @@
 #define PROPERTIESMODEL_H
 
 #include "../ATOTAM/Entities/entity.h"
+#include "../ATOTAM/map.h"
 
 class PropertiesModel : public QStandardItemModel
 {
     Q_OBJECT
 public:
-    explicit PropertiesModel(Entity** selected, QObject *parent = nullptr);
+    explicit PropertiesModel(Entity** selected, Map* currentMap, nlohmann::json editorJson, QObject *parent = nullptr);
 
     void updateProperties();
 
@@ -22,6 +23,8 @@ signals:
 
 private:
     Entity** selected = nullptr;
+    nlohmann::json editorJson = nlohmann::json();
+    Map* currentMap = nullptr;
 };
 
 #endif // PROPERTIESMODEL_H

@@ -4,6 +4,17 @@ Door::Door(double x, double y, std::string name)
     : Area(x, y, name)
 {
     setAreaType("Door");
+    setState(Entity::values["names"][name]["defaultState"]);
+    setLastFrameState(getState());
+}
+
+Door::Door(const Door &d)
+    : Door(d.getX(), d.getY(), d.getName())
+{
+    endingRoom = d.getEndingRoom();
+    setCurrentAnimation(updateAnimation());
+    setFrame(0);
+    updateTexture();
 }
 
 Door::~Door()

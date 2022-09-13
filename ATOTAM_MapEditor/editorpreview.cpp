@@ -85,6 +85,10 @@ void EditorPreview::updateProperty(std::string key, std::string value)
         try {
             // Try to set the value as an integer
             property[key] = stoi(value);
+            if (key == "x")
+                property[key] += currentMap.getJson()->at(""_json_pointer)["rooms"][selected->getRoomId()]["position"][0];
+            else if (key == "x")
+                    property[key] += currentMap.getJson()->at(""_json_pointer)["rooms"][selected->getRoomId()]["position"][1];
         } catch (...) {
             // If it fails, set it as a string instead
             property[key] = value;
@@ -219,10 +223,30 @@ void EditorPreview::duplicateObject()
 {
     if (selected) {
         clearUnmadeEdits();
-        Entity* ent = new Entity(*selected);
-        ent->setX(ent->getX() + 32);
-        ent->setY(ent->getY() + 32);
-        addObject(ent);
+
+        std::string type = selected->getEntType();
+        Entity* entity = nullptr;
+        if (type == "Terrain")
+            entity = new Terrain(*dynamic_cast<Terrain*>(selected));
+        else if (type == "NPC")
+            entity = new NPC(*dynamic_cast<NPC*>(selected));
+        else if (type == "Area") {
+            Area* a = dynamic_cast<Area*>(selected);
+            if (a->getAreaType() == "Door")
+                entity = new Door(*dynamic_cast<Door*>(a));
+            else
+                entity = new Area(*a);
+        } else if (type == "Monster")
+            entity = new Monster(*dynamic_cast<Monster*>(selected));
+
+        if (entity == nullptr)
+            throw std::logic_error("duplicateObject() couldn't create a copy of the selected Entity because its entType differs from the hardcoded ones.");
+
+        entity->setX(entity->getX() + 32);
+        entity->setY(entity->getY() + 32);
+        entity->setRoomId(selected->getRoomId());
+
+        addObject(entity);
     }
 }
 
@@ -765,7 +789,7 @@ void EditorPreview::dragEnterEvent(QDragEnterEvent *event)
         else if (type == "NPC")
             entity = new NPC(x, y, "Right", name);
         else if (type == "Area") {
-            if (name.substr(name.size() - 5, 4) == "Door")
+            if (name.substr(name.size() - 4, 4) == "Door")
                 entity = new Door(x, y, name);
             else
                 entity = new Area(x, y, name);
@@ -775,6 +799,7 @@ void EditorPreview::dragEnterEvent(QDragEnterEvent *event)
         entity->setRoomId(roomId);
 
         // Rendering (should be the last function calls)
+        entity->setState(Entity::values["names"][name]["defaultState"]);
         entity->setCurrentAnimation(entity->updateAnimation());
         entity->setFrame(0);
         entity->updateTexture();

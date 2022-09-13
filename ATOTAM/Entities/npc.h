@@ -7,6 +7,8 @@ class NPC : public Living
 {
 public:
     NPC(double x, double y, std::string facing, std::string name);
+    NPC(const NPC&);
+    ~NPC();
 
     const nlohmann::json &getJson() const;
     void setJson(const nlohmann::json &newJson);

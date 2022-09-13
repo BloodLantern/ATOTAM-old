@@ -7,6 +7,7 @@ class Door : public Area
 {
 public:
     Door(double x, double y, std::string name);
+    Door(const Door&);
     ~Door();
 
     nlohmann::json getJsonRepresentation(bool defaultValues);

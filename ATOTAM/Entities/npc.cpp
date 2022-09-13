@@ -7,6 +7,19 @@ NPC::NPC(double x, double y, std::string facing, std::string name)
     npcType = json["npcType"];
 }
 
+NPC::NPC(const NPC &n)
+    : NPC(n.getX(), n.getY(), n.getFacing(), n.getName())
+{
+    setCurrentAnimation(updateAnimation());
+    setFrame(0);
+    updateTexture();
+}
+
+NPC::~NPC()
+{
+
+}
+
 const nlohmann::json &NPC::getJson() const
 {
     return json;

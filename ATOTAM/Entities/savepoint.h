@@ -7,6 +7,7 @@ class Savepoint : public NPC
 {
 public:
     Savepoint(double x, double y, int spID, std::string mapName);
+    Savepoint(const Savepoint&);
     ~Savepoint();
 
     nlohmann::json getJsonRepresentation(bool defaultValues);

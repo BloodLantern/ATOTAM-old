@@ -8,6 +8,14 @@ Savepoint::Savepoint(double x, double y, int spID, std::string mapName)
 
 }
 
+Savepoint::Savepoint(const Savepoint &s)
+    : Savepoint(s.getX(), s.getY(), s.getSavepointID(), s.getMapName())
+{
+    setCurrentAnimation(updateAnimation());
+    setFrame(0);
+    updateTexture();
+}
+
 Savepoint::~Savepoint()
 {
 

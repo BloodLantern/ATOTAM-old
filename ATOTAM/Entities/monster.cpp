@@ -12,6 +12,14 @@ Monster::Monster(double x, double y, std::string facing, std::string name)
     ranged = monsterJson["ranged"];
 }
 
+Monster::Monster(const Monster &m)
+    : Monster(m.getX(), m.getY(), m.getFacing(), m.getName())
+{
+    setCurrentAnimation(updateAnimation());
+    setFrame(0);
+    updateTexture();
+}
+
 Monster::~Monster()
 {
 

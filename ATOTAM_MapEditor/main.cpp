@@ -128,7 +128,7 @@ void setupEditorWindow(nlohmann::json editorJson, std::string assetsPath)
     QTreeView* propertiesView = new QTreeView;
     propertiesView->setFixedSize(200, 1080);
     propertiesView->setSortingEnabled(true);
-    PropertiesModel* properties = new PropertiesModel(preview->getSelectedPointer());
+    PropertiesModel* properties = new PropertiesModel(preview->getSelectedPointer(), preview->getCurrentMap(), editorJson);
     QObject::connect(properties, &PropertiesModel::updateProperty,
                      preview, &EditorPreview::updateProperty);
     propertiesView->setModel(properties);

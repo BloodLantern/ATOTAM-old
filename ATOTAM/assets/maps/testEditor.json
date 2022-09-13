@@ -10,6 +10,13 @@
                             "to": "1",
                             "x": 1900,
                             "y": 768
+                        },
+                        {
+                            "areaType": "Door",
+                            "state": "Right",
+                            "to": "1",
+                            "x": 1900.0,
+                            "y": 64.0
                         }
                     ]
                 },
@@ -78,9 +85,9 @@
                             "y": 448
                         },
                         {
-                            "verticalRepeat": 11,
-                            "x": 1856,
-                            "y": 64
+                            "verticalRepeat": 7,
+                            "x": 1856.0,
+                            "y": 320.0
                         },
                         {
                             "verticalRepeat": 16,
@@ -131,6 +138,13 @@
                             "to": "0",
                             "x": 0,
                             "y": 768
+                        },
+                        {
+                            "areaType": "Door",
+                            "state": "Left",
+                            "to": "0",
+                            "x": 0.0,
+                            "y": 64.0
                         }
                     ]
                 },
@@ -218,9 +232,9 @@
                             "y": 1536
                         },
                         {
-                            "verticalRepeat": 12,
-                            "x": 0,
-                            "y": 0
+                            "verticalRepeat": 7,
+                            "x": 0.0,
+                            "y": 320.0
                         },
                         {
                             "verticalRepeat": 22,
@@ -233,9 +247,9 @@
                             "y": 0
                         },
                         {
-                            "horizontalRepeat": 46,
-                            "x": 64,
-                            "y": 0
+                            "horizontalRepeat": 47,
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         {
                             "verticalRepeat": 9,

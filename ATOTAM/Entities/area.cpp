@@ -17,7 +17,10 @@ Area::Area(double x, double y, std::string name) :
 Area::Area(const Area &area)
     : Area(area.getX(), area.getY(), area.getName())
 {
-
+    areaType = area.getAreaType();
+    setCurrentAnimation(updateAnimation());
+    setFrame(0);
+    updateTexture();
 }
 
 Area::~Area()
