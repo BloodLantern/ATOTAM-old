@@ -14,7 +14,6 @@
 #include "Entities/npc.h"
 #include "Entities/samos.h"
 #include "Entities/terrain.h"
-#include "Entities/savepoint.h"
 
 #include <QString>
 class Game
@@ -43,6 +42,8 @@ public:
     void addRoomDiscovered(std::string mapName, std::string roomID);
     void die();
     void updateTas();
+    void updateAsyncRoomLoading();
+    void updateLoadedRooms();
 
     std::vector<Entity *> *getEntities();
     void setEntities(const std::vector<Entity *> &newRendering);
@@ -182,9 +183,23 @@ public:
     bool getUltraFastForward() const;
     void setUltraFastForward(bool newUltraFastForward);
 
+    std::map<std::string, std::vector<Entity *> *> &getRoomEntities();
+    void setRoomEntities(const std::map<std::string, std::vector<Entity *> *> &newRoomEntities);
+
+    std::vector<std::string> *getRoomsToUnload();
+    void setRoomsToUnload(std::vector<std::string> &newRoomsToUnload);
+
+    std::vector<std::string> *getRoomsToLoad();
+    void setRoomsToLoad(std::vector<std::string> &newRoomsToLoad);
+
 private:
     std::string assetsPath;
 
+    std::thread* roomWorker = nullptr;
+    std::atomic<bool> workerFinished{false};
+    std::vector<std::string> roomsToLoad;
+    std::vector<std::string> roomsToUnload;
+    std::map<std::string, std::vector<Entity*>*> roomEntities; // map<roomId, entities>, used to get the entities of a room using its id
     std::vector<Entity*> entities;
     std::vector<Terrain*> terrains;
     std::vector<Monster*> monsters;

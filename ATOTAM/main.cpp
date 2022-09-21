@@ -83,24 +83,19 @@ void gameClock(MainWindow* w) {
 
         if (g->getDoorTransition() == "") {
 
+            g->updateAsyncRoomLoading();
+
             if (!g->getIsPaused()) {
                 if (!g->getInInventory() && !g->getInMap()) {
                     if (!g->getMapViewer()) {
                         // Update physics
                         if (g->getS() != nullptr) {
-                            g->addEntities(Physics::updateSamos(g->getS(), g->getTerrains(), g->getDynamicObjs(), *g->getInputList(), *g->getInputTime(), g->getCurrentMap()));
+                            g->addEntities(Physics::updateSamos(g));
                             g->updateNPCs();
                             g->updateCamera();
                         }
-                        std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> physicsOutput = Physics::updatePhysics(g->getS(),
-                                                                                                                                              g->getTerrains(),
-                                                                                                                                              g->getDynamicObjs(),
-                                                                                                                                              g->getMonsters(),
-                                                                                                                                              g->getAreas(),
-                                                                                                                                              g->getNPCs(),
-                                                                                                                                              g->getProjectiles(),
-                                                                                                                                              g->getCurrentMap(),
-                                                                                                                                              g->getCurrentProgress());
+                        std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> physicsOutput
+                                = Physics::updatePhysics(g);
                         g->setDoorTransition(std::get<0>(physicsOutput));
                         g->addEntities(std::get<1>(physicsOutput));
                         g->removeEntities(std::get<2>(physicsOutput));
@@ -138,12 +133,12 @@ void gameClock(MainWindow* w) {
                 g->setInMap(false);
                 g->setIsPaused(false);
 
-                nlohmann::json mapJson = (*g->getCurrentMap().getJson())["rooms"][g->getCurrentMap().getCurrentRoomId()];
+                nlohmann::json roomJson = (*g->getCurrentMap().getJson())["rooms"][g->getCurrentMap().getCurrentRoomId()];
 
-                int roomS_x = mapJson["position"][0];
-                int roomS_y = mapJson["position"][1];
-                int roomE_x = mapJson["size"][0];
-                int roomE_y = mapJson["size"][1];
+                int roomS_x = roomJson["position"][0];
+                int roomS_y = roomJson["position"][1];
+                int roomE_x = roomJson["size"][0];
+                int roomE_y = roomJson["size"][1];
                 roomE_x += roomS_x;
                 roomE_y += roomS_y;
 
@@ -214,8 +209,9 @@ void gameClock(MainWindow* w) {
 
                     g->addRoomDiscovered(g->getCurrentMap().getName(), g->getCurrentMap().getCurrentRoomId());
 
-                    // Unload the last room
+                    // Stop updating the last room
                     g->removeOtherRoomsEntities();
+                    g->updateLoadedRooms();
 
                     g->updateAnimations();
                 }

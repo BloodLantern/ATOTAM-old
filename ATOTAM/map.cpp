@@ -212,7 +212,36 @@ void Map::changeRoom(Entity *entity, std::string newRoomId)
 
     // Make sure this Entity is in this Map and get its JSON node
     nlohmann::json entJson = find(entity);
-    json["rooms"][oldRoomId]["content"][entity->getEntType()][entity->getName()].erase();
+
+    // Create the JSON pointer
+    nlohmann::json::json_pointer ptr("/rooms/" + oldRoomId + "/content/" + entity->getEntType() + "/" + entity->getName());
+
+    // Then erase it from the old room
+    nlohmann::json nameJson = json.at(ptr);
+    for (unsigned int i = 0; i < nameJson.size(); i++)
+        if (nameJson[i] == entJson) {
+            json.at(ptr).erase(i);
+            break;
+        }
+
+    // Remove the subnodes in the old room if they are empty
+    ptr = nlohmann::json::json_pointer("/rooms/" + oldRoomId + "/content/" + entity->getEntType());
+    if (json.at(ptr)[entity->getName()].empty())
+        json.at(ptr).erase(entity->getName());
+    ptr = nlohmann::json::json_pointer("/rooms/" + oldRoomId + "/content");
+    if (json.at(ptr)[entity->getEntType()].empty())
+        json.at(ptr).erase(entity->getEntType());
+
+    // Create the subnodes in the new room if they don't already exist
+    ptr = nlohmann::json::json_pointer("/rooms/" + newRoomId + "/content/" + entity->getEntType());
+    if (json.at(ptr).is_null())
+        json.at(ptr) = "{}"_json;
+    ptr = nlohmann::json::json_pointer("/rooms/" + newRoomId + "/content/" + entity->getEntType() + "/" + entity->getName());
+    if (json.at(ptr).is_null())
+        json.at(ptr) = "[]"_json;
+
+    // Eventually add it to the new room
+    json.at(ptr).push_back(entJson);
 }
 
 std::string Map::getCurrentRoomId() const

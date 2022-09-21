@@ -32,8 +32,12 @@
 .app
 ATOTAM/ATOTAM.pro.user
 ATOTAM/ATOTAM_en_US.ts.autosave
-BUILD_ATOTAM/*.*
-BUILD_ATOTAM/*
+BUILD/*.*
+BUILD/*
+RELEASE/*.*
+RELEASE/*
+PROFILE/*.*
+PROFILE/*
 BUILD_ATOTAM_MapEditor/*.*
 BUILD_ATOTAM_MapEditor/*
 *.qrc

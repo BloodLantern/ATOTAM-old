@@ -514,6 +514,16 @@ void MainWindow::setupToDraw()
         toDraw["samos_frameCount"] = game->getFrameCount();
         toDraw["tas_lineFrameCount"] = game->getLastInstructionFrames();
         toDraw["tas_lineNumber"] = (game->getCurrentInstructionFrames() == 1 ? game->getLine() - 1 : game->getLine()) + game->getLinesSkipped();
+        toDraw["loadedRooms"] = "[]"_json;
+        for (auto r = game->getRoomEntities().begin(); r != game->getRoomEntities().end(); r++)
+            if (r->second != nullptr)
+                toDraw["loadedRooms"].push_back(r->first);
+        toDraw["loadingRooms"] = "[]"_json;
+        for (auto r = game->getRoomsToLoad()->begin(); r != game->getRoomsToLoad()->end(); r++)
+            toDraw["loadingRooms"].push_back(*r);
+        toDraw["unloadingRooms"] = "[]"_json;
+        for (auto r = game->getRoomsToUnload()->begin(); r != game->getRoomsToUnload()->end(); r++)
+            toDraw["unloadingRooms"].push_back(*r);
     }
 }
 
@@ -825,7 +835,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
     if (tempToDraw["showDebugInfo"]) {
-        painter.fillRect(QRect(70, 70, 250, 590), QBrush(QColor(0,0,0,150)));
+        painter.fillRect(QRect(70, 70, 250, 650), QBrush(QColor(0,0,0,150)));
 
         painter.setPen(QColor("white"));
 
@@ -858,6 +868,30 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawText(QPoint(80, 610), QString::fromStdString("Frame count : " + std::to_string(tempToDraw["samos_frameCount"].get<int>())));
         painter.drawText(QPoint(80, 630), QString::fromStdString("TAS Current line frame count : " + std::to_string(tempToDraw["tas_lineFrameCount"].get<int>())));
         painter.drawText(QPoint(80, 650), QString::fromStdString("TAS Current line number : " + std::to_string(tempToDraw["tas_lineNumber"].get<int>())));
+        std::string str = "[";
+        for (unsigned int i = 0; i < tempToDraw["loadedRooms"].size(); i++) {
+            if (i != 0)
+                str += ", ";
+            str += tempToDraw["loadedRooms"][i];
+        }
+        str += "]";
+        painter.drawText(QPoint(80, 670), QString::fromStdString("Loaded rooms : " + str));
+        str = "[";
+        for (unsigned int i = 0; i < tempToDraw["loadingRooms"].size(); i++) {
+            if (i != 0)
+                str += ", ";
+            str += tempToDraw["loadingRooms"][i];
+        }
+        str += "]";
+        painter.drawText(QPoint(80, 690), QString::fromStdString("Rooms being loaded : " + str));
+        str = "[";
+        for (unsigned int i = 0; i < tempToDraw["unloadingRooms"].size(); i++) {
+            if (i != 0)
+                str += ", ";
+            str += tempToDraw["unloadingRooms"][i];
+        }
+        str += "]";
+        painter.drawText(QPoint(80, 710), QString::fromStdString("Rooms being unloaded : " + str));
     }
     painter.end();
 }

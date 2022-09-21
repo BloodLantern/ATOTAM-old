@@ -1,7 +1,9 @@
 #include "game.h"
+#include "Entities/door.h"
 #include "physics.h"
 #include <io.h>
 #include <iostream>
+#include <Entities/savepoint.h>
 
 nlohmann::json Game::loadJson(std::string fileName)
 {
@@ -176,6 +178,108 @@ void Game::updateTas()
         line++;
 }
 
+void Game::updateAsyncRoomLoading()
+{
+    if (roomsToLoad.empty() && roomsToUnload.empty())
+        return;
+
+    // A worker thread is necessary
+
+    if (roomWorker == nullptr) {
+        roomWorker = new std::thread([this] {
+            // For each room to load
+            for (auto room = roomsToLoad.begin(); room != roomsToLoad.end(); room++) {
+                // Get the room entity vector
+                std::vector<Entity*>* ents = roomEntities[*room];
+
+                if (ents == nullptr)
+                    // Create it if null
+                    ents = new std::vector<Entity*>;
+                else
+                    // If the room is already loaded, don't go any further
+                    if (!ents->empty())
+                        continue;
+
+                // For each entity to load
+                for (Entity* e : currentMap.loadRoom(*room))
+                    // Add it to the vector
+                    ents->push_back(e);
+
+                // Eventually add the vector to the map
+                roomEntities[*room] = ents;
+            }
+            roomsToLoad.clear();
+
+            // For each room to unload
+            for (auto room = roomsToUnload.begin(); room != roomsToUnload.end(); room++) {
+                // Get the room entity vector
+                std::vector<Entity*>* ents = roomEntities[*room];
+
+                // If null, nothing needs to be unloaded
+                if (ents == nullptr)
+                    continue;
+
+                // For each entity to unload
+                for (Entity* e : *ents)
+                    // Delete it
+                    delete e;
+
+                // Also delete the vector
+                delete ents;
+
+                // Remove the vector from the map
+                roomEntities[*room] = nullptr;
+            }
+            roomsToUnload.clear();
+
+            workerFinished = true;
+        });
+    } else if (workerFinished) {
+        // Thread finished execution
+        roomWorker->join();
+        delete roomWorker;
+        roomWorker = nullptr;
+
+        // Reset value for next thread
+        workerFinished = false;
+    }
+}
+
+void Game::updateLoadedRooms()
+{
+    std::vector<std::string> loadedRooms = { currentMap.getCurrentRoomId() };
+    // If the current room isn't loaded: if the game is starting
+    if (roomEntities[currentMap.getCurrentRoomId()] == nullptr) {
+        roomEntities[currentMap.getCurrentRoomId()] = new std::vector<Entity*>(currentMap.loadRoom());
+        addEntities(*roomEntities[currentMap.getCurrentRoomId()]);
+    }
+
+    // For each door in the current room, load its ending room
+    for (auto area = areas.begin(); area != areas.end(); area++)
+        if ((*area)->getAreaType() == "Door") {
+            // This shouldn't cause a crash
+            std::string room = dynamic_cast<Door*>(*area)->getEndingRoom();
+
+            // If the room isn't loaded yet, add it to the list
+            if (roomEntities[room] == nullptr)
+                roomsToLoad.push_back(room);
+
+            loadedRooms.push_back(room);
+        }
+
+    // Unload all the other rooms
+    for (auto room = roomEntities.begin(); room != roomEntities.end(); room++) {
+        bool listed = false;
+        for (const std::string &r : loadedRooms)
+            if (r == room->first) {
+                listed = true;
+                break;
+            }
+        if (!listed)
+            roomsToUnload.push_back(room->first);
+    }
+}
+
 template <typename Out>
 void Game::split(const std::string &s, char delim, Out result) {
     std::istringstream iss(s);
@@ -213,7 +317,7 @@ Game::Game(std::string assetsPath, std::string saveNumber)
 
     // Load map
     currentMap.setCurrentRoomId(currentProgress.getRoomID());
-    addEntities(currentMap.loadRoom());
+    updateLoadedRooms();
 
     std::pair<int, int> coords = loadRespawnPosition(currentProgress, currentMap);
 
@@ -761,8 +865,6 @@ void Game::removeOtherRoomsEntities()
             toDelete.push_back(*ent);
     clearEntities("", false);
     addEntities(newentities);
-    for (std::vector<Entity*>::iterator ent = toDelete.begin(); ent != toDelete.end(); ent++)
-        delete *ent;
 }
 
 void Game::removeEntities(std::vector<Entity *> es)
@@ -1434,4 +1536,34 @@ bool Game::getUltraFastForward() const
 void Game::setUltraFastForward(bool newUltraFastForward)
 {
     ultraFastForward = newUltraFastForward;
+}
+
+std::map<std::string, std::vector<Entity *> *> &Game::getRoomEntities()
+{
+    return roomEntities;
+}
+
+void Game::setRoomEntities(const std::map<std::string, std::vector<Entity *> *> &newRoomEntities)
+{
+    roomEntities = newRoomEntities;
+}
+
+std::vector<std::string> *Game::getRoomsToUnload()
+{
+    return &roomsToUnload;
+}
+
+void Game::setRoomsToUnload(std::vector<std::string> &newRoomsToUnload)
+{
+    roomsToUnload = newRoomsToUnload;
+}
+
+std::vector<std::string> *Game::getRoomsToLoad()
+{
+    return &roomsToLoad;
+}
+
+void Game::setRoomsToLoad(std::vector<std::string> &newRoomsToLoad)
+{
+    roomsToLoad = newRoomsToLoad;
 }

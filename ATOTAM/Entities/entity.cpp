@@ -226,6 +226,8 @@ nlohmann::json Entity::getJsonRepresentation(bool defaultValues)
     nlohmann::json result;
     result["x"] = x; // !!! ABSOLUTE POSITION, NOT RELATIVE TO THE ROOM AS IN THE JSON
     result["y"] = y; // !!! ABSOLUTE POSITION, NOT RELATIVE TO THE ROOM AS IN THE JSON
+    if (defaultValues)
+        result["roomId"] = roomId;
     if (!defaultValues) {
         if (state != "None")
             result["state"] = state;

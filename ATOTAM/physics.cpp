@@ -1,5 +1,11 @@
 #include "physics.h"
 
+#include "Entities/door.h"
+#include "Entities/monster.h"
+#include "Entities/npc.h"
+#include "Entities/samos.h"
+#include "Entities/area.h"
+
 double Physics::frameRate;
 double Physics::gravity;
 
@@ -116,8 +122,15 @@ bool Physics::updateProjectile(Projectile *p)
         return false;
 }
 
-std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::map<std::string, bool> inputList, std::map<std::string, double> inputTime, Map currentMap)
+std::vector<Entity*> Physics::updateSamos(Game* game)
 {
+    Samos* s = game->getS();
+    std::vector<Terrain*> *ts = game->getTerrains();
+    std::vector<DynamicObj*> *ds = game->getDynamicObjs();
+    std::map<std::string, bool> inputList = *game->getInputList();
+    std::map<std::string, double> inputTime = *game->getInputTime();
+    Map currentMap = game->getCurrentMap();
+
     std::vector<Entity*> toAdd;
     if (s->getState() == "MorphBallStop" || s->getState() == "MorphBallSlow" || s->getState() == "MorphBallSuperSlow")
         s->setState("MorphBall");
@@ -1324,8 +1337,18 @@ std::vector<Entity*> Physics::updateSamos(Samos* s, std::vector<Terrain*> *ts, s
     return toAdd;
 }
 
-std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> Physics::updatePhysics(Samos *s, std::vector<Terrain*> *ts, std::vector<DynamicObj*> *ds, std::vector<Monster*> *ms, std::vector<Area*> *as, std::vector<NPC*> *ns, std::vector<Projectile*> *ps, Map currentMap, Save currentProgress)
+std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> Physics::updatePhysics(Game* game)
 {
+    Samos *s = game->getS();
+    std::vector<Terrain*> *ts = game->getTerrains();
+    std::vector<DynamicObj*> *ds = game->getDynamicObjs();
+    std::vector<Monster*> *ms = game->getMonsters();
+    std::vector<Area*> *as = game->getAreas();
+    std::vector<NPC*> *ns = game->getNPCs();
+    std::vector<Projectile*> *ps = game->getProjectiles();
+    Map currentMap = game->getCurrentMap();
+    Save currentProgress = game->getCurrentProgress();
+
     std::string doorTransition = "";
 
     //Physics settings
@@ -1713,8 +1736,20 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                         doorTransition = "Up";
                     else if (d->getState().find("Down") != std::string::npos)
                         doorTransition = "Down";
-                    for (Entity* ent : currentMap.loadRoom())
-                        toAdd.push_back(ent);
+                    // If the new room isn't loaded yet
+                    if (game->getRoomEntities()[currentMap.getCurrentRoomId()] == nullptr) {
+                        // Remove it from the rooms to load
+                        for (auto room = game->getRoomsToLoad()->begin(); room != game->getRoomsToLoad()->end(); room++)
+                            if (currentMap.getCurrentRoomId() == *room) {
+                                game->getRoomsToLoad()->erase(room);
+                                break;
+                            }
+                        // And load it
+                        for (Entity* ent : currentMap.loadRoom())
+                            toAdd.push_back(ent);
+                    } else
+                        for (Entity* ent : *game->getRoomEntities()[currentMap.getCurrentRoomId()])
+                            toAdd.push_back(ent);
                 }
             }
         }
