@@ -15,6 +15,7 @@
 	"enter": ["Enter"],
 	"interact": ["F"],
 	"map": ["Tab"],
+
 	"SPECIAL_frameAdvance": ["RShift"],
 	"SPECIAL_toggleFrameAdvance": ["RAlt"],
 	"SPECIAL_toggleTAS": ["Add"],
@@ -22,5 +23,6 @@
 	"SPECIAL_fastForward": ["8"],
 	"SPECIAL_slowForward": ["7"],
 	"SPECIAL_toggleHitboxes": ["Divide"],
-	"SPECIAL_toggleFreeCamera": ["Multiply"]
+	"SPECIAL_toggleFreeCamera": ["Multiply"],
+	"SPECIAL_toggleDebugInfo": ["F3"]
 }

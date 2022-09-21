@@ -133,6 +133,13 @@
                             "to": "3",
                             "x": 3052.0,
                             "y": 320.0
+                        },
+                        {
+                            "areaType": "Door",
+                            "state": "Right",
+                            "to": "testLoadingSpeed0",
+                            "x": 3052.0,
+                            "y": 2176.0
                         }
                     ]
                 },
@@ -150,7 +157,6 @@
                     "MossyStone": [
                         {
                             "horizontalRepeat": 6,
-                            "verticalRepeat": 1,
                             "x": 0.0,
                             "y": 1024.0
                         },
@@ -191,14 +197,13 @@
                         },
                         {
                             "horizontalRepeat": 35,
-                            "verticalRepeat": 1,
                             "x": 576.0,
                             "y": 832.0
                         },
                         {
-                            "horizontalRepeat": 42,
-                            "x": 320,
-                            "y": 2432
+                            "horizontalRepeat": 43,
+                            "x": 320.0,
+                            "y": 2432.0
                         },
                         {
                             "horizontalRepeat": 9,
@@ -207,13 +212,11 @@
                         },
                         {
                             "horizontalRepeat": 12,
-                            "verticalRepeat": 1,
                             "x": 2240.0,
                             "y": 1984.0
                         },
                         {
                             "horizontalRepeat": 1,
-                            "verticalRepeat": 1,
                             "x": 2944.0,
                             "y": 576.0
                         }
@@ -224,7 +227,6 @@
                             "y": 1856
                         },
                         {
-                            "horizontalRepeat": 1,
                             "verticalRepeat": 2,
                             "x": 2240.0,
                             "y": 1728.0
@@ -250,13 +252,11 @@
                             "y": 1088
                         },
                         {
-                            "horizontalRepeat": 1,
-                            "verticalRepeat": 30,
+                            "verticalRepeat": 25,
                             "x": 3008.0,
                             "y": 576.0
                         },
                         {
-                            "horizontalRepeat": 1,
                             "verticalRepeat": 5,
                             "x": 3008.0,
                             "y": 0.0
@@ -267,7 +267,6 @@
                             "y": 0
                         },
                         {
-                            "horizontalRepeat": 1,
                             "verticalRepeat": 4,
                             "x": 2240.0,
                             "y": 2048.0
@@ -554,6 +553,152 @@
             ],
             "size": [
                 6400,
+                1080
+            ]
+        },
+        "testLoadingSpeed0": {
+            "content": {
+                "Area": {
+                    "VerticalDoor": [
+                        {
+                            "areaType": "Door",
+                            "state": "Left",
+                            "to": "1",
+                            "x": 0.0,
+                            "y": 64.0
+                        },
+                        {
+                            "areaType": "Door",
+                            "state": "Right",
+                            "to": "testLoadingSpeed1",
+                            "x": 108.0,
+                            "y": 64.0
+                        }
+                    ]
+                },
+                "Terrain": {
+                    "MossyStone": [
+                        {
+                            "horizontalRepeat": 2,
+                            "state": "0",
+                            "x": 0.0,
+                            "y": 320.0
+                        }
+                    ],
+                    "Stone": [
+                        {
+                            "horizontalRepeat": 2,
+                            "state": "0",
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 2,
+                            "state": "0",
+                            "verticalRepeat": 11,
+                            "x": 0.0,
+                            "y": 384.0
+                        }
+                    ]
+                }
+            },
+            "position": [
+                4992,
+                2112
+            ],
+            "size": [
+                128,
+                1080
+            ]
+        },
+        "testLoadingSpeed1": {
+            "content": {
+                "Area": {
+                    "VerticalDoor": [
+                        {
+                            "areaType": "Door",
+                            "state": "Left",
+                            "to": "testLoadingSpeed0",
+                            "x": 0.0,
+                            "y": 64.0
+                        }
+                    ]
+                },
+                "Terrain": {
+                    "MossyStone": [
+                        {
+                            "state": "0",
+                            "x": 0.0,
+                            "y": 320.0
+                        },
+                        {
+                            "horizontalRepeat": 25,
+                            "state": "0",
+                            "x": 256.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "state": "0",
+                            "x": 64.0,
+                            "y": 448.0
+                        },
+                        {
+                            "state": "0",
+                            "x": 128.0,
+                            "y": 640.0
+                        },
+                        {
+                            "state": "0",
+                            "x": 192.0,
+                            "y": 832.0
+                        }
+                    ],
+                    "Stone": [
+                        {
+                            "horizontalRepeat": 30,
+                            "state": "0",
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 11,
+                            "x": 0.0,
+                            "y": 384.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 16,
+                            "x": 1856.0,
+                            "y": 64.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 9,
+                            "x": 64.0,
+                            "y": 512.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 6,
+                            "x": 128.0,
+                            "y": 704.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 3,
+                            "x": 192.0,
+                            "y": 896.0
+                        }
+                    ]
+                }
+            },
+            "position": [
+                5120,
+                2112
+            ],
+            "size": [
+                1920,
                 1080
             ]
         }

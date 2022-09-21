@@ -44,6 +44,7 @@ public:
     void updateTas();
     void updateAsyncRoomLoading();
     void updateLoadedRooms();
+    void updateSpecialInputs();
 
     std::vector<Entity *> *getEntities();
     void setEntities(const std::vector<Entity *> &newRendering);

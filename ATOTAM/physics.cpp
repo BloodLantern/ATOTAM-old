@@ -1738,13 +1738,7 @@ std::tuple<std::string, std::vector<Entity*>, std::vector<Entity*>, Map, Save> P
                         doorTransition = "Down";
                     // If the new room isn't loaded yet
                     if (game->getRoomEntities()[currentMap.getCurrentRoomId()] == nullptr) {
-                        // Remove it from the rooms to load
-                        for (auto room = game->getRoomsToLoad()->begin(); room != game->getRoomsToLoad()->end(); room++)
-                            if (currentMap.getCurrentRoomId() == *room) {
-                                game->getRoomsToLoad()->erase(room);
-                                break;
-                            }
-                        // And load it
+                        // Load it
                         for (Entity* ent : currentMap.loadRoom())
                             toAdd.push_back(ent);
                     } else

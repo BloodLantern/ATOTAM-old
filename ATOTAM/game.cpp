@@ -280,6 +280,25 @@ void Game::updateLoadedRooms()
     }
 }
 
+void Game::updateSpecialInputs()
+{
+    if (inputList["SPECIAL_toggleFrameAdvance"] && inputTime["SPECIAL_toggleFrameAdvance"] == 0)
+        frameAdvance = !frameAdvance;
+    if (inputList["SPECIAL_toggleTAS"] && inputTime["SPECIAL_toggleTAS"] == 0)
+        tas = !tas;
+    if (inputList["SPECIAL_toggleHitboxes"] && inputTime["SPECIAL_toggleHitboxes"] == 0)
+        renderHitboxes = !renderHitboxes;
+    if (inputList["SPECIAL_toggleFreeCamera"] && inputTime["SPECIAL_toggleFreeCamera"] == 0)
+        mapViewer = !mapViewer;
+    if (inputList["SPECIAL_restartTAS"] && inputTime["SPECIAL_restartTAS"] == 0) {
+        tas = true;
+        currentInstructionFrames = 1;
+        line = 1;
+    }
+    if (inputList["SPECIAL_toggleDebugInfo"] && inputTime["SPECIAL_toggleDebugInfo"] == 0)
+        showDebugInfo = !showDebugInfo;
+}
+
 template <typename Out>
 void Game::split(const std::string &s, char delim, Out result) {
     std::istringstream iss(s);
