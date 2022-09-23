@@ -66,7 +66,8 @@ void AddEdit::make()
             mapJson->at(ptr) = "[]"_json;
         // Add it
         mapJson->at(ptr).push_back(entJson);
-        entityList->push_back(entity);
+        if (entityList)
+            entityList->push_back(entity);
         if (selectedEntity)
             *selectedEntity = entity;
     }

@@ -36,16 +36,37 @@ void PropertiesEdit::unmake()
         for (auto& ent : mapJson->at(ptr).items())
             // Find the correct one
             if (ent.value() == entityJson) {
+                // Update entity room
+                if (property["unmake"].begin().key() == "roomId") {
+                    map->changeRoom(entity, property["unmake"]["roomId"]);
+                }
+
                 // Change the values
                 entity->setJsonValues(property["unmake"]);
 
                 // Update entityJson
                 entityJson = entity->getJsonRepresentation(false);
 
+                // Change the entity position relative to the room
+                if (property["unmake"].begin().key() == "roomId") {
+                    property["unmake"]["x"] = entity->getX()
+                            - mapJson->at(
+                                nlohmann::json::json_pointer("/rooms/" + property["make"]["roomId"].get<std::string>() + "/position/0")).get<int>()
+                            + mapJson->at(
+                                nlohmann::json::json_pointer("/rooms/" + property["unmake"]["roomId"].get<std::string>() + "/position/0")).get<int>();
+                    property["unmake"]["y"] = entity->getY()
+                            - mapJson->at(
+                                nlohmann::json::json_pointer("/rooms/" + property["make"]["roomId"].get<std::string>() + "/position/1")).get<int>()
+                            + mapJson->at(
+                                nlohmann::json::json_pointer("/rooms/" + property["unmake"]["roomId"].get<std::string>() + "/position/1")).get<int>();
+                }
+
                 // Update the animation (and therefore, the texture)
                 entity->setCurrentAnimation(entity->updateAnimation());
 
                 // Update map
+                ptr = nlohmann::json::json_pointer("/rooms/" + entity->getRoomId()
+                                                   + "/content/" + entity->getEntType() + "/" + entity->getFullName());
                 mapJson->at(ptr)[std::stoi(ent.key())] = entityJson;
                 break;
             }
@@ -68,16 +89,37 @@ void PropertiesEdit::make()
         for (auto& ent : mapJson->at(ptr).items())
             // Find the correct one
             if (ent.value() == entityJson) {
+                // Update entity room
+                if (property["make"].begin().key() == "roomId") {
+                    map->changeRoom(entity, property["make"]["roomId"]);
+                }
+
                 // Change the values
                 entity->setJsonValues(property["make"]);
 
                 // Update entityJson
                 entityJson = entity->getJsonRepresentation(false);
 
+                // Change the entity position relative to the room
+                if (property["make"].begin().key() == "roomId") {
+                    property["make"]["x"] = entity->getX()
+                            - mapJson->at(
+                                nlohmann::json::json_pointer("/rooms/" + property["unmake"]["roomId"].get<std::string>() + "/position/0")).get<int>()
+                            + mapJson->at(
+                                nlohmann::json::json_pointer("/rooms/" + property["make"]["roomId"].get<std::string>() + "/position/0")).get<int>();
+                    property["make"]["y"] = entity->getY()
+                            - mapJson->at(
+                                nlohmann::json::json_pointer("/rooms/" + property["unmake"]["roomId"].get<std::string>() + "/position/1")).get<int>()
+                            + mapJson->at(
+                                nlohmann::json::json_pointer("/rooms/" + property["make"]["roomId"].get<std::string>() + "/position/1")).get<int>();
+                }
+
                 // Update the animation (and therefore, the texture)
                 entity->setCurrentAnimation(entity->updateAnimation());
 
                 // Update map
+                ptr = nlohmann::json::json_pointer("/rooms/" + entity->getRoomId()
+                                                   + "/content/" + entity->getEntType() + "/" + entity->getFullName());
                 mapJson->at(ptr)[std::stoi(ent.key())] = entityJson;
                 break;
             }

@@ -101,8 +101,7 @@ void setupEditorWindow(nlohmann::json editorJson, std::string assetsPath)
     file >> params;
     EditorPreview* preview = new EditorPreview(&editedMap, new QImage(QString::fromStdString(assetsPath + "/textures/error.png"))
                                                , new QImage(QString::fromStdString(assetsPath + "/textures/empty.png")), 2
-                                               , editorJson, params["frameRate"]);
-    preview->setAssetsPath(assetsPath);
+                                               , editorJson, params["frameRate"], assetsPath);
 
     // Window
     EditorWindow* editorWindow = new EditorWindow(preview);

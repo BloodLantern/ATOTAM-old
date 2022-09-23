@@ -7,15 +7,47 @@
 
 class EditorWindow : public QMainWindow
 {
+    Q_OBJECT
 public:
     EditorWindow(EditorPreview* preview);
 
-    void save();
+    void setupMenuBar();
+    void saveMap(std::string name);
+    void saveMap();
     void saveValues();
+    bool modified();
+    int saveDialog();
 
     // QWidget interface
     void closeEvent(QCloseEvent *) override;
-    void keyPressEvent(QKeyEvent *) override;
+
+private slots:
+    void newFile();
+    void openFile();
+    void saveFile();
+    void saveAsFile();
+    // Separator
+    void restartFile();
+    void exitFile();
+
+    void undoEdit();
+    void redoEdit();
+
+    void duplicateObject();
+    void deleteObject();
+    void resetSizeObject();
+    // Separator
+    void moveLeftObject();
+    void moveRightObject();
+    void moveUpObject();
+    void moveDownObject();
+
+    void readMapJsonIO();
+    void readEntitiesJsonIO();
+
+    void resetPositionView();
+    void resetZoomView();
+
 
 private:
     EditorPreview* preview;

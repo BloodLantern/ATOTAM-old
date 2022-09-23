@@ -1,49 +1,20 @@
 {
     "enabled": true,
     "inputs": {
-        "control": [
-            17
-        ],
-        "delete": [
-            46,
-            8
-        ],
         "disableMovingSteps": [
-            16
-        ],
-        "down": [
-            40
-        ],
-        "duplicateObject": [
-            68
-        ],
-        "left": [
-            37
-        ],
-        "redoEdit": [
-            89
-        ],
-        "right": [
-            39
-        ],
-        "save": [
-            83
-        ],
-        "undoEdit": [
-            90
-        ],
-        "up": [
-            38
+            "Shift"
         ]
     },
     "lastLaunch": {
+        "fileSelectorDirectory": "C:/Users/m.grimardhamel/ATOTAM/ATOTAM/assets/maps",
         "map": {
             "camera": [
-                1396,
-                259
+                140,
+                -76
             ],
             "id": "testEditor",
-            "roomId": "0"
+            "roomId": "0",
+            "zoomFactor": 0.64
         },
         "window": {
             "maximized": true,

@@ -16,7 +16,8 @@ public:
                            QImage* emptyTexture,
                            int renderingMultiplier,
                            nlohmann::json editorJson,
-                           double physicsFrameRate);
+                           double physicsFrameRate,
+                           std::string assetsPath);
     ~EditorPreview();
 
     void getInputs();
@@ -25,12 +26,18 @@ public:
     QPoint getClickAreaOffset(Entity*);
     std::pair<int, int> getClickAreaSize(Entity*);
     void updateCursor(QPoint);
+
     void undoEdit();
     void redoEdit();
     void duplicateObject();
     void deleteObject();
+    void moveObjectByOnePixel(std::string direction);
+    void resetSizeObject();
+
     void clearUnmadeEdits();
     void addObject(Entity*);
+    // Clears Entity list. Also deletes the pointers
+    void clearEntities();
 
     nlohmann::json &getEditorJson();
     void setEditorJson(nlohmann::json &newEditorJson);
@@ -54,6 +61,9 @@ public:
     PropertiesModel *getProperties() const;
     void setProperties(PropertiesModel *newProperties);
 
+    const std::vector<Entity *> &getEntities() const;
+    void setEntities(const std::vector<Entity *> &newEntities);
+
 public slots:
     void updateProperty(std::string key, std::string value);
 
@@ -63,10 +73,11 @@ private:
     void updateProperties();
 
     std::vector<Edit*> edits;
+    std::string assetsPath;
     nlohmann::json editorJson = nlohmann::json();
+    nlohmann::json windowsKeyCodes = nlohmann::json();
     Map currentMap = Map();
     std::string roomId = "0";
-    std::string assetsPath;
     QPoint lastMousePosition;
 
     // paintEvent fields
@@ -102,7 +113,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
     void wheelEvent(QWheelEvent*) override;
-    void keyPressEvent(QKeyEvent*) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;
 };

@@ -52,8 +52,10 @@ void RemoveEdit::make()
                 mapJson->at(ptr).erase(std::stoi(ent.key()));
                 for (auto ent = entityList->begin(); ent != entityList->end(); ent++)
                     if (*ent == entity) {
-                        entityList->erase(ent);
-                        *selectedEntity = nullptr;
+                        if (entityList)
+                            entityList->erase(ent);
+                        if (selectedEntity)
+                            *selectedEntity = nullptr;
                         break;
                     }
                 break;

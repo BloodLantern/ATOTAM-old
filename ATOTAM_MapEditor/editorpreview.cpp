@@ -21,8 +21,10 @@
 #include "../ATOTAM/Entities/npc.h"
 #include "../ATOTAM/Entities/monster.h"
 
-EditorPreview::EditorPreview(Map* map, QImage* errorTexture, QImage* emptyTexture, int renderingMultiplier, nlohmann::json editorJson, double physicsFrameRate)
-    : editorJson(editorJson)
+EditorPreview::EditorPreview(Map* map, QImage* errorTexture, QImage* emptyTexture, int renderingMultiplier, nlohmann::json editorJson, double physicsFrameRate, std::string assetsPath)
+    : assetsPath(assetsPath)
+    , editorJson(editorJson)
+    , windowsKeyCodes(loadJson("windowsKeyCodes"))
     , currentMap(*map)
     , entities(map->loadRooms())
     , errorTexture(errorTexture)
@@ -35,6 +37,8 @@ EditorPreview::EditorPreview(Map* map, QImage* errorTexture, QImage* emptyTextur
     setAcceptDrops(true);
     camera.setX(editorJson["lastLaunch"]["map"]["camera"][0]);
     camera.setY(editorJson["lastLaunch"]["map"]["camera"][1]);
+    zoomFactor = editorJson["lastLaunch"]["map"]["zoomFactor"];
+    roomId = editorJson["lastLaunch"]["map"]["roomId"];
 }
 
 EditorPreview::~EditorPreview()
@@ -63,7 +67,7 @@ void EditorPreview::getInputs()
         //Check every key
         for (nlohmann::json::iterator i = editorJson["inputs"].begin(); i != editorJson["inputs"].end(); i++) {
             for (nlohmann::json::iterator j = i.value().begin(); j != i.value().end(); j++)
-                if (GetKeyState(j.value()) & 0x8000) {
+                if (GetKeyState(windowsKeyCodes[j.value()].get<int>()) & 0x8000) {
                     inputList[i.key()] = true;
                     break;
                 } else
@@ -262,6 +266,37 @@ void EditorPreview::deleteObject()
     }
 }
 
+void EditorPreview::moveObjectByOnePixel(std::string direction)
+{
+    if (!selected)
+        return;
+
+    QPoint delta;
+    if (direction == "left")
+        delta.setX(-1);
+    else if (direction == "right")
+        delta.setX(1);
+    else if (direction == "up")
+        delta.setY(-1);
+    else if (direction == "down")
+        delta.setY(1);
+
+    MoveEdit* move = new MoveEdit(&currentMap, selected, delta);
+    move->make();
+    edits.push_back(move);
+    update();
+}
+
+void EditorPreview::resetSizeObject()
+{
+    if (selected) {
+        ResizeEdit* resize = new ResizeEdit(&currentMap, selected, ResizeEdit::UpLeft,
+                                            std::pair<int, int>(1 - selected->getHorizontalRepeat(), 1 - selected->getVerticalRepeat()));
+        resize->make();
+        edits.push_back(resize);
+    }
+}
+
 void EditorPreview::clearUnmadeEdits()
 {
     while (!edits.empty() && !(*(edits.end() - 1))->getMade()) {
@@ -279,6 +314,13 @@ void EditorPreview::addObject(Entity *entity)
         update();
         updateCursor(lastMousePosition);
     }
+}
+
+void EditorPreview::clearEntities()
+{
+    for (auto ent = entities.begin(); ent != entities.end(); ent++)
+        delete *ent;
+    entities.clear();
 }
 
 void EditorPreview::paintEvent(QPaintEvent *)
@@ -342,6 +384,14 @@ void EditorPreview::paintEvent(QPaintEvent *)
                     resize->setDeltaChangedLastFrame(false);
                 }
     }
+
+    // Room outline
+    painter.setPen(QColor("magenta"));
+    nlohmann::json roomJson = (*currentMap.getJson())["rooms"][roomId];
+    painter.drawRect((roomJson["position"][0].get<int>() - camera.x()) * zoomFactor,
+            (roomJson["position"][1].get<int>() - camera.y()) * zoomFactor,
+            roomJson["size"][0].get<int>() * zoomFactor,
+            roomJson["size"][1].get<int>() * zoomFactor);
 
     painter.end();
 
@@ -717,48 +767,6 @@ void EditorPreview::wheelEvent(QWheelEvent *event)
     }
 }
 
-void EditorPreview::keyPressEvent(QKeyEvent *event)
-{
-    getInputs();
-    if (inputList["control"]) {
-        if (inputList["undoEdit"])
-            undoEdit();
-        else if (inputList["redoEdit"])
-            redoEdit();
-        else if (inputList["duplicateObject"])
-            duplicateObject();
-        else
-            event->ignore();
-    } else if (inputList["delete"])
-        deleteObject();
-    else if (inputList["left"] && selected) {
-        MoveEdit* move = new MoveEdit(&currentMap, selected, QPoint(-1, 0));
-        move->make();
-        edits.push_back(move);
-        update();
-    }
-    else if (inputList["right"] && selected) {
-        MoveEdit* move = new MoveEdit(&currentMap, selected, QPoint(1, 0));
-        move->make();
-        edits.push_back(move);
-        update();
-    }
-    else if (inputList["up"] && selected) {
-        MoveEdit* move = new MoveEdit(&currentMap, selected, QPoint(0, -1));
-        move->make();
-        edits.push_back(move);
-        update();
-    }
-    else if (inputList["down"] && selected) {
-        MoveEdit* move = new MoveEdit(&currentMap, selected, QPoint(0, 1));
-        move->make();
-        edits.push_back(move);
-        update();
-    }
-    else
-        event->ignore();
-}
-
 void EditorPreview::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasText()) {
@@ -968,4 +976,14 @@ PropertiesModel *EditorPreview::getProperties() const
 void EditorPreview::setProperties(PropertiesModel *newProperties)
 {
     properties = newProperties;
+}
+
+const std::vector<Entity *> &EditorPreview::getEntities() const
+{
+    return entities;
+}
+
+void EditorPreview::setEntities(const std::vector<Entity *> &newEntities)
+{
+    entities = newEntities;
 }

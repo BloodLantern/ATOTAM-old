@@ -8,7 +8,24 @@
 
 Map::Map()
 {
-
+    // Create an empty map with an empty room. That room is necessary because of the 'startingRoom' node
+    json = "{"
+           "    \"name\": \"\","
+           "    \"rooms\": {"
+           "        \"0\": {"
+           "            \"content\": {},"
+           "            \"position\": ["
+           "                0,"
+           "                0"
+           "            ],"
+           "            \"size\": ["
+           "                1920,"
+           "                1080"
+           "            ]"
+           "        }"
+           "    },"
+           "    \"startingRoom\": \"0\""
+           "}"_json;
 }
 
 Map Map::loadMap(std::string id, std::string assetsPath)

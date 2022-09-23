@@ -10,20 +10,14 @@
                             "to": "1",
                             "x": 1900,
                             "y": 768
-                        },
-                        {
-                            "areaType": "Door",
-                            "state": "Right",
-                            "to": "1",
-                            "x": 1900.0,
-                            "y": 64.0
                         }
                     ]
                 },
                 "Monster": {
                     "Test": [
                         {
-                            "facing": "Right",
+                            "facing": "Left",
+                            "state": "Standing",
                             "x": 1000,
                             "y": 950
                         }
@@ -74,8 +68,9 @@
                             "y": 832
                         },
                         {
-                            "horizontalRepeat": 9,
-                            "x": 1088.0,
+                            "horizontalRepeat": 14,
+                            "verticalRepeat": 6,
+                            "x": 768.0,
                             "y": 320.0
                         }
                     ],
@@ -85,9 +80,9 @@
                             "y": 448
                         },
                         {
-                            "verticalRepeat": 7,
-                            "x": 1856.0,
-                            "y": 320.0
+                            "verticalRepeat": 11,
+                            "x": 1856,
+                            "y": 64
                         },
                         {
                             "verticalRepeat": 16,
@@ -103,11 +98,6 @@
                             "verticalRepeat": 7,
                             "x": 1600,
                             "y": 384
-                        },
-                        {
-                            "state": "0",
-                            "x": 1088.0,
-                            "y": 576.0
                         }
                     ]
                 }
@@ -140,11 +130,17 @@
                             "y": 768
                         },
                         {
+                            "state": "Right",
+                            "to": "3",
+                            "x": 3052.0,
+                            "y": 320.0
+                        },
+                        {
                             "areaType": "Door",
-                            "state": "Left",
-                            "to": "0",
-                            "x": 0.0,
-                            "y": 64.0
+                            "state": "Right",
+                            "to": "testLoadingSpeed0",
+                            "x": 3052.0,
+                            "y": 2176.0
                         }
                     ]
                 },
@@ -153,42 +149,42 @@
                         {
                             "spID": 1,
                             "state": "Normal",
-                            "x": 2540,
-                            "y": 1536
+                            "x": 2959.0,
+                            "y": 1856.0
                         }
                     ]
                 },
                 "Terrain": {
                     "MossyStone": [
                         {
-                            "horizontalRepeat": 10,
-                            "x": 0,
-                            "y": 1024
+                            "horizontalRepeat": 6,
+                            "x": 0.0,
+                            "y": 1024.0
                         },
                         {
                             "horizontalRepeat": 10,
-                            "x": 384,
-                            "y": 1216
+                            "x": 384.0,
+                            "y": 1216.0
                         },
                         {
                             "horizontalRepeat": 10,
-                            "x": 384,
-                            "y": 1600
+                            "x": 384.0,
+                            "y": 1600.0
                         },
                         {
                             "horizontalRepeat": 10,
-                            "x": 384,
-                            "y": 2048
+                            "x": 384.0,
+                            "y": 2048.0
                         },
                         {
                             "horizontalRepeat": 10,
-                            "x": 640,
-                            "y": 1408
+                            "x": 640.0,
+                            "y": 1408.0
                         },
                         {
                             "horizontalRepeat": 10,
-                            "x": 640,
-                            "y": 2240
+                            "x": 640.0,
+                            "y": 2240.0
                         },
                         {
                             "horizontalRepeat": 12,
@@ -201,19 +197,29 @@
                             "y": 1792
                         },
                         {
-                            "horizontalRepeat": 30,
-                            "x": 896,
-                            "y": 832
+                            "horizontalRepeat": 35,
+                            "x": 576.0,
+                            "y": 832.0
                         },
                         {
-                            "horizontalRepeat": 42,
-                            "x": 320,
-                            "y": 2432
+                            "horizontalRepeat": 43,
+                            "x": 320.0,
+                            "y": 2432.0
                         },
                         {
                             "horizontalRepeat": 9,
                             "x": 640,
                             "y": 1856
+                        },
+                        {
+                            "horizontalRepeat": 12,
+                            "x": 2240.0,
+                            "y": 1984.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "x": 2944.0,
+                            "y": 576.0
                         }
                     ],
                     "Stone": [
@@ -222,19 +228,24 @@
                             "y": 1856
                         },
                         {
+                            "verticalRepeat": 2,
+                            "x": 2240.0,
+                            "y": 1728.0
+                        },
+                        {
                             "verticalRepeat": 10,
-                            "x": 2752,
-                            "y": 896
+                            "x": 2752.0,
+                            "y": 896.0
                         },
                         {
                             "verticalRepeat": 11,
-                            "x": 1984,
-                            "y": 1536
+                            "x": 1764.0,
+                            "y": 1536.0
                         },
                         {
-                            "verticalRepeat": 7,
-                            "x": 0.0,
-                            "y": 320.0
+                            "verticalRepeat": 12,
+                            "x": 0,
+                            "y": 0
                         },
                         {
                             "verticalRepeat": 22,
@@ -242,19 +253,24 @@
                             "y": 1088
                         },
                         {
-                            "verticalRepeat": 39,
-                            "x": 3008,
-                            "y": 0
+                            "verticalRepeat": 25,
+                            "x": 3008.0,
+                            "y": 576.0
                         },
                         {
-                            "horizontalRepeat": 47,
-                            "x": 0.0,
+                            "verticalRepeat": 5,
+                            "x": 3008.0,
                             "y": 0.0
                         },
                         {
-                            "verticalRepeat": 9,
-                            "x": 2240,
-                            "y": 1728
+                            "horizontalRepeat": 46,
+                            "x": 64,
+                            "y": 0
+                        },
+                        {
+                            "verticalRepeat": 4,
+                            "x": 2240.0,
+                            "y": 2048.0
                         }
                     ]
                 }
@@ -363,6 +379,328 @@
             "size": [
                 2496,
                 1088
+            ]
+        },
+        "3": {
+            "content": {
+                "Area": {
+                    "VerticalDoor": [
+                        {
+                            "state": "Left",
+                            "to": "1",
+                            "x": 0.0,
+                            "y": 320.0
+                        }
+                    ]
+                },
+                "NPC": {
+                    "Savepoint": [
+                        {
+                            "spID": 2,
+                            "state": "Normal",
+                            "x": 140.0,
+                            "y": 448.0
+                        }
+                    ]
+                },
+                "Terrain": {
+                    "MossyStone": [
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 1536.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 2816.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 4096.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 15,
+                            "verticalRepeat": 1,
+                            "x": 5376.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 256.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "horizontalRepeat": 4,
+                            "verticalRepeat": 1,
+                            "x": 0.0,
+                            "y": 576.0
+                        }
+                    ],
+                    "Stone": [
+                        {
+                            "horizontalRepeat": 3,
+                            "verticalRepeat": 16,
+                            "x": 6336.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 0.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 640.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 1280.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 1920.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 2560.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 3200.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 3840.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 4480.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 5120.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 1,
+                            "verticalRepeat": 4,
+                            "x": 5760.0,
+                            "y": 64.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 1280.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 2560.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 3840.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 5120.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 20,
+                            "verticalRepeat": 1,
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 4,
+                            "verticalRepeat": 7,
+                            "x": 0.0,
+                            "y": 640.0
+                        }
+                    ]
+                }
+            },
+            "position": [
+                4992,
+                0
+            ],
+            "size": [
+                6400,
+                1080
+            ]
+        },
+        "testLoadingSpeed0": {
+            "content": {
+                "Area": {
+                    "VerticalDoor": [
+                        {
+                            "areaType": "Door",
+                            "state": "Left",
+                            "to": "1",
+                            "x": 0.0,
+                            "y": 64.0
+                        },
+                        {
+                            "areaType": "Door",
+                            "state": "Right",
+                            "to": "testLoadingSpeed1",
+                            "x": 108.0,
+                            "y": 64.0
+                        }
+                    ]
+                },
+                "Terrain": {
+                    "MossyStone": [
+                        {
+                            "horizontalRepeat": 2,
+                            "state": "0",
+                            "x": 0.0,
+                            "y": 320.0
+                        }
+                    ],
+                    "Stone": [
+                        {
+                            "horizontalRepeat": 2,
+                            "state": "0",
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        {
+                            "horizontalRepeat": 2,
+                            "state": "0",
+                            "verticalRepeat": 11,
+                            "x": 0.0,
+                            "y": 384.0
+                        }
+                    ]
+                }
+            },
+            "position": [
+                4992,
+                2112
+            ],
+            "size": [
+                128,
+                1080
+            ]
+        },
+        "testLoadingSpeed1": {
+            "content": {
+                "Area": {
+                    "VerticalDoor": [
+                        {
+                            "areaType": "Door",
+                            "state": "Left",
+                            "to": "testLoadingSpeed0",
+                            "x": 0.0,
+                            "y": 64.0
+                        }
+                    ]
+                },
+                "Terrain": {
+                    "MossyStone": [
+                        {
+                            "state": "0",
+                            "x": 0.0,
+                            "y": 320.0
+                        },
+                        {
+                            "horizontalRepeat": 25,
+                            "state": "0",
+                            "x": 256.0,
+                            "y": 1024.0
+                        },
+                        {
+                            "state": "0",
+                            "x": 64.0,
+                            "y": 448.0
+                        },
+                        {
+                            "state": "0",
+                            "x": 128.0,
+                            "y": 640.0
+                        },
+                        {
+                            "state": "0",
+                            "x": 192.0,
+                            "y": 832.0
+                        }
+                    ],
+                    "Stone": [
+                        {
+                            "horizontalRepeat": 30,
+                            "state": "0",
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 11,
+                            "x": 0.0,
+                            "y": 384.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 16,
+                            "x": 1856.0,
+                            "y": 64.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 9,
+                            "x": 64.0,
+                            "y": 512.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 6,
+                            "x": 128.0,
+                            "y": 704.0
+                        },
+                        {
+                            "state": "0",
+                            "verticalRepeat": 3,
+                            "x": 192.0,
+                            "y": 896.0
+                        }
+                    ]
+                }
+            },
+            "position": [
+                5120,
+                2112
+            ],
+            "size": [
+                1920,
+                1080
             ]
         }
     },
