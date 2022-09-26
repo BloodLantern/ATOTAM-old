@@ -48,15 +48,40 @@ void Game::loadSave(Save save)
 {
     currentProgress = save;
 
-    clearEntities();
-
     // Load map
     currentMap = Map::loadMap(save.getSaveMapName(), assetsPath);
     currentMap.setCurrentRoomId(save.getRoomID());
-    addEntities(currentMap.loadRoom());
 
+    // Async room loading to avoid segfaults
+    // Unload every room
+    for (auto room = roomEntities.begin(); room != roomEntities.end(); room++)
+        roomsToUnload.push_back(room->first);
+    if (roomWorker) {
+        if (roomWorker->joinable())
+            roomWorker->join();
+        // Reset the worker
+        updateAsyncRoomLoading();
+    }
+    // Unload the rooms
+    updateAsyncRoomLoading();
+    // Wait for the worker to finish the unloading by joining the threads
+    if (roomWorker)
+        if (roomWorker->joinable())
+            roomWorker->join();
+    // Clear the lists to avoid corrupted pointers
+    terrains = {};
+    monsters = {};
+    NPCs = {};
+    projectiles = {};
+    areas = {};
+    dynamicObjs = {};
+    entities = {};
+    // Then load the needed rooms because at this point all the Entities have been deleted
+    updateLoadedRooms();
+    updateAsyncRoomLoading();
+
+    // Place Samos
     std::pair<int, int> coords = loadRespawnPosition(save, currentMap);
-
     addEntity(new Samos(coords.first, coords.second, save.getSamosHealth(), save.getSamosMaxHealth(),
                   save.getSamosGrenades(), save.getSamosMaxGrenades(),
                         save.getSamosMissiles(), save.getSamosMaxMissiles()));
@@ -178,6 +203,7 @@ void Game::updateTas()
         line++;
 }
 
+// Returns whether a worker thread was started. Also returns true if there's nothing to load/unload
 void Game::updateAsyncRoomLoading()
 {
     if (roomsToLoad.empty() && roomsToUnload.empty())
@@ -236,7 +262,8 @@ void Game::updateAsyncRoomLoading()
         });
     } else if (workerFinished) {
         // Thread finished execution
-        roomWorker->join();
+        if (roomWorker->joinable())
+            roomWorker->join();
         delete roomWorker;
         roomWorker = nullptr;
 

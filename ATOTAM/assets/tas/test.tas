@@ -5,7 +5,7 @@
 	1, Left, Q, LControl
 	1, Left, S, LControl
 	20, Down, Left, LControl
-	// 1 more frame to get the run speed boost
+	// Need 2 frames on ground to get the run speed boost
 	2, Left, LControl
 
 	1, Left, Q, LControl
@@ -71,5 +71,24 @@
 
 	9, Down, Left, LControl
 	1, Left, Q, LControl
-	1, Left, S, LControl
-	20, Left, LControl
+	4, Left, S, LControl
+	8, Left, LControl
+	1, Left, Z, LControl
+	3, Down, Left, LControl
+	1, Left, D, LControl
+	1, Left, Z, LControl
+	12, Down, Left, LControl
+	1, Down, Left, F, LControl
+	1, Down, Left, LControl
+	1, Down, Left, F, LControl
+	1, Down, Left, LControl
+
+	1, Left, Q, LControl
+	14, Left, S, LControl
+	1, Left
+	4, Right, S, LControl
+	1, Right
+	4, Left, S, LControl
+	1, Left
+	1, Right, S, LControl
+	20, Down, Right, LControl
