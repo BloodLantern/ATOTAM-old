@@ -9,17 +9,17 @@
         "fileSelectorDirectory": "C:/Users/m.grimardhamel/ATOTAM/ATOTAM/assets/maps",
         "map": {
             "camera": [
-                140,
-                -76
+                2619,
+                760
             ],
             "id": "testEditor",
-            "roomId": "0",
-            "zoomFactor": 0.64
+            "roomId": "1",
+            "zoomFactor": 0.32768000000000014
         },
         "window": {
             "maximized": true,
             "position": [
-                0,
+                -1920,
                 -8
             ],
             "size": [

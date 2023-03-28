@@ -1,8 +1,8 @@
 {
-    "damageDone": 2380,
-    "damageReceived": 2580,
-    "deaths": 24,
-    "playTime": 3944,
+    "damageDone": 2520,
+    "damageReceived": 2680,
+    "deaths": 25,
+    "playTime": 4081,
     "roomID": "1",
     "roomsDiscovered": {
         "test": [
